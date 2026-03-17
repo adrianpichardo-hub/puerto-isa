@@ -577,11 +577,16 @@ window.addEventListener('load', () => {
     const t = params.get("access_token");
     if (t) {
       TOKEN = t;
-      // Save to sessionStorage so it survives page interactions
       sessionStorage.setItem('puerto_token', t);
       history.replaceState(null, "", window.location.pathname);
       showApp();
-      fetchUserInfo();
+      // Fetch user info but DON'T call tokenExpired if it fails on first load
+      fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
+        headers: { "Authorization": "Bearer " + TOKEN }
+      }).then(r => r.json()).then(d => {
+        const el = document.getElementById("user-email");
+        if (el) el.textContent = d.email || "Conectado";
+      }).catch(() => {});
       return;
     }
   }
@@ -589,8 +594,31 @@ window.addEventListener('load', () => {
   const saved = sessionStorage.getItem('puerto_token');
   if (saved) {
     TOKEN = saved;
-    showApp();
-    fetchUserInfo();
+    // Verify token is still valid
+    fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
+      headers: { "Authorization": "Bearer " + TOKEN }
+    }).then(r => {
+      if (r.status === 401) {
+        sessionStorage.removeItem('puerto_token');
+        TOKEN = null;
+        // Show login - session truly expired
+        const note = document.getElementById("login-note");
+        if (note) note.textContent = "⚠ Sesión expirada — volvé a conectar";
+        const btn = document.getElementById("login-btn");
+        if (btn) btn.textContent = "🔗 Reconectar con Google Drive";
+      } else {
+        showApp();
+        return r.json();
+      }
+    }).then(d => {
+      if (d) {
+        const el = document.getElementById("user-email");
+        if (el) el.textContent = d.email || "Conectado";
+      }
+    }).catch(() => {
+      sessionStorage.removeItem('puerto_token');
+      TOKEN = null;
+    });
   }
 });
 
