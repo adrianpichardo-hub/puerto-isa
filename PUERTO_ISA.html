@@ -570,16 +570,27 @@ function handleAuth() {
 
 // Check token in hash on load
 window.addEventListener('load', () => {
+  // Check for token in URL hash (after OAuth redirect)
   const hash = window.location.hash;
   if (hash.includes("access_token")) {
     const params = new URLSearchParams(hash.substring(1));
     const t = params.get("access_token");
     if (t) {
       TOKEN = t;
+      // Save to sessionStorage so it survives page interactions
+      sessionStorage.setItem('puerto_token', t);
       history.replaceState(null, "", window.location.pathname);
       showApp();
       fetchUserInfo();
+      return;
     }
+  }
+  // Try to restore from sessionStorage
+  const saved = sessionStorage.getItem('puerto_token');
+  if (saved) {
+    TOKEN = saved;
+    showApp();
+    fetchUserInfo();
   }
 });
 
@@ -596,6 +607,7 @@ async function fetchUserInfo() {
 
 function tokenExpired() {
   TOKEN = null;
+  sessionStorage.removeItem('puerto_token');
   document.getElementById("login-screen").style.display = "flex";
   document.getElementById("app").style.display = "none";
   const note = document.getElementById("login-note");
