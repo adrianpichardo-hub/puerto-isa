@@ -227,10 +227,10 @@ td{padding:5px 9px;vertical-align:middle}
     <div class="login-hex">⚓</div>
     <div class="login-title">PUERTO</div>
     <div class="login-sub">ISA Nueva Palmira · Gestión de Tripulaciones</div>
-    <button class="btn btn-pri" onclick="handleAuth()" style="font-size:13px;padding:12px 28px">
+    <button class="btn btn-pri" onclick="handleAuth()" id="login-btn" style="font-size:13px;padding:12px 28px">
       🔗 Conectar con Google Drive
     </button>
-    <div class="login-note">Accedé con tu cuenta de Google autorizada</div>
+    <div class="login-note" id="login-note">Accedé con tu cuenta de Google autorizada</div>
   </div>
 </div>
 
@@ -588,10 +588,24 @@ async function fetchUserInfo() {
     const res = await fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
       headers: { "Authorization": "Bearer " + TOKEN }
     });
+    if (res.status === 401) { tokenExpired(); return; }
     const d = await res.json();
     document.getElementById("user-email").textContent = d.email || "Conectado";
-  } catch(e) {}
+  } catch(e) { tokenExpired(); }
 }
+
+function tokenExpired() {
+  TOKEN = null;
+  document.getElementById("login-screen").style.display = "flex";
+  document.getElementById("app").style.display = "none";
+  const note = document.getElementById("login-note");
+  if (note) note.textContent = "⚠ Sesión expirada — volvé a conectar";
+  const btn = document.getElementById("login-btn");
+  if (btn) btn.textContent = "🔗 Reconectar con Google Drive";
+}
+
+// Re-check token every 45 min
+setInterval(() => { if (TOKEN) fetchUserInfo(); }, 45 * 60 * 1000);
 
 function showApp() {
   document.getElementById("login-screen").style.display = "none";
