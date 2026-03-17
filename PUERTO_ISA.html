@@ -975,7 +975,29 @@ Devolvé SOLO JSON sin texto extra ni markdown:
         return { ...m,
           nombre: dbMatch.nombre.replace(/^\d+[.\-]\s*/,'').trim() || m.nombre,
           cargo: m.cargo || dbMatch.cargo, nacionalidad: m.nacionalidad || dbMatch.nac,
-          ci: m.ci || dbMatch.ci || '', vencCI: m.vencCI || dbMatch.vencCI || '',
+          ci:      dbMatch.ci      || m.ci      || '',
+vencCI:  dbMatch.vencCI  || m.vencCI  || '',
+fechaNac: dbMatch.fechaNac || m.fechaNac || '',
+libreta:  dbMatch.libreta  || m.libreta  || '',
+cargo:    dbMatch.cargo    || m.cargo    || '',
+```
+
+**Sheet manda siempre. El PDF solo aporta lo que el Sheet no tiene.**
+
+Y el segundo problema — **el matching por apellido a veces falla** si el nombre viene diferente del PDF. Por ejemplo "SANCHEZ SAMUDIO, FREDY HERNAN" en el PDF vs "SANCHEZ SAMUDIO, FREDY HERNAN" en el Sheet — a veces un acento, un espacio o el orden cambia y no matchea.
+
+¿Me mandás el archivo actual `PUERTO_ISA.html` del repo para aplicar el fix con precisión? O si preferís hacelo directo — en GitHub, buscá en el archivo esta línea:
+```
+ci: m.ci || dbMatch.ci || '',
+```
+
+Y reemplazala por:
+```
+ci:       dbMatch.ci       || m.ci       || '',
+vencCI:   dbMatch.vencCI   || m.vencCI   || '',
+fechaNac: dbMatch.fechaNac || m.fechaNac || '',
+libreta:  dbMatch.libreta  || m.libreta  || '',
+cargo:    dbMatch.cargo    || m.cargo    || '',
           fechaNac: m.fechaNac || dbMatch.fechaNac || '',
           libreta: dbMatch.libreta || '', armador: dbMatch.armador || '', inDB: true
         };
