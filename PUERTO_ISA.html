@@ -648,8 +648,11 @@ async function parseRol() {
     });
 
     const data = await response.json();
-    const text = data.content.map(c => c.text || '').join('');
-    const parsed = JSON.parse(text.replace(/```json|```/g, '').trim());
+    if (!data.content) throw new Error("API error: " + JSON.stringify(data));
+    const text = data.content.map(c => c.text || "").join("");
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error("No JSON en respuesta: " + text.substring(0,200));
+    const parsed = JSON.parse(jsonMatch[0]);
 
     if (parsed.ship?.nombre) {
       const shipInput = document.getElementById('ship');
