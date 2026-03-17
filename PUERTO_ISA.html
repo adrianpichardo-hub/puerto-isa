@@ -537,7 +537,7 @@ td{padding:5px 9px;vertical-align:middle}
 const CONFIG = {
   clientId: "392840310855-1qtru0m8r3oa0h2k6krgfpa669l3p7sv.apps.googleusercontent.com",
   sheetId: "1-OQL-zIeT8QuRAOXQuKHOEKIY4JsdDpbP0h-MKnbl6w",
-  rolTemplateId: "1kf3OqFzN0v4DofVTzJ_80VsaMmr2gHFT",
+  rolTemplateId: "1ec94KLCL-2YWhG5jFJBLCOTEWdFb9NYRTuhJiDM6RIY",
   libretas: "1fzMddkV6RwSs_KcqbPrkoh9mJUpb7P8V",
   cedulas: "10oWGmJvk6bARqNd8wtfiMXDXwwmZVgYC",
   viajes: "15izAnMbvU15RVcJTzyRnC29EGFNKIMpJ",
@@ -1078,7 +1078,17 @@ async function generate() {
     addLine('✓ Carpeta creada en Drive', 'ok'); setPct(10);
 
     addLine('Copiando plantilla del rol...');
-    const newRol = await copyDriveFile(CONFIG.rolTemplateId, `ROL_${ship.replace(/\s+/g,'_')}.xlsx`, newFolder.id);
+    // Copy the Google Sheets template
+    const copyRes = await fetch(`https://www.googleapis.com/drive/v3/files/${CONFIG.rolTemplateId}/copy`, {
+      method: 'POST',
+      headers: {'Authorization':'Bearer '+TOKEN,'Content-Type':'application/json'},
+      body: JSON.stringify({
+        name: `ROL_${ship.replace(/\s+/g,'_')}`,
+        parents: [newFolder.id]
+      })
+    });
+    const newRol = await copyRes.json();
+    if (!newRol.id) throw new Error('No se pudo copiar la plantilla: ' + JSON.stringify(newRol));
     addLine('✓ ROL copiado', 'ok'); setPct(15);
 
     // Fill rol with crew data
@@ -1131,12 +1141,12 @@ async function generate() {
       const batchBody = {
         valueInputOption:'USER_ENTERED',
         data:[
-          {range:'Sheet1!B8', values:[[ship]]},
-          {range:'Sheet1!H8', values:[[document.getElementById('eta')?.value || today]]},
-          {range:'Sheet1!B11', values:[['PARAGUAY']]},
-          {range:'Sheet1!D11', values:[['NUEVA PALMIRA, URUGUAY']]},
-          {range:`Sheet1!B14:H${13+sortedCrew.length}`, values:crewValues},
-          {range:`Sheet1!B${13+sortedCrew.length+3}`, values:[[totalText]]}
+          {range:'Rol!B8', values:[[ship]]},
+          {range:'Rol!H8', values:[[document.getElementById('eta')?.value || today]]},
+          {range:'Rol!B11', values:[['PARAGUAY']]},
+          {range:'Rol!D11', values:[['NUEVA PALMIRA, URUGUAY']]},
+          {range:`Rol!B14:H${13+sortedCrew.length}`, values:crewValues},
+          {range:`Rol!B${13+sortedCrew.length+3}`, values:[[totalText]]}
         ]
       };
       const sheetRes = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${newRol.id}/values:batchUpdate`,{
