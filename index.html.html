@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ISA — Generador de Mensaje de Gastos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --isa-blue:#1a3a8c;--isa-blue-dark:#0f2460;--isa-blue-light:#e8eef8;--isa-blue-mid:#2d5cb8;
+  --isa-accent:#00b4d8;--isa-green:#00a878;--isa-red:#c0392b;
+  --isa-text:#1a1a2e;--isa-muted:#6b7a99;--isa-border:#d0daea;--isa-bg:#f4f7fb;--isa-white:#fff;
+  --r:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Barlow',sans-serif;background:var(--isa-bg);color:var(--isa-text)}
+.isa-header{background:var(--isa-blue-dark);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100}
+.isa-logo{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;color:white;letter-spacing:2px}
+.isa-tagline{font-size:11px;color:rgba(255,255,255,.5);letter-spacing:.1em;text-transform:uppercase;margin-left:12px;padding-left:12px;border-left:1px solid rgba(255,255,255,.2)}
+.isa-module{font-size:11px;color:rgba(255,255,255,.45);letter-spacing:.08em;text-transform:uppercase}
+.app{max-width:860px;margin:0 auto;padding:1.5rem 1rem 4rem}
+.page-title{margin-bottom:1.5rem}
+.page-title h2{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--isa-blue);letter-spacing:.04em;text-transform:uppercase}
+.page-title p{font-size:13px;color:var(--isa-muted);margin-top:3px}
+.tabs{display:flex;border-bottom:2px solid var(--isa-border);margin-bottom:1.5rem;overflow-x:auto}
+.tab{padding:9px 18px;font-size:12px;font-weight:600;font-family:'Barlow',sans-serif;letter-spacing:.05em;text-transform:uppercase;border:none;background:none;cursor:pointer;color:var(--isa-muted);border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:color .15s}
+.tab:hover{color:var(--isa-blue)}
+.tab.active{color:var(--isa-blue);border-bottom-color:var(--isa-blue)}
+.pane{display:none}.pane.active{display:block}
+.card{background:var(--isa-white);border:1px solid var(--isa-border);border-radius:var(--r);padding:1.25rem;margin-bottom:1rem;box-shadow:0 1px 3px rgba(26,58,140,.06)}
+.card-header{display:flex;align-items:center;gap:8px;margin-bottom:1rem;padding-bottom:10px;border-bottom:1px solid var(--isa-blue-light)}
+.card-icon{width:28px;height:28px;background:var(--isa-blue-light);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px}
+.card-title{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.1em;color:var(--isa-blue);text-transform:uppercase}
+label{display:block;font-size:11px;font-weight:600;color:var(--isa-muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
+input[type=text],input[type=number],input[type=time],select,textarea{width:100%;font-size:13px;font-family:'Barlow',sans-serif;padding:8px 11px;border:1px solid var(--isa-border);border-radius:6px;background:var(--isa-white);color:var(--isa-text);outline:none;transition:border-color .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--isa-blue);box-shadow:0 0 0 3px rgba(26,58,140,.1)}
+textarea{resize:vertical}
+.date-field{width:100%;font-size:13px;font-family:'Barlow',sans-serif;padding:8px 11px;border:1px solid var(--isa-border);border-radius:6px;background:var(--isa-white);color:var(--isa-text);outline:none;transition:border-color .15s;letter-spacing:.03em}
+.date-field:focus{border-color:var(--isa-blue);box-shadow:0 0 0 3px rgba(26,58,140,.1)}
+.g{display:grid;gap:10px;margin-bottom:10px}
+.g2{grid-template-columns:1fr 1fr}
+.g3{grid-template-columns:1fr 1fr 1fr}
+.g4{grid-template-columns:1fr 1fr 1fr 1fr}
+.g5{grid-template-columns:1fr 1fr 1fr 1fr 1fr}
+@media(max-width:640px){.g2,.g3,.g4,.g5{grid-template-columns:1fr}}
+.tog-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.tog{position:relative;width:36px;height:20px;flex-shrink:0}
+.tog input{opacity:0;width:0;height:0}
+.sl{position:absolute;inset:0;background:#c8d4e8;border-radius:20px;cursor:pointer;transition:.2s}
+.sl:before{content:'';position:absolute;width:14px;height:14px;left:3px;top:3px;background:white;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.tog input:checked+.sl{background:var(--isa-blue)}
+.tog input:checked+.sl:before{transform:translateX(16px)}
+.tog-lbl{font-size:13px;color:var(--isa-text);font-weight:500}
+.sub{background:var(--isa-blue-light);border:1px solid #c8d4e8;border-radius:6px;padding:1rem;margin-top:8px;margin-bottom:4px}
+.add-btn{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;font-family:'Barlow',sans-serif;letter-spacing:.04em;padding:6px 14px;border:1.5px dashed var(--isa-blue-mid);border-radius:6px;background:transparent;color:var(--isa-blue-mid);cursor:pointer;margin-top:6px;text-transform:uppercase;transition:all .15s}
+.add-btn:hover{background:var(--isa-blue-light)}
+.rm{font-size:11px;color:var(--isa-red);background:none;border:1px solid transparent;border-radius:4px;cursor:pointer;padding:3px 8px;font-weight:600;transition:all .15s}
+.rm:hover{background:#fdecea;border-color:var(--isa-red)}
+.item-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.item-label{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--isa-blue);text-transform:uppercase}
+.footer{display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--isa-border)}
+.btn{padding:9px 22px;border-radius:6px;font-size:12px;font-weight:700;font-family:'Barlow',sans-serif;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:all .15s;border:none}
+.btn-outline{border:1.5px solid var(--isa-border)!important;background:white;color:var(--isa-muted)}
+.btn-outline:hover{border-color:var(--isa-blue)!important;color:var(--isa-blue)}
+.btn-primary{background:var(--isa-blue);color:white}
+.btn-primary:hover{background:var(--isa-blue-dark)}
+.btn-generate{background:var(--isa-green);color:white;font-size:13px;padding:10px 28px}
+.btn-generate:hover{background:#008c65}
+.btn-copy{border:1.5px solid var(--isa-blue)!important;background:white;color:var(--isa-blue);padding:7px 18px}
+.btn-copy:hover{background:var(--isa-blue-light)}
+.note{font-size:12px;color:var(--isa-blue);background:var(--isa-blue-light);border-left:3px solid var(--isa-blue);padding:8px 12px;border-radius:0 6px 6px 0;margin:8px 0}
+.badge-ok{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;background:#e6f7f2;color:var(--isa-green);margin:8px 0;border:1px solid #b3e8d8}
+.badge-err{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;background:#fdecea;color:var(--isa-red);margin:8px 0}
+.badge-auto{font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:#e8eef8;color:var(--isa-blue);letter-spacing:.04em;margin-left:6px;vertical-align:middle}
+.preview-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:10px}
+.preview-table th{background:var(--isa-blue);color:white;padding:6px 10px;text-align:left;font-weight:600;font-size:11px;letter-spacing:.05em;text-transform:uppercase}
+.preview-table td{padding:6px 10px;border-bottom:1px solid var(--isa-border);font-size:12px}
+.preview-table tr:last-child td{font-weight:700;background:var(--isa-blue-light);border-bottom:none}
+.output-wrap{background:#f8faff;border:1px solid var(--isa-border);border-radius:var(--r);padding:1.25rem;font-family:'Courier New',monospace;font-size:12px;line-height:1.9;color:var(--isa-text);white-space:pre;overflow-x:auto;min-height:200px}
+.subj-box{font-size:14px;font-weight:600;padding:10px 14px;background:var(--isa-blue-light);border:1px solid var(--isa-border);border-radius:6px;color:var(--isa-blue);font-family:'Barlow',sans-serif}
+.paste-zone{width:100%;font-size:12px;font-family:'Courier New',monospace;padding:10px 12px;border:1.5px dashed var(--isa-border);border-radius:6px;background:#f8faff;color:var(--isa-text);resize:vertical;min-height:100px;outline:none;line-height:1.6;transition:border-color .15s}
+.paste-zone:focus{border-color:var(--isa-blue);background:white}
+</style>
+</head>
+<body>
+
+<div class="isa-header">
+  <div style="display:flex;align-items:baseline">
+    <span class="isa-logo">ISA<span style="font-size:14px;font-weight:400;letter-spacing:.05em;color:rgba(255,255,255,.6);margin-left:8px">AGENTES</span></span>
+    <span class="isa-tagline">Exceeding expectations</span>
+  </div>
+  <span class="isa-module">Gastos Fluviales</span>
+</div>
+
+<div class="app">
+  <div class="page-title">
+    <h2>Generador de Mensaje de Gastos</h2>
+    <p>Operaciones fluviales — completá cada sección y generá el mensaje listo para enviar</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="goTab(0)" id="tab-btn-0">1. Escala</button>
+    <button class="tab" onclick="goTab(1)" id="tab-btn-1">2. Barcazas</button>
+    <button class="tab" onclick="goTab(2)" id="tab-btn-2">3. Lanchas</button>
+    <button class="tab" onclick="goTab(3)" id="tab-btn-3">4. Extras</button>
+    <button class="tab" onclick="goTab(4)" id="tab-btn-4">Vista Previa</button>
+  </div>
+
+  <!-- TAB 0: ESCALA -->
+  <div class="pane active" id="tab-0">
+    <div class="card">
+      <div class="card-header"><div class="card-icon">🚢</div><div class="card-title">Remolcador y operación</div></div>
+      <div class="g g2">
+        <div><label>Nombre del remolcador</label><input type="text" id="rem" placeholder="HB SCORPIUS" oninput="updateTituloAuto()"></div>
+        <div><label>Armador</label><input type="text" id="armador" placeholder="HIDROVIAS"></div>
+      </div>
+      <div class="g g3">
+        <div><label>Referencia / viaje</label><input type="text" id="ref" placeholder="HB16 / LHGA 06/09/13" oninput="updateTituloAuto()"></div>
+        <div><label>Mercadería</label><select id="merc">
+          <option value="">Seleccionar...</option>
+          <option>MANGANESE</option><option>SINTER</option><option>LOHS</option>
+          <option>SFHG</option><option>MINERAL LHG</option><option>SINTER + LOHS</option><option>Otra</option>
+        </select></div>
+        <div><label>Tipo de operación</label><select id="tipo">
+          <option value="DESCARGA">Descarga</option><option value="CARGA">Carga</option>
+          <option value="CARGA Y DESCARGA">Carga y Descarga</option><option value="TRASBORDO">Trasbordo</option>
+        </select></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><div class="card-icon">⚓</div><div class="card-title">Muelles operados</div></div>
+      <div id="muelles-wrap"></div>
+      <button class="add-btn" onclick="addMuelle()">+ Agregar muelle</button>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><div class="card-icon">📅</div><div class="card-title">Fechas de la escala</div></div>
+      <div class="note">Ingresá las fechas en formato DD/MM/AAAA</div>
+      <div class="g g4" style="margin-top:10px">
+        <div><label>Arribo</label><input class="date-field" type="text" id="f-arribo" placeholder="DD/MM/AAAA" maxlength="10" oninput="maskDate(this)"></div>
+        <div><label>Inicio operación</label><input class="date-field" type="text" id="f-inicio" placeholder="DD/MM/AAAA" maxlength="10" oninput="maskDate(this)"></div>
+        <div><label>Fin operación</label><input class="date-field" type="text" id="f-fin" placeholder="DD/MM/AAAA" maxlength="10" oninput="maskDate(this)"></div>
+        <div><label>Zarpe</label><input class="date-field" type="text" id="f-zarpe" placeholder="DD/MM/AAAA" maxlength="10" oninput="maskDate(this)"></div>
+      </div>
+      <div class="g g2">
+        <div><label>Puerto anterior</label><input type="text" id="p-ant" placeholder="San Lorenzo, Argentina"></div>
+        <div><label>Próximo puerto</label><input type="text" id="p-prox" placeholder="Nueva Palmira, Uruguay"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><div class="card-icon">🏛️</div><div class="card-title">Autoridades portuarias</div></div>
+      <div class="g g3">
+        <div><label>Bandera del empuje</label><select id="bandera">
+          <option value="">Seleccionar...</option>
+          <option>PARAGUAY</option><option>URUGUAY</option><option>ARGENTINA</option>
+          <option>BOLIVIA</option><option>BRASIL</option>
+        </select></div>
+        <div><label>OCE / Sanidad N°</label><input type="text" id="oce" placeholder="5993947"></div>
+        <div><label>Migraciones (nota)</label><input type="text" id="migra" placeholder="x4"></div>
+      </div>
+      <div style="display:flex;gap:24px;flex-wrap:wrap;margin-top:6px">
+        <div class="tog-row"><label class="tog"><input type="checkbox" id="chk-vhf" checked><span class="sl"></span></label><span class="tog-lbl">VHF</span></div>
+        <div class="tog-row"><label class="tog"><input type="checkbox" id="chk-ld" checked><span class="sl"></span></label><span class="tog-lbl">Light Dues &nbsp;<input type="text" id="ld-nota" placeholder="x4" style="width:55px;display:inline;padding:4px 7px;font-size:12px"></span></div>
+        <div class="tog-row"><label class="tog"><input type="checkbox" id="chk-desp" checked><span class="sl"></span></label><span class="tog-lbl">Entrada/Despacho en muelle</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><div class="card-icon">⛽</div><div class="card-title">Bunker</div></div>
+      <div class="tog-row"><label class="tog"><input type="checkbox" id="chk-bunk" onchange="togEl('bunk-sub')"><span class="sl"></span></label><span class="tog-lbl">¿Hizo bunker?</span></div>
+      <div class="sub" id="bunk-sub" style="display:none">
+        <div class="g g3">
+          <div><label>Muelle de bunker</label><input type="text" id="bk-muelle" placeholder="NAVIOS"></div>
+          <div><label>Fecha (DD/MM/AAAA)</label><input class="date-field" type="text" id="bk-fecha" placeholder="DD/MM/AAAA" maxlength="10" oninput="maskDate(this)"></div>
+          <div><label>Cantidad (lts)</label><input type="number" id="bk-lts" placeholder="15000"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><div class="card-icon">🔗</div><div class="card-title">Petrovías</div></div>
+      <div class="tog-row"><label class="tog"><input type="checkbox" id="chk-petro" onchange="togEl('petro-sub')"><span class="sl"></span></label><span class="tog-lbl">¿Amarró en Petrovías?</span></div>
+      <div class="sub" id="petro-sub" style="display:none">
+        <div class="g g4">
+          <div><label>Fecha amarra (DD/MM/AAAA)</label><input class="date-field" type="text" id="pt-fecha" placeholder="DD/MM/AAAA" maxlength="10" oninput="maskDate(this)"></div>
+          <div><label>Hora amarra</label><input type="time" id="pt-hora"></div>
+          <div><label>Proveedor custodia</label><input type="text" id="pt-prov" placeholder="GOMISTAR"></div>
+          <div><label>Fecha lancha ent./desp.</label><input class="date-field" type="text" id="pt-lf" placeholder="DD/MM/AAAA" maxlength="10" oninput="maskDate(this)"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><div class="card-icon">📝</div><div class="card-title">Observaciones</div></div>
+      <textarea id="obs" rows="3" placeholder="Ej: El remolcador llegó el amarre en petrovias, dejando en custodia GOMISTAR. Zarpó remolcador solo a sauce."></textarea>
+    </div>
+    <div class="footer"><span></span><button class="btn btn-primary" onclick="goTab(1)">Siguiente →</button></div>
+  </div>
+
+  <!-- TAB 1: BARCAZAS -->
+  <div class="pane" id="tab-1">
+    <div class="card">
+      <div class="card-header"><div class="card-icon">📋</div><div class="card-title">Nómina de barcazas</div></div>
+      <div class="note">Copiá el cuadro desde Excel, email o Word y pegalo acá con Ctrl+V. Funciona con cualquier formato.</div>
+      <textarea id="paste-area" class="paste-zone" rows="10"
+        placeholder="Pegá acá el cuadro de barcazas..."
+        oninput="parsePasted(this.value); updateTituloAuto()"></textarea>
+      <div id="bcz-status"></div>
+      <div id="bcz-preview"></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-icon">🏷️</div><div class="card-title">Título del cuadro en el mensaje</div></div>
+      <div class="g g2">
+        <div><label>Encabezado antes del cuadro</label><input type="text" id="nom-label" placeholder="Nomina para descargar en NAVIOS:"></div>
+        <div>
+          <label>Título de la tabla <span class="badge-auto" id="titulo-badge">AUTO</span></label>
+          <input type="text" id="nom-titulo" placeholder="Se genera automático..." oninput="checkTituloManual()">
+          <div style="font-size:10px;color:var(--isa-muted);margin-top:3px">Formato: REMOLCADOR + N barcazas (REFERENCIA)</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-icon">↗️</div><div class="card-title">Barcazas en lastre al zarpe</div></div>
+      <textarea id="lastre" rows="3" placeholder="HB044008&#10;HB044011&#10;HB044023"></textarea>
+      <div style="margin-top:8px"><label>Texto intro</label><input type="text" id="lastre-intro" placeholder="Zarpó con las siguientes barcazas en lastre:"></div>
+    </div>
+    <div class="footer">
+      <button class="btn btn-outline" onclick="goTab(0)">← Anterior</button>
+      <button class="btn btn-primary" onclick="goTab(2)">Siguiente →</button>
+    </div>
+  </div>
+
+  <!-- TAB 2: LANCHAS -->
+  <div class="pane" id="tab-2">
+    <div class="card">
+      <div class="card-header"><div class="card-icon">🚤</div><div class="card-title">Servicios de lancha</div></div>
+      <div id="lanchas-wrap"></div>
+      <button class="add-btn" onclick="addLancha()">+ Agregar servicio de lancha</button>
+    </div>
+    <div class="footer">
+      <button class="btn btn-outline" onclick="goTab(1)">← Anterior</button>
+      <button class="btn btn-primary" onclick="goTab(3)">Siguiente →</button>
+    </div>
+  </div>
+
+  <!-- TAB 3: EXTRAS -->
+  <div class="pane" id="tab-3">
+    <div class="card">
+      <div class="card-header"><div class="card-icon">🏥</div><div class="card-title">Atención médica</div></div>
+      <div class="tog-row"><label class="tog"><input type="checkbox" id="chk-med" onchange="togEl('med-sub')"><span class="sl"></span></label><span class="tog-lbl">¿Hubo atención médica?</span></div>
+      <div class="sub" id="med-sub" style="display:none">
+        <div class="g g3">
+          <div><label>Tripulante(s)</label><input type="text" id="med-trip" placeholder="JUNIO CUSTODIO"></div>
+          <div><label>Cant. consultas</label><input type="number" id="med-cons" value="1"></div>
+          <div><label>Total USD</label><input type="number" id="med-usd" placeholder="250"></div>
+        </div>
+        <div class="g g2">
+          <div><label>Lanchas desembarco médico</label><input type="number" id="med-lanch" placeholder="2"></div>
+          <div><label>Clínica</label><input type="text" id="med-cli" placeholder="nombre clínica"></div>
+        </div>
+        <div style="display:flex;gap:20px;flex-wrap:wrap">
+          <div class="tog-row"><label class="tog"><input type="checkbox" id="chk-meds"><span class="sl"></span></label><span class="tog-lbl">Medicamentos</span></div>
+          <div class="tog-row"><label class="tog"><input type="checkbox" id="chk-tras"><span class="sl"></span></label><span class="tog-lbl">Traslados</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-icon">➕</div><div class="card-title">Extras / adicionales</div></div>
+      <div id="extras-wrap"></div>
+      <button class="add-btn" onclick="addExtra()">+ Agregar extra</button>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-icon">✍️</div><div class="card-title">Remitente</div></div>
+      <div class="g g3">
+        <div><label>Desde (lugar)</label><input type="text" id="rem-lugar" placeholder="Isa Nueva Palmira"></div>
+        <div><label>Nombre ops</label><input type="text" id="rem-nombre" placeholder="Cesar Pasquali"></div>
+        <div><label>Empresa</label><input type="text" id="rem-emp" placeholder="ISA AGENTES"></div>
+      </div>
+    </div>
+    <div class="footer">
+      <button class="btn btn-outline" onclick="goTab(2)">← Anterior</button>
+      <button class="btn btn-generate" onclick="generate()">Generar mensaje →</button>
+    </div>
+  </div>
+
+  <!-- TAB 4: VISTA PREVIA -->
+  <div class="pane" id="tab-4">
+    <div class="card">
+      <div class="card-header"><div class="card-icon">📧</div><div class="card-title">Asunto del mensaje</div></div>
+      <div class="subj-box" id="subj-out"></div>
+      <div style="margin-top:10px"><button class="btn btn-copy" onclick="copyEl('subj-out')">Copiar asunto</button></div>
+    </div>
+    <div class="card">
+      <div class="card-header" style="justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:8px"><div class="card-icon">📄</div><div class="card-title">Cuerpo del mensaje</div></div>
+        <button class="btn btn-copy" onclick="copyEl('body-out')">Copiar mensaje</button>
+      </div>
+      <div class="output-wrap" id="body-out"></div>
+    </div>
+    <div class="footer">
+      <button class="btn btn-outline" onclick="goTab(3)">← Editar</button>
+      <button class="btn btn-primary" onclick="copyEl('body-out')">Copiar todo</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let barcazasData=[],muelleIdx=0,lanchaIdx=0,extraIdx=0,tituloManual=false;
+const HWORDS=['BARCAZA','BCZA','CANTIDAD','PRODUCTO','MUELLE','VIAJE','NOR','AMARRE','INICIO','FIN','#'];
+const SKIP=['TTL','TOTAL'];
+
+function goTab(n){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-btn-'+n).classList.add('active');
+  document.getElementById('tab-'+n).classList.add('active');
+}
+function togEl(id){const el=document.getElementById(id);el.style.display=el.style.display==='none'?'block':'none';}
+function v(id){const el=document.getElementById(id);return el?el.value.trim():'';}
+function chk(id){const el=document.getElementById(id);return el&&el.checked;}
+function maskDate(el){let val=el.value.replace(/\D/g,'');if(val.length>2)val=val.slice(0,2)+'/'+val.slice(2);if(val.length>5)val=val.slice(0,5)+'/'+val.slice(5);if(val.length>10)val=val.slice(0,10);el.value=val;}
+function updateTituloAuto(){if(tituloManual)return;const rem=v('rem'),ref=v('ref'),n=barcazasData.length;let t='';if(rem)t+=rem;if(n>0)t+=(t?' + ':'')+n+' barcazas';if(ref)t+=(t?' ':'')+`(${ref})`;const el=document.getElementById('nom-titulo');if(el)el.placeholder=t||'Se genera automático...';}
+function checkTituloManual(){const el=document.getElementById('nom-titulo'),b=document.getElementById('titulo-badge');if(el.value.trim()){tituloManual=true;if(b){b.textContent='EDITADO';b.style.background='#fff3cd';b.style.color='#856404';}}else{tituloManual=false;if(b){b.textContent='AUTO';b.style.background='#e8eef8';b.style.color='#1a3a8c';}updateTituloAuto();}}
+function getTitulo(){const m=v('nom-titulo');if(m)return m;const rem=v('rem')||'REMOLCADOR',ref=v('ref'),n=barcazasData.length;let t=rem;if(n>0)t+=` + ${n} barcazas`;if(ref)t+=` (${ref})`;return t;}
+
+function addMuelle(){const id=++muelleIdx;const div=document.createElement('div');div.id='m'+id;div.className='sub';div.style.marginBottom='8px';div.innerHTML=`<div class="item-header"><span class="item-label">Muelle ${id}</span><button class="rm" onclick="document.getElementById('m${id}').remove()">Eliminar</button></div><div class="g g2"><div><label>Nombre del muelle</label><input type="text" id="mn-${id}" placeholder="NAVIOS / POTIGUAR / ANP"></div><div><label>Días en muelle</label><input type="number" id="md-${id}" placeholder="3"></div></div>`;document.getElementById('muelles-wrap').appendChild(div);}
+
+function addLancha(){const id=++lanchaIdx;const div=document.createElement('div');div.id='l'+id;div.className='sub';div.style.marginBottom='8px';div.innerHTML=`<div class="item-header"><span class="item-label">Lancha ${id}</span><button class="rm" onclick="document.getElementById('l${id}').remove()">Eliminar</button></div><div class="g g5"><div><label>Tipo de servicio</label><select id="lt-${id}"><option>Entrada en lancha</option><option>Despacho en lancha</option><option>Entrada y Despacho en lancha</option><option>Amarre</option><option>Desamarre</option><option>Amarre y Desamarre</option><option>Embarque baqueano</option><option>Desembarco baqueano</option><option>Embarque técnico</option><option>Desembarco técnico</option><option>Médico</option><option>Otro</option></select></div><div><label>Fecha (DD/MM/AAAA)</label><input class="date-field" type="text" id="lf-${id}" placeholder="DD/MM/AAAA" maxlength="10" oninput="maskDate(this)"></div><div><label>Hora</label><input type="time" id="lh-${id}"></div><div><label>Proveedor</label><select id="lp-${id}"><option>GOMISTAR</option><option>CG TRÁFICOS</option><option>CORUMBÁ</option><option>Otro</option></select></div><div><label>Lugar / nota</label><input type="text" id="ln-${id}" placeholder="en NAVIOS / Punta del Arenal"></div></div>`;document.getElementById('lanchas-wrap').appendChild(div);}
+
+function addExtra(){const id=++extraIdx;const div=document.createElement('div');div.id='e'+id;div.className='sub';div.style.marginBottom='8px';div.innerHTML=`<div class="item-header"><span class="item-label">Extra ${id}</span><button class="rm" onclick="document.getElementById('e${id}').remove()">Eliminar</button></div><div class="g g3"><div style="grid-column:1/3"><label>Descripción</label><input type="text" id="ed-${id}" placeholder="Uso de amarradero ANP / Custodia sauce"></div><div><label>Monto USD</label><input type="number" id="em-${id}" placeholder="200"></div></div><div><label>Nota</label><input type="text" id="en-${id}" placeholder="revisar si lo cobran o no"></div>`;document.getElementById('extras-wrap').appendChild(div);}
+
+function parsePasted(raw){const status=document.getElementById('bcz-status'),preview=document.getElementById('bcz-preview');if(!raw||raw.trim().length<5){barcazasData=[];status.innerHTML='';preview.innerHTML='';return;}const lines=raw.split('\n').map(l=>l.trim()).filter(l=>l!=='');if(lines.filter(l=>l.includes('\t')).length>=2){parseTab(lines,status,preview);return;}let colCount=0,hIdx=-1;for(let i=0;i<lines.length;i++){const u=lines[i].toUpperCase().replace(/[`']/g,'');if(HWORDS.some(w=>u===w)){let c=0,j=i;while(j<lines.length&&(HWORDS.some(w=>lines[j].toUpperCase().replace(/[`']/g,'').includes(w))||lines[j]==='#')){c++;j++;}if(c>=3){colCount=c;hIdx=i;break;}}}if(colCount===0){colCount=6;const fn=lines.findIndex(l=>/^\d+$/.test(l));hIdx=fn>=colCount?fn-colCount:0;}const headers=[];for(let i=hIdx;i<hIdx+colCount&&i<lines.length;i++)headers.push(lines[i].replace(/[`']/g,'').trim());const colMap=headers.map(h=>{const u=h.toUpperCase();if(u==='#')return'num';if(u.includes('BARCAZA'))return'barcaza';if(u.includes('CANTIDAD'))return'cantidad';if(u.includes('PRODUCTO'))return'producto';if(u.includes('MUELLE'))return'muelle';if(u.includes('VIAJE'))return'viaje';if(u.includes('NOR'))return'nor';if(u.includes('AMARRE'))return'amarre';if(u.includes('INICIO'))return'inicio';if(u.includes('FIN'))return'fin';return'x';});const detected=[],ds=hIdx+colCount;let i=ds;while(i+colCount<=lines.length){const chunk=lines.slice(i,i+colCount);const obj={};chunk.forEach((val,ci)=>{obj[colMap[ci]]=val.trim();});const isTTL=SKIP.some(w=>(obj.num||obj.barcaza||'').toUpperCase().startsWith(w));if(!isTTL&&!chunk.every(c=>c===''||c==='-')&&(obj.barcaza||obj.num))detected.push(obj);i+=colCount;}barcazasData=detected;renderPreview(status,preview);}
+
+function parseTab(lines,status,preview){let hi=0;for(let i=0;i<Math.min(lines.length,5);i++){if(HWORDS.some(w=>lines[i].toUpperCase().includes(w))){hi=i;break;}}const header=lines[hi].split('\t').map(h=>h.trim().toUpperCase().replace(/[`']/g,''));const ci={};const maps={num:['#'],barcaza:['BARCAZA','BCZA'],cantidad:['CANTIDAD'],producto:['PRODUCTO'],muelle:['MUELLE'],viaje:['VIAJE'],nor:['NOR'],amarre:['AMARRE'],inicio:['INICIO'],fin:['FIN']};header.forEach((h,i)=>{Object.entries(maps).forEach(([k,a])=>{if(ci[k]===undefined&&a.some(x=>h.includes(x)))ci[k]=i;});});const det=[];for(let i=hi+1;i<lines.length;i++){const row=lines[i].split('\t').map(c=>c.trim());if(SKIP.some(w=>(row[0]||'').toUpperCase().startsWith(w)))continue;if(row.every(c=>c===''||c==='-'))continue;const obj={};Object.entries(ci).forEach(([k,idx])=>{if(row[idx]!==undefined&&row[idx]!=='')obj[k]=row[idx];});if(!obj.barcaza&&row[1])obj.barcaza=row[1];if(obj.barcaza)det.push(obj);}barcazasData=det;renderPreview(status,preview);}
+
+function renderPreview(status,preview){if(!barcazasData.length){status.innerHTML='<span class="badge-err">⚠ No se detectaron barcazas — verificá el formato</span>';preview.innerHTML='';return;}status.innerHTML=`<span class="badge-ok">✓ ${barcazasData.length} barcazas detectadas correctamente</span>`;updateTituloAuto();const cols=['num','barcaza','cantidad','producto','muelle','viaje','nor','amarre','inicio','fin'];const lbl={num:'#',barcaza:'Barcaza',cantidad:'Cant. Origen',producto:'Producto',muelle:'Muelle',viaje:'Viaje',nor:'NOR',amarre:'Amarre',inicio:'Inicio',fin:'Fin'};const pres=cols.filter(c=>barcazasData.some(r=>r[c]));let html=`<table class="preview-table"><thead><tr>${pres.map(c=>`<th>${lbl[c]}</th>`).join('')}</tr></thead><tbody>`;let total=0;barcazasData.forEach(r=>{html+=`<tr>${pres.map(c=>`<td>${r[c]||'-'}</td>`).join('')}</tr>`;if(r.cantidad){const n=parseFloat(r.cantidad.replace(/\./g,'').replace(',','.'));if(!isNaN(n))total+=n;}});if(total>0){html+=`<tr>${pres.map(c=>`<td>${c==='cantidad'?total.toLocaleString('es-UY',{maximumFractionDigits:0}):c==='barcaza'?'TTL':''}</td>`).join('')}</tr>`;}html+=`</tbody></table>`;preview.innerHTML=html;}
+
+function pad(s,w){return String(s||'').padEnd(w);}
+
+function generate(){const rem=v('rem')||'REMOLCADOR',arm=v('armador'),ref=v('ref'),merc=v('merc'),tipo=v('tipo');const ban=v('bandera'),oce=v('oce'),migra=v('migra');const fArr=v('f-arribo'),fIni=v('f-inicio'),fFin=v('f-fin'),fZar=v('f-zarpe');const pAnt=v('p-ant'),pPrx=v('p-prox'),obs=v('obs');const remLugar=v('rem-lugar'),remNom=v('rem-nombre'),remEmp=v('rem-emp');const nomLabel=v('nom-label'),titulo=getTitulo();const muelles=[];document.querySelectorAll('[id^="mn-"]').forEach(el=>{if(el.value.trim())muelles.push(el.value.trim());});const muelleStr=muelles.length?muelles.join(' + '):'NAVIOS';let subj=`Mensaje de Gastos - ${rem}`;if(ref)subj+=` (${ref})`;if(merc)subj+=` - ${merc}`;if(muelleStr)subj+=` - ${muelleStr}`;let b=`De ${remLugar||'Isa Nueva Palmira'}\n\nEstimados,\n\nFavor notar gastos de la operación en asunto.\n\n`;b+=rem;if(barcazasData.length>0)b+=` + ${barcazasData.length} barcazas`;b+='\n';if(arm)b+=`Armador: ${arm}\n`;b+=`Muelle: ${muelleStr}\n`;if(ban&&oce)b+=`Sanidad (Bandera ${ban}) - OCE ${oce}\n`;else if(ban)b+=`Sanidad (Bandera ${ban})\n`;if(migra)b+=`Migraciones ${migra}\n`;if(chk('chk-ld')){const n=v('ld-nota');b+=`Ligth Dues${n?' '+n:''}\n`;}if(chk('chk-vhf'))b+=`VHF\n`;if(chk('chk-bunk')){const bm=v('bk-muelle');b+=`BUNKER${bm?' EN '+bm:''}\n`;}if(chk('chk-desp'))b+=`Entrada/Despacho en muelle ${muelleStr}\n`;const lEls=document.querySelectorAll('[id^="lt-"]');if(lEls.length>0){b+='\n';lEls.forEach(el=>{const id=el.id.replace('lt-','');const t=v('lt-'+id),f=v('lf-'+id),h=v('lh-'+id),p=v('lp-'+id),n=v('ln-'+id);let ln=`LANCHA - ${t}`;if(n)ln+=` ${n}`;if(f)ln+=` ${f}`;if(h)ln+=` - ${h} HRS`;if(p)ln+=` (${p})`;b+=ln+'\n';});}if(chk('chk-petro')){const pf=v('pt-fecha'),ph=v('pt-hora'),pp=v('pt-prov'),plf=v('pt-lf');b+=`\nAmarra en petrovias ${pf}${ph?' - '+ph+' HRS':''}\n`;if(pp)b+=`Custodia ${pp}\n`;if(plf)b+=`Lancha entrada/despacho en petrovias ${plf}\n`;}if(pAnt||pPrx){b+='\n';if(pAnt)b+=`PUERTO ANTERIOR - ${pAnt.toUpperCase()}\n`;if(pPrx)b+=`PRÓXIMO PUERTO - ${pPrx.toUpperCase()}\n`;}if(fArr||fIni||fFin||fZar){b+='\n';if(fArr)b+=`ARRIBO ${fArr}\n`;if(fIni)b+=`INICIA ${tipo} ${fIni}\n`;if(fFin)b+=`FINALIZO ${tipo} ${fFin}\n`;if(fZar)b+=`ZARPE ${fZar}\n`;}if(chk('chk-bunk')&&v('bk-fecha')){b+=`\nESTADIA REMOLCADOR\n${'─'.repeat(18)}\n`;if(fArr)b+=`Arribo a NPA ${fArr}\n`;b+=`Bunker ${v('bk-fecha')}${v('bk-lts')?' - '+Number(v('bk-lts')).toLocaleString()+' lts':''}\n`;if(fZar)b+=`Zarpe de NPA ${fZar}\n`;}const eEls=document.querySelectorAll('[id^="ed-"]');if(eEls.length>0){b+='\nEXTRAS:\n';eEls.forEach(el=>{const id=el.id.replace('ed-','');const desc=v('ed-'+id),monto=v('em-'+id),nota=v('en-'+id);if(!desc)return;let ln=desc;if(monto)ln+=` (USD ${monto})`;if(nota)ln+=` - ${nota}`;b+=ln+'\n';});}if(obs)b+=`\nObservaciones:\n${obs}\n`;if(barcazasData.length>0){b+='\n'+(nomLabel||`Nomina para descargar en ${muelleStr}:`)+'\n\n';const grupos={};barcazasData.forEach(r=>{const k=`${r.muelle||muelleStr}||${r.producto||merc||''}||${r.viaje||ref||''}`;if(!grupos[k])grupos[k]=[];grupos[k].push(r);});const cDefs=[{key:'num',label:'#'},{key:'barcaza',label:'Barcaza'},{key:'cantidad',label:'Cantidad Origen'},{key:'producto',label:'Producto'},{key:'muelle',label:'MUELLE'},{key:'viaje',label:'Viaje'},{key:'nor',label:'NOR'},{key:'amarre',label:'Amarre'},{key:'inicio',label:'Inicio'},{key:'fin',label:'Fin'}];Object.entries(grupos).forEach(([k,rows],gi)=>{const[gm,gp,gv]=k.split('||');const t=gi===0?titulo:`${rem} + ${rows.length} barcazas (${gv||ref})`;b+=t+'\n';const pres=cDefs.filter(c=>c.key==='num'||c.key==='barcaza'||c.key==='cantidad'||rows.some(r=>r[c.key]));const w={};pres.forEach(c=>{w[c.key]=c.label.length;});rows.forEach((r,idx)=>{pres.forEach(c=>{const val=c.key==='num'?String(idx+1):c.key==='muelle'?(r.muelle||gm||''):c.key==='producto'?(r.producto||gp||''):c.key==='viaje'?(r.viaje||gv||''):(r[c.key]||'');if(val.length>w[c.key])w[c.key]=val.length;});});const S='  ';b+=pres.map(c=>pad(c.label,w[c.key])).join(S)+'\n';b+=pres.map(c=>'-'.repeat(w[c.key])).join(S)+'\n';let total=0;rows.forEach((r,idx)=>{b+=pres.map(c=>{const val=c.key==='num'?String(idx+1):c.key==='muelle'?(r.muelle||gm||''):c.key==='producto'?(r.producto||gp||''):c.key==='viaje'?(r.viaje||gv||''):(r[c.key]||'');return pad(val,w[c.key]);}).join(S)+'\n';if(r.cantidad){const n=parseFloat(r.cantidad.replace(/\./g,'').replace(',','.'));if(!isNaN(n))total+=n;}});b+=pres.map(c=>'-'.repeat(w[c.key])).join(S)+'\n';b+=pres.map(c=>{if(c.key==='num')return pad('TTL',w[c.key]);if(c.key==='cantidad')return pad(total.toLocaleString('es-UY',{maximumFractionDigits:0}),w[c.key]);return pad('',w[c.key]);}).join(S)+'\n\n';});}const lastre=v('lastre');if(lastre){const intro=v('lastre-intro')||'Zarpó con las siguientes barcazas en lastre:';b+=`${intro}\n${lastre.split(/[\n,]/).map(s=>s.trim()).filter(Boolean).join('\n')}\n\n`;}if(chk('chk-med')){b+=`\nATENCION MEDICA\n`;const trip=v('med-trip'),cons=v('med-cons'),lanch=v('med-lanch'),cli=v('med-cli'),usd=v('med-usd');if(trip&&cons)b+=`Tripulante ${trip} (${cons} ${cons==='1'?'consulta':'consultas'})\n`;else if(trip)b+=`Tripulante ${trip}\n`;if(lanch)b+=`${lanch} lanchas para desembarco por atención médica\n`;if(cons)b+=`${cons} ${cons==='1'?'consulta':'consultas'} en clínica${cli?' '+cli:''}\n`;if(chk('chk-meds'))b+=`Medicamentos\n`;if(chk('chk-tras'))b+=`Traslados\n`;if(usd)b+=`Total USD ${usd}\n`;}b+=`\nQuedamos atentos a cualquier consulta/comentario.\n\nSaludos cordiales,`;if(remNom)b+=`\n\nOps - ${remNom}`;if(remEmp)b+=`\n${remEmp}`;document.getElementById('subj-out').textContent=subj;document.getElementById('body-out').textContent=b;goTab(4);}
+
+function copyEl(id){const t=document.getElementById(id).textContent;navigator.clipboard.writeText(t).then(()=>{const btn=event.target;const o=btn.textContent;btn.textContent='¡Copiado!';setTimeout(()=>btn.textContent=o,1500);});}
+
+addMuelle(); addLancha();
+</script>
+</body>
+</html>
