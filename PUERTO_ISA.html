@@ -777,12 +777,37 @@ async function parseRol() {
     addLine('✓ Llegada: ' + (parsed.ship?.puertoLlegada || '—'), 'ok');
     addLine('──────────────────────────────');
 
-    CREW = parsed.crew || [];
+    // Cross-reference with BASE_TRIPULANTES
+    const rawCrew = parsed.crew || [];
+    CREW = rawCrew.map(m => {
+      // Find in DB by matching first surname
+      const apellido = m.nombre.split(',')[0].trim().toUpperCase();
+      const dbMatch = DB_DATA.find(d => {
+        const dApellido = d.nombre.replace(/^\d+[.\-]\s*/,'').split(',')[0].trim().toUpperCase();
+        return dApellido === apellido || d.nombre.toUpperCase().includes(apellido);
+      });
+      if (dbMatch) {
+        // Use DB data to fill in missing or override
+        return {
+          ...m,
+          nombre: dbMatch.nombre.replace(/^\d+[.\-]\s*/,'').trim() || m.nombre,
+          cargo: dbMatch.cargo || m.cargo,
+          nacionalidad: dbMatch.nac || m.nacionalidad,
+          fechaNac: dbMatch.fechaNac || m.fechaNac,
+          ci: dbMatch.ci || m.ci,
+          vencCI: dbMatch.vencCI || m.vencCI,
+          libreta: dbMatch.libreta || m.libreta,
+          armador: dbMatch.armador || '',
+          inDB: true
+        };
+      }
+      return { ...m, inDB: false };
+    });
     ALERTS = [];
 
     for (const m of CREW) {
       const st = docStatus(m.vencCI);
-      const inDB = DB_DATA.length > 0 ? DB_DATA.some(d => d.nombre.toUpperCase().includes(m.nombre.split(',')[0].toUpperCase())) : true;
+      const inDB = m.inDB;
       const ic = st.s === 'venc' ? '🔴' : st.s === 'warn' || st.s === 'crit' ? '🟡' : '✓';
       addLine(`${ic} ${m.num}. ${m.nombre} · CI venc. ${m.vencCI}${!inDB ? ' ⚠ NUEVO' : ''}`);
       if (st.s === 'venc') ALERTS.push({ level:'BLOQUEANTE', name:m.nombre, msg:`CI ${m.ci} VENCIDA el ${m.vencCI}` });
@@ -1040,8 +1065,59 @@ async function generate() {
     addLine('✓ Carpeta creada en Drive', 'ok'); setPct(10);
 
     addLine('Copiando plantilla del rol...');
-    await copyDriveFile(CONFIG.rolTemplateId, `ROL_${ship.replace(/\s+/g,'_')}.xlsx`, newFolder.id);
-    addLine('✓ ROL copiado', 'ok'); setPct(20);
+    const newRol = await copyDriveFile(CONFIG.rolTemplateId, `ROL_${ship.replace(/\s+/g,'_')}.xlsx`, newFolder.id);
+    addLine('✓ ROL copiado', 'ok'); setPct(15);
+
+    // Fill rol with crew data
+    addLine('Completando datos del rol...');
+    try {
+      const numWords = ['','Uno','Dos','Tres','Cuatro','Cinco','Seis','Siete','Ocho','Nueve','Diez','Once','Doce','Trece','Catorce','Quince','Dieciseis','Diecisiete','Dieciocho','Diecinueve','Veinte'];
+      const today = new Date().toLocaleDateString('es-UY',{day:'2-digit',month:'2-digit',year:'numeric'});
+      const crewValues = CREW.map((m,i) => {
+        // Use data from BASE_TRIPULANTES if available
+        const apellido = m.nombre.split(',')[0].trim().toUpperCase();
+        const dbMatch = DB_DATA.find(d => {
+          const dn = d.nombre.replace(/^\d+[.\-]\s*/,'').toUpperCase();
+          return dn.includes(apellido) || apellido.includes(dn.split(',')[0].trim());
+        });
+        const nombre = dbMatch ? dbMatch.nombre.replace(/^\d+[.\-]\s*/,'').trim() : m.nombre;
+        const cargo = dbMatch?.cargo || m.cargo || '';
+        const nac = dbMatch?.nac || m.nacionalidad || 'Paraguaya';
+        const fechaNac = dbMatch?.fechaNac || m.fechaNac || '';
+        const ci = dbMatch?.ci || m.ci || '';
+        const vencCI = dbMatch?.vencCI || m.vencCI || '';
+        const libreta = dbMatch?.libreta || m.libreta || '';
+        return [
+          `${i+1}.- ${nombre}`,
+          cargo,
+          nac,
+          fechaNac,
+          ci,
+          vencCI,
+          `${libreta} (s.v.)`
+        ];
+      });
+      const totalText = `Son: (${CREW.length}) ${numWords[CREW.length]||CREW.length} tripulantes incluido su capitán.`;
+      const batchBody = {
+        valueInputOption:'USER_ENTERED',
+        data:[
+          {range:'Sheet1!B8', values:[[ship]]},
+          {range:'Sheet1!H8', values:[[today]]},
+          {range:'Sheet1!B11', values:[['PARAGUAY']]},
+          {range:'Sheet1!D11', values:[['NUEVA PALMIRA, URUGUAY']]},
+          {range:`Sheet1!B14:H${13+CREW.length}`, values:crewValues},
+          {range:`Sheet1!B${14+CREW.length+2}`, values:[[totalText]]}
+        ]
+      };
+      const sheetRes = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${newRol.id}/values:batchUpdate`,{
+        method:'POST',
+        headers:{'Authorization':'Bearer '+TOKEN,'Content-Type':'application/json'},
+        body:JSON.stringify(batchBody)
+      });
+      if (sheetRes.ok) addLine('✓ Rol completado con tripulantes y datos del viaje','ok');
+      else addLine('⚠ No pudo completar el rol automaticamente','warn');
+    } catch(e) { addLine('⚠ Error completando rol: '+e.message,'warn'); }
+    setPct(20);
 
     let copied = 0;
     for (let i = 0; i < CREW.length; i++) {
