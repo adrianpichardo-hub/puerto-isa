@@ -445,6 +445,7 @@ td{padding:7px 12px;vertical-align:middle;}
       🔗 Conectar con Google Drive
     </button>
     <div class="login-note" id="login-note">Accedé con tu cuenta de Google autorizada</div>
+    <a href="index.html" style="display:inline-block;margin-top:16px;font-size:11px;color:rgba(255,255,255,.35);text-decoration:none;letter-spacing:.08em;text-transform:uppercase;transition:color .15s;" onmouseover="this.style.color='rgba(255,255,255,.7)'" onmouseout="this.style.color='rgba(255,255,255,.35)'">← Volver al portal</a>
   </div>
 </div>
 
@@ -485,9 +486,13 @@ td{padding:7px 12px;vertical-align:middle;}
     </div>
     <div class="info-box-yellow">
       <strong>Cómo funciona:</strong><br>
-      1. Creá una carpeta llamada _PENDIENTES en tu Drive<br>
-      2. Tirá todos los PDFs y fotos de libretas y cédulas ahí de una vez<br>
-      3. Hacé clic en Procesar — la IA los identifica y organiza automáticamente
+      1. Hacé clic en "Abrir _PENDIENTES" y pegá los PDFs ahí<br>
+      2. Hacé clic en Procesar — la IA los identifica y organiza automáticamente
+    </div>
+    <div style="margin-bottom:14px">
+      <button class="btn btn-gh btn-sm" onclick="openPendientes()" style="display:inline-flex;align-items:center;gap:6px;border-color:rgba(234,179,8,.3);color:var(--yellow)">
+        📂 Abrir carpeta _PENDIENTES en Drive
+      </button>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
       <div>
@@ -1026,22 +1031,130 @@ function renderAlerts(containerId, alerts) {
 function renderCrewTable() {
   const wrap = document.getElementById('crew-table-wrap');
   wrap.style.display = 'block';
+  const nuevos = CREW.filter(m => !m.inDB);
+
+  // Sección de edición para NUEVOS (no están en la base de datos)
+  let editSection = '';
+  if (nuevos.length > 0) {
+    editSection = `<div style="background:rgba(0,180,216,.06);border:1px solid rgba(0,180,216,.2);border-radius:8px;padding:14px 16px;margin-bottom:12px">
+      <div style="font-size:11px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px">
+        🆕 ${nuevos.length} tripulante(s) nuevo(s) — Completá sus datos para agregar al Sheet
+      </div>
+      ${nuevos.map(m => `
+        <div style="background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:8px" id="nuevo-card-${m.num}">
+          <div style="font-size:12px;font-weight:600;color:var(--white);margin-bottom:10px">${m.nombre}</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:8px;margin-bottom:8px">
+            <div>
+              <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Cargo</div>
+              <input type="text" id="nv-cargo-${m.num}" value="${m.cargo||''}" placeholder="MARINERO"/>
+            </div>
+            <div>
+              <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Nacionalidad</div>
+              <input type="text" id="nv-nac-${m.num}" value="${m.nacionalidad||''}" placeholder="Paraguaya"/>
+            </div>
+            <div>
+              <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">CI Nº</div>
+              <input type="text" id="nv-ci-${m.num}" value="${m.ci||''}" placeholder="1.234.567"/>
+            </div>
+            <div>
+              <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Venc. CI</div>
+              <input type="text" id="nv-venci-${m.num}" value="${m.vencCI||''}" placeholder="DD/MM/AAAA"/>
+            </div>
+            <div>
+              <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Libreta</div>
+              <input type="text" id="nv-lib-${m.num}" value="${m.libreta||''}" placeholder="Nº libreta"/>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <div style="flex:1">
+              <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Armador</div>
+              <select id="nv-arm-${m.num}">
+                <option value="">Seleccioná armador...</option>
+                <option>HIDROVIAS</option><option>LHG</option><option>P&O</option>
+                <option>INTERBARGE</option><option>CARGO LINE</option><option>BAQUEANOS ARG</option>
+              </select>
+            </div>
+            <button class="btn btn-pri btn-sm" style="margin-top:14px;white-space:nowrap" onclick="agregarAlSheet(${m.num})">
+              ✚ Agregar al Sheet
+            </button>
+          </div>
+          <div id="nv-status-${m.num}" style="font-size:11px;margin-top:6px;display:none"></div>
+        </div>`).join('')}
+    </div>`;
+  }
+
   let rows = CREW.map((m, i) => {
     const st = docStatus(m.vencCI);
     const badge = `<span class="status-badge" style="background:${st.bg};border:1px solid ${st.b};color:${st.c}">${st.s==='ok'?'✓ OK':st.s==='sv'?'S/V':st.s==='venc'?'🚫 VENC':st.s==='warn'?`⚠ ${daysUntil(m.vencCI)}d`:`⛔ ${daysUntil(m.vencCI)}d`}</span>`;
+    const newTag = !m.inDB ? `<span class="status-badge" style="background:rgba(0,180,216,.12);border:1px solid rgba(0,180,216,.25);color:var(--accent);margin-left:4px;font-size:8px">NUEVO</span>` : '';
     return `<tr class="rh">
       <td style="color:var(--muted)">${m.num}</td>
-      <td style="color:var(--white);font-weight:500;white-space:nowrap">${m.nombre}</td>
+      <td style="color:var(--white);font-weight:500;white-space:nowrap">${m.nombre}${newTag}</td>
       <td><span class="tag">${m.cargo}</span></td>
-      <td style="color:var(--fg)">${m.ci}</td>
+      <td style="color:var(--fg)">${m.ci || '—'}</td>
       <td style="color:${st.c};font-weight:${st.s==='venc'?700:400}">${m.vencCI || '—'}</td>
       <td>${badge}</td>
     </tr>`;
   }).join('');
-  wrap.innerHTML = `<div class="table-wrap"><table>
+
+  wrap.innerHTML = editSection + `<div class="table-wrap"><table>
     <thead><tr><th>#</th><th>Nombre</th><th>Cargo</th><th>CI</th><th>Venc.CI</th><th>Estado</th></tr></thead>
     <tbody>${rows}</tbody>
   </table></div>`;
+}
+
+async function agregarAlSheet(num) {
+  const m = CREW.find(x => x.num === num);
+  if (!m) return;
+  const cargo   = document.getElementById(`nv-cargo-${num}`)?.value.trim();
+  const nac     = document.getElementById(`nv-nac-${num}`)?.value.trim() || 'Paraguaya';
+  const ci      = document.getElementById(`nv-ci-${num}`)?.value.trim();
+  const vencCI  = document.getElementById(`nv-venci-${num}`)?.value.trim();
+  const libreta = document.getElementById(`nv-lib-${num}`)?.value.trim();
+  const armador = document.getElementById(`nv-arm-${num}`)?.value;
+  const statusEl = document.getElementById(`nv-status-${num}`);
+
+  if (!armador) { if(statusEl){statusEl.style.display='block';statusEl.style.color='var(--orange)';statusEl.textContent='⚠ Seleccioná el armador primero.';} return; }
+
+  // Find the right sheet tab
+  const tabMap = {'HIDROVIAS':'HB,HK,KYRIOS,DON ABRAHAM,YERUTI','LHG':'LHG','P&O':'P&O','INTERBARGE':'IB','CARGO LINE':'CARGO LINE','BAQUEANOS ARG':'BAQUEANOS ARG'};
+  const tab = tabMap[armador] || armador;
+
+  if(statusEl){statusEl.style.display='block';statusEl.style.color='var(--accent)';statusEl.textContent='Agregando...';}
+
+  try {
+    // Get current rows in that tab to append after last
+    const existing = await sheetsReq(`${CONFIG.sheetId}/values/${encodeURIComponent(tab)}!A1:G500`);
+    const rows = existing.values || [];
+    // Find last numbered row
+    let lastNum = 0;
+    rows.forEach(r => { const n = parseInt(r[0]); if(!isNaN(n)) lastNum = Math.max(lastNum,n); });
+    const newNum = lastNum + 1;
+    const newRow = [`${newNum}.- ${m.nombre.toUpperCase()}`, cargo, nac, m.fechaNac||'', ci, vencCI, libreta];
+
+    await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${CONFIG.sheetId}/values/${encodeURIComponent(tab)}!A1:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`, {
+      method:'POST',
+      headers:{'Authorization':'Bearer '+TOKEN,'Content-Type':'application/json'},
+      body: JSON.stringify({ values:[newRow] })
+    });
+
+    // Update CREW in memory
+    const idx = CREW.findIndex(x => x.num === num);
+    if(idx >= 0) {
+      CREW[idx] = {...CREW[idx], cargo, nacionalidad:nac, ci, vencCI, libreta, armador, inDB:true};
+    }
+    // Remove from DB alerts
+    ALERTS = ALERTS.filter(a => !(a.level==='NUEVO' && a.name===m.nombre));
+
+    if(statusEl){statusEl.style.color='var(--green)';statusEl.textContent='✓ Agregado al Sheet correctamente';}
+    // Hide card after 2s
+    setTimeout(()=>{ const card=document.getElementById(`nuevo-card-${num}`); if(card)card.style.opacity='0.4'; },2000);
+
+    // Reload DB silently
+    await loadDB();
+  } catch(e) {
+    if(statusEl){statusEl.style.color='var(--red)';statusEl.textContent='❌ Error: '+e.message;}
+  }
 }
 
 async function searchDrive() {
@@ -1311,6 +1424,12 @@ async function generate() {
         Carpeta <strong style="color:var(--accent)">/VIAJES/${folder}/</strong> creada en Drive.<br>
         Rol copiado · ${complete} libretas · ${complete} cédulas.<br>
         ${blockers.length > 0 ? `<span style="color:var(--red)">🚫 ${blockers.length} CI vencida(s) — pendiente de resolución.</span>` : ''}
+        <div style="margin-top:10px">
+          <a href="https://drive.google.com/drive/folders/${newFolder.id}" target="_blank"
+            style="display:inline-flex;align-items:center;gap:6px;padding:7px 16px;background:rgba(0,180,216,.15);border:1px solid rgba(0,180,216,.35);border-radius:6px;color:var(--accent);text-decoration:none;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;">
+            📁 Abrir carpeta en Drive
+          </a>
+        </div>
       </div></div>`;
     document.getElementById('gmail-btn').style.display = 'inline-flex';
     markDone(4);
@@ -1352,6 +1471,23 @@ async function createDriveFolder(name, parentId) {
 
 async function copyDriveFile(fileId, name, parentId) {
   return driveReq(`files/${fileId}/copy`, { method:'POST', body: JSON.stringify({ name, parents:[parentId] }) });
+}
+
+async function openPendientes() {
+  // Find _PENDIENTES folder and open it
+  try {
+    const q = encodeURIComponent("name='_PENDIENTES' and mimeType='application/vnd.google-apps.folder' and trashed=false");
+    const res = await driveReq('files?q='+q+'&fields=files(id,name)&pageSize=5');
+    if (res.files && res.files.length > 0) {
+      window.open(`https://drive.google.com/drive/folders/${res.files[0].id}`, '_blank');
+    } else {
+      // Create it and open
+      const newF = await createDriveFolder('_PENDIENTES', 'root');
+      window.open(`https://drive.google.com/drive/folders/${newF.id}`, '_blank');
+    }
+  } catch(e) {
+    window.open('https://drive.google.com/drive', '_blank');
+  }
 }
 
 function toggleOrg() {
