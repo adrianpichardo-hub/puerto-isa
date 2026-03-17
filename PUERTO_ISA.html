@@ -38,6 +38,8 @@ header{border-bottom:2px solid #1a3bcc;padding:14px 0 12px;background:#ffffff;di
 .logo-title{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:.1em;color:var(--wh);line-height:1}
 .logo-sub{font-size:8px;color:#4a5a90;letter-spacing:.15em;text-transform:uppercase;margin-top:1px}
 .header-right{display:flex;align-items:center;gap:10}
+.back-portal{font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:600;color:#4a5a90;text-decoration:none;letter-spacing:.08em;text-transform:uppercase;border:1px solid #c5d0f0;border-radius:3px;padding:5px 11px;transition:all .15s;}
+.back-portal:hover{border-color:#1a3bcc;color:#1a3bcc;}
 .status-dot{width:6px;height:6px;border-radius:50%;background:#00b894;box-shadow:0 0 7px #00b894}
 .status-txt{font-size:9px;color:var(--gn);text-transform:uppercase;letter-spacing:.08em}
 
@@ -246,7 +248,7 @@ td{padding:5px 9px;vertical-align:middle}
         <div class="logo-sub">ISA Nueva Palmira · Gestión de Tripulaciones</div>
       </div>
     </div>
-    <div class="header-right">
+    <div <a href="index.html" class="back-portal">← Portal</a>
       <button class="btn-db" id="org-toggle" onclick="toggleOrg()">📂 Organizar docs</button>
       <button class="btn-db" id="db-toggle" onclick="toggleDB()">🗃 Base de datos</button>
       <div style="display:flex;align-items:center;gap:5px">
