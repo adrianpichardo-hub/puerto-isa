@@ -831,14 +831,16 @@ Devolvé SOLO JSON sin texto extra ni markdown:
       if (dbMatch) {
         return {
           ...m,
+          // Nombre: DB tiene formato oficial limpio
           nombre: dbMatch.nombre.replace(/^\d+[.\-]\s*/,'').trim() || m.nombre,
-          cargo: dbMatch.cargo || m.cargo,
-          nacionalidad: dbMatch.nac || m.nacionalidad,
-          fechaNac: dbMatch.fechaNac || m.fechaNac,
-          ci: dbMatch.ci || m.ci,
-          // FIX BUG 2: Prioritize DB date, fall back to PDF-extracted date (never a hardcoded example)
-          vencCI: dbMatch.vencCI || m.vencCI || '',
-          libreta: dbMatch.libreta || m.libreta,
+          cargo: m.cargo || dbMatch.cargo,
+          nacionalidad: m.nacionalidad || dbMatch.nac,
+          // CI y vencimiento: el PDF (rol oficial) manda. DB solo rellena si el PDF no lo trajo
+          ci:      m.ci      || dbMatch.ci      || '',
+          vencCI:  m.vencCI  || dbMatch.vencCI  || '',
+          fechaNac: m.fechaNac || dbMatch.fechaNac || '',
+          // Libreta viene de la DB (no figura en el rol)
+          libreta: dbMatch.libreta || '',
           armador: dbMatch.armador || '',
           inDB: true
         };
@@ -1184,8 +1186,9 @@ async function generate() {
         const cargo    = m.cargo || dbMatch?.cargo || '';
         const nac      = m.nacionalidad || dbMatch?.nac || 'Paraguaya';
         const fechaNac = m.fechaNac || dbMatch?.fechaNac || '';
-        const ci       = dbMatch?.ci || m.ci || '';
-        const vencCI   = dbMatch?.vencCI || m.vencCI || '';
+        // PDF manda para CI y vencimiento; DB solo rellena si el PDF no los trajo
+        const ci       = m.ci      || dbMatch?.ci      || '';
+        const vencCI   = m.vencCI  || dbMatch?.vencCI  || '';
         const libreta  = dbMatch?.libreta || m.libreta || '';
         return [
           `${i+1}.- ${nombre.toUpperCase()}`,
