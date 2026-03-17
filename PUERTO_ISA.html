@@ -759,7 +759,7 @@ function buildStep4(){
   document.getElementById('p4-folder-name').textContent=folder;
   document.getElementById('p4-folder-path').textContent='/VIAJES/'+folder+'/';
   const bWrap=document.getElementById('p4-blockers');
-  if(blockers.length)bWrap.innerHTML=`<div class="blocker-box"><span style="font-size:16px">🚫</span><div class="blocker-content"><strong>ATENCIÓN: ${blockers.length} CI VENCIDA</strong><br>${blockers.map(b=>`· ${b.name}: ${b.msg}`).join('<br>')}</div></div>`;
+  if(blockers.length)bWrap.innerHTML='<div class="blocker-box"><span style="font-size:16px">🚫</span><div class="blocker-content"><strong>ATENCIÓN: '+blockers.length+' CI VENCIDA</strong><br>'+blockers.map(b=>'· '+b.name+': '+b.msg).join('<br>')+'</div></div>';
   document.getElementById('summary-rows').innerHTML=[
     ['Remolcador',shipFull],['Armador',arm||'—'],['ETA',eta],['Muelle',dock],
     ['Puerto salida',PARSED_SHIP.puertoSalida||'—'],['Puerto llegada',PARSED_SHIP.puertoLlegada||'—'],
@@ -851,7 +851,7 @@ async function generate(){
     document.getElementById('gen-success').innerHTML=`<div class="success-box"><span style="font-size:18px">✅</span><div class="success-text">
       Carpeta <strong style="color:var(--accent)">/VIAJES/${folder}/</strong> creada en Drive.<br>
       Rol copiado · ${complete} libretas · ${complete} cédulas.<br>
-      ${blockers.length>0?`<span style="color:var(--red)">🚫 ${blockers.length} CI vencida(s) — pendiente de resolución.</span>`:''}
+      '+(blockers.length>0?'<span style="color:var(--red)">🚫 '+blockers.length+' CI vencida(s) — pendiente de resolución.</span>':'')+('
       <div style="margin-top:10px"><a href="https://drive.google.com/drive/folders/${newFolder.id}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;padding:7px 16px;background:rgba(0,180,216,.15);border:1px solid rgba(0,180,216,.35);border-radius:6px;color:var(--accent);text-decoration:none;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;">📁 Abrir carpeta en Drive</a></div>
     </div></div>`;
     document.getElementById('gmail-btn').style.display='inline-flex';markDone(4);
@@ -994,7 +994,12 @@ async function loadDB(){
 
 function renderDB(){
   const tbody=document.getElementById('db-tbody');
-  tbody.innerHTML=DB_DATA.slice(0,100).map(m=>{const st=docStatus(m.vencCI);return`<tr class="rh"><td style="color:var(--white);font-weight:500;white-space:nowrap">${m.nombre}</td><td><span class="tag">${m.cargo}</span></td><td style="color:var(--fg)">${m.ci}</td><td style="color:${st.c};font-weight:${st.s==='venc'?700:400}">${m.vencCI||'—'}</td><td style="color:var(--fg)">${m.libreta}</td><td><span class="tag tag-bl">${m.armador}</span></td><td><span class="status-badge" style="background:${st.bg};border:1px solid ${st.b};color:${st.c}">${st.s==='ok'?'✓ OK':st.s==='sv'?'S/V':st.s==='venc'?'🚫 VENCIDA':`⚠ ${daysUntil(m.vencCI)}d`}</span></td></tr>`;}).join('');
+  tbody.innerHTML=DB_DATA.slice(0,100).map(m=>{
+    const st=docStatus(m.vencCI);const days=daysUntil(m.vencCI);
+    const stTxt=st.s==='ok'?'\u2713 OK':st.s==='sv'?'S/V':st.s==='venc'?'\U0001F6AB VENCIDA':('\u26A0 '+days+'d');
+    const fw=st.s==='venc'?700:400;
+    return '<tr class="rh"><td style="color:var(--white);font-weight:500;white-space:nowrap">'+m.nombre+'</td><td><span class="tag">'+m.cargo+'</span></td><td style="color:var(--fg)">'+m.ci+'</td><td style="color:'+st.c+';font-weight:'+fw+'">'+(m.vencCI||'\u2014')+'</td><td style="color:var(--fg)">'+m.libreta+'</td><td><span class="tag tag-bl">'+m.armador+'</span></td><td><span class="status-badge" style="background:'+st.bg+';border:1px solid '+st.b+';color:'+st.c+'">'+stTxt+'</span></td></tr>';
+  }).join('');
   if(DB_DATA.length>100)tbody.innerHTML+=`<tr><td colspan="7" style="text-align:center;color:var(--muted);font-size:10px;padding:10px">Mostrando 100 de ${DB_DATA.length}</td></tr>`;
   document.getElementById('db-loading').style.display='none';document.getElementById('db-table-wrap').style.display='block';
 }
