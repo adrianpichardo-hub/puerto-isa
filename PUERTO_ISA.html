@@ -1122,7 +1122,43 @@ async function generate() {
     addLine('Completando datos del rol...');
     try {
       const numWords = ['','Uno','Dos','Tres','Cuatro','Cinco','Seis','Siete','Ocho','Nueve','Diez','Once','Doce','Trece','Catorce','Quince','Dieciseis','Diecisiete','Dieciocho','Diecinueve','Veinte'];
-      const today = new Date().toLocaleDateString('es-UY',{day:'2-digit',month:'2-digit',year:'numeric'});
+
+      // ── PASO 1: Obtener metadata del sheet para saber cuántas reglas de formato condicional hay
+      addLine('Analizando formato del template...');
+      const sheetMeta = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${newRol.id}?fields=sheets(properties,conditionalFormats)`, {
+        headers: {'Authorization':'Bearer '+TOKEN}
+      }).then(r => r.json());
+      const sheetId = sheetMeta.sheets?.[0]?.properties?.sheetId ?? 0;
+      const condRules = sheetMeta.sheets?.[0]?.conditionalFormats || [];
+      addLine(`  ${condRules.length} regla(s) de formato condicional detectadas`);
+
+      // ── PASO 2: Eliminar TODAS las reglas de formato condicional (el amarillo)
+      //    + poner fondo blanco explícito en todo el rango
+      const fmtRequests = [];
+      // Eliminar en orden inverso para que los índices no se desplacen
+      for (let i = condRules.length - 1; i >= 0; i--) {
+        fmtRequests.push({ deleteConditionalFormatRule: { sheetId, index: i } });
+      }
+      // Fondo blanco en toda la hoja (esto cubre lo que el conditional format dejaba amarillo)
+      fmtRequests.push({
+        repeatCell: {
+          range: { sheetId, startRowIndex: 0, endRowIndex: 50, startColumnIndex: 0, endColumnIndex: 10 },
+          cell: { userEnteredFormat: { backgroundColor: { red:1, green:1, blue:1, alpha:1 } } },
+          fields: 'userEnteredFormat.backgroundColor'
+        }
+      });
+
+      if (fmtRequests.length > 0) {
+        const fmtRes = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${newRol.id}:batchUpdate`,{
+          method:'POST',
+          headers:{'Authorization':'Bearer '+TOKEN,'Content-Type':'application/json'},
+          body:JSON.stringify({ requests: fmtRequests })
+        });
+        if (fmtRes.ok) addLine('✓ Formato condicional eliminado — fondo blanco','ok');
+        else addLine('⚠ Advertencia al limpiar formato: '+JSON.stringify(await fmtRes.json()),'warn');
+      }
+
+      // ── PASO 3: Ordenar tripulantes por jerarquía marítima
       const cargoOrder = (cargo) => {
         const c = (cargo||'').toLowerCase();
         if (c.includes('capit')) return 1;
@@ -1136,7 +1172,6 @@ async function generate() {
         if (c.includes('cocin')) return 9;
         return 10;
       };
-
       const sortedCrew = [...CREW].sort((a,b) => cargoOrder(a.cargo) - cargoOrder(b.cargo));
 
       const crewValues = sortedCrew.map((m,i) => {
@@ -1145,13 +1180,13 @@ async function generate() {
           const dn = d.nombre.replace(/^\d+[.\-]\s*/,'').toUpperCase();
           return dn.includes(apellido) || apellido.split(' ').slice(0,2).every(p => dn.includes(p));
         });
-        const nombre = m.nombre.replace(/^\d+[.\-]\s*/,'').trim();
-        const cargo  = m.cargo || dbMatch?.cargo || '';
-        const nac    = m.nacionalidad || dbMatch?.nac || 'Paraguaya';
+        const nombre   = m.nombre.replace(/^\d+[.\-]\s*/,'').trim();
+        const cargo    = m.cargo || dbMatch?.cargo || '';
+        const nac      = m.nacionalidad || dbMatch?.nac || 'Paraguaya';
         const fechaNac = m.fechaNac || dbMatch?.fechaNac || '';
-        const ci     = dbMatch?.ci || m.ci || '';
-        const vencCI = dbMatch?.vencCI || m.vencCI || '';
-        const libreta= dbMatch?.libreta || m.libreta || '';
+        const ci       = dbMatch?.ci || m.ci || '';
+        const vencCI   = dbMatch?.vencCI || m.vencCI || '';
+        const libreta  = dbMatch?.libreta || m.libreta || '';
         return [
           `${i+1}.- ${nombre.toUpperCase()}`,
           cargo,
@@ -1163,48 +1198,59 @@ async function generate() {
         ];
       });
 
-      const totalText = `Son: (${CREW.length}) ${numWords[CREW.length]||CREW.length} tripulantes incluido su capitán.`;
+      // ── PASO 4: Extraer fecha limpia de ETA  (ej: "Sáb 15/03 – 22:00" → "15/03/2026")
+      const etaRaw = document.getElementById('eta')?.value || '';
+      const etaDateMatch = etaRaw.match(/(\d{1,2})\/(\d{1,2})/);
+      const yyyy = new Date().getFullYear();
+      const etaForSheet = etaDateMatch
+        ? `${String(etaDateMatch[1]).padStart(2,'0')}/${String(etaDateMatch[2]).padStart(2,'0')}/${yyyy}`
+        : etaRaw;
 
-      // FIX BUG 3 + BUG 4: Use full ship name with prefix; write real puerto salida/llegada to sheet
+      // ── PASO 5: Contar tripulantes reales (sortedCrew es la fuente de verdad)
+      const crewCount = sortedCrew.length;
+      const totalText = `Son: (${crewCount}) ${numWords[crewCount] || crewCount} tripulantes incluido su capitán.`;
+
+      // Fila donde empieza la tripulación en el template (fila 14 = índice 13)
+      const CREW_START_ROW = 14;
+      const lastCrewRow = CREW_START_ROW + crewCount - 1;
+      const footerRow   = lastCrewRow + 2;  // una fila en blanco, luego el Son:
+
+      // Filas a limpiar: desde CREW_START_ROW hasta footerRow+10 (borra datos viejos del template)
+      const clearRows = footerRow + 10 - CREW_START_ROW + 1;
+      const emptyBlock = Array(clearRows).fill(['','','','','','','']);
+
+      // ── PASO 6: Escribir todo en batch
+      //    Orden: primero limpiar rango (borra datos viejos del template),
+      //           luego escribir nuevos datos (prevalecen sobre el clear)
       const batchBody = {
-        valueInputOption:'USER_ENTERED',
-        data:[
-          {range:'Rol!B8', values:[[shipFull]]},
-          {range:'Rol!H8', values:[[document.getElementById('eta')?.value || today]]},
-          // FIX BUG 4: Write real puerto salida from PARSED_SHIP instead of empty string
-          {range:'Rol!D8', values:[[PARSED_SHIP.puertoSalida || '']]},
-          {range:'Rol!F8', values:[[PARSED_SHIP.puertoLlegada || 'NUEVA PALMIRA, URUGUAY']]},
-          {range:'Rol!B11', values:[['PARAGUAY']]},
-          {range:'Rol!D11', values:[['NUEVA PALMIRA, URUGUAY']]},
-          {range:`Rol!B14:H${13+sortedCrew.length}`, values:crewValues},
-          {range:`Rol!B${13+sortedCrew.length+3}`, values:[[totalText]]}
+        valueInputOption: 'USER_ENTERED',
+        data: [
+          // Cabecera del buque
+          { range: 'Rol!B8',  values: [[shipFull]] },
+          { range: 'Rol!D8',  values: [[PARSED_SHIP.puertoSalida || '']] },
+          // F8 = celda "Date - Fecha" del template (NO puertoLlegada — eso va en D11)
+          { range: 'Rol!F8',  values: [[etaForSheet]] },
+          { range: 'Rol!B11', values: [['PARAGUAY']] },
+          { range: 'Rol!D11', values: [['NUEVA PALMIRA, URUGUAY']] },
+          // Limpiar rango de tripulantes + footer viejo del template
+          { range: `Rol!B${CREW_START_ROW}:H${footerRow + 10}`, values: emptyBlock },
+          // Escribir tripulantes nuevos (pisa el clear de arriba)
+          { range: `Rol!B${CREW_START_ROW}:H${lastCrewRow}`, values: crewValues },
+          // Escribir footer con conteo correcto
+          { range: `Rol!B${footerRow}`, values: [[totalText]] }
         ]
       };
+
       const sheetRes = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${newRol.id}/values:batchUpdate`,{
         method:'POST',
         headers:{'Authorization':'Bearer '+TOKEN,'Content-Type':'application/json'},
         body:JSON.stringify(batchBody)
       });
       if (sheetRes.ok) {
-        addLine('✓ Datos volcados en el rol','ok');
-        const clearFormat = {
-          requests: [{
-            repeatCell: {
-              range: { sheetId: 0, startRowIndex: 0, endRowIndex: 40, startColumnIndex: 0, endColumnIndex: 10 },
-              cell: { userEnteredFormat: { backgroundColor: { red:1, green:1, blue:1 } } },
-              fields: 'userEnteredFormat.backgroundColor'
-            }
-          }]
-        };
-        const fmtRes = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${newRol.id}:batchUpdate`,{
-          method:'POST',
-          headers:{'Authorization':'Bearer '+TOKEN,'Content-Type':'application/json'},
-          body:JSON.stringify(clearFormat)
-        });
-        if (fmtRes.ok) addLine('✓ Formato limpio — sin amarillo','ok');
-        else addLine('⚠ No pudo limpiar el formato','warn');
+        addLine(`✓ Datos volcados · ${crewCount} tripulantes · fecha ${etaForSheet}`, 'ok');
       } else {
-        addLine('⚠ No pudo completar el rol automaticamente','warn');
+        const errBody = await sheetRes.text();
+        addLine('⚠ Error al volcar datos: ' + errBody.substring(0,120), 'warn');
       }
     } catch(e) { addLine('⚠ Error completando rol: '+e.message,'warn'); }
     setPct(20);
