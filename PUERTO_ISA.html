@@ -967,7 +967,25 @@ Devolvé SOLO JSON sin texto extra ni markdown:
     const rawCrew = parsed.crew || [];
     CREW = rawCrew.map(m => {
       const apellido = m.nombre.split(',')[0].trim().toUpperCase();
-      const dbMatch = DB_DATA.find(d => {
+      const normalize = s => s.toUpperCase()
+  .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+  .replace(/[^A-Z0-9 ]/g,' ').replace(/\s+/g,' ').trim();
+
+const dbMatch = DB_DATA.find(d => {
+  const dbNorm = normalize(d.nombre.replace(/^\d+[.\-]\s*/,''));
+  const pdfNorm = normalize(m.nombre);
+  // Match exacto
+  if(dbNorm === pdfNorm) return true;
+  // Match por apellido completo
+  const dbApellido = dbNorm.split(',')[0].trim();
+  const pdfApellido = pdfNorm.split(',')[0].trim();
+  if(dbApellido === pdfApellido) return true;
+  // Match por las primeras 2 palabras del apellido
+  const dbWords = dbApellido.split(' ').slice(0,2);
+  const pdfWords = pdfApellido.split(' ').slice(0,2);
+  return dbWords.length >= 2 && dbWords.every(w => pdfApellido.includes(w))
+      || pdfWords.length >= 2 && pdfWords.every(w => dbApellido.includes(w));
+});
         const dApellido = d.nombre.replace(/^\d+[.\-]\s*/,'').split(',')[0].trim().toUpperCase();
         return dApellido === apellido || d.nombre.toUpperCase().includes(apellido);
       });
