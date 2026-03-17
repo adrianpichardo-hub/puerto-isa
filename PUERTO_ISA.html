@@ -721,6 +721,19 @@ async function parseRol() {
   if (!file) return;
   const btn = document.getElementById('parse-btn');
   btn.disabled = true; btn.textContent = '⏳ Procesando...';
+
+  // Load DB first if not loaded
+  if (DB_DATA.length === 0 && TOKEN) {
+    const logBox = document.getElementById('parse-log');
+    const lines = document.getElementById('parse-lines');
+    logBox.style.display = 'block';
+    const d = document.createElement('div');
+    d.className = 'log-line';
+    d.innerHTML = '<span class="log-ts"></span><span class="log-msg">Cargando base de datos...</span>';
+    lines.appendChild(d);
+    await loadDB();
+    d.querySelector('.log-msg').textContent = `✓ Base de datos cargada: ${DB_DATA.length} tripulantes`;
+  }
   const logBox = document.getElementById('parse-log');
   const lines = document.getElementById('parse-lines');
   logBox.style.display = 'block'; lines.innerHTML = '';
@@ -1073,28 +1086,45 @@ async function generate() {
     try {
       const numWords = ['','Uno','Dos','Tres','Cuatro','Cinco','Seis','Siete','Ocho','Nueve','Diez','Once','Doce','Trece','Catorce','Quince','Dieciseis','Diecisiete','Dieciocho','Diecinueve','Veinte'];
       const today = new Date().toLocaleDateString('es-UY',{day:'2-digit',month:'2-digit',year:'numeric'});
-      const crewValues = CREW.map((m,i) => {
-        // Use data from BASE_TRIPULANTES if available
-        const apellido = m.nombre.split(',')[0].trim().toUpperCase();
+      // Sort crew by maritime hierarchy
+      const cargoOrder = (cargo) => {
+        const c = (cargo||'').toLowerCase();
+        if (c.includes('capit')) return 1;
+        if (c.includes('pract') || c.includes('prác')) return 2;
+        if (c.includes('patron') || c.includes('patrón') || c.includes('baqueano')) return 3;
+        if (c.includes('jefe') && c.includes('maq')) return 4;
+        if (c.includes('segundo') || c.includes('2do')) return 5;
+        if (c.includes('engras')) return 6;
+        if (c.includes('contra')) return 7;
+        if (c.includes('marine')) return 8;
+        if (c.includes('cocin')) return 9;
+        return 10;
+      };
+
+      const sortedCrew = [...CREW].sort((a,b) => cargoOrder(a.cargo) - cargoOrder(b.cargo));
+
+      const crewValues = sortedCrew.map((m,i) => {
+        // Use data from BASE_TRIPULANTES
+        const apellido = m.nombre.replace(/^\d+[.\-]\s*/,'').split(',')[0].trim().toUpperCase();
         const dbMatch = DB_DATA.find(d => {
           const dn = d.nombre.replace(/^\d+[.\-]\s*/,'').toUpperCase();
-          return dn.includes(apellido) || apellido.includes(dn.split(',')[0].trim());
+          return dn.includes(apellido) || apellido.split(' ').slice(0,2).every(p => dn.includes(p));
         });
-        const nombre = dbMatch ? dbMatch.nombre.replace(/^\d+[.\-]\s*/,'').trim() : m.nombre;
-        const cargo = dbMatch?.cargo || m.cargo || '';
-        const nac = dbMatch?.nac || m.nacionalidad || 'Paraguaya';
+        const nombre = (dbMatch?.nombre || m.nombre).replace(/^\d+[.\-]\s*/,'').trim();
+        const cargo  = dbMatch?.cargo   || m.cargo   || '';
+        const nac    = dbMatch?.nac     || m.nacionalidad || 'Paraguaya';
         const fechaNac = dbMatch?.fechaNac || m.fechaNac || '';
-        const ci = dbMatch?.ci || m.ci || '';
-        const vencCI = dbMatch?.vencCI || m.vencCI || '';
-        const libreta = dbMatch?.libreta || m.libreta || '';
+        const ci     = dbMatch?.ci      || m.ci      || '';
+        const vencCI = dbMatch?.vencCI  || m.vencCI  || '';
+        const libreta= dbMatch?.libreta || m.libreta  || '';
         return [
-          `${i+1}.- ${nombre}`,
+          `${i+1}.- ${nombre.toUpperCase()}`,
           cargo,
           nac,
           fechaNac,
           ci,
           vencCI,
-          `${libreta} (s.v.)`
+          libreta ? `${libreta} (s.v.)` : ''
         ];
       });
       const totalText = `Son: (${CREW.length}) ${numWords[CREW.length]||CREW.length} tripulantes incluido su capitán.`;
@@ -1102,11 +1132,11 @@ async function generate() {
         valueInputOption:'USER_ENTERED',
         data:[
           {range:'Sheet1!B8', values:[[ship]]},
-          {range:'Sheet1!H8', values:[[today]]},
+          {range:'Sheet1!H8', values:[[document.getElementById('eta')?.value || today]]},
           {range:'Sheet1!B11', values:[['PARAGUAY']]},
           {range:'Sheet1!D11', values:[['NUEVA PALMIRA, URUGUAY']]},
-          {range:`Sheet1!B14:H${13+CREW.length}`, values:crewValues},
-          {range:`Sheet1!B${14+CREW.length+2}`, values:[[totalText]]}
+          {range:`Sheet1!B14:H${13+sortedCrew.length}`, values:crewValues},
+          {range:`Sheet1!B${13+sortedCrew.length+3}`, values:[[totalText]]}
         ]
       };
       const sheetRes = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${newRol.id}/values:batchUpdate`,{
@@ -1114,8 +1144,28 @@ async function generate() {
         headers:{'Authorization':'Bearer '+TOKEN,'Content-Type':'application/json'},
         body:JSON.stringify(batchBody)
       });
-      if (sheetRes.ok) addLine('✓ Rol completado con tripulantes y datos del viaje','ok');
-      else addLine('⚠ No pudo completar el rol automaticamente','warn');
+      if (sheetRes.ok) {
+        addLine('✓ Datos volcados en el rol','ok');
+        // Now remove yellow background from all cells
+        const clearFormat = {
+          requests: [{
+            repeatCell: {
+              range: { sheetId: 0, startRowIndex: 0, endRowIndex: 35, startColumnIndex: 0, endColumnIndex: 9 },
+              cell: { userEnteredFormat: { backgroundColor: { red:1, green:1, blue:1 } } },
+              fields: 'userEnteredFormat.backgroundColor'
+            }
+          }]
+        };
+        const fmtRes = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${newRol.id}:batchUpdate`,{
+          method:'POST',
+          headers:{'Authorization':'Bearer '+TOKEN,'Content-Type':'application/json'},
+          body:JSON.stringify(clearFormat)
+        });
+        if (fmtRes.ok) addLine('✓ Formato limpio — sin amarillo','ok');
+        else addLine('⚠ No pudo limpiar el formato','warn');
+      } else {
+        addLine('⚠ No pudo completar el rol automaticamente','warn');
+      }
     } catch(e) { addLine('⚠ Error completando rol: '+e.message,'warn'); }
     setPct(20);
 
