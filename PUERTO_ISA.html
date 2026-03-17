@@ -657,9 +657,12 @@ function renderCrewTable(){
   }
   const rows=CREW.map(m=>{
     const st=docStatus(m.vencCI);
-    const badge=`<span class="status-badge" style="background:${st.bg};border:1px solid ${st.b};color:${st.c}">${st.s==='ok'?'✓ OK':st.s==='sv'?'S/V':st.s==='venc'?'🚫 VENC':st.s==='warn'?`⚠ ${daysUntil(m.vencCI)}d`:`⛔ ${daysUntil(m.vencCI)}d`}</span>`;
-    const newTag=!m.inDB?`<span class="status-badge" style="background:rgba(0,180,216,.12);border:1px solid rgba(0,180,216,.25);color:var(--accent);margin-left:4px;font-size:8px">NUEVO</span>`:'';
-    return `<tr class="rh"><td style="color:var(--muted)">${m.num}</td><td style="color:var(--white);font-weight:500;white-space:nowrap">${m.nombre}${newTag}</td><td><span class="tag">${m.cargo}</span></td><td style="color:var(--fg)">${m.ci||'—'}</td><td style="color:${st.c};font-weight:${st.s==='venc'?700:400}">${m.vencCI||'—'}</td><td>${badge}</td></tr>`;
+    const days=daysUntil(m.vencCI);
+    const badgeTxt=st.s==='ok'?'✓ OK':st.s==='sv'?'S/V':st.s==='venc'?'🚫 VENC':st.s==='warn'?('⚠ '+days+'d'):('⛔ '+days+'d');
+    const badge='<span class="status-badge" style="background:'+st.bg+';border:1px solid '+st.b+';color:'+st.c+'">'+badgeTxt+'</span>';
+    const newTag=!m.inDB?'<span class="status-badge" style="background:rgba(0,180,216,.12);border:1px solid rgba(0,180,216,.25);color:var(--accent);margin-left:4px;font-size:8px">NUEVO</span>':'';
+    const fw=st.s==='venc'?700:400;
+    return '<tr class="rh"><td style="color:var(--muted)">'+m.num+'</td><td style="color:var(--white);font-weight:500;white-space:nowrap">'+m.nombre+newTag+'</td><td><span class="tag">'+m.cargo+'</span></td><td style="color:var(--fg)">'+(m.ci||'—')+'</td><td style="color:'+st.c+';font-weight:'+fw+'">'+(m.vencCI||'—')+'</td><td>'+badge+'</td></tr>';
   }).join('');
   wrap.innerHTML=editSection+`<div class="table-wrap"><table><thead><tr><th>#</th><th>Nombre</th><th>Cargo</th><th>CI</th><th>Venc.CI</th><th>Estado</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
@@ -739,13 +742,14 @@ function renderSearchResults(){
     <div class="stat-box" style="border-color:rgba(239,68,68,.2)"><div class="stat-val" style="color:var(--red)">${missing}</div><div class="stat-lbl">Sin docs</div></div>
   </div>`;
   const listWrap=document.getElementById('doc-list-wrap');listWrap.style.display='block';
-  listWrap.innerHTML=`<div style="border:1px solid var(--border);border-radius:8px;overflow:hidden">${CREW.map(m=>{
-    const d=CREW_DOCS[m.nombre]||{};const st=docStatus(m.vencCI);
-    return `<div class="doc-row rh"><div><div class="doc-name">${m.nombre}</div><div class="doc-sub">CI venc. <span style="color:${st.c}">${m.vencCI||'—'}</span></div></div>
-      <div class="doc-badge ${d.libOk?'ok':'miss'}">${d.libOk?'✓ Libreta':'✗ Libreta'}</div>
-      <div class="doc-badge ${d.cedOk?'ok':'miss'}">${d.cedOk?'✓ Cédula':'✗ Cédula'}</div>
-      <span class="status-badge" style="background:${st.bg};border:1px solid ${st.b};color:${st.c};text-align:center;display:block">${st.s==='ok'?'✓ OK':st.s==='sv'?'S/V':st.s==='venc'?'🚫':st.s==='warn'?`⚠ ${daysUntil(m.vencCI)}d`:`⛔ ${daysUntil(m.vencCI)}d`}</span>
-    </div>`;}).join('')}</div>`;
+  listWrap.innerHTML='<div style="border:1px solid var(--border);border-radius:8px;overflow:hidden">'+CREW.map(m=>{
+    const d=CREW_DOCS[m.nombre]||{};const st=docStatus(m.vencCI);const days=daysUntil(m.vencCI);
+    const stTxt=st.s==='ok'?'✓ OK':st.s==='sv'?'S/V':st.s==='venc'?'🚫':st.s==='warn'?('⚠ '+days+'d'):('⛔ '+days+'d');
+    return '<div class="doc-row rh"><div><div class="doc-name">'+m.nombre+'</div><div class="doc-sub">CI venc. <span style="color:'+st.c+'">'+(m.vencCI||'—')+'</span></div></div>'
+      +'<div class="doc-badge '+(d.libOk?'ok':'miss')+'">'+(d.libOk?'✓ Libreta':'✗ Libreta')+'</div>'
+      +'<div class="doc-badge '+(d.cedOk?'ok':'miss')+'">'+(d.cedOk?'✓ Cédula':'✗ Cédula')+'</div>'
+      +'<span class="status-badge" style="background:'+st.bg+';border:1px solid '+st.b+';color:'+st.c+';text-align:center;display:block">'+stTxt+'</span>'
+      +'</div>';}).join('')+'</div>';
 }
 
 function buildStep4(){
