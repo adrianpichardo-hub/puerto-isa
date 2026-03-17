@@ -1111,6 +1111,7 @@ async function generate() {
         return 10;
       };
 
+      // Sort using PDF cargo (more reliable for hierarchy)
       const sortedCrew = [...CREW].sort((a,b) => cargoOrder(a.cargo) - cargoOrder(b.cargo));
 
       const crewValues = sortedCrew.map((m,i) => {
@@ -1120,13 +1121,14 @@ async function generate() {
           const dn = d.nombre.replace(/^\d+[.\-]\s*/,'').toUpperCase();
           return dn.includes(apellido) || apellido.split(' ').slice(0,2).every(p => dn.includes(p));
         });
-        const nombre = (dbMatch?.nombre || m.nombre).replace(/^\d+[.\-]\s*/,'').trim();
-        const cargo  = dbMatch?.cargo   || m.cargo   || '';
-        const nac    = dbMatch?.nac     || m.nacionalidad || 'Paraguaya';
-        const fechaNac = dbMatch?.fechaNac || m.fechaNac || '';
-        const ci     = dbMatch?.ci      || m.ci      || '';
-        const vencCI = dbMatch?.vencCI  || m.vencCI  || '';
-        const libreta= dbMatch?.libreta || m.libreta  || '';
+        // Use PDF nombre and cargo — DB fills in CI, fechaNac, libreta, vencCI
+        const nombre = m.nombre.replace(/^\d+[.\-]\s*/,'').trim();
+        const cargo  = m.cargo || dbMatch?.cargo || '';
+        const nac    = m.nacionalidad || dbMatch?.nac || 'Paraguaya';
+        const fechaNac = m.fechaNac || dbMatch?.fechaNac || '';
+        const ci     = dbMatch?.ci || m.ci || '';
+        const vencCI = dbMatch?.vencCI || m.vencCI || '';
+        const libreta= dbMatch?.libreta || m.libreta || '';
         return [
           `${i+1}.- ${nombre.toUpperCase()}`,
           cargo,
@@ -1141,8 +1143,9 @@ async function generate() {
       const batchBody = {
         valueInputOption:'USER_ENTERED',
         data:[
-          {range:'Rol!B8', values:[[ship]]},
+          {range:'Rol!B8', values:[[`R/E ${ship}`]]},
           {range:'Rol!H8', values:[[document.getElementById('eta')?.value || today]]},
+          {range:'Rol!D8', values:[['']]},
           {range:'Rol!B11', values:[['PARAGUAY']]},
           {range:'Rol!D11', values:[['NUEVA PALMIRA, URUGUAY']]},
           {range:`Rol!B14:H${13+sortedCrew.length}`, values:crewValues},
@@ -1160,7 +1163,7 @@ async function generate() {
         const clearFormat = {
           requests: [{
             repeatCell: {
-              range: { sheetId: 0, startRowIndex: 0, endRowIndex: 35, startColumnIndex: 0, endColumnIndex: 9 },
+              range: { sheetId: 0, startRowIndex: 0, endRowIndex: 40, startColumnIndex: 0, endColumnIndex: 10 },
               cell: { userEnteredFormat: { backgroundColor: { red:1, green:1, blue:1 } } },
               fields: 'userEnteredFormat.backgroundColor'
             }
