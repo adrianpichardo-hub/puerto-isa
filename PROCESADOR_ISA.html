@@ -1,97 +1,6 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ISA - Consola Operativa Unificada</title>
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  
-  <style>
-    /* --- ESTILOS (styles.css) --- */
-    :root { --blue: #003366; --gold: #c5a059; --green: #28a745; --gray: #6c757d; }
-    * { box-sizing: border-box; }
-    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f4f7fa; margin: 0; padding: 20px; color: #333; }
-    .container { max-width: 1400px; margin: 0 auto; background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
-    .logo { font-size: 2.4rem; font-weight: bold; color: var(--blue); font-style: italic; text-align: center; margin-bottom: 1.5rem; border-bottom: 3px solid var(--gold); padding-bottom: 0.5rem; }
-    .setup { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; background: #fafafa; padding: 1.5rem; border: 1px solid #e0e0e0; border-radius: 6px; margin-bottom: 1.5rem; }
-    .field { display: flex; flex-direction: column; font-size: 0.78rem; font-weight: 600; color: var(--blue); text-transform: uppercase; letter-spacing: 0.4px; }
-    .field label { margin-bottom: 0.35rem; }
-    input, textarea { padding: 0.6rem 0.8rem; border: 1px solid #ccc; border-radius: 5px; font-size: 0.95rem; }
-    textarea { font-family: 'Consolas', 'Courier New', monospace; resize: vertical; min-height: 180px; border-color: var(--blue); }
-    .btn-group { margin: 1.5rem 0; display: flex; gap: 0.8rem; flex-wrap: wrap; }
-    .btn { padding: 0.75rem 1.5rem; border: none; border-radius: 6px; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; cursor: pointer; transition: all 0.15s; }
-    .btn-primary { background: var(--blue); color: white; }
-    .btn-success { background: var(--green); color: white; }
-    .btn-secondary { background: var(--gray); color: white; }
-    .btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
-    table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 1.5rem; }
-    th { background: var(--blue); color: white; padding: 0.9rem; text-align: left; border: 1px solid #000; font-weight: 600; }
-    td { border: 1px solid #ddd; padding: 0.65rem; }
-    .row-fix { background: #e3f2fd; font-weight: bold; font-style: italic; }
-  </style>
-</head>
-<body>
-
-<div class="container">
-  <header class="logo">ISA</header>
-  
-  <section class="setup">
-    <div class="field">
-      <label>Remolcador</label>
-      <input type="text" id="v_rem" value="HB SCORPIUS">
-    </div>
-    <div class="field">
-      <label>Lugar</label>
-      <input type="text" id="v_lug" value="Terminal Navios">
-    </div>
-    <div class="field">
-      <label>Fecha (dd/mm/aaaa)</label>
-      <input type="text" id="v_fec" value="13/03/2026" placeholder="dd/mm/aaaa">
-    </div>
-    <div class="field">
-      <label>H. Arribo</label>
-      <input type="text" id="h_arr" value="01:15" placeholder="HH:mm">
-    </div>
-    <div class="field">
-      <label>H. Alistamiento</label>
-      <input type="text" id="h_ali" value="01:15" placeholder="HH:mm">
-    </div>
-    <div class="field">
-      <label>H. Autoridades</label>
-      <input type="text" id="h_aut" value="02:00" placeholder="HH:mm">
-    </div>
-    <div class="field">
-      <label>H. Libre Plática</label>
-      <input type="text" id="h_pla" value="02:10" placeholder="HH:mm">
-    </div>
-  </section>
-
-  <textarea id="logInput" placeholder="Pega aquí el log de Navios..." rows="12"></textarea>
-
-  <div class="btn-group">
-    <button class="btn btn-primary" id="btnProcesar">Generar SOF</button>
-    <button class="btn btn-success" id="btnXLS" style="display:none;">Descargar Excel</button>
-    <button class="btn btn-secondary" id="btnLimpiar">Limpiar</button>
-  </div>
-
-  <table id="tablaSOF">
-    <thead>
-      <tr>
-        <th>FECHA</th>
-        <th>BARCAZA</th>
-        <th>DESDE</th>
-        <th>HASTA</th>
-        <th>OBSERVACIONES</th>
-      </tr>
-    </thead>
-    <tbody id="bodySOF"></tbody>
-  </table>
-</div>
-
-<script>
-// --- LÓGICA (script.js) ---
+// --- LÓGICA MEJORADA PARA ADRIAN (ISA) ---
 const CONFIG = {
-  bargePrefixes: ['HB', 'LHG', 'ORE', 'CIE', 'MAG', 'TBN', 'SCF', 'NAV'],
+  bargePrefixes: ['HB', 'LHG', 'ORE', 'CIE', 'MAG', 'TBN', 'SCF', 'NAV', 'BCC'],
   defaultObservation: 'DESCARGA A PILA',
   agencyEvents: [
     { id: 'h_arr', label: (rem, lug) => `${rem} + 12 barcazas amarra en ${lug}.` },
@@ -104,16 +13,6 @@ const CONFIG = {
 const bargeRegex = new RegExp(`(${CONFIG.bargePrefixes.join('|')})\\s*(\\d+)`, 'i');
 const timeRegex  = /\b(\d{1,2}:\d{2})\b/g;
 
-document.addEventListener('DOMContentLoaded', () => {
-  const btnProcesar = document.getElementById('btnProcesar');
-  const btnXLS      = document.getElementById('btnXLS');
-  const btnLimpiar  = document.getElementById('btnLimpiar');
-
-  btnProcesar.addEventListener('click', procesarLog);
-  btnXLS.addEventListener('click', descargarExcel);
-  btnLimpiar.addEventListener('click', limpiarTodo);
-});
-
 function procesarLog() {
   const logText = document.getElementById('logInput').value.trim();
   const fecha   = document.getElementById('v_fec').value.trim();
@@ -122,90 +21,70 @@ function procesarLog() {
 
   const tbody = document.getElementById('bodySOF');
   tbody.innerHTML = '';
-
   const rows = [];
 
   // 1. Eventos fijos de agencia
   CONFIG.agencyEvents.forEach(event => {
     const hora = document.getElementById(event.id)?.value?.trim();
-    if (!hora) return;
-    const obs = typeof event.label === 'function' ? event.label(rem, lugar) : event.label;
-    rows.push({ fecha, barcaza: '---', desde: hora, hasta: '', obs, css: '' });
+    if (hora) {
+      const obs = typeof event.label === 'function' ? event.label(rem, lugar) : event.label;
+      rows.push({ fecha, barcaza: '---', desde: hora, hasta: '', obs, css: '' });
+    }
   });
 
-  // 2. Parseo del log
+  // 2. Parseo del log línea por línea
   let barcazaActual = '---';
   const lineas = logText.split(/\r?\n/);
 
   lineas.forEach(linea => {
     linea = linea.trim();
-    if (linea.length < 6) return;
+    if (linea.length < 4) return;
 
+    // Detectar cambio de barcaza
     const bargeMatch = linea.match(bargeRegex);
-    if (bargeMatch) {
-      barcazaActual = bargeMatch[0].toUpperCase();
-    }
+    if (bargeMatch) barcazaActual = bargeMatch[0].toUpperCase();
 
+    // Extraer horarios
     const tiempos = [...linea.matchAll(timeRegex)].map(m => m[1]);
     if (!tiempos.length) return;
 
-    let obs = linea
-      .replace(timeRegex, '')
-      .replace(bargeRegex, '')
-      .replace(/\s+/g, ' ')
-      .trim();
+    // LIMPIEZA DE OBSERVACIÓN - LA CLAVE
+    let obsOriginal = linea.replace(timeRegex, '').replace(bargeRegex, '').trim().toUpperCase();
+    let obsFinal = obsOriginal;
 
-    if (obs.length < 3) obs = CONFIG.defaultObservation;
-
-    const desde = tiempos[0] || '';
-    const hasta = tiempos[1] || '';
-
-    if (/DRAFT FINAL|FINALIZA|termina|concluye/i.test(obs)) {
-      rows.push({
-        fecha,
-        barcaza: barcazaActual,
-        desde,
-        hasta: '',
-        obs: `FINALIZA DESCARGA DE BARCAZA ${barcazaActual}`,
-        css: 'row-fix'
-      });
+    // Diccionario de eventos ISA
+    if (obsOriginal.includes("DRAFT FINAL") || obsOriginal.includes("FINALIZA")) {
+      obsFinal = `FINALIZA DESCARGA / DRAFT FINAL - BCZA ${barcazaActual}`;
+      rows.push({ fecha, barcaza: barcazaActual, desde: tiempos[0], hasta: '', obs: obsFinal, css: 'row-fix' });
+      return; // Evita duplicar la línea
+    } 
+    
+    if (obsOriginal.includes("INICIA") || obsOriginal.includes("COMIENZA")) {
+      obsFinal = `INICIA DESCARGA DE BARCAZA ${barcazaActual}`;
+    } else if (obsOriginal.includes("ABRE") || obsOriginal.includes("OPENING")) {
+      obsFinal = `APERTURA DE BODEGAS / PREPARATIVOS`;
+    } else if (obsOriginal.length < 3) {
+      obsFinal = CONFIG.defaultObservation;
     }
 
-    rows.push({ fecha, barcaza: barcazaActual, desde, hasta, obs: obs.toUpperCase(), css: '' });
+    rows.push({ 
+      fecha, 
+      barcaza: barcazaActual, 
+      desde: tiempos[0], 
+      hasta: tiempos[1] || '', 
+      obs: obsFinal, 
+      css: '' 
+    });
   });
 
-  // Ordenar por hora
+  // Ordenar y Renderizar
   rows.sort((a, b) => a.desde.localeCompare(b.desde));
-
   rows.forEach(r => {
     const tr = document.createElement('tr');
     if (r.css) tr.className = r.css;
-    tr.innerHTML = `
-      <td>${r.fecha}</td>
-      <td>${r.barcaza}</td>
-      <td>${r.desde}</td>
-      <td>${r.hasta}</td>
-      <td>${r.obs}</td>
-    `;
+    tr.innerHTML = `<td>${r.fecha}</td><td>${r.barcaza}</td><td>${r.desde}</td><td>${r.hasta}</td><td>${r.obs}</td>`;
     tbody.appendChild(tr);
   });
 
   document.getElementById('btnXLS').style.display = rows.length > 0 ? 'inline-block' : 'none';
 }
-
-function descargarExcel() {
-  const fecha = document.getElementById('v_fec').value.trim() || 'SOF';
-  const filename = `SOF_${fecha.replace(/\//g,'-')}.xlsx`;
-  const table = document.getElementById('tablaSOF');
-  const wb = XLSX.utils.table_to_book(table, { sheet: "SOF" });
-  XLSX.writeFile(wb, filename);
-}
-
-function limpiarTodo() {
-  document.getElementById('logInput').value = '';
-  document.getElementById('bodySOF').innerHTML = '';
-  document.getElementById('btnXLS').style.display = 'none';
-}
-</script>
-</body>
-</html>
