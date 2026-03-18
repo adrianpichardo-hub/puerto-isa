@@ -12,7 +12,7 @@
         .setup { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; background: #fafafa; padding: 20px; border: 1px solid #ddd; margin-bottom: 20px; }
         .field { display: flex; flex-direction: column; font-size: 11px; font-weight: bold; color: var(--blue); text-transform: uppercase; }
         input { padding: 8px; border: 1px solid #ccc; border-radius: 4px; margin-top: 4px; }
-        textarea { width: 100%; height: 200px; font-family: monospace; border: 2px solid var(--blue); padding: 10px; box-sizing: border-box; }
+        textarea { width: 100%; height: 250px; font-family: monospace; border: 2px solid var(--blue); padding: 10px; box-sizing: border-box; }
         .btn-group { margin: 20px 0; }
         .btn { padding: 12px 25px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; text-transform: uppercase; }
         .btn-p { background: var(--blue); color: white; }
@@ -54,9 +54,9 @@ function procesar() {
     const rem = document.getElementById('v_rem').value;
     const lug = document.getElementById('v_lug').value;
     
-    let finalHtml = "";
+    let rows = [];
 
-    // 1. EVENTOS AGENCIA (SIEMPRE APARECEN)
+    // 1. EVENTOS AGENCIA
     const ag = [
         {h: document.getElementById('h_arr').value, o: `${rem} + 12 barcazas amarra en ${lug}.`},
         {h: document.getElementById('h_ali').value, o: "Carta de alistamiento extendida."},
@@ -64,50 +64,50 @@ function procesar() {
         {h: document.getElementById('h_pla').value, o: "Libre platica otorgada."}
     ];
     ag.forEach(ev => {
-        if(ev.h) finalHtml += `<tr><td>${fec}</td><td>---</td><td>${ev.h}</td><td></td><td>${ev.o}</td></tr>`;
+        if(ev.h) rows.push({f: fec, b: "---", d: ev.h, h: "", o: ev.o, s: ""});
     });
 
-    // 2. PROCESAR LOG (NORTE, SUR, MUELLE 5)
+    // 2. ESCANEO INTELIGENTE (No depende de columnas fijas)
     const lineas = raw.split('\n');
-    let bczaAct = { n: '---', s: '---', m: '---' };
+    let bczaActual = "---";
 
     lineas.forEach(linea => {
         if (linea.trim().length < 5) return;
 
-        // Dividir la línea en 3 secciones si es lo suficientemente larga
-        let zonas = [];
-        if (linea.length > 80) {
-            zonas = [
-                {t: linea.substring(0, 38).trim(), g: 'n'},
-                {t: linea.substring(38, 78).trim(), g: 's'},
-                {t: linea.substring(78).trim(), g: 'm'}
-            ];
-        } else {
-            zonas = [{t: linea.trim(), g: 'n'}]; // Modo flexible si es corto
-        }
+        // Buscar barcazas (Patrón: letras y números, ej: HB 044119)
+        const foundBarge = linea.match(/(HB|LHG|ORE|CIE|MAG|TBN|SCF|NAV)\s\d+/gi);
+        if (foundBarge) bczaActual = foundBarge[0].toUpperCase();
 
-        zonas.forEach(z => {
-            if (!z.t) return;
-            // Detectar Barcaza
-            if (/[A-Z0-9]{3,}\s\d+/.test(z.t) && !z.t.includes(':')) {
-                bczaAct[z.g] = z.t;
+        // Buscar horarios (Patrón: 00:00)
+        const horas = linea.match(/\d{2}:\d{2}/g);
+        
+        if (horas) {
+            let hDesde = horas[0];
+            let hHasta = horas[1] || "";
+            
+            // Limpiar el texto de la observación (quitar horas y barcazas del texto)
+            let obs = linea.replace(/\d{2}:\d{2}/g, '').replace(/(HB|LHG|ORE|CIE|MAG|TBN|SCF|NAV)\s\d+/gi, '').trim();
+            if (obs.length < 2) obs = "DESCARGA A PILA";
+
+            // REGLA DE ORO
+            if (obs.toUpperCase().includes("DRAFT FINAL") || obs.toUpperCase().includes("FINALIZA")) {
+                rows.push({f: fec, b: bczaActual, d: hDesde, h: "", o: `FINALIZA DESCARGA DE BARCAZA ${bczaActual}`, s: "row-fix"});
             }
-            // Detectar Horas
-            const horas = z.t.match(/\d{2}:\d{2}/g);
-            if (horas) {
-                let h1 = horas[0], h2 = horas[1] || "";
-                let obs = z.t.replace(/\d{2}:\d{2}/g, '').trim().toUpperCase();
-                
-                // REGLA DE ORO
-                if (obs.includes("DRAFT FINAL") || obs.includes("FINALIZA")) {
-                    finalHtml += `<tr class="row-fix"><td>${fec}</td><td>${bczaAct[z.g]}</td><td>${h1}</td><td></td><td>FINALIZA DESCARGA DE BARCAZA ${bczaAct[z.g]}</td></tr>`;
-                }
-                finalHtml += `<tr><td>${fec}</td><td>${bczaAct[z.g]}</td><td>${h1}</td><td>${h2}</td><td>${obs}</td></tr>`;
-            }
-        });
+            rows.push({f: fec, b: bczaActual, d: hDesde, h: hHasta, o: obs.toUpperCase(), s: ""});
+        }
     });
 
-    tbody.innerHTML = finalHtml;
+    // RENDERIZAR
+    tbody.innerHTML = rows.map(r => `
+        <tr class="${r.s}">
+            <td>${r.f}</td>
+            <td>${r.b}</td>
+            <td>${r.d}</td>
+            <td>${r.h}</td>
+            <td>${r.o}</td>
+        </tr>
+    `).join('');
+
     document.getElementById('btnXLS').style.display = 'inline-block';
 }
 
