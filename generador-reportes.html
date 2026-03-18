@@ -2,183 +2,178 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ISA - Procesador Operativo Estricto</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <title>_ISA_ - Consola de Operaciones Marítimas</title>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
     <style>
-        :root { --blue: #003366; --gold: #c5a059; --red: #d32f2f; --bg: #f5f7fa; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 20px; }
-        .container { max-width: 1400px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
-        h1 { color: var(--blue); border-left: 5px solid var(--gold); padding-left: 15px; margin-bottom: 25px; font-size: 24px; }
-        textarea { width: 100%; height: 180px; border: 2px solid #ddd; border-radius: 8px; padding: 15px; font-family: 'Courier New', monospace; font-size: 13px; resize: vertical; box-sizing: border-box; }
-        .controls { margin: 25px 0; display: flex; gap: 15px; }
-        .btn { padding: 12px 28px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; text-transform: uppercase; transition: 0.2s; }
-        .btn-process { background: var(--blue); color: white; }
-        .btn-export { background: #2e7d32; color: white; display: none; }
+        :root { --isa-blue: #003366; --isa-gold: #c5a059; --bg: #f4f7fa; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); padding: 20px; color: #333; }
+        .container { max-width: 1500px; margin: auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .logo { font-size: 32px; font-weight: bold; color: var(--isa-blue); font-style: italic; border-bottom: 2px solid var(--isa-gold); margin-bottom: 25px; }
+        
+        .setup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; background: #fcfcfc; padding: 20px; border: 1px solid #eee; border-radius: 6px; }
+        .field { display: flex; flex-direction: column; }
+        label { font-size: 11px; font-weight: bold; color: var(--isa-blue); text-transform: uppercase; margin-bottom: 4px; }
+        input, select { padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; outline-color: var(--isa-gold); }
+        
+        textarea { width: 100%; height: 180px; font-family: 'Courier New', monospace; border: 2px solid var(--isa-blue); padding: 15px; border-radius: 6px; margin-bottom: 20px; box-sizing: border-box; }
+        .btn-group { display: flex; gap: 15px; margin-bottom: 25px; }
+        .btn { padding: 12px 30px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; text-transform: uppercase; transition: 0.2s; }
+        .btn-primary { background: var(--isa-blue); color: white; }
+        .btn-success { background: #28a745; color: white; display: none; }
         .btn:hover { opacity: 0.9; transform: translateY(-1px); }
         
-        .alert-box { padding: 15px; border-radius: 6px; margin-bottom: 20px; display: none; font-weight: 500; }
-        .alert-warn { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
-
-        .table-container { overflow-x: auto; margin-top: 20px; border-radius: 8px; border: 1px solid #dee2e6; }
-        table { width: 100%; border-collapse: collapse; min-width: 1000px; }
-        th { background: var(--blue); color: white; padding: 12px; text-align: center; font-size: 11px; letter-spacing: 1px; }
-        td { border: 1px solid #dee2e6; padding: 10px; text-align: center; font-size: 13px; }
-        tr:nth-child(even) { background: #f8f9fa; }
-        
-        /* Validaciones Visuales */
-        .row-conflict { background-color: #f8d7da !important; color: #721c24; border: 2px solid var(--red); }
-        .auto-fill { color: #055160; background-color: #cff4fc !important; font-style: italic; }
-        .editable { cursor: cell; border-bottom: 1px dashed var(--gold); }
-        .editable:focus { background: #fffde7; outline: 2px solid var(--gold); }
+        .table-wrap { overflow-x: auto; border-radius: 8px; border: 1px solid #ddd; }
+        table { width: 100%; border-collapse: collapse; font-size: 11px; min-width: 1300px; }
+        th { background: var(--isa-blue); color: white; padding: 12px; text-align: center; white-space: nowrap; border: 1px solid #002244; }
+        td { border: 1px solid #ddd; padding: 10px; text-align: center; background: white; }
+        tr:nth-child(even) td { background: #f9f9f9; }
+        [contenteditable="true"]:focus { background: #fffde7; outline: 2px solid var(--isa-gold); }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>ISA - Procesador de Logs (Norte / Sur / Muelle 5)</h1>
+    <div class="logo">ISA</div>
     
-    <p style="font-size: 14px; color: #555;">Pega el log de la terminal tal cual lo recibes por mail:</p>
-    <textarea id="logInput" placeholder="CORPORACION NAVIOS S.A. ..."></textarea>
-    
-    <div class="controls">
-        <button class="btn btn-process" onclick="procesarLog()">Analizar y Unificar</button>
-        <button id="btnExport" class="btn btn-export" onclick="descargarExcel()">Descargar Reporte Final</button>
+    <div class="setup-grid">
+        <div class="field">
+            <label>Producto</label>
+            <select id="p_prod" onchange="checkOtro()">
+                <option value="MINERAL DE HIERRO (LOHS)">MINERAL DE HIERRO (LOHS)</option>
+                <option value="MINERAL DE HIERRO (LOHT)">MINERAL DE HIERRO (LOHT)</option>
+                <option value="SINTER FEED (HGSF)">SINTER FEED (HGSF)</option>
+                <option value="OTROS">OTROS...</option>
+            </select>
+            <input type="text" id="p_otro" placeholder="Especifique..." style="display:none; margin-top:5px;">
+        </div>
+        <div class="field"><label>Viaje</label><input type="text" id="v_viaje" placeholder="LHGC10"></div>
+        <div class="field"><label>Remolcador</label><input type="text" id="v_remol" placeholder="HB AQUARIUS"></div>
+        <div class="field"><label>Tipo Entrada</label>
+            <select id="v_entrada">
+                <option value="Amarró en Terminal Navios">Amarró en Terminal Navios</option>
+                <option value="Amarró en Petrovia">Amarró en Petrovia</option>
+                <option value="Amarró en amarradero ANP">Amarró en amarradero ANP</option>
+                <option value="Pasó por rada">Pasó por rada</option>
+            </select>
+        </div>
+        <div class="field"><label>Alistamiento</label><input type="text" id="v_alist" placeholder="12/03/2026 20:00"></div>
+        <div class="field"><label>Autoridades</label><input type="text" id="v_auto" placeholder="12/03/2026 20:30"></div>
+        <div class="field"><label>Libre Plática</label><input type="text" id="v_platica" placeholder="12/03/2026 21:00"></div>
     </div>
 
-    <div id="alertCoherencia" class="alert-box alert-warn"></div>
+    <label>Log de Terminal (Pegar Muelle 5 / Norte / Sur)</label>
+    <textarea id="logInput" placeholder="Pega el log de Navios tal cual aquí..."></textarea>
 
-    <div class="table-container">
-        <table id="tablaSOF">
+    <div class="btn-group">
+        <button class="btn btn-primary" onclick="procesarLogStrict()">1. Analizar y Validar</button>
+        <button id="btnExcel" class="btn btn-success" onclick="descargarISAHB10()">2. Descargar Reporte ISA</button>
+    </div>
+
+    <div class="table-wrap">
+        <table id="tablaISA">
             <thead>
                 <tr>
-                    <th>#</th>
-                    <th>POSICIÓN</th>
-                    <th>BARCAZA</th>
-                    <th>INICIO</th>
-                    <th>FIN</th>
-                    <th>TIEMPO</th>
-                    <th>EVENTO</th>
-                    <th>CONTROL DE COHERENCIA</th>
+                    <th>#</th><th>BARCAZA</th><th>CANT. ORIGEN</th><th>DRAFT FINAL</th><th>DIF</th><th>NOR</th><th>AMARRE</th><th>INICIO</th><th>FIN</th><th>TIEMPO</th><th>VIAJE</th><th>REMOLCADOR</th><th>POSICIÓN</th>
                 </tr>
             </thead>
-            <tbody id="resultadoBody"></tbody>
+            <tbody id="tbodyISA"></tbody>
         </table>
     </div>
 </div>
 
 <script>
-let dataFinal = [];
+function checkOtro() {
+    const s = document.getElementById('p_prod');
+    document.getElementById('p_otro').style.display = (s.value === "OTROS") ? "block" : "none";
+}
 
-function procesarLog() {
-    const text = document.getElementById('logInput').value;
-    const lines = text.split('\n');
-    let listaEventos = [];
-    let barcazas = { norte: 'SIN BCZA', sur: 'SIN BCZA', m5: 'SIN BCZA' };
+function procesarLogStrict() {
+    const raw = document.getElementById('logInput').value;
+    const lines = raw.split('\n');
+    const tbody = document.getElementById('tbodyISA');
+    tbody.innerHTML = '';
+    
+    let bcza = { n: 'SIN BCZA', s: 'SIN BCZA', m: 'SIN BCZA' };
     let nro = 1;
 
     lines.forEach(line => {
-        if (!line.includes(':')) return;
+        const c1 = line.substring(0, 38).trim();
+        const c2 = line.substring(38, 78).trim();
+        const c3 = line.substring(78).trim();
 
-        // DIVISIÓN POR ZONAS (Control de 3 Grúas)
-        const col1 = line.substring(0, 38).trim();
-        const col2 = line.substring(38, 78).trim();
-        const col3 = line.substring(78).trim();
-
-        const analizarSeccion = (str, grúa) => {
-            if (!str) return;
-            
-            // Detectar Barcaza (ID)
-            if (/[A-Z0-9]{3,}\s\d+/.test(str) && !str.includes(':')) {
-                barcazas[grúa] = str;
+        const scan = (txt, gr) => {
+            if (!txt) return;
+            if (/[A-Z0-9]{3,}\s\d+/.test(txt) && !txt.includes(':')) {
+                bcza[gr] = txt; return;
             }
+            const h = txt.match(/\d{2}:\d{2}/g);
+            if (h && (txt.toLowerCase().includes("draft final") || txt.toLowerCase().includes("finaliza"))) {
+                const tr = document.createElement('tr');
+                const hi = h[0], hf = h[1] || hi;
+                const viaje = document.getElementById('v_viaje').value;
+                const remol = document.getElementById('v_remol').value;
 
-            // Detectar Horas y Eventos
-            const horas = str.match(/\d{2}:\d{2}/g);
-            if (horas) {
-                let hIni = horas[0];
-                let hFin = horas[1] || "";
-                let eventoRaw = str.replace(/\d{2}:\d{2}/g, '').trim();
-                
-                // REGLA DE ORO: Draft Final -> Insertar Finaliza Descarga
-                if (eventoRaw.toLowerCase().includes("draft final")) {
-                    listaEventos.push({
-                        pos: grúa, bcza: barcazas[grúa], ini: hIni, fin: hIni,
-                        evento: "FINALIZA DESCARGA DE BARCAZA " + barcazas[grúa],
-                        tipo: "auto-fill", nota: "Inserción Automática (Regla de Oro)"
-                    });
-                }
-
-                listaEventos.push({
-                    pos: grúa, bcza: barcazas[grúa], ini: hIni, fin: hFin,
-                    evento: eventoRaw.toUpperCase(),
-                    tipo: "", nota: "Validado"
-                });
+                tr.innerHTML = `
+                    <td>${nro++}</td>
+                    <td contenteditable="true"><strong>${bcza[gr]}</strong></td>
+                    <td contenteditable="true">0</td><td contenteditable="true">0</td><td>0</td>
+                    <td contenteditable="true">${document.getElementById('v_alist').value}</td>
+                    <td contenteditable="true">${document.getElementById('v_auto').value}</td>
+                    <td contenteditable="true">${hi}</td><td contenteditable="true">${hf}</td>
+                    <td>${calc(hi, hf)}</td>
+                    <td>${viaje}</td><td>${remol}</td><td>GRÚA ${gr.toUpperCase()}</td>
+                `;
+                tbody.appendChild(tr);
             }
         };
-
-        analizarSeccion(col1, 'norte');
-        analizarSeccion(col2, 'sur');
-        analizarSeccion(col3, 'm5');
+        scan(c1, 'n'); scan(c2, 's'); scan(c3, 'm');
     });
-
-    renderizar(listaEventos);
+    document.getElementById('btnExcel').style.display = 'block';
 }
 
-function renderizar(eventos) {
-    const tbody = document.getElementById('resultadoBody');
-    const alertBox = document.getElementById('alertCoherencia');
-    tbody.innerHTML = '';
-    let errores = 0;
-
-    eventos.forEach((ev, index) => {
-        const tr = document.createElement('tr');
-        if (ev.tipo) tr.className = ev.tipo;
-
-        // CONTROL DE COHERENCIA: Barcazas huérfanas o solapamientos
-        let coherenciaMsg = "OK";
-        if (ev.bcza === 'SIN BCZA') {
-            tr.className = 'row-conflict';
-            coherenciaMsg = "ERROR: Sin ID Barcaza";
-            errores++;
-        }
-
-        tr.innerHTML = `
-            <td>${index + 1}</td>
-            <td contenteditable="true">GRÚA ${ev.pos.toUpperCase()}</td>
-            <td contenteditable="true"><strong>${ev.bcza}</strong></td>
-            <td contenteditable="true">${ev.ini}</td>
-            <td contenteditable="true">${ev.fin}</td>
-            <td>${calcularHHMM(ev.ini, ev.fin)}</td>
-            <td contenteditable="true" style="text-align:left;">${ev.evento}</td>
-            <td>${coherenciaMsg}</td>
-        `;
-        tbody.appendChild(tr);
-    });
-
-    if (errores > 0) {
-        alertBox.style.display = 'block';
-        alertBox.innerText = `Se detectaron ${errores} inconsistencias en el log. Corregir manualmente las celdas en rojo.`;
-    } else {
-        alertBox.style.display = 'none';
-    }
-
-    document.getElementById('btnExport').style.display = 'block';
-}
-
-function calcularHHMM(i, f) {
-    if (!i || !f) return "00:00";
+function calc(i, f) {
+    if (!i || !f || i===f) return "00:00";
     let [h1, m1] = i.split(':').map(Number);
     let [h2, m2] = f.split(':').map(Number);
     let d = (h2*60+m2) - (h1*60+m1);
-    if (d < 0) d += 1440; // Medianoche
+    if(d < 0) d += 1440;
     return `${Math.floor(d/60).toString().padStart(2,'0')}:${(d%60).toString().padStart(2,'0')}`;
 }
 
-function descargarExcel() {
-    const table = document.getElementById('tablaSOF');
-    const wb = XLSX.utils.table_to_book(table, {sheet: "Reporte ISA"});
-    XLSX.writeFile(wb, "SOF_UNIFICADO_ISA.xlsx");
+function descargarISAHB10() {
+    const prod = document.getElementById('p_prod').value === "OTROS" ? document.getElementById('p_otro').value : document.getElementById('p_prod').value;
+    const remol = document.getElementById('v_remol').value;
+    const viaje = document.getElementById('v_viaje').value;
+    const arribo = `${remol} + ${document.getElementById('v_entrada').value}.`;
+
+    // 1. Crear Worksheet desde la tabla
+    const ws = XLSX.utils.table_to_sheet(document.getElementById('tablaISA'), {origin: "A4"});
+
+    // 2. Estilos de Encabezado Corporativo
+    const headStyle = {
+        font: { bold: true, color: { rgb: "FFFFFF" } },
+        fill: { fgColor: { rgb: "003366" } },
+        alignment: { horizontal: "center" }
+    };
+
+    // Aplicar estilos a la fila de cabecera de la tabla (A4 a M4)
+    const range = XLSX.utils.decode_range(ws['!ref']);
+    for (let C = range.s.c; C <= range.e.c; ++C) {
+        const address = XLSX.utils.encode_col(C) + "4";
+        if (!ws[address]) continue;
+        ws[address].s = headStyle;
+    }
+
+    // 3. Agregar Metadata Superior Estilizada
+    XLSX.utils.sheet_add_aoa(ws, [
+        [ {v: "ISA - REPORTE DE OPERACIONES", s: { font: {bold: true, italic: true, size: 14}, color: {rgb: "003366"}}} ],
+        [ {v: "CONVOY: " + arribo, s: {font: {bold: true}}}, {v: "PRODUCTO: " + prod, s: {font: {bold: true}}}, {v: "VIAJE: " + viaje, s: {font: {bold: true}}} ]
+    ], { origin: "A1" });
+
+    // 4. Descargar
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "SOF HB10");
+    XLSX.writeFile(wb, `ISA_REPORTE_${viaje}.xlsx`);
 }
 </script>
 </body>
