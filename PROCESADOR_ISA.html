@@ -2,103 +2,118 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>_ISA_ - Consola Operativa Unificada</title>
+    <title>ISA - Consola Operativa Unificada</title>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <style>
-        :root { --blue: #003366; --gold: #c5a059; --bg: #f4f7fa; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); padding: 20px; }
+        :root { --blue: #003366; --gold: #c5a059; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f7fa; padding: 20px; }
         .container { max-width: 1400px; margin: auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .logo { font-size: 32px; font-weight: bold; color: var(--blue); font-style: italic; border-bottom: 2px solid var(--gold); margin-bottom: 25px; }
-        .setup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 25px; background: #fafafa; padding: 20px; border: 1px solid #ddd; }
-        .field { display: flex; flex-direction: column; }
-        label { font-size: 11px; font-weight: bold; color: var(--blue); text-transform: uppercase; margin-bottom: 4px; }
-        input, select { padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; }
-        textarea { width: 100%; height: 200px; font-family: monospace; border: 2px solid var(--blue); padding: 15px; border-radius: 6px; margin-bottom: 20px; box-sizing: border-box; }
-        .btn-group { display: flex; gap: 15px; margin-bottom: 25px; }
-        .btn { padding: 12px 30px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; text-transform: uppercase; transition: 0.2s; }
-        .btn-primary { background: var(--blue); color: white; }
-        .btn-success { background: #28a745; color: white; display: none; }
-        table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 15px; background: white; }
-        th { background: var(--blue); color: white; padding: 12px; border: 1px solid #001a33; }
-        td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-        .row-fix { background: #e3f2fd; font-style: italic; font-weight: bold; }
+        .logo { font-size: 32px; font-weight: bold; color: var(--blue); font-style: italic; border-bottom: 2px solid var(--gold); margin-bottom: 20px; }
+        .setup { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; background: #fafafa; padding: 20px; border: 1px solid #ddd; margin-bottom: 20px; }
+        .field { display: flex; flex-direction: column; font-size: 11px; font-weight: bold; color: var(--blue); text-transform: uppercase; }
+        input { padding: 8px; border: 1px solid #ccc; border-radius: 4px; margin-top: 4px; }
+        textarea { width: 100%; height: 200px; font-family: monospace; border: 2px solid var(--blue); padding: 10px; box-sizing: border-box; }
+        .btn-group { margin: 20px 0; }
+        .btn { padding: 12px 25px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; text-transform: uppercase; }
+        .btn-p { background: var(--blue); color: white; }
+        .btn-s { background: #28a745; color: white; display: none; margin-left: 10px; }
+        table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 20px; }
+        th { background: var(--blue); color: white; padding: 10px; border: 1px solid #000; }
+        td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        .row-fix { background: #e3f2fd; font-weight: bold; font-style: italic; }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="logo">ISA</div>
-    <div class="setup-grid">
-        <div class="field"><label>Remolcador</label><input type="text" id="v_remol" value="HB SCORPIUS"></div>
-        <div class="field"><label>Viaje</label><input type="text" id="v_viaje" value="HB16"></div>
-        <div class="field"><label>Lugar</label><input type="text" id="v_ent" value="Terminal Navios"></div>
-        <div class="field"><label>Fecha (DD/MM/AAAA)</label><input type="text" id="f_arr" value="13/03/2026"></div>
-        <div class="field"><label>H. Arribo</label><input type="text" id="h_arr" value="01:15"></div>
-        <div class="field"><label>H. Alistamiento</label><input type="text" id="h_alist" value="01:15"></div>
-        <div class="field"><label>H. Autoridades</label><input type="text" id="h_auto" value="02:00"></div>
-        <div class="field"><label>H. Libre Plática</label><input type="text" id="h_plat" value="02:10"></div>
+    <div class="setup">
+        <div class="field">Remolcador<input type="text" id="v_rem" value="HB SCORPIUS"></div>
+        <div class="field">Lugar<input type="text" id="v_lug" value="Terminal Navios"></div>
+        <div class="field">Fecha<input type="text" id="v_fec" value="13/03/2026"></div>
+        <div class="field">H. Arribo<input type="text" id="h_arr" value="01:15"></div>
+        <div class="field">H. Alistamiento<input type="text" id="h_ali" value="01:15"></div>
+        <div class="field">H. Autoridades<input type="text" id="h_aut" value="02:00"></div>
+        <div class="field">H. Libre Platica<input type="text" id="h_pla" value="02:10"></div>
     </div>
-    <textarea id="logInput" placeholder="Pegá el log de Navios aquí..."></textarea>
+    <textarea id="logInput" placeholder="Pega el log de Navios aquí..."></textarea>
     <div class="btn-group">
-        <button class="btn btn-primary" onclick="ejecutarProcesador()">Analizar y Mostrar Eventos</button>
-        <button id="btnExcel" class="btn btn-success" onclick="descargarExcel()">Descargar Excel</button>
+        <button class="btn btn-p" onclick="procesar()">Generar SOF</button>
+        <button id="btnXLS" class="btn btn-s" onclick="descargar()">Descargar Excel</button>
     </div>
-    <table id="tablaISA">
+    <table id="tablaSOF">
         <thead><tr><th>FECHA</th><th>BARCAZA</th><th>DESDE</th><th>HASTA</th><th>OBSERVACIONES</th></tr></thead>
-        <tbody id="tbodyISA"></tbody>
+        <tbody id="bodySOF"></tbody>
     </table>
 </div>
+
 <script>
-function ejecutarProcesador() {
+function procesar() {
     const raw = document.getElementById('logInput').value;
-    const lines = raw.split('\n');
-    const tbody = document.getElementById('tbodyISA');
-    const fecha = document.getElementById('f_arr').value;
-    const remol = document.getElementById('v_remol').value;
-    const lugar = document.getElementById('v_ent').value;
+    const tbody = document.getElementById('bodySOF');
+    const fec = document.getElementById('v_fec').value;
+    const rem = document.getElementById('v_rem').value;
+    const lug = document.getElementById('v_lug').value;
     
-    tbody.innerHTML = ''; // Limpiar tabla
-    let htmlContent = '';
+    let finalHtml = "";
 
-    // 1. EVENTOS FIJOS (Los que no veías)
-    const fijos = [
-        {h: document.getElementById('h_arr').value, t: `${remol} + 12 barcazas amarra en ${lugar}.`},
-        {h: document.getElementById('h_alist').value, t: `Carta de alistamiento extendida.`},
-        {h: document.getElementById('h_auto').value, t: `Autoridades y agencia a bordo.`},
-        {h: document.getElementById('h_plat').value, t: `Libre platica otorgada.`}
+    // 1. EVENTOS AGENCIA (SIEMPRE APARECEN)
+    const ag = [
+        {h: document.getElementById('h_arr').value, o: `${rem} + 12 barcazas amarra en ${lug}.`},
+        {h: document.getElementById('h_ali').value, o: "Carta de alistamiento extendida."},
+        {h: document.getElementById('h_aut').value, o: "Autoridades y agencia a bordo."},
+        {h: document.getElementById('h_pla').value, o: "Libre platica otorgada."}
     ];
-    fijos.forEach(f => {
-        if(f.h) htmlContent += `<tr><td>${fecha}</td><td>---</td><td>${f.h}</td><td></td><td style="text-align:left">${f.t}</td></tr>`;
+    ag.forEach(ev => {
+        if(ev.h) finalHtml += `<tr><td>${fec}</td><td>---</td><td>${ev.h}</td><td></td><td>${ev.o}</td></tr>`;
     });
 
-    // 2. PROCESAR LOG (3 GRUAS)
-    let bAct = { n: '---', s: '---', m: '---' };
-    lines.forEach(line => {
-        const c1 = line.substring(0, 38).trim(), c2 = line.substring(38, 78).trim(), c3 = line.substring(78).trim();
-        const scan = (txt, gr) => {
-            if (!txt) return;
-            if (/[A-Z0-9]{3,}\s\d+/.test(txt) && !txt.includes(':')) { bAct[gr] = txt; }
-            const horas = txt.match(/\d{2}:\d{2}/g);
-            if (horas) {
-                let hi = horas[0], hf = horas[1] || "";
-                let ev = txt.replace(/\d{2}:\d{2}/g, '').trim().toUpperCase();
-                if (ev.includes("DRAFT FINAL") || ev.includes("FINALIZA")) {
-                    htmlContent += `<tr class="row-fix"><td>${fecha}</td><td>${bAct[gr]}</td><td>${hi}</td><td></td><td style="text-align:left">FINALIZA DESCARGA DE BARCAZA ${bAct[gr]}</td></tr>`;
-                }
-                htmlContent += `<tr><td>${fecha}</td><td>${bAct[gr]}</td><td>${hi}</td><td>${hf}</td><td style="text-align:left">${ev}</td></tr>`;
+    // 2. PROCESAR LOG (NORTE, SUR, MUELLE 5)
+    const lineas = raw.split('\n');
+    let bczaAct = { n: '---', s: '---', m: '---' };
+
+    lineas.forEach(linea => {
+        if (linea.trim().length < 5) return;
+
+        // Dividir la línea en 3 secciones si es lo suficientemente larga
+        let zonas = [];
+        if (linea.length > 80) {
+            zonas = [
+                {t: linea.substring(0, 38).trim(), g: 'n'},
+                {t: linea.substring(38, 78).trim(), g: 's'},
+                {t: linea.substring(78).trim(), g: 'm'}
+            ];
+        } else {
+            zonas = [{t: linea.trim(), g: 'n'}]; // Modo flexible si es corto
+        }
+
+        zonas.forEach(z => {
+            if (!z.t) return;
+            // Detectar Barcaza
+            if (/[A-Z0-9]{3,}\s\d+/.test(z.t) && !z.t.includes(':')) {
+                bczaAct[z.g] = z.t;
             }
-        };
-        scan(c1, 'n'); scan(c2, 's'); scan(c3, 'm');
+            // Detectar Horas
+            const horas = z.t.match(/\d{2}:\d{2}/g);
+            if (horas) {
+                let h1 = horas[0], h2 = horas[1] || "";
+                let obs = z.t.replace(/\d{2}:\d{2}/g, '').trim().toUpperCase();
+                
+                // REGLA DE ORO
+                if (obs.includes("DRAFT FINAL") || obs.includes("FINALIZA")) {
+                    finalHtml += `<tr class="row-fix"><td>${fec}</td><td>${bczaAct[z.g]}</td><td>${h1}</td><td></td><td>FINALIZA DESCARGA DE BARCAZA ${bczaAct[z.g]}</td></tr>`;
+                }
+                finalHtml += `<tr><td>${fec}</td><td>${bczaAct[z.g]}</td><td>${h1}</td><td>${h2}</td><td>${obs}</td></tr>`;
+            }
+        });
     });
 
-    tbody.innerHTML = htmlContent;
-    document.getElementById('btnExcel').style.display = 'block';
+    tbody.innerHTML = finalHtml;
+    document.getElementById('btnXLS').style.display = 'inline-block';
 }
 
-function descargarExcel() {
-    const table = document.getElementById('tablaISA');
-    const ws = XLSX.utils.table_to_sheet(table);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "SOF");
+function descargar() {
+    const table = document.getElementById('tablaSOF');
+    const wb = XLSX.utils.table_to_book(table);
     XLSX.writeFile(wb, "ISA_SOF_FINAL.xlsx");
 }
 </script>
