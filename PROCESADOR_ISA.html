@@ -5,146 +5,101 @@
     <title>_ISA_ - Consola Operativa Unificada</title>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <style>
-        :root { --isa-blue: #003366; --isa-gold: #c5a059; --bg: #f4f7fa; }
+        :root { --blue: #003366; --gold: #c5a059; --bg: #f4f7fa; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); padding: 20px; }
         .container { max-width: 1400px; margin: auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .logo { font-size: 32px; font-weight: bold; color: var(--isa-blue); font-style: italic; border-bottom: 2px solid var(--isa-gold); margin-bottom: 25px; }
-        
-        .setup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin-bottom: 25px; background: #fafafa; padding: 20px; border: 1px solid #ddd; }
+        .logo { font-size: 32px; font-weight: bold; color: var(--blue); font-style: italic; border-bottom: 2px solid var(--gold); margin-bottom: 25px; }
+        .setup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 25px; background: #fafafa; padding: 20px; border: 1px solid #ddd; }
         .field { display: flex; flex-direction: column; }
-        label { font-size: 11px; font-weight: bold; color: var(--isa-blue); text-transform: uppercase; margin-bottom: 4px; }
+        label { font-size: 11px; font-weight: bold; color: var(--blue); text-transform: uppercase; margin-bottom: 4px; }
         input, select { padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; }
-        
-        textarea { width: 100%; height: 180px; font-family: monospace; border: 2px solid var(--isa-blue); padding: 15px; border-radius: 6px; margin-bottom: 20px; box-sizing: border-box; }
+        textarea { width: 100%; height: 200px; font-family: monospace; border: 2px solid var(--blue); padding: 15px; border-radius: 6px; margin-bottom: 20px; box-sizing: border-box; }
         .btn-group { display: flex; gap: 15px; margin-bottom: 25px; }
         .btn { padding: 12px 30px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; text-transform: uppercase; transition: 0.2s; }
-        .btn-primary { background: var(--isa-blue); color: white; }
+        .btn-primary { background: var(--blue); color: white; }
         .btn-success { background: #28a745; color: white; display: none; }
-        
-        table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 15px; }
-        th { background: var(--isa-blue); color: white; padding: 12px; border: 1px solid #001a33; }
-        td { border: 1px solid #ddd; padding: 8px; text-align: center; background: white; }
-        .row-fix { background: #e3f2fd; font-style: italic; }
-        .row-err { background: #f8d7da; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 15px; background: white; }
+        th { background: var(--blue); color: white; padding: 12px; border: 1px solid #001a33; }
+        td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+        .row-fix { background: #e3f2fd; font-style: italic; font-weight: bold; }
     </style>
 </head>
 <body>
-
 <div class="container">
     <div class="logo">ISA</div>
-    
     <div class="setup-grid">
-        <div class="field">
-            <label>Producto</label>
-            <select id="p_prod">
-                <option value="MINERAL DE HIERRO (LOHS)">MINERAL DE HIERRO (LOHS)</option>
-                <option value="MINERAL DE HIERRO (LOHT)">MINERAL DE HIERRO (LOHT)</option>
-                <option value="SINTER FEED (HGSF)">SINTER FEED (HGSF)</option>
-                <option value="OTROS">OTROS...</option>
-            </select>
-        </div>
-        <div class="field"><label>Viaje</label><input type="text" id="v_viaje" placeholder="LHGC10"></div>
-        <div class="field"><label>Remolcador</label><input type="text" id="v_remol" placeholder="BARRANCABERMEJA"></div>
-        <div class="field"><label>Tipo de Entrada</label>
-            <select id="v_entrada">
-                <option value="Amarró en Terminal Navios">Amarró en Terminal Navios</option>
-                <option value="Amarró en Petrovia">Amarró en Petrovia</option>
-                <option value="Amarró en amarradero ANP">Amarró en amarradero ANP</option>
-                <option value="Pasó por rada">Pasó por rada</option>
-            </select>
-        </div>
-        <div class="field"><label>Alistamiento (DD/MM/AAAA HH:MM)</label><input type="text" id="v_alist" placeholder="12/03/2026 14:30"></div>
-        <div class="field"><label>Autoridades (DD/MM/AAAA HH:MM)</label><input type="text" id="v_auto" placeholder="12/03/2026 15:15"></div>
-        <div class="field"><label>Libre Plática (DD/MM/AAAA HH:MM)</label><input type="text" id="v_platica" placeholder="12/03/2026 16:00"></div>
+        <div class="field"><label>Remolcador</label><input type="text" id="v_remol" value="HB SCORPIUS"></div>
+        <div class="field"><label>Viaje</label><input type="text" id="v_viaje" value="HB16"></div>
+        <div class="field"><label>Lugar</label><input type="text" id="v_ent" value="Terminal Navios"></div>
+        <div class="field"><label>Fecha (DD/MM/AAAA)</label><input type="text" id="f_arr" value="13/03/2026"></div>
+        <div class="field"><label>H. Arribo</label><input type="text" id="h_arr" value="01:15"></div>
+        <div class="field"><label>H. Alistamiento</label><input type="text" id="h_alist" value="01:15"></div>
+        <div class="field"><label>H. Autoridades</label><input type="text" id="h_auto" value="02:00"></div>
+        <div class="field"><label>H. Libre Plática</label><input type="text" id="h_plat" value="02:10"></div>
     </div>
-
-    <label>Log de Terminal (Muelle 5 / Norte / Sur)</label>
-    <textarea id="logInput" placeholder="Pega el log de Navios tal cual aquí..."></textarea>
-
+    <textarea id="logInput" placeholder="Pegá el log de Navios aquí..."></textarea>
     <div class="btn-group">
-        <button class="btn btn-primary" onclick="procesarData()">Analizar y Validar</button>
-        <button id="btnExcel" class="btn btn-success" onclick="descargarExcel()">Descargar Excel Final</button>
+        <button class="btn btn-primary" onclick="ejecutarProcesador()">Analizar y Mostrar Eventos</button>
+        <button id="btnExcel" class="btn btn-success" onclick="descargarExcel()">Descargar Excel</button>
     </div>
-
-    <div style="overflow-x:auto;">
-        <table id="tablaISA">
-            <thead>
-                <tr>
-                    <th>#</th><th>FECHA</th><th>POSICIÓN</th><th>BARCAZA LOG</th><th>COL BCZAS SOF</th><th>INICIO</th><th>FIN</th><th>TIEMPO</th><th>EVENTO SOF</th>
-                </tr>
-            </thead>
-            <tbody id="tbodyISA"></tbody>
-        </table>
-    </div>
+    <table id="tablaISA">
+        <thead><tr><th>FECHA</th><th>BARCAZA</th><th>DESDE</th><th>HASTA</th><th>OBSERVACIONES</th></tr></thead>
+        <tbody id="tbodyISA"></tbody>
+    </table>
 </div>
-
 <script>
-function procesarData() {
+function ejecutarProcesador() {
     const raw = document.getElementById('logInput').value;
     const lines = raw.split('\n');
     const tbody = document.getElementById('tbodyISA');
-    const bargeRegex = /^(?![^\n]*:)([A-Z]{2,}|TBN|ACBL|LHG|2410)\s\d+|^\d{4}$/;
+    const fecha = document.getElementById('f_arr').value;
+    const remol = document.getElementById('v_remol').value;
+    const lugar = document.getElementById('v_ent').value;
     
-    tbody.innerHTML = '';
-    let bActiva = { n: 'SIN BCZA', s: 'SIN BCZA', m: 'SIN BCZA' };
-    let nro = 1;
+    tbody.innerHTML = ''; // Limpiar tabla
+    let htmlContent = '';
 
+    // 1. EVENTOS FIJOS (Los que no veías)
+    const fijos = [
+        {h: document.getElementById('h_arr').value, t: `${remol} + 12 barcazas amarra en ${lugar}.`},
+        {h: document.getElementById('h_alist').value, t: `Carta de alistamiento extendida.`},
+        {h: document.getElementById('h_auto').value, t: `Autoridades y agencia a bordo.`},
+        {h: document.getElementById('h_plat').value, t: `Libre platica otorgada.`}
+    ];
+    fijos.forEach(f => {
+        if(f.h) htmlContent += `<tr><td>${fecha}</td><td>---</td><td>${f.h}</td><td></td><td style="text-align:left">${f.t}</td></tr>`;
+    });
+
+    // 2. PROCESAR LOG (3 GRUAS)
+    let bAct = { n: '---', s: '---', m: '---' };
     lines.forEach(line => {
-        if (!line.includes(':') && !bargeRegex.test(line.trim())) return;
-
-        const c1 = line.substring(0, 38).trim();
-        const c2 = line.substring(38, 78).trim();
-        const c3 = line.substring(78).trim();
-
+        const c1 = line.substring(0, 38).trim(), c2 = line.substring(38, 78).trim(), c3 = line.substring(78).trim();
         const scan = (txt, gr) => {
             if (!txt) return;
-            if (bargeRegex.test(txt) && !txt.includes(':')) {
-                bActiva[gr] = txt;
-                return;
-            }
-            const h = txt.match(/\d{2}:\d{2}/g);
-            if (h) {
-                let hi = h[0], hf = h[1] || hi;
-                let evRaw = txt.replace(/\d{2}:\d{2}/g, '').trim().toUpperCase();
-                
-                if (evRaw.includes("DRAFT FINAL") || evRaw.includes("FINALIZA")) {
-                    const trFinal = document.createElement('tr');
-                    trFinal.className = 'row-fix';
-                    trFinal.innerHTML = `<td>${nro++}</td><td>12/03/2026</td><td>GRÚA ${gr.toUpperCase()}</td><td>${bActiva[gr]}</td><td><strong>${bActiva[gr]}</strong></td><td>${hi}</td><td>${hi}</td><td>00:00</td><td>FINALIZA DESCARGA DE BARCAZA ${bActiva[gr]}</td>`;
-                    tbody.appendChild(trFinal);
+            if (/[A-Z0-9]{3,}\s\d+/.test(txt) && !txt.includes(':')) { bAct[gr] = txt; }
+            const horas = txt.match(/\d{2}:\d{2}/g);
+            if (horas) {
+                let hi = horas[0], hf = horas[1] || "";
+                let ev = txt.replace(/\d{2}:\d{2}/g, '').trim().toUpperCase();
+                if (ev.includes("DRAFT FINAL") || ev.includes("FINALIZA")) {
+                    htmlContent += `<tr class="row-fix"><td>${fecha}</td><td>${bAct[gr]}</td><td>${hi}</td><td></td><td style="text-align:left">FINALIZA DESCARGA DE BARCAZA ${bAct[gr]}</td></tr>`;
                 }
-
-                const tr = document.createElement('tr');
-                if(bActiva[gr] === 'SIN BCZA') tr.className = 'row-err';
-                tr.innerHTML = `<td>${nro++}</td><td>12/03/2026</td><td>GRÚA ${gr.toUpperCase()}</td><td>${bActiva[gr]}</td><td><strong>${bActiva[gr]}</strong></td><td>${hi}</td><td>${hf}</td><td>${calcHHMM(hi,hf)}</td><td>${evRaw}</td>`;
-                tbody.appendChild(tr);
+                htmlContent += `<tr><td>${fecha}</td><td>${bAct[gr]}</td><td>${hi}</td><td>${hf}</td><td style="text-align:left">${ev}</td></tr>`;
             }
         };
         scan(c1, 'n'); scan(c2, 's'); scan(c3, 'm');
     });
-    document.getElementById('btnExcel').style.display = 'block';
-}
 
-function calcHHMM(i, f) {
-    if (!i || !f || i===f) return "00:00";
-    let [h1, m1] = i.split(':').map(Number);
-    let [h2, m2] = f.split(':').map(Number);
-    let d = (h2*60+m2) - (h1*60+m1);
-    if(d < 0) d += 1440;
-    return `${Math.floor(d/60).toString().padStart(2,'0')}:${(d%60).toString().padStart(2,'0')}`;
+    tbody.innerHTML = htmlContent;
+    document.getElementById('btnExcel').style.display = 'block';
 }
 
 function descargarExcel() {
     const table = document.getElementById('tablaISA');
-    const arribo = `${document.getElementById('v_remol').value} + ${document.getElementById('v_entrada').value}.`;
-    const ws = XLSX.utils.json_to_sheet([
-        {"ISA_REPORT": arribo, "PRODUCTO": document.getElementById('p_prod').value},
-        {"ALISTAMIENTO": document.getElementById('v_alist').value, "AUTORIDADES": document.getElementById('v_auto').value}
-    ]);
-    XLSX.utils.sheet_add_dom(ws, table, {origin: "A5"});
+    const ws = XLSX.utils.table_to_sheet(table);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "SOF");
-    XLSX.writeFile(wb, `ISA_SOF_${document.getElementById('v_viaje').value}.xlsx`);
+    XLSX.writeFile(wb, "ISA_SOF_FINAL.xlsx");
 }
 </script>
 </body>
