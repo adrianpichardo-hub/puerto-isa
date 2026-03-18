@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>ISA - Consola Operativa</title>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <style>
+        :root { --blue: #003366; --gold: #c5a059; }
+        body { font-family: sans-serif; background: #f4f7fa; padding: 20px; }
+        .box { max-width: 1200px; margin: auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .logo { font-size: 30px; font-weight: bold; color: var(--blue); font-style: italic; border-bottom: 2px solid var(--gold); margin-bottom: 20px; }
+        .setup { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; background: #fafafa; padding: 15px; border: 1px solid #ddd; margin-bottom: 20px; }
+        .f { display: flex; flex-direction: column; font-size: 11px; font-weight: bold; color: var(--blue); }
+        input, select { padding: 8px; border: 1px solid #ccc; border-radius: 4px; margin-top: 4px; }
+        textarea { width: 100%; height: 150px; font-family: monospace; border: 2px solid var(--blue); padding: 10px; box-sizing: border-box; }
+        .btn { padding: 12px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; text-transform: uppercase; margin: 15px 5px 0 0; }
+        .btn-p { background: var(--blue); color: white; }
+        .btn-s { background: #28a745; color: white; display: none; }
+        table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 20px; }
+        th { background: var(--blue); color: white; padding: 10px; border: 1px solid #000; }
+        td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+    </style>
+</head>
+<body>
+<div class="box">
+    <div class="logo">ISA</div>
+    <div class="setup">
+        <div class="f">PRODUCTO<select id="prod"><option>MINERAL DE HIERRO (LOHS)</option><option>MINERAL DE HIERRO (LOHT)</option><option>SINTER FEED (HGSF)</option></select></div>
+        <div class="f">VIAJE<input type="text" id="viaje" placeholder="LHGC10"></div>
+        <div class="f">REMOLCADOR<input type="text" id="remol" placeholder="HB AQUARIUS"></div>
+        <div class="f">ENTRADA<input type="text" id="ent" placeholder="Terminal Navios"></div>
+        <div class="f">ALISTAMIENTO<input type="text" id="alist" placeholder="DD/MM HH:MM"></div>
+    </div>
+    <textarea id="log" placeholder="Pegá el log aquí..."></textarea>
+    <button class="btn btn-p" onclick="procesar()">Analizar Log</button>
+    <button id="btnXLS" class="btn btn-s" onclick="descargar()">Descargar Excel</button>
+    <table id="tabla">
+        <thead><tr><th>#</th><th>BARCAZA</th><th>CANT. ORIGEN</th><th>DRAFT FINAL</th><th>DIF</th><th>NOR</th><th>INICIO</th><th>FIN</th><th>TIEMPO</th><th>POSICIÓN</th></tr></thead>
+        <tbody id="body"></tbody>
+    </table>
+</div>
+<script>
+function procesar() {
+    const raw = document.getElementById('log').value;
+    const lines = raw.split('\n');
+    const tbody = document.getElementById('body');
+    tbody.innerHTML = '';
+    let bcz = { n: 'ERROR', s: 'ERROR', m: 'ERROR' };
+    let n = 1;
+
+    lines.forEach(l => {
+        const c1 = l.substring(0, 38).trim();
+        const c2 = l.substring(38, 78).trim();
+        const c3 = l.substring(78).trim();
+        const scan = (t, gr) => {
+            if (!t) return;
+            if (/[A-Z0-9]{3,}\s\d+/.test(t) && !t.includes(':')) { bcz[gr] = t; return; }
+            const h = t.match(/\d{2}:\d{2}/g);
+            if (h && (t.toLowerCase().includes("draft final") || t.toLowerCase().includes("finaliza"))) {
+                const tr = document.createElement('tr');
+                const hi = h[0], hf = h[1] || hi;
+                tr.innerHTML = `<td>${n++}</td><td>${bcz[gr]}</td><td>0</td><td>0</td><td>0</td><td>${document.getElementById('alist').value}</td><td>${hi}</td><td>${hf}</td><td>${calc(hi,hf)}</td><td>${gr.toUpperCase()}</td>`;
+                tbody.appendChild(tr);
+            }
+        };
+        scan(c1, 'n'); scan(c2, 's'); scan(c3, 'm');
+    });
+    document.getElementById('btnXLS').style.display = 'inline-block';
+}
+function calc(i, f) {
+    if (!i || !f || i===f) return "00:00";
+    let [h1, m1] = i.split(':').map(Number), [h2, m2] = f.split(':').map(Number);
+    let d = (h2*60+m2) - (h1*60+m1);
+    if(d < 0) d += 1440;
+    return `${Math.floor(d/60).toString().padStart(2,'0')}:${(d%60).toString().padStart(2,'0')}`;
+}
+function descargar() {
+    const table = document.getElementById('tabla');
+    const wb = XLSX.utils.table_to_book(table, {sheet: "SOF"});
+    XLSX.writeFile(wb, "REPORTE_ISA.xlsx");
+}
+</script>
+</body>
+</html>
