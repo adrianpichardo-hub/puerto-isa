@@ -2,87 +2,48 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>ISA - Consola Operativa Unificada</title>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  
   <style>
     :root { --blue: #003366; --gold: #c5a059; --green: #28a745; --gray: #6c757d; }
-    * { box-sizing: border-box; }
-    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f4f7fa; margin: 0; padding: 20px; color: #333; }
-    .container { max-width: 1400px; margin: 0 auto; background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
-    .logo { font-size: 2.4rem; font-weight: bold; color: var(--blue); font-style: italic; text-align: center; margin-bottom: 1.5rem; border-bottom: 3px solid var(--gold); padding-bottom: 0.5rem; }
-    .setup { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; background: #fafafa; padding: 1.5rem; border: 1px solid #e0e0e0; border-radius: 6px; margin-bottom: 1.5rem; }
-    .field { display: flex; flex-direction: column; font-size: 0.78rem; font-weight: 600; color: var(--blue); text-transform: uppercase; letter-spacing: 0.4px; }
-    .field label { margin-bottom: 0.35rem; }
-    input, textarea { padding: 0.6rem 0.8rem; border: 1px solid #ccc; border-radius: 5px; font-size: 0.95rem; }
-    textarea { font-family: 'Consolas', 'Courier New', monospace; resize: vertical; min-height: 180px; border-color: var(--blue); }
-    .btn-group { margin: 1.5rem 0; display: flex; gap: 0.8rem; flex-wrap: wrap; }
-    .btn { padding: 0.75rem 1.5rem; border: none; border-radius: 6px; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; cursor: pointer; transition: all 0.15s; }
-    .btn-primary { background: var(--blue); color: white; }
-    .btn-success { background: var(--green); color: white; }
-    .btn-secondary { background: var(--gray); color: white; }
-    .btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
-    table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 1.5rem; }
-    th { background: var(--blue); color: white; padding: 0.9rem; text-align: left; border: 1px solid #000; font-weight: 600; }
-    td { border: 1px solid #ddd; padding: 0.65rem; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f4f7fa; margin: 0; padding: 20px; color: #333; }
+    .box { max-width: 1400px; margin: auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+    .logo { font-size: 28px; font-weight: bold; color: var(--blue); font-style: italic; border-bottom: 2px solid var(--gold); padding-bottom: 5px; margin-bottom: 20px; }
+    .setup { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; background: #fafafa; padding: 15px; border: 1px solid #ddd; margin-bottom: 20px; border-radius: 5px; }
+    .field { display: flex; flex-direction: column; font-size: 11px; font-weight: bold; color: var(--blue); text-transform: uppercase; }
+    input { padding: 8px; border: 1px solid #ccc; border-radius: 4px; margin-top: 5px; font-size: 14px; }
+    textarea { width: 100%; height: 200px; font-family: monospace; border: 2px solid var(--blue); padding: 10px; border-radius: 5px; box-sizing: border-box; }
+    .btn-group { display: flex; gap: 10px; margin: 20px 0; }
+    .btn { padding: 12px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; text-transform: uppercase; }
+    .btn-p { background: var(--blue); color: white; }
+    .btn-s { background: var(--green); color: white; display: none; }
+    .btn-l { background: var(--gray); color: white; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px; }
+    th { background: var(--blue); color: white; padding: 10px; text-align: left; border: 1px solid #001a33; }
+    td { border: 1px solid #ddd; padding: 8px; }
     .row-fix { background: #e3f2fd; font-weight: bold; font-style: italic; color: #003366; }
   </style>
 </head>
 <body>
-
-<div class="container">
-  <header class="logo">ISA</header>
-  
-  <section class="setup">
-    <div class="field">
-      <label>Remolcador</label>
-      <input type="text" id="v_rem" value="HB SCORPIUS">
-    </div>
-    <div class="field">
-      <label>Lugar</label>
-      <input type="text" id="v_lug" value="Terminal Navios">
-    </div>
-    <div class="field">
-      <label>Fecha (dd/mm/aaaa)</label>
-      <input type="text" id="v_fec" value="13/03/2026">
-    </div>
-    <div class="field">
-      <label>H. Arribo</label>
-      <input type="text" id="h_arr" value="01:15">
-    </div>
-    <div class="field">
-      <label>H. Alistamiento</label>
-      <input type="text" id="h_ali" value="01:15">
-    </div>
-    <div class="field">
-      <label>H. Autoridades</label>
-      <input type="text" id="h_aut" value="02:00">
-    </div>
-    <div class="field">
-      <label>H. Libre Plática</label>
-      <input type="text" id="h_pla" value="02:10">
-    </div>
-  </section>
-
-  <textarea id="logInput" placeholder="Pega aquí el log de Navios..." rows="12"></textarea>
-
-  <div class="btn-group">
-    <button class="btn btn-primary" id="btnProcesar">Generar SOF</button>
-    <button class="btn btn-success" id="btnXLS" style="display:none;">Descargar Excel</button>
-    <button class="btn btn-secondary" id="btnLimpiar">Limpiar</button>
+<div class="box">
+  <div class="logo">ISA</div>
+  <div class="setup">
+    <div class="field">Remolcador<input type="text" id="v_rem" value="HB SCORPIUS"></div>
+    <div class="field">Lugar<input type="text" id="v_lug" value="Terminal Navios"></div>
+    <div class="field">Fecha<input type="text" id="v_fec" value="13/03/2026"></div>
+    <div class="field">H. Arribo<input type="text" id="h_arr" value="01:15"></div>
+    <div class="field">H. Alistamiento<input type="text" id="h_ali" value="01:15"></div>
+    <div class="field">H. Autoridades<input type="text" id="h_aut" value="02:00"></div>
+    <div class="field">H. Libre Plática<input type="text" id="h_pla" value="02:10"></div>
   </div>
-
+  <textarea id="logInput" placeholder="Pega el log de Navios aquí..."></textarea>
+  <div class="btn-group">
+    <button class="btn btn-p" onclick="procesarLog()">Generar SOF</button>
+    <button id="btnXLS" class="btn btn-s" onclick="descargarExcel()">Descargar Excel</button>
+    <button class="btn btn-l" onclick="limpiarTodo()">Limpiar</button>
+  </div>
   <table id="tablaSOF">
-    <thead>
-      <tr>
-        <th>FECHA</th>
-        <th>BARCAZA</th>
-        <th>DESDE</th>
-        <th>HASTA</th>
-        <th>OBSERVACIONES</th>
-      </tr>
-    </thead>
+    <thead><tr><th>FECHA</th><th>BARCAZA</th><th>DESDE</th><th>HASTA</th><th>OBSERVACIONES</th></tr></thead>
     <tbody id="bodySOF"></tbody>
   </table>
 </div>
@@ -90,7 +51,6 @@
 <script>
 const CONFIG = {
   bargePrefixes: ['HB', 'LHG', 'ORE', 'CIE', 'MAG', 'TBN', 'SCF', 'NAV', 'BCC'],
-  defaultObservation: 'DESCARGA A PILA',
   agencyEvents: [
     { id: 'h_arr', label: (rem, lug) => `${rem} + 12 barcazas amarra en ${lug}.` },
     { id: 'h_ali', label: () => 'Carta de alistamiento extendida.' },
@@ -99,102 +59,96 @@ const CONFIG = {
   ]
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('btnProcesar').addEventListener('click', procesarLog);
-  document.getElementById('btnXLS').addEventListener('click', descargarExcel);
-  document.getElementById('btnLimpiar').addEventListener('click', limpiarTodo);
-});
-
 function procesarLog() {
-  const logText = document.getElementById('logInput').value.trim();
-  const fecha   = document.getElementById('v_fec').value.trim();
-  const rem     = document.getElementById('v_rem').value.trim() || 'REMOLCADOR';
-  const lugar   = document.getElementById('v_lug').value.trim() || 'LUGAR';
-
+  const raw = document.getElementById('logInput').value;
+  const fecha = document.getElementById('v_fec').value;
+  const rem = document.getElementById('v_rem').value || 'REMOLCADOR';
+  const lug = document.getElementById('v_lug').value || 'LUGAR';
   const tbody = document.getElementById('bodySOF');
+  
   tbody.innerHTML = '';
   const rows = [];
 
-  // 1. Inserción de eventos fijos (Arribo, Agencia, etc)
-  CONFIG.agencyEvents.forEach(event => {
-    const hora = document.getElementById(event.id)?.value?.trim();
+  // 1. Eventos de Agencia
+  CONFIG.agencyEvents.forEach(ev => {
+    const hora = document.getElementById(ev.id).value.trim();
     if (hora) {
-      const obs = typeof event.label === 'function' ? event.label(rem, lugar) : event.label;
-      rows.push({ fecha, barcaza: '---', desde: hora, hasta: '', obs, css: '' });
+      const obs = typeof ev.label === 'function' ? ev.label(rem, lug) : ev.label();
+      rows.push({ f: fecha, b: '---', d: hora, h: '', o: obs, c: '' });
     }
   });
 
-  // 2. Escáner Híbrido (Procesa formatos Verticales y Horizontales)
-  let barcazaActual = '---';
-  let bufferTiempos = [];
-  
-  const lineas = logText.split(/\r?\n/).map(l => l.trim()).filter(l => l !== '');
+  // 2. Escáner Vertical "Memoria Activa"
+  let bczActual = '---';
+  let tiemposMemoria = [];
+  const lineas = raw.split('\n');
 
   lineas.forEach(linea => {
-    // Buscar si mencionan una barcaza en esta línea
-    const bargeRegex = new RegExp(`(${CONFIG.bargePrefixes.join('|')})\\s*(\\d+)`, 'i');
-    const bargeMatch = linea.match(bargeRegex);
-    if (bargeMatch) barcazaActual = bargeMatch[0].toUpperCase();
+    let txt = linea.trim();
+    if (!txt) return;
 
-    // Extraer horas y limpiar el texto
-    const tiemposEnLinea = [...linea.matchAll(/\b(\d{1,2}:\d{2})\b/g)].map(m => m[1]);
-    const textoLimpio = linea.replace(/\b(\d{1,2}:\d{2})\b/g, '').replace(bargeRegex, '').trim();
+    // Buscar si mencionan barcaza en este renglón
+    const matchBcza = txt.match(/(HB|LHG|ORE|CIE|MAG|TBN|SCF|NAV|BCC)\s*\d+/i);
+    if (matchBcza) bczActual = matchBcza[0].toUpperCase();
 
-    if (tiemposEnLinea.length > 0 && textoLimpio.length < 3) {
-        // LÍNEA VERTICAL DE TIEMPO (Solo horas)
-        bufferTiempos.push(...tiemposEnLinea);
-    } 
-    else if (tiemposEnLinea.length > 0 && textoLimpio.length >= 3) {
-        // LÍNEA HORIZONTAL (Horas y Texto en el mismo renglón)
-        procesarEvento(fecha, barcazaActual, tiemposEnLinea[0], tiemposEnLinea[1] || '', textoLimpio, rows);
-        bufferTiempos = []; 
-    } 
-    else if (tiemposEnLinea.length === 0 && textoLimpio.length >= 3) {
-        // LÍNEA DE TEXTO VERTICAL (Cierra el bloque anterior)
-        if (bufferTiempos.length > 0) {
-            procesarEvento(fecha, barcazaActual, bufferTiempos[0], bufferTiempos[1] || '', textoLimpio, rows);
-            bufferTiempos = []; 
+    // Extraer horas del renglón
+    const horas = txt.match(/\d{1,2}:\d{2}/g);
+    
+    // Limpiar texto para ver si es la observación (quitamos horas y barcazas)
+    let obsLimpia = txt.replace(/\d{1,2}:\d{2}/g, '').replace(/(HB|LHG|ORE|CIE|MAG|TBN|SCF|NAV|BCC)\s*\d+/i, '').trim();
+
+    if (horas) {
+        tiemposMemoria.push(...horas); // Guardamos la hora
+        
+        // Si hay texto en la misma línea (formato horizontal)
+        if (obsLimpia.length > 2) {
+            agregar(fecha, bczActual, tiemposMemoria, txt, rows);
+            tiemposMemoria = []; // Vaciamos memoria
+        }
+    } else {
+        // Si no hay horas, es el texto final del evento (formato vertical)
+        if (obsLimpia.length > 2 && tiemposMemoria.length > 0) {
+            agregar(fecha, bczActual, tiemposMemoria, txt, rows);
+            tiemposMemoria = []; // Vaciamos memoria
         }
     }
   });
 
-  // 3. Ordenamiento cronológico de todos los eventos
-  rows.sort((a, b) => a.desde.localeCompare(b.desde));
-
-  // 4. Renderizado de tabla
+  // 3. Ordenar por hora y renderizar
+  rows.sort((a, b) => a.d.localeCompare(b.d));
+  
   rows.forEach(r => {
     const tr = document.createElement('tr');
-    if (r.css) tr.className = r.css;
-    tr.innerHTML = `<td>${r.fecha}</td><td>${r.barcaza}</td><td>${r.desde}</td><td>${r.hasta}</td><td>${r.obs}</td>`;
+    if (r.c) tr.className = r.c;
+    tr.innerHTML = `<td>${r.f}</td><td>${r.b}</td><td>${r.d}</td><td>${r.h}</td><td>${r.o}</td>`;
     tbody.appendChild(tr);
   });
 
   document.getElementById('btnXLS').style.display = rows.length > 0 ? 'inline-block' : 'none';
 }
 
-function procesarEvento(fecha, barcaza, desde, hasta, obsOriginal, rows) {
-    let obs = obsOriginal.toUpperCase();
-    let css = '';
+function agregar(fec, bcz, t, obsOrig, rows) {
+  let d = t[0] || '';
+  let h = t[1] || ''; // La segunda hora guardada suele ser el "hasta"
+  let o = obsOrig.toUpperCase();
+  let c = '';
 
-    // Filtros de diccionario operativo
-    if (obs.includes("DRAFT FINAL") || obs.includes("FINALIZA")) {
-        obs = `FINALIZA DESCARGA / DRAFT FINAL - BCZA ${barcaza}`;
-        css = 'row-fix';
-    } else if (obs.includes("INICIA") || obs.includes("COMIENZA")) {
-        obs = `INICIA DESCARGA DE BARCAZA ${barcaza}`;
-    } else if (obs.includes("ABRE") || obs.includes("OPENING")) {
-        obs = `APERTURA DE BODEGAS / PREPARATIVOS`;
-    }
+  // Filtros inteligentes para ignorar basura como "AHK"
+  if (o.includes("DRAFT FINAL") || o.includes("FINALIZA")) {
+    o = `FINALIZA DESCARGA / DRAFT FINAL - BCZA ${bcz}`;
+    c = 'row-fix';
+  } else if (o.includes("INICIA") || o.includes("COMIENZA")) {
+    o = `INICIA DESCARGA DE BARCAZA ${bcz}`;
+  } else if (o.includes("ABRE") || o.includes("OPENING")) {
+    o = `APERTURA DE BODEGAS / PREPARATIVOS`;
+  }
 
-    rows.push({ fecha, barcaza, desde, hasta, obs, css });
+  rows.push({ f: fec, b: bcz, d: d, h: h, o: o, c: c });
 }
 
 function descargarExcel() {
-  const fecha = document.getElementById('v_fec').value.trim() || 'SOF';
-  const filename = `SOF_${fecha.replace(/\//g,'-')}.xlsx`;
-  const table = document.getElementById('tablaSOF');
-  const wb = XLSX.utils.table_to_book(table, { sheet: "SOF" });
-  XLSX.writeFile(wb, filename);
+  const wb = XLSX.utils.table_to_book(document.getElementById('tablaSOF'), {sheet:"SOF"});
+  XLSX.writeFile(wb, `SOF_${document.getElementById('v_fec').value.replace(/\//g,'-')}.xlsx`);
 }
 
 function limpiarTodo() {
