@@ -68,6 +68,7 @@ function procesarLog() {
   
   tbody.innerHTML = '';
   const rows = [];
+  let estadoDescarga = {}; // Memoria para saber si "Inicia" o "Reanuda"
 
   // 1. Eventos de Agencia
   CONFIG.agencyEvents.forEach(ev => {
@@ -78,7 +79,7 @@ function procesarLog() {
     }
   });
 
-  // 2. Escáner Vertical "Memoria Activa"
+  // 2. Escáner Vertical
   let bczActual = '---';
   let tiemposMemoria = [];
   const lineas = raw.split('\n');
@@ -87,34 +88,27 @@ function procesarLog() {
     let txt = linea.trim();
     if (!txt) return;
 
-    // Buscar si mencionan barcaza en este renglón
     const matchBcza = txt.match(/(HB|LHG|ORE|CIE|MAG|TBN|SCF|NAV|BCC)\s*\d+/i);
     if (matchBcza) bczActual = matchBcza[0].toUpperCase();
 
-    // Extraer horas del renglón
     const horas = txt.match(/\d{1,2}:\d{2}/g);
-    
-    // Limpiar texto para ver si es la observación (quitamos horas y barcazas)
     let obsLimpia = txt.replace(/\d{1,2}:\d{2}/g, '').replace(/(HB|LHG|ORE|CIE|MAG|TBN|SCF|NAV|BCC)\s*\d+/i, '').trim();
 
     if (horas) {
-        tiemposMemoria.push(...horas); // Guardamos la hora
-        
-        // Si hay texto en la misma línea (formato horizontal)
+        tiemposMemoria.push(...horas); 
         if (obsLimpia.length > 2) {
-            agregar(fecha, bczActual, tiemposMemoria, txt, rows);
-            tiemposMemoria = []; // Vaciamos memoria
+            agregar(fecha, bczActual, tiemposMemoria, txt, rows, estadoDescarga);
+            tiemposMemoria = []; 
         }
     } else {
-        // Si no hay horas, es el texto final del evento (formato vertical)
         if (obsLimpia.length > 2 && tiemposMemoria.length > 0) {
-            agregar(fecha, bczActual, tiemposMemoria, txt, rows);
-            tiemposMemoria = []; // Vaciamos memoria
+            agregar(fecha, bczActual, tiemposMemoria, txt, rows, estadoDescarga);
+            tiemposMemoria = []; 
         }
     }
   });
 
-  // 3. Ordenar por hora y renderizar
+  // 3. Ordenar y renderizar
   rows.sort((a, b) => a.d.localeCompare(b.d));
   
   rows.forEach(r => {
@@ -127,20 +121,57 @@ function procesarLog() {
   document.getElementById('btnXLS').style.display = rows.length > 0 ? 'inline-block' : 'none';
 }
 
-function agregar(fec, bcz, t, obsOrig, rows) {
+function agregar(fec, bcz, t, obsOrig, rows, estadoDescarga) {
   let d = t[0] || '';
-  let h = t[1] || ''; // La segunda hora guardada suele ser el "hasta"
+  let h = t[1] || ''; 
   let o = obsOrig.toUpperCase();
   let c = '';
 
-  // Filtros inteligentes para ignorar basura como "AHK"
-  if (o.includes("DRAFT FINAL") || o.includes("FINALIZA")) {
-    o = `FINALIZA DESCARGA / DRAFT FINAL - BCZA ${bcz}`;
-    c = 'row-fix';
-  } else if (o.includes("INICIA") || o.includes("COMIENZA")) {
-    o = `INICIA DESCARGA DE BARCAZA ${bcz}`;
-  } else if (o.includes("ABRE") || o.includes("OPENING")) {
-    o = `APERTURA DE BODEGAS / PREPARATIVOS`;
+  // 1. DESTRUCCIÓN DE BASURA DEL LOG
+  o = o.replace(/\d{1,2}-[A-Z]{3}/g, '') // Quita fechas ej: "12-MAR"
+       .replace(/AHK/g, '')               // Quita código "AHK"
+       .replace(/(HB|LHG|ORE|CIE|MAG|TBN|SCF|NAV|BCC)\s*\d+/g, '') // Quita barcazas repetidas
+       .replace(/\b\d{4}\b/g, '')         // Quita números sueltos como "2410"
+       .replace(/I1\s*0040/g, '')         // Quita código I1 0040
+       .trim();
+
+  // 2. DICCIONARIO ISA
+  if (o.includes("DRAFT INICIAL")) {
+      o = `Draft inicial de barcaza ${bcz}.`;
+  } 
+  else if (o.includes("DRAFT FINAL")) {
+      o = `Draft final de barcaza ${bcz}.`;
+      c = 'row-fix';
+  } 
+  else if (o.includes("FINALIZA")) {
+      o = `Finaliza descarga de barcaza ${bcz}.`;
+      c = 'row-fix';
+  } 
+  else if (o.includes("TRACTOR")) {
+      o = `Corta descarga de barcaza ${bcz} por ingreso de tractor.`;
+  } 
+  else if (o.includes("DESCARGA A PILA") || o.includes("DESCARGA")) {
+      if (!estadoDescarga[bcz]) {
+          o = `Inicia descarga de barcaza ${bcz}.`;
+          estadoDescarga[bcz] = true; // Guarda en memoria que ya inició
+      } else {
+          o = `Reanuda descarga de barcaza ${bcz}.`;
+      }
+  }
+  else if (o.includes("LLUVIA") && o.includes("NO INICIA")) {
+      o = `Lluvia. No inicia descarga.`;
+  } 
+  else if (o.includes("LLUVIA")) {
+      o = `Lluvia. Corta descarga.`;
+  } 
+  else if (o.includes("CALADO") || o.includes("LECTURA")) {
+      o = `Corta descarga por lectura de calado en el buque.`;
+  } 
+  else if (o.includes("CIRCUITO")) {
+      o = `Corta descarga por cambio de circuito.`;
+  } 
+  else if (o.includes("CAMBIO DE BCZA") || o.includes("CAMBIO DE BARCAZA") || o.includes("CAMBIO BCZA")) {
+      o = `Cambio de barcaza.`;
   }
 
   rows.push({ f: fec, b: bcz, d: d, h: h, o: o, c: c });
