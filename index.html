@@ -1,6 +1,31 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  <script>
+  // Bloqueo de acceso básico - Temporal hasta migración a servidor ISA
+  (function() {
+    const USER_AUTH = "ISA";
+    const PASS_AUTH = "Palmira8025";
+    
+    // Pedir credenciales al cargar
+    let user = prompt("Portal de Operaciones ISA\nIngrese Usuario:");
+    let pass = prompt("Ingrese Clave:");
+
+    if (user !== USER_AUTH || pass !== PASS_AUTH) {
+      alert("Acceso denegado. Sus credenciales no son válidas.");
+      // Borra el contenido de la página para que no se vea nada por detrás
+      document.documentElement.innerHTML = `
+        <body style="background:#1a1a1a; color:white; font-family:sans-serif; display:flex; justify-content:center; align-items:center; height:100vh; margin:0;">
+          <div style="text-align:center;">
+            <h1>🔒 Acceso Restringido</h1>
+            <p>Este portal es de uso exclusivo interno de ISA Agentes Marítimos.</p>
+            <p>Contacte al Administrador de IT para obtener acceso oficial.</p>
+          </div>
+        </body>`;
+      window.stop(); 
+    }
+  })();
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ISA — Portal de Operaciones</title>
