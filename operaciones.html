@@ -126,6 +126,9 @@ tbody td{padding:8px 12px;vertical-align:middle;}
 .sum-card.orange{border-color:rgba(249,115,22,.2);background:rgba(249,115,22,.06);}
 .sum-card.orange .sum-num{color:var(--orange);}
 
+/* ROW OCULTO (Finalizados después de 24hs) */
+.row-finalizado{display:none !important;}
+
 @media(max-width:768px){
   html,body{overflow:auto;}
   .tab-pane{overflow:visible;}
@@ -223,6 +226,26 @@ function parseSheet(text){
   return text.split('\n').map(l=>splitLine(l));
 }
 
+// ========== NUEVA FUNCIÓN: Verificar si está finalizado hace más de 24hs ==========
+function isFinalizadoMas24hs(fechaFinalizacion) {
+  if (!fechaFinalizacion || fechaFinalizacion.trim() === '') return false;
+  
+  try {
+    // Parsear fecha en formato DD/MM/YYYY o similar
+    const fecha = new Date(fechaFinalizacion.trim());
+    if (isNaN(fecha.getTime())) return false;
+    
+    const ahora = new Date();
+    const diferencia = ahora - fecha; // milisegundos
+    const horas = diferencia / (1000 * 60 * 60);
+    
+    // Si pasaron más de 24 horas, retornar true (ocultar)
+    return horas > 24;
+  } catch (e) {
+    return false;
+  }
+}
+
 // ---- MUELLE COLOR CLASS ----
 function muelleClass(name){
   const n=(name||'').toUpperCase();
@@ -244,7 +267,7 @@ function statusBadge(val){
 
 // ---- PARSE BUQUES ----
 // Structure: section headers in col A (bold), data rows below
-// Cols: Buque(A), ETA Roads(B), ETB(C), ETC(D), Carga(E), Volumen(F), Cliente/Shipper(G), Destino(H), Persona(I), Comentarios(J), Operador(K)
+// Cols: Buque(A), ETA Roads(B), ETB(C), ETC(D), Carga(E), Volumen(F), Cliente/Shipper(G), Destino(H), Persona(I), Comentarios(J), Operador(K), Finalización(L)
 function parseBuques(rows){
   const sections=[];
   let current=null;
@@ -273,7 +296,7 @@ function parseBuques(rows){
 }
 
 // ---- PARSE FLUVIAL ----
-// Cols: Remolcador(A), Barcazas(B), Estado(C), ETA Roads(D), ETB(E), Final(F), Descarga(G), Volumen(H), Cliente(I), Persona(J), Comentarios(K)
+// Cols: Remolcador(A), Barcazas(B), Estado(C), ETA Roads(D), ETB(E), Final(F), Descarga(G), Volumen(H), Cliente(I), Persona(J), Comentarios(K), Finalización(L)
 function parseFluvial(rows){
   const sections=[];
   let current=null;
@@ -302,11 +325,15 @@ function parseFluvial(rows){
 // ---- RENDER BUQUES ----
 function renderBuques(sections, search=''){
   const s=search.toLowerCase();
-  let totalBuques=0, totalCarga=0;
+  let totalBuques=0;
   let html='';
 
-  // summary
-  sections.forEach(sec=>{ sec.rows.forEach(r=>{ if(r[0]) totalBuques++; }); });
+  // summary: contar solo los que NO están finalizados hace 24hs
+  sections.forEach(sec=>{
+    sec.rows.forEach(r=>{
+      if(r[0] && !isFinalizadoMas24hs(r[11])) totalBuques++;
+    });
+  });
 
   html+=`<div class="summary-row">
     <div class="sum-card accent"><div class="sum-label">Total Buques</div><div class="sum-num">${totalBuques}</div><div class="sum-sub">En planilla</div></div>
@@ -321,9 +348,12 @@ function renderBuques(sections, search=''){
     html+=`<div class="muelle-section">
       <div class="muelle-header ${mc}">
         <span class="muelle-name">${sec.name}</span>
-        <span class="muelle-badge">${filtered.length} buque${filtered.length!==1?'s':''}</span>
+        <span class="muelle-badge">${filtered.filter(r=>!isFinalizadoMas24hs(r[11])).length} buque${filtered.filter(r=>!isFinalizadoMas24hs(r[11])).length!==1?'s':''}</span>
       </div>`;
-    if(filtered.length===0){
+    
+    const visibles = filtered.filter(r=>!isFinalizadoMas24hs(r[11]));
+    
+    if(visibles.length===0){
       html+=`<div class="empty-muelle">Sin operaciones programadas</div>`;
     } else {
       html+=`<table><thead><tr>
@@ -331,7 +361,7 @@ function renderBuques(sections, search=''){
         <th>Carga</th><th>Volumen</th><th>Cliente / Shipper</th>
         <th>Destino</th><th>Persona</th><th>Comentarios</th>
       </tr></thead><tbody>`;
-      filtered.forEach(r=>{
+      visibles.forEach(r=>{
         const buque=r[0]||'';const eta=r[1]||'';const etb=r[2]||'';const etc=r[3]||'';
         const carga=r[4]||'';const vol=r[5]||'';const cliente=r[6]||'';
         const destino=r[7]||'';const persona=r[8]||'';const comment=r[9]||'';
@@ -369,7 +399,12 @@ function renderFluvial(sections, search=''){
   let totalRems=0;
   let html='';
 
-  sections.forEach(sec=>{ sec.rows.forEach(r=>{ if(r[0]) totalRems++; }); });
+  // summary: contar solo los que NO están finalizados hace 24hs
+  sections.forEach(sec=>{
+    sec.rows.forEach(r=>{
+      if(r[0] && !isFinalizadoMas24hs(r[11])) totalRems++;
+    });
+  });
 
   html+=`<div class="summary-row">
     <div class="sum-card accent"><div class="sum-label">Remolcadores</div><div class="sum-num">${totalRems}</div><div class="sum-sub">En planilla</div></div>
@@ -384,9 +419,12 @@ function renderFluvial(sections, search=''){
     html+=`<div class="muelle-section">
       <div class="muelle-header ${mc}">
         <span class="muelle-name">${sec.name}</span>
-        <span class="muelle-badge">${filtered.length} remolcador${filtered.length!==1?'es':''}</span>
+        <span class="muelle-badge">${filtered.filter(r=>!isFinalizadoMas24hs(r[11])).length} remolcador${filtered.filter(r=>!isFinalizadoMas24hs(r[11])).length!==1?'es':''}</span>
       </div>`;
-    if(filtered.length===0){
+    
+    const visibles = filtered.filter(r=>!isFinalizadoMas24hs(r[11]));
+    
+    if(visibles.length===0){
       html+=`<div class="empty-muelle">Sin operaciones programadas</div>`;
     } else {
       html+=`<table><thead><tr>
@@ -394,7 +432,7 @@ function renderFluvial(sections, search=''){
         <th>ETB</th><th>Final</th><th>Descarga</th><th>Volumen</th>
         <th>Cliente</th><th>Persona</th><th>Comentarios</th>
       </tr></thead><tbody>`;
-      filtered.forEach(r=>{
+      visibles.forEach(r=>{
         const rem=r[0]||'';const bczs=r[1]||'';const estado=r[2]||'';const eta=r[3]||'';
         const etb=r[4]||'';const fin=r[5]||'';const desc=r[6]||'';const vol=r[7]||'';
         const cli=r[8]||'';const pers=r[9]||'';const comm=r[10]||'';
@@ -464,8 +502,15 @@ function applySearch(){
   renderFluvial(rawFluvial, s);
 }
 
+// Auto-refresh cada 5 minutos Y verificar cada minuto si hay registros que ocultar
 loadAll();
-setInterval(loadAll, 5*60*1000);
+setInterval(loadAll, 5*60*1000); // refresh completo cada 5 min
+
+// Verificar cada minuto si hay filas que deben ocultarse (finalizadas hace 24hs)
+setInterval(() => {
+  renderBuques(rawBuques);
+  renderFluvial(rawFluvial);
+}, 60*1000); // cada 1 minuto
 </script>
 </body>
 </html>
