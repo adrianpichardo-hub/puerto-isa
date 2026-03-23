@@ -203,46 +203,86 @@ tbody td{padding:9px 14px;font-size:12px;vertical-align:middle;}
 <!-- MAIN -->
 <div class="main-layout">
 
-  <!-- SIDEBAR -->
+  <!-- SIDEBAR ACTUALIZADA -->
   <div class="sidebar">
     <div class="sidebar-title">Resumen operativo</div>
 
-    <!-- POSICION -->
-    <div class="stat-block">
-      <div class="stat-card pda">
-        <div class="sc-top"><span class="sc-label">PDA</span><span class="sc-dot"></span></div>
-        <div class="sc-num" id="cnt-pda">—</div>
-        <div class="sc-sub">Barcazas en puerto</div>
+    <!-- SECCIÓN 1: POR ESTADO Y UBICACIÓN (NUEVOS CONTADORES) -->
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">Lastre</div>
+      <div class="stat-block">
+        <div class="stat-card pda">
+          <div class="sc-top"><span class="sc-label">Lastre en PDA</span><span class="sc-dot"></span></div>
+          <div class="sc-num" id="lastrePDA">—</div>
+          <div class="sc-sub">Sin salida</div>
+        </div>
       </div>
-    </div>
-    <div class="stat-block">
-      <div class="stat-card npa">
-        <div class="sc-top"><span class="sc-label">NPA</span><span class="sc-dot"></span></div>
-        <div class="sc-num" id="cnt-npa">—</div>
-        <div class="sc-sub">Nueva Palmira</div>
+      <div class="stat-block">
+        <div class="stat-card npa">
+          <div class="sc-top"><span class="sc-label">Lastre en NPA</span><span class="sc-dot"></span></div>
+          <div class="sc-num" id="lastreNPA">—</div>
+          <div class="sc-sub">Sin salida</div>
+        </div>
       </div>
     </div>
 
-    <!-- ESTADO -->
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">Cargada</div>
+      <div class="stat-block">
+        <div class="stat-card pda">
+          <div class="sc-top"><span class="sc-label">Cargada en PDA</span><span class="sc-dot"></span></div>
+          <div class="sc-num" id="cargadaPDA">—</div>
+          <div class="sc-sub">Sin salida</div>
+        </div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-card npa">
+          <div class="sc-top"><span class="sc-label">Cargada en NPA</span><span class="sc-dot"></span></div>
+          <div class="sc-num" id="cargadaNPA">—</div>
+          <div class="sc-sub">Sin salida</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN 2: TOTALES POR UBICACIÓN -->
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">Por ubicación</div>
+      <div class="stat-block">
+        <div class="stat-card pda">
+          <div class="sc-top"><span class="sc-label">Total PDA</span><span class="sc-dot"></span></div>
+          <div class="sc-num" id="totalPDA">—</div>
+          <div class="sc-sub">Todas las barcazas</div>
+        </div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-card npa">
+          <div class="sc-top"><span class="sc-label">Total NPA</span><span class="sc-dot"></span></div>
+          <div class="sc-num" id="totalNPA">—</div>
+          <div class="sc-sub">Todas las barcazas</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN 3: ESTADO GENERAL (ORIGINALES) -->
     <div class="sidebar-section">
       <div class="sidebar-section-title">Por estado</div>
       <div class="stat-block">
         <div class="stat-card neutral">
-          <div class="sc-top"><span class="sc-label">Lastre</span><span class="sc-dot"></span></div>
+          <div class="sc-top"><span class="sc-label">Total Lastre</span><span class="sc-dot"></span></div>
           <div class="sc-num" id="cnt-lastre">—</div>
           <div class="sc-sub">Barcazas en lastre</div>
         </div>
       </div>
       <div class="stat-block">
         <div class="stat-card sal">
-          <div class="sc-top"><span class="sc-label">Cargadas</span><span class="sc-dot"></span></div>
+          <div class="sc-top"><span class="sc-label">Total Cargadas</span><span class="sc-dot"></span></div>
           <div class="sc-num" id="cnt-cargada">—</div>
           <div class="sc-sub">Barcazas cargadas</div>
         </div>
       </div>
     </div>
 
-    <!-- SALIDAS -->
+    <!-- SECCIÓN 4: SALIDAS (ORIGINAL) -->
     <div class="sidebar-section">
       <div class="sidebar-section-title">Salidas</div>
       <div class="stat-block">
@@ -261,7 +301,7 @@ tbody td{padding:9px 14px;font-size:12px;vertical-align:middle;}
       </div>
     </div>
 
-    <!-- INFO GENERAL -->
+    <!-- SECCIÓN 5: INFO GENERAL (ORIGINAL) -->
     <div class="sidebar-section">
       <div class="sidebar-section-title">General</div>
       <div class="info-row"><span class="info-label">Total barcazas</span><span class="info-val accent" id="cnt-total">—</span></div>
@@ -269,13 +309,13 @@ tbody td{padding:9px 14px;font-size:12px;vertical-align:middle;}
       <div class="info-row"><span class="info-label">Última actualización</span><span class="info-val" id="upd-time">—</span></div>
     </div>
 
-    <!-- REMOLCADORES -->
+    <!-- SECCIÓN 6: REMOLCADORES (ORIGINAL) -->
     <div class="sidebar-section">
       <div class="sidebar-section-title">Por remolcador</div>
       <div id="rem-list"></div>
     </div>
 
-    <!-- LEYENDA -->
+    <!-- SECCIÓN 7: LEYENDA (ORIGINAL) -->
     <div class="sidebar-section">
       <div class="sidebar-section-title">Referencias</div>
       <div class="legend-row">
@@ -354,7 +394,6 @@ async function loadData() {
 function parseCSV(text) {
   const lines = text.split('\n').filter(l => l.trim());
   if (lines.length < 2) return [];
-  // skip header row (row 0), data starts row 1
   const rows = [];
   for (let i = 1; i < lines.length; i++) {
     const cols = splitCSVLine(lines[i]);
@@ -456,15 +495,31 @@ function renderTable(rows) {
 }
 
 function updateSidebar(rows) {
-  const cntPda = rows.filter(r => r.posicion.includes('PDA')).length;
-  const cntNpa = rows.filter(r => r.posicion.includes('NPA')).length;
+  // ========== NUEVOS CONTADORES: ESTADO + UBICACIÓN ==========
+  const lastrePDA = rows.filter(r => r.estado.includes('LASTRE') && r.posicion.includes('PDA')).length;
+  const lastreNPA = rows.filter(r => r.estado.includes('LASTRE') && r.posicion.includes('NPA')).length;
+  const cargadaPDA = rows.filter(r => (r.estado.includes('CARGADA')||r.estado.includes('CARGAD')) && r.posicion.includes('PDA')).length;
+  const cargadaNPA = rows.filter(r => (r.estado.includes('CARGADA')||r.estado.includes('CARGAD')) && r.posicion.includes('NPA')).length;
+  
+  // Totales por ubicación
+  const totalPDA = rows.filter(r => r.posicion.includes('PDA')).length;
+  const totalNPA = rows.filter(r => r.posicion.includes('NPA')).length;
+
+  // ========== CONTADORES ORIGINALES ==========
   const cntLastre = rows.filter(r => r.estado.includes('LASTRE')).length;
   const cntCargada = rows.filter(r => r.estado.includes('CARGADA')||r.estado.includes('CARGAD')).length;
   const cntSin = rows.filter(r => !r.salida || r.salida.trim() === '').length;
   const cntSal = rows.filter(r => r.salida && r.salida.trim() !== '').length;
 
-  document.getElementById('cnt-pda').textContent = cntPda;
-  document.getElementById('cnt-npa').textContent = cntNpa;
+  // ========== ACTUALIZAR DOM: NUEVOS CONTADORES ==========
+  document.getElementById('lastrePDA').textContent = lastrePDA;
+  document.getElementById('lastreNPA').textContent = lastreNPA;
+  document.getElementById('cargadaPDA').textContent = cargadaPDA;
+  document.getElementById('cargadaNPA').textContent = cargadaNPA;
+  document.getElementById('totalPDA').textContent = totalPDA;
+  document.getElementById('totalNPA').textContent = totalNPA;
+
+  // ========== ACTUALIZAR DOM: CONTADORES ORIGINALES ==========
   document.getElementById('cnt-lastre').textContent = cntLastre;
   document.getElementById('cnt-cargada').textContent = cntCargada;
   document.getElementById('cnt-sin').textContent = cntSin;
@@ -479,6 +534,11 @@ function updateSidebar(rows) {
   document.getElementById('rem-list').innerHTML = rems.map(([n,c]) =>
     `<div class="rem-item"><span class="rem-name">${n}</span><span class="rem-badge">${c}</span></div>`
   ).join('');
+
+  // Log para verificación
+  console.log('📊 Sidebar actualizada:', {
+    lastrePDA, lastreNPA, cargadaPDA, cargadaNPA, totalPDA, totalNPA
+  });
 }
 
 loadData();
