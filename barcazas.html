@@ -112,6 +112,23 @@ body{font-family:'Barlow',sans-serif;background:var(--navy);color:var(--white);d
 .rem-name{font-size:11px;color:var(--off-white);}
 .rem-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:rgba(0,180,216,.12);border:1px solid rgba(0,180,216,.2);color:var(--accent);}
 
+/* STAT CARD PEQUEÑA (HISTÓRICO) */
+.stat-card-small{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:.6rem;margin-bottom:.5rem;transition:all .2s;}
+.stat-card-small:hover{background:rgba(255,255,255,.07);}
+.stat-card-small.pda{border-color:var(--pda-border);background:var(--pda-bg);}
+.stat-card-small.npa{border-color:var(--npa-border);background:var(--npa-bg);}
+.scs-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:.2rem;}
+.scs-label{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;}
+.stat-card-small.pda .scs-label{color:var(--pda);}
+.stat-card-small.npa .scs-label{color:var(--npa);}
+.scs-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.stat-card-small.pda .scs-dot{background:var(--pda);}
+.stat-card-small.npa .scs-dot{background:var(--npa);}
+.scs-num{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;line-height:1;}
+.stat-card-small.pda .scs-num{color:var(--pda);}
+.stat-card-small.npa .scs-num{color:var(--npa);}
+.scs-sub{font-size:9px;color:var(--muted);margin-top:1px;}
+
 /* TABLE AREA */
 .table-area{flex:1;overflow-y:auto;padding:1.25rem 1.5rem;}
 table{width:100%;border-collapse:collapse;}
@@ -203,126 +220,98 @@ tbody td{padding:9px 14px;font-size:12px;vertical-align:middle;}
 <!-- MAIN -->
 <div class="main-layout">
 
-  <!-- SIDEBAR ACTUALIZADA -->
+  <!-- SIDEBAR OPTIMIZADA -->
   <div class="sidebar">
-    <div class="sidebar-title">Resumen operativo</div>
+    <div class="sidebar-title">En Puerto (Sin Salida)</div>
 
-    <!-- SECCIÓN 1: POR ESTADO Y UBICACIÓN (NUEVOS CONTADORES) -->
-    <div class="sidebar-section">
-      <div class="sidebar-section-title">Lastre</div>
-      <div class="stat-block">
-        <div class="stat-card pda">
-          <div class="sc-top"><span class="sc-label">Lastre en PDA</span><span class="sc-dot"></span></div>
-          <div class="sc-num" id="lastrePDA">—</div>
-          <div class="sc-sub">Sin salida</div>
-        </div>
-      </div>
-      <div class="stat-block">
-        <div class="stat-card npa">
-          <div class="sc-top"><span class="sc-label">Lastre en NPA</span><span class="sc-dot"></span></div>
-          <div class="sc-num" id="lastreNPA">—</div>
-          <div class="sc-sub">Sin salida</div>
-        </div>
+    <!-- LASTRE SIN SALIDA -->
+    <div class="stat-block">
+      <div class="stat-card pda">
+        <div class="sc-top"><span class="sc-label">Lastre en PDA</span><span class="sc-dot"></span></div>
+        <div class="sc-num" id="lastrePDA-sin">—</div>
+        <div class="sc-sub">Actualmente en puerto</div>
       </div>
     </div>
 
-    <div class="sidebar-section">
-      <div class="sidebar-section-title">Cargada</div>
-      <div class="stat-block">
-        <div class="stat-card pda">
-          <div class="sc-top"><span class="sc-label">Cargada en PDA</span><span class="sc-dot"></span></div>
-          <div class="sc-num" id="cargadaPDA">—</div>
-          <div class="sc-sub">Sin salida</div>
-        </div>
-      </div>
-      <div class="stat-block">
-        <div class="stat-card npa">
-          <div class="sc-top"><span class="sc-label">Cargada en NPA</span><span class="sc-dot"></span></div>
-          <div class="sc-num" id="cargadaNPA">—</div>
-          <div class="sc-sub">Sin salida</div>
-        </div>
+    <div class="stat-block">
+      <div class="stat-card npa">
+        <div class="sc-top"><span class="sc-label">Lastre en NPA</span><span class="sc-dot"></span></div>
+        <div class="sc-num" id="lastreNPA-sin">—</div>
+        <div class="sc-sub">Actualmente en puerto</div>
       </div>
     </div>
 
-    <!-- SECCIÓN 2: TOTALES POR UBICACIÓN -->
-    <div class="sidebar-section">
-      <div class="sidebar-section-title">Por ubicación</div>
-      <div class="stat-block">
-        <div class="stat-card pda">
-          <div class="sc-top"><span class="sc-label">Total PDA</span><span class="sc-dot"></span></div>
-          <div class="sc-num" id="totalPDA">—</div>
-          <div class="sc-sub">Todas las barcazas</div>
-        </div>
-      </div>
-      <div class="stat-block">
-        <div class="stat-card npa">
-          <div class="sc-top"><span class="sc-label">Total NPA</span><span class="sc-dot"></span></div>
-          <div class="sc-num" id="totalNPA">—</div>
-          <div class="sc-sub">Todas las barcazas</div>
-        </div>
+    <!-- CARGADA SIN SALIDA -->
+    <div class="stat-block">
+      <div class="stat-card pda">
+        <div class="sc-top"><span class="sc-label">Cargada en PDA</span><span class="sc-dot"></span></div>
+        <div class="sc-num" id="cargadaPDA-sin">—</div>
+        <div class="sc-sub">Actualmente en puerto</div>
       </div>
     </div>
 
-    <!-- SECCIÓN 3: ESTADO GENERAL (ORIGINALES) -->
-    <div class="sidebar-section">
-      <div class="sidebar-section-title">Por estado</div>
-      <div class="stat-block">
-        <div class="stat-card neutral">
-          <div class="sc-top"><span class="sc-label">Total Lastre</span><span class="sc-dot"></span></div>
-          <div class="sc-num" id="cnt-lastre">—</div>
-          <div class="sc-sub">Barcazas en lastre</div>
-        </div>
-      </div>
-      <div class="stat-block">
-        <div class="stat-card sal">
-          <div class="sc-top"><span class="sc-label">Total Cargadas</span><span class="sc-dot"></span></div>
-          <div class="sc-num" id="cnt-cargada">—</div>
-          <div class="sc-sub">Barcazas cargadas</div>
-        </div>
+    <div class="stat-block">
+      <div class="stat-card npa">
+        <div class="sc-top"><span class="sc-label">Cargada en NPA</span><span class="sc-dot"></span></div>
+        <div class="sc-num" id="cargadaNPA-sin">—</div>
+        <div class="sc-sub">Actualmente en puerto</div>
       </div>
     </div>
 
-    <!-- SECCIÓN 4: SALIDAS (ORIGINAL) -->
+    <!-- DIVIDER Y HISTÓRICO -->
     <div class="sidebar-section">
-      <div class="sidebar-section-title">Salidas</div>
-      <div class="stat-block">
-        <div class="stat-card sin">
-          <div class="sc-top"><span class="sc-label">Sin fecha salida</span><span class="sc-dot"></span></div>
-          <div class="sc-num" id="cnt-sin">—</div>
-          <div class="sc-sub">Pendientes de zarpe</div>
-        </div>
+      <div class="sidebar-section-title">Histórico</div>
+    </div>
+
+    <!-- HISTÓRICO: TOTAL CON SALIDA -->
+    <div style="margin-bottom:1rem;">
+      <div class="stat-card-small pda">
+        <div class="scs-top"><span class="scs-label">Lastre PDA</span><span class="scs-dot"></span></div>
+        <div class="scs-num" id="lastrePDA-sal">—</div>
+        <div class="scs-sub">Con salida asignada</div>
       </div>
-      <div class="stat-block">
-        <div class="stat-card sal">
-          <div class="sc-top"><span class="sc-label">Con salida</span><span class="sc-dot"></span></div>
-          <div class="sc-num" id="cnt-sal">—</div>
-          <div class="sc-sub">Fecha de salida asignada</div>
-        </div>
+      <div class="stat-card-small npa">
+        <div class="scs-top"><span class="scs-label">Lastre NPA</span><span class="scs-dot"></span></div>
+        <div class="scs-num" id="lastreNPA-sal">—</div>
+        <div class="scs-sub">Con salida asignada</div>
       </div>
     </div>
 
-    <!-- SECCIÓN 5: INFO GENERAL (ORIGINAL) -->
+    <!-- HISTÓRICO: CARGADA CON SALIDA -->
+    <div style="margin-bottom:1rem;">
+      <div class="stat-card-small pda">
+        <div class="scs-top"><span class="scs-label">Cargada PDA</span><span class="scs-dot"></span></div>
+        <div class="scs-num" id="cargadaPDA-sal">—</div>
+        <div class="scs-sub">Con salida asignada</div>
+      </div>
+      <div class="stat-card-small npa">
+        <div class="scs-top"><span class="scs-label">Cargada NPA</span><span class="scs-dot"></span></div>
+        <div class="scs-num" id="cargadaNPA-sal">—</div>
+        <div class="scs-sub">Con salida asignada</div>
+      </div>
+    </div>
+
+    <!-- RESUMEN GENERAL PEQUEÑO -->
     <div class="sidebar-section">
       <div class="sidebar-section-title">General</div>
-      <div class="info-row"><span class="info-label">Total barcazas</span><span class="info-val accent" id="cnt-total">—</span></div>
+      <div class="info-row"><span class="info-label">Total en puerto</span><span class="info-val accent" id="cnt-total-sin">—</span></div>
+      <div class="info-row"><span class="info-label">Con salida</span><span class="info-val accent" id="cnt-total-sal">—</span></div>
       <div class="info-row"><span class="info-label">Remolcadores activos</span><span class="info-val" id="cnt-rems">—</span></div>
       <div class="info-row"><span class="info-label">Última actualización</span><span class="info-val" id="upd-time">—</span></div>
     </div>
 
-    <!-- SECCIÓN 6: REMOLCADORES (ORIGINAL) -->
+    <!-- REMOLCADORES -->
     <div class="sidebar-section">
       <div class="sidebar-section-title">Por remolcador</div>
       <div id="rem-list"></div>
     </div>
 
-    <!-- SECCIÓN 7: LEYENDA (ORIGINAL) -->
+    <!-- LEYENDA -->
     <div class="sidebar-section">
       <div class="sidebar-section-title">Referencias</div>
       <div class="legend-row">
         <div class="leg"><div class="leg-dot" style="background:var(--pda)"></div>PDA</div>
         <div class="leg"><div class="leg-dot" style="background:var(--npa)"></div>NPA</div>
-        <div class="leg"><div class="leg-dot" style="background:var(--sin)"></div>Sin salida</div>
-        <div class="leg"><div class="leg-dot" style="background:var(--sal)"></div>Con salida</div>
       </div>
     </div>
   </div>
@@ -495,38 +484,77 @@ function renderTable(rows) {
 }
 
 function updateSidebar(rows) {
-  // ========== NUEVOS CONTADORES: ESTADO + UBICACIÓN ==========
-  const lastrePDA = rows.filter(r => r.estado.includes('LASTRE') && r.posicion.includes('PDA')).length;
-  const lastreNPA = rows.filter(r => r.estado.includes('LASTRE') && r.posicion.includes('NPA')).length;
-  const cargadaPDA = rows.filter(r => (r.estado.includes('CARGADA')||r.estado.includes('CARGAD')) && r.posicion.includes('PDA')).length;
-  const cargadaNPA = rows.filter(r => (r.estado.includes('CARGADA')||r.estado.includes('CARGAD')) && r.posicion.includes('NPA')).length;
-  
-  // Totales por ubicación
-  const totalPDA = rows.filter(r => r.posicion.includes('PDA')).length;
-  const totalNPA = rows.filter(r => r.posicion.includes('NPA')).length;
+  // ========== PRINCIPALES: SIN SALIDA (EN PUERTO) ==========
+  const lastrePDA_sin = rows.filter(r => 
+    r.estado.includes('LASTRE') && 
+    r.posicion.includes('PDA') && 
+    (!r.salida || r.salida.trim() === '')
+  ).length;
 
-  // ========== CONTADORES ORIGINALES ==========
-  const cntLastre = rows.filter(r => r.estado.includes('LASTRE')).length;
-  const cntCargada = rows.filter(r => r.estado.includes('CARGADA')||r.estado.includes('CARGAD')).length;
-  const cntSin = rows.filter(r => !r.salida || r.salida.trim() === '').length;
-  const cntSal = rows.filter(r => r.salida && r.salida.trim() !== '').length;
+  const lastreNPA_sin = rows.filter(r => 
+    r.estado.includes('LASTRE') && 
+    r.posicion.includes('NPA') && 
+    (!r.salida || r.salida.trim() === '')
+  ).length;
 
-  // ========== ACTUALIZAR DOM: NUEVOS CONTADORES ==========
-  document.getElementById('lastrePDA').textContent = lastrePDA;
-  document.getElementById('lastreNPA').textContent = lastreNPA;
-  document.getElementById('cargadaPDA').textContent = cargadaPDA;
-  document.getElementById('cargadaNPA').textContent = cargadaNPA;
-  document.getElementById('totalPDA').textContent = totalPDA;
-  document.getElementById('totalNPA').textContent = totalNPA;
+  const cargadaPDA_sin = rows.filter(r => 
+    (r.estado.includes('CARGADA')||r.estado.includes('CARGAD')) && 
+    r.posicion.includes('PDA') && 
+    (!r.salida || r.salida.trim() === '')
+  ).length;
 
-  // ========== ACTUALIZAR DOM: CONTADORES ORIGINALES ==========
-  document.getElementById('cnt-lastre').textContent = cntLastre;
-  document.getElementById('cnt-cargada').textContent = cntCargada;
-  document.getElementById('cnt-sin').textContent = cntSin;
-  document.getElementById('cnt-sal').textContent = cntSal;
-  document.getElementById('cnt-total').textContent = rows.length;
+  const cargadaNPA_sin = rows.filter(r => 
+    (r.estado.includes('CARGADA')||r.estado.includes('CARGAD')) && 
+    r.posicion.includes('NPA') && 
+    (!r.salida || r.salida.trim() === '')
+  ).length;
 
-  // remolcadores
+  // ========== HISTÓRICO: CON SALIDA ==========
+  const lastrePDA_sal = rows.filter(r => 
+    r.estado.includes('LASTRE') && 
+    r.posicion.includes('PDA') && 
+    r.salida && r.salida.trim() !== ''
+  ).length;
+
+  const lastreNPA_sal = rows.filter(r => 
+    r.estado.includes('LASTRE') && 
+    r.posicion.includes('NPA') && 
+    r.salida && r.salida.trim() !== ''
+  ).length;
+
+  const cargadaPDA_sal = rows.filter(r => 
+    (r.estado.includes('CARGADA')||r.estado.includes('CARGAD')) && 
+    r.posicion.includes('PDA') && 
+    r.salida && r.salida.trim() !== ''
+  ).length;
+
+  const cargadaNPA_sal = rows.filter(r => 
+    (r.estado.includes('CARGADA')||r.estado.includes('CARGAD')) && 
+    r.posicion.includes('NPA') && 
+    r.salida && r.salida.trim() !== ''
+  ).length;
+
+  // ========== TOTALES ==========
+  const totalSin = rows.filter(r => !r.salida || r.salida.trim() === '').length;
+  const totalSal = rows.filter(r => r.salida && r.salida.trim() !== '').length;
+
+  // ========== ACTUALIZAR DOM: SIN SALIDA (PRINCIPALES) ==========
+  document.getElementById('lastrePDA-sin').textContent = lastrePDA_sin;
+  document.getElementById('lastreNPA-sin').textContent = lastreNPA_sin;
+  document.getElementById('cargadaPDA-sin').textContent = cargadaPDA_sin;
+  document.getElementById('cargadaNPA-sin').textContent = cargadaNPA_sin;
+
+  // ========== ACTUALIZAR DOM: CON SALIDA (HISTÓRICO) ==========
+  document.getElementById('lastrePDA-sal').textContent = lastrePDA_sal;
+  document.getElementById('lastreNPA-sal').textContent = lastreNPA_sal;
+  document.getElementById('cargadaPDA-sal').textContent = cargadaPDA_sal;
+  document.getElementById('cargadaNPA-sal').textContent = cargadaNPA_sal;
+
+  // ========== TOTALES ==========
+  document.getElementById('cnt-total-sin').textContent = totalSin;
+  document.getElementById('cnt-total-sal').textContent = totalSal;
+
+  // ========== REMOLCADORES ==========
   const remCount = {};
   rows.forEach(r => { if(r.remolcador) remCount[r.remolcador] = (remCount[r.remolcador]||0)+1; });
   const rems = Object.entries(remCount).sort((a,b)=>b[1]-a[1]);
@@ -535,9 +563,10 @@ function updateSidebar(rows) {
     `<div class="rem-item"><span class="rem-name">${n}</span><span class="rem-badge">${c}</span></div>`
   ).join('');
 
-  // Log para verificación
+  // ========== LOG ==========
   console.log('📊 Sidebar actualizada:', {
-    lastrePDA, lastreNPA, cargadaPDA, cargadaNPA, totalPDA, totalNPA
+    'En Puerto (Sin Salida)': { lastrePDA_sin, lastreNPA_sin, cargadaPDA_sin, cargadaNPA_sin },
+    'Histórico (Con Salida)': { lastrePDA_sal, lastreNPA_sal, cargadaPDA_sal, cargadaNPA_sal }
   });
 }
 
