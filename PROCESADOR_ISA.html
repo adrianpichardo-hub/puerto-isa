@@ -1,223 +1,755 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>ISA - Consola Operativa Navios</title>
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <style>
-    :root { --blue: #003366; --gold: #c5a059; --green: #28a745; --red: #dc3545; --gray: #f8f9fa; }
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #eef2f7; margin: 0; padding: 20px; }
-    .container { max-width: 1500px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
-    .header-isa { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--gold); margin-bottom: 25px; padding-bottom: 10px; }
-    .logo-text { font-size: 32px; font-weight: 900; color: var(--blue); italic; }
-    
-    /* Configuración */
-    .setup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 25px; background: var(--gray); padding: 20px; border-radius: 8px; border: 1px solid #ddd; }
-    .field { display: flex; flex-direction: column; font-size: 12px; font-weight: bold; color: var(--blue); }
-    select, input { padding: 10px; border: 1px solid #ccc; border-radius: 5px; margin-top: 5px; font-size: 14px; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador SOF - ISA PUERTO</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #2c3e50;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
 
-    /* Inputs de Datos */
-    .input-section { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; margin-bottom: 25px; }
-    .input-box { display: flex; flex-direction: column; }
-    label { font-weight: bold; margin-bottom: 8px; color: var(--blue); text-transform: uppercase; font-size: 13px; }
-    textarea { height: 250px; font-family: 'Consolas', monospace; border: 2px solid #ced4da; padding: 15px; border-radius: 6px; resize: none; font-size: 13px; }
-    textarea:focus { border-color: var(--blue); outline: none; }
+        .navbar {
+            background: linear-gradient(to right, #1e3c72, #2a5298);
+            padding: 16px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
 
-    /* Tabla de Edición */
-    .edit-screen { margin-top: 30px; display: none; }
-    table { width: 100%; border-collapse: collapse; background: white; font-size: 13px; }
-    th { background: var(--blue); color: white; padding: 12px; text-align: left; position: sticky; top: 0; }
-    td { border: 1px solid #dee2e6; padding: 8px; }
-    tr:hover { background-color: #f1f4f9; }
-    .regla-oro-error { background-color: #ffdce0 !important; border: 2px solid var(--red); }
-    .btn-action { padding: 5px 10px; cursor: pointer; border: none; border-radius: 3px; background: var(--red); color: white; }
+        .navbar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
 
-    /* Botonera */
-    .actions { display: flex; gap: 15px; margin-bottom: 20px; }
-    .btn { padding: 15px 25px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px; transition: 0.3s; }
-    .btn-main { background: var(--blue); color: white; flex-grow: 1; }
-    .btn-main:hover { background: #002244; }
-    .btn-excel { background: var(--green); color: white; display: none; }
-    
-    .status-bar { background: #fff3cd; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-weight: bold; text-align: center; border: 1px solid #ffeeba; display: none; }
-  </style>
+        .navbar-brand {
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+            letter-spacing: -0.5px;
+        }
+
+        .navbar-subtitle {
+            font-size: 11px;
+            color: rgba(255,255,255,0.8);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 2px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .page-header {
+            background: white;
+            padding: 30px 40px;
+            border-radius: 8px 8px 0 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            margin-bottom: 0;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1e3c72;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .page-subtitle {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+
+        .card {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 30px 40px;
+            margin-bottom: 30px;
+        }
+
+        .card:first-of-type { border-radius: 0 0 8px 8px; }
+
+        .card-title {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #1e3c72;
+            margin-bottom: 25px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #ecf0f1;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .form-group input, .form-group select {
+            padding: 10px 12px;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            font-size: 13px;
+            background: white;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
+        }
+
+        .form-group textarea {
+            padding: 10px 12px;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            font-size: 12px;
+            font-family: 'Monaco', monospace;
+            resize: vertical;
+            min-height: 100px;
+            background: white;
+        }
+
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
+        }
+
+        .form-hint {
+            font-size: 11px;
+            color: #7f8c8d;
+            margin-top: 6px;
+        }
+
+        .form-hint.auto {
+            color: #28a745;
+            font-weight: 600;
+        }
+
+        .readonly-field {
+            padding: 10px 12px;
+            background: #f5f7fa;
+            border: 1px solid #ecf0f1;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #2c3e50;
+            font-weight: 500;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+        }
+
+        .divider { height: 1px; background: #ecf0f1; margin: 30px 0; }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 11px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            transition: all 0.2s;
+        }
+
+        button.primary {
+            background: linear-gradient(to right, #1e3c72, #2a5298);
+            color: white;
+            box-shadow: 0 2px 6px rgba(30, 60, 114, 0.3);
+        }
+
+        button.primary:hover {
+            box-shadow: 0 4px 12px rgba(30, 60, 114, 0.4);
+            transform: translateY(-1px);
+        }
+
+        button.secondary {
+            background: #ecf0f1;
+            color: #2c3e50;
+            border: 1px solid #bdc3c7;
+        }
+
+        button.secondary:hover {
+            background: #d5dbdb;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 4px;
+            margin: 20px 0;
+            font-size: 12px;
+            display: none;
+            animation: slideIn 0.3s ease-out;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert.show { display: flex; }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border-left: 4px solid #ffc107;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: #7f8c8d;
+            font-size: 11px;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 20px 10px; }
+            .page-header, .card { padding: 20px; }
+            .page-title { font-size: 22px; }
+            .form-grid { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
-
-<div class="container">
-  <div class="header-isa">
-    <div class="logo-text">ISA - GESTIÓN DE OPERACIONES</div>
-    <div style="text-align: right; color: var(--blue); font-weight: bold;">NUEVA PALMIRA - TERMINAL NAVIOS</div>
-  </div>
-
-  <div class="setup-grid">
-    <div class="field">Armador
-      <select id="v_armador">
-        <option value="HIDROVIAS DO BRASIL">HIDROVIAS DO BRASIL</option>
-        <option value="LHG MINING">LHG MINING</option>
-        <option value="INTERBARGE">INTERBARGE</option>
-        <option value="P&O">P&O</option>
-      </select>
+    <div class="navbar">
+        <div class="navbar-content">
+            <div>
+                <div class="navbar-brand">ISA PUERTO</div>
+                <div class="navbar-subtitle">Generador SOF — Nueva Palmira</div>
+            </div>
+        </div>
     </div>
-    <div class="field">Producto
-      <select id="v_producto">
-        <option value="MINERAL DE HIERRO (LOHT)">MINERAL DE HIERRO (LOHT)</option>
-        <option value="MINERAL DE HIERRO (LOHS)">MINERAL DE HIERRO (LOHS)</option>
-        <option value="SINTER FEED (SFHG)">SINTER FEED (SFHG)</option>
-      </select>
+
+    <div class="container">
+        <div class="page-header">
+            <div class="page-title">Generador SOF</div>
+            <div class="page-subtitle">Statement of Facts — Descarga de Operaciones</div>
+        </div>
+
+        <div id="alertMessage" class="alert"></div>
+
+        <!-- SECCIÓN 1: INFO OPERACIONAL -->
+        <div class="card">
+            <div class="card-title">Información Operacional</div>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Fecha de Operación *</label>
+                    <input type="date" id="opDate" required />
+                </div>
+                <div class="form-group">
+                    <label>Convoy / Buque *</label>
+                    <input type="text" id="convoy" placeholder="Ej: HB LYNX + 16 Barcazas (HB51)" required />
+                </div>
+                <div class="form-group">
+                    <label>Remolcador *</label>
+                    <input type="text" id="tugboat" placeholder="Ej: HB LYNX + HB GRUS" required />
+                </div>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Armador *</label>
+                    <select id="shipowner" required>
+                        <option value="">Selecciona...</option>
+                        <option value="LHG">LHG</option>
+                        <option value="HIDROVIAS DO BRASIL">HIDROVIAS DO BRASIL</option>
+                        <option value="P&O">P&O</option>
+                        <option value="INTERBARGE">INTERBARGE</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Charterers / Cliente *</label>
+                    <select id="charterers" required>
+                        <option value="">Selecciona...</option>
+                        <option value="LHG MINING">LHG MINING</option>
+                        <option value="3AMINING">3AMINING</option>
+                        <option value="VETRIA MINERACAO">VETRIA MINERACAO</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Descripción de Carga *</label>
+                    <select id="cargo" required>
+                        <option value="">Selecciona...</option>
+                        <option value="MINERAL DE HIERRO (LOHT)">MINERAL DE HIERRO (LOHT)</option>
+                        <option value="MINERAL DE HIERRO (LOHS)">MINERAL DE HIERRO (LOHS)</option>
+                        <option value="SINTER FEED (SFHG)">SINTER FEED (SFHG)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Agencia</label>
+                    <div class="readonly-field">MSA</div>
+                    <input type="hidden" id="agency" value="MSA" />
+                </div>
+                <div class="form-group">
+                    <label>Puerto y Lugar de Descarga *</label>
+                    <select id="dischargePort" required>
+                        <option value="">Selecciona...</option>
+                        <option value="Corporación Navios - Nueva Palmira">Corporación Navios - Nueva Palmira</option>
+                        <option value="Potiguar - Punta del Arenal">Potiguar - Punta del Arenal</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Cantidad Total (MT) - Calculada Automáticamente</label>
+                    <div class="readonly-field" id="totalQtyDisplay">0.00 mtons</div>
+                    <input type="hidden" id="totalQty" value="0" />
+                    <div class="form-hint auto">Se calcula al pegar el programa de descarga</div>
+                </div>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Lugar de Amarre *</label>
+                    <select id="moorageLocation" required>
+                        <option value="">Selecciona...</option>
+                        <option value="TERMINAL NAVIOS">TERMINAL NAVIOS</option>
+                        <option value="AMARRADERO PETROVIAS">AMARRADERO PETROVIAS</option>
+                        <option value="AMARRADERO SAUCE">AMARRADERO SAUCE</option>
+                        <option value="AMARRADERO ANP">AMARRADERO ANP</option>
+                        <option value="RADA NUEVA PALMIRA">RADA NUEVA PALMIRA</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Fecha/Hora Amarre *</label>
+                    <input type="datetime-local" id="arrivalTime" required />
+                </div>
+                <div class="form-group">
+                    <label>Fecha/Hora Autoridades y Agencia a Bordo *</label>
+                    <input type="datetime-local" id="authoritiesTime" required />
+                </div>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Comienza Carga - Se calcula del primer evento</label>
+                    <div class="readonly-field" id="dischargeStartDisplay">Se calcula al pegar logs</div>
+                    <input type="hidden" id="dischargeStart" />
+                    <div class="form-hint auto">Del primer evento "Inicia descarga"</div>
+                </div>
+                <div class="form-group">
+                    <label>Finaliza Carga - Se calcula del último evento</label>
+                    <div class="readonly-field" id="dischargeEndDisplay">Se calcula al pegar logs</div>
+                    <input type="hidden" id="dischargeEnd" />
+                    <div class="form-hint auto">Del último evento "Finaliza descarga"</div>
+                </div>
+                <div class="form-group">
+                    <label>Fecha/Hora Libre Plática Otorgada *</label>
+                    <input type="datetime-local" id="freePracticaTime" required />
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 2: LOGS DE GRÚAS -->
+        <div class="card">
+            <div class="card-title">Logs de Grúas (Operativa de Descarga)</div>
+            
+            <div class="form-group">
+                <label>Pega aquí los logs de las grúas (tab-separated)</label>
+                <textarea id="gruasData" placeholder="Fecha&#9;Barcaza&#9;Inicio&#9;Fin&#9;Tiempo&#9;Evento&#10;18-mar&#9;TBN 102&#9;12:20&#9;12:26&#9;00:06&#9;Draft Inicial AHK&#10;..." onchange="extractDischargeTimings()" oninput="extractDischargeTimings()"></textarea>
+                <div class="form-hint">Copia desde Excel tal cual (Ctrl+C, Ctrl+V) - Se extraen automáticamente las fechas</div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 3: PROGRAMA DE DESCARGA -->
+        <div class="card">
+            <div class="card-title">Programa de Descarga (Cantidades)</div>
+            
+            <div class="form-group">
+                <label>Pega aquí el programa de descarga (barcaza + cantidad)</label>
+                <textarea id="programData" placeholder="Barcaza&#9;Cantidad Origen&#10;2405&#9;2.151,526&#10;LHG 2I1 0357&#9;2.136,405&#10;..." onchange="calculateTotalQty()" oninput="calculateTotalQty()"></textarea>
+                <div class="form-hint">Columnas: Barcaza, Cantidad Origen - La cantidad se suma automáticamente</div>
+            </div>
+        </div>
+
+        <!-- BOTONES -->
+        <div class="btn-group">
+            <button class="primary" onclick="generateSOF()">✓ Generar SOF Excel</button>
+            <button class="secondary" onclick="clearForm()">Limpiar</button>
+        </div>
+
+        <div class="divider"></div>
     </div>
-    <div class="field">Remolcador<input type="text" id="v_rem" value="HERKULES XVII"></div>
-    <div class="field">Fecha Inicio (DD/MM/AAAA)<input type="text" id="v_fec" value="20/03/2026"></div>
-    <div class="field">H. Arribo / NOR<input type="text" id="h_nor" value="21:40"></div>
-    <div class="field">H. Libre Plática<input type="text" id="h_pla" value="22:00"></div>
-  </div>
 
-  <div class="input-section">
-    <div class="input-box">
-      <label>1. Manifiesto / AHK (Barcaza + Kilos)</label>
-      <textarea id="stockInput" placeholder="Ej: HB 044091 1.838.583"></textarea>
+    <div class="footer">
+        <p>ISA PUERTO © 2026 | Generador SOF v3.1 | Sistema de Generación de Reportes de Descarga</p>
     </div>
-    <div class="input-box">
-      <label>2. Logs de Grúas (Norte, Sur, M5)</label>
-      <textarea id="logInput" placeholder="Pega los logs crudos aquí..."></textarea>
-    </div>
-  </div>
 
-  <div class="actions">
-    <button class="btn btn-main" onclick="procesarOperativa()">PROCESAR Y EDITAR SOF</button>
-    <button id="btnXLS" class="btn btn-excel" onclick="descargarExcel()">DESCARGAR EXCEL FINAL</button>
-  </div>
-
-  <div id="statusBar" class="status-bar"></div>
-
-  <div id="editScreen" class="edit-screen">
-    <label>PANTALLA DE EDICIÓN PREVIA - VALIDA ANTES DE GENERAR</label>
-    <table id="tablaEdicion">
-      <thead>
-        <tr>
-          <th>FECHA</th>
-          <th>BARCAZA</th>
-          <th>POSICIÓN</th>
-          <th>INICIO</th>
-          <th>FIN</th>
-          <th>WORDING AUTOMÁTICO (EDITABLE)</th>
-          <th>ELIMINAR</th>
-        </tr>
-      </thead>
-      <tbody id="bodyEdicion"></tbody>
-    </table>
-  </div>
-</div>
-
-<script>
-let stockMaestro = {};
-
-function procesarOperativa() {
-    const rawStock = document.getElementById('stockInput').value;
-    const rawLog = document.getElementById('logInput').value;
-    const fechaGlobal = document.getElementById('v_fec').value;
-    
-    // 1. Identificar Barcazas y Stock
-    stockMaestro = {};
-    let totalKilos = 0;
-    rawStock.split('\n').forEach(line => {
-        const parts = line.match(/([A-Z]{2,3}\s*\d+)\s+([\d\.]+)/i);
-        if (parts) {
-            const id = parts[1].toUpperCase().replace(/\s/g, '');
-            const kilos = parseFloat(parts[2].replace(/\./g, ''));
-            stockMaestro[id] = kilos;
-            totalKilos += kilos;
+    <script>
+        // ===========================
+        // UTILIDADES
+        // ===========================
+        function formatDatetime(datetimeLocal) {
+            if (!datetimeLocal) return '';
+            const [date, time] = datetimeLocal.split('T');
+            const [year, month, day] = date.split('-');
+            const [hours, mins] = time.split(':');
+            return `${day}/${month}/${year} ${hours}:${mins}`;
         }
-    });
 
-    if (totalKilos > 0) {
-        document.getElementById('statusBar').style.display = 'block';
-        document.getElementById('statusBar').innerText = `STOCK IDENTIFICADO: ${totalKilos.toLocaleString()} kg`;
-    }
-
-    // 2. Procesar Logs
-    const rows = [];
-    const lineas = rawLog.split('\n');
-    let bczActual = "";
-    let posActual = "";
-
-    lineas.forEach(line => {
-        const txt = line.toUpperCase();
-        if (!txt.trim()) return;
-
-        // Detectar Posición
-        if (txt.includes("NORTE")) posActual = "Norte";
-        if (txt.includes("SUR")) posActual = "Sur";
-        if (txt.includes("MUELLE 5") || txt.includes("M5")) posActual = "Muelle 5";
-
-        // Detectar Barcaza
-        const matchB = txt.match(/([A-Z]{2,3}\s*\d+)/);
-        if (matchB) bczActual = matchB[1].replace(/\s/g, '');
-
-        // Detectar Horas
-        const horas = txt.match(/\d{1,2}:\d{2}/g);
-        if (!horas) return;
-
-        let d = horas[0];
-        let h = horas[1] || "";
-        let wording = generarWording(txt, bczActual, posActual);
-        
-        // Aplicar Regla: No hora de fin en ciertos eventos
-        if (wording.includes("Inicia") || wording.includes("Finaliza") || wording.includes("Reanuda")) {
-            h = "";
+        function getDayName(dateStr) {
+            const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+            const date = new Date(dateStr + 'T00:00:00');
+            return days[date.getDay()];
         }
 
-        rows.push({ f: fechaGlobal, b: bczActual, p: posActual, d: d, h: h, o: wording });
-    });
+        // ===========================
+        // EXTRACCIÓN DE FECHAS
+        // ===========================
+        function extractDischargeTimings() {
+            const gruasRaw = document.getElementById('gruasData').value;
+            const lines = gruasRaw.split('\n').filter(l => l.trim());
+            
+            let firstInitiaEvent = null;
+            let lastFinalEvent = null;
+            const opDate = document.getElementById('opDate').value;
+            
+            lines.forEach(line => {
+                const cols = line.split('\t').map(c => c.trim());
+                if (cols.length >= 6) {
+                    const evento = cols[5].toLowerCase();
+                    const fecha = cols[0];
+                    const hora = cols[2]; // Inicio
+                    
+                    // Buscar primer evento "Inicia descarga"
+                    if (!firstInitiaEvent && evento.includes('inicia') && evento.includes('descarga')) {
+                        firstInitiaEvent = { fecha, hora };
+                    }
+                    
+                    // Buscar último evento "Finaliza descarga"
+                    if (evento.includes('finaliza') && evento.includes('descarga')) {
+                        lastFinalEvent = { fecha, hora: cols[3] }; // Fin
+                    }
+                }
+            });
+            
+            // Actualizar displays
+            if (firstInitiaEvent) {
+                const displayStart = `${firstInitiaEvent.fecha} ${firstInitiaEvent.hora}`;
+                document.getElementById('dischargeStartDisplay').textContent = displayStart;
+                document.getElementById('dischargeStart').value = firstInitiaEvent.hora;
+            }
+            
+            if (lastFinalEvent) {
+                const displayEnd = `${lastFinalEvent.fecha} ${lastFinalEvent.hora}`;
+                document.getElementById('dischargeEndDisplay').textContent = displayEnd;
+                document.getElementById('dischargeEnd').value = lastFinalEvent.hora;
+            }
+        }
 
-    // Ordenar Cronológicamente
-    rows.sort((a, b) => a.d.localeCompare(b.d));
-    renderizarEdicion(rows);
-}
+        // ===========================
+        // CÁLCULO DE CANTIDAD
+        // ===========================
+        function calculateTotalQty() {
+            const programRaw = document.getElementById('programData').value;
+            const lines = programRaw.split('\n').filter(l => l.trim());
+            
+            let total = 0;
+            lines.forEach(line => {
+                const cols = line.split('\t');
+                if (cols.length >= 2 && cols[0] && cols[0].toLowerCase() !== 'barcaza') {
+                    const qty = parseFloat(cols[1].trim().replace(',', '.'));
+                    if (!isNaN(qty)) {
+                        total += qty;
+                    }
+                }
+            });
+            
+            document.getElementById('totalQtyDisplay').textContent = total.toLocaleString('es-UY', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 3
+            }) + ' mtons';
+            document.getElementById('totalQty').value = total.toLocaleString('es-UY', {
+                minimumFractionDigits: 3,
+                maximumFractionDigits: 3
+            });
+        }
 
-function generarWording(txt, id, pos) {
-    if (txt.includes("DRAFT INICIAL")) return `Draft inicial de barcaza ${id}`;
-    if (txt.includes("DRAFT FINAL")) return `Draft final de barcaza ${id}`;
-    if (txt.includes("TRACTOR")) return `Corta descarga en pos. ${pos} por ingreso de tractor`;
-    if (txt.includes("MUESTRAS")) return `Corta descarga en pos. ${pos} por toma de muestras`;
-    if (txt.includes("CALADO")) return `Corta descarga en pos. ${pos} por calados buque`;
-    if (txt.includes("REANUDA")) return `Reanuda descarga en posición ${pos}`;
-    if (txt.includes("CAMBIO") || txt.includes("FINALIZA")) return `Finaliza descarga de barcaza ${id}`;
-    if (txt.includes("PILA") || txt.includes("INICIA")) return `Inicia descarga de barcaza ${id} en posición ${pos}`;
-    return txt;
-}
+        // ===========================
+        // PROCESAMIENTO DE DATOS
+        // ===========================
+        function parseGruasData(text) {
+            const lines = text.split('\n').filter(l => l.trim());
+            const events = [];
+            
+            lines.forEach(line => {
+                const cols = line.split('\t').map(c => c.trim());
+                if (cols.length >= 6 && cols[0]) {
+                    events.push({
+                        fecha: cols[0],
+                        barcaza: cols[1] || '',
+                        desde: cols[2] || '',
+                        hasta: cols[3] || '',
+                        tiempo: cols[4] || '',
+                        evento: cols[5] || ''
+                    });
+                }
+            });
+            
+            return events;
+        }
 
-function renderizarEdicion(rows) {
-    const tbody = document.getElementById('bodyEdicion');
-    tbody.innerHTML = "";
-    document.getElementById('editScreen').style.display = 'block';
-    document.getElementById('btnXLS').style.display = 'block';
+        function parseProgramData(text) {
+            const lines = text.split('\n').filter(l => l.trim());
+            const program = {};
+            
+            lines.forEach(line => {
+                const cols = line.split('\t');
+                if (cols.length >= 2 && cols[0] && cols[0].toLowerCase() !== 'barcaza') {
+                    program[cols[0].trim()] = cols[1].trim();
+                }
+            });
+            
+            return program;
+        }
 
-    rows.forEach((r, index) => {
-        const tr = document.createElement('tr');
-        
-        // Validación Regla de Oro (Simplificada para la vista)
-        const esDraftFinal = r.o.includes("Draft final");
-        
-        tr.innerHTML = `
-            <td><input type="text" value="${r.f}" style="width:80px"></td>
-            <td><input type="text" value="${r.b}" style="width:80px"></td>
-            <td><input type="text" value="${r.p}" style="width:70px"></td>
-            <td><input type="text" value="${r.d}" style="width:50px"></td>
-            <td><input type="text" value="${r.h}" style="width:50px"></td>
-            <td><input type="text" value="${r.o}" style="width:100%"></td>
-            <td><button class="btn-action" onclick="this.parentElement.parentElement.remove()">X</button></td>
-        `;
-        tbody.appendChild(tr);
-    });
-}
+        // ===========================
+        // GENERACIÓN EXCEL
+        // ===========================
+        function generateSOF() {
+            // Validar
+            const required = ['opDate', 'convoy', 'tugboat', 'shipowner', 'charterers', 'cargo', 'dischargePort', 'moorageLocation', 'arrivalTime', 'authoritiesTime', 'freePracticaTime'];
+            
+            for (let field of required) {
+                const val = document.getElementById(field).value;
+                if (!val) {
+                    showAlert(`⚠ Campo obligatorio: ${field}`, 'warning');
+                    return;
+                }
+            }
 
-function descargarExcel() {
-    const table = document.getElementById('tablaEdicion');
-    const wb = XLSX.utils.table_to_book(table, {sheet: "SOF EDITADO"});
-    XLSX.writeFile(wb, `SOF_ISA_NAVIOS_${new Date().getTime()}.xlsx`);
-}
-</script>
+            if (!document.getElementById('dischargeStart').value) {
+                showAlert('⚠ No se pudo extraer "Comienza Carga" de los logs. Verifica que haya evento "Inicia descarga"', 'warning');
+                return;
+            }
 
+            if (!document.getElementById('dischargeEnd').value) {
+                showAlert('⚠ No se pudo extraer "Finaliza Carga" de los logs. Verifica que haya evento "Finaliza descarga"', 'warning');
+                return;
+            }
+
+            const gruasRaw = document.getElementById('gruasData').value.trim();
+            if (!gruasRaw) {
+                showAlert('⚠ Debes pegar los logs de grúas', 'warning');
+                return;
+            }
+
+            const programRaw = document.getElementById('programData').value.trim();
+            if (!programRaw) {
+                showAlert('⚠ Debes pegar el programa de descarga', 'warning');
+                return;
+            }
+
+            // Procesar datos
+            const events = parseGruasData(gruasRaw);
+            const program = parseProgramData(programRaw);
+            const opDate = document.getElementById('opDate').value;
+
+            const data = {
+                opDate: opDate,
+                opDay: getDayName(opDate),
+                convoy: document.getElementById('convoy').value,
+                tugboat: document.getElementById('tugboat').value,
+                shipowner: document.getElementById('shipowner').value,
+                charterers: document.getElementById('charterers').value,
+                cargo: document.getElementById('cargo').value,
+                totalQty: document.getElementById('totalQty').value,
+                agency: 'MSA',
+                dischargePort: document.getElementById('dischargePort').value,
+                moorageLocation: document.getElementById('moorageLocation').value,
+                arrivalTime: formatDatetime(document.getElementById('arrivalTime').value),
+                dischargeStart: `${opDate.split('-').reverse().join('/')} ${document.getElementById('dischargeStart').value}`,
+                dischargeEnd: `${opDate.split('-').reverse().join('/')} ${document.getElementById('dischargeEnd').value}`,
+                authoritiesTime: formatDatetime(document.getElementById('authoritiesTime').value),
+                freePracticaTime: formatDatetime(document.getElementById('freePracticaTime').value),
+                events: events,
+                program: program
+            };
+
+            createSOFExcel(data);
+            showAlert('✓ SOF generado. Descargando...', 'success');
+        }
+
+        function createSOFExcel(data) {
+            const ws_name = "SOF FORMATO MSA - HB";
+            const wb = XLSX.utils.book_new();
+            const matrix = [];
+
+            // ENCABEZADO
+            matrix.push(["INDEPENDENT SHIP'S AGENTS S.A.", "", "", "", "", "", "", "Page nbr. 1/2"]);
+            matrix.push(["Felipe Fontana 818", "", "", "", "", "", "", ""]);
+            matrix.push(["Nueva Palmira - Uruguay", "", "", "", "", "", "", "Standard Statement on Fact"]);
+            matrix.push(["Phone (598) 4544-9529", "", "", "", "", "", "", "Recommended by BIMCO (amended)"]);
+            matrix.push(["E-mail: npa@isa-agents.com.ar", "", "", "", "", "", "", ""]);
+            matrix.push(["", "", "", "", "", "", "", ""]);
+
+            // INFO OPERACIONAL
+            matrix.push(["Nombre del convoy", "", "", "", "", "", "Puerto y lugar de descarga", ""]);
+            matrix.push([data.convoy, "", "", "", "", "", data.dischargePort, ""]);
+            matrix.push(["Nombre del remolcador", "", "", "", "", "", "Representante / Agencia", "Fecha y hora de amarre"]);
+            matrix.push([data.tugboat, "", "", "", "", "", data.agency, data.arrivalTime]);
+            matrix.push(["Armador", "", "", "", "", "", "Charterers", "Comienza carga"]);
+            matrix.push([data.shipowner, "", "", "", "", "", data.charterers, data.dischargeStart]);
+            matrix.push(["Carga", "", "", "", "", "", "Carta de Alistamiento", "Finaliza carga"]);
+            matrix.push([data.cargo, "", "", "", "", "", "", data.dischargeEnd]);
+            matrix.push(["Detalles de operativa", "", "", "", "", "", "Cantidad de origen por BL", "Cantidad descargada"]);
+            matrix.push(["", "", "", "", "", "", data.totalQty + " mtons", data.totalQty + " mtons"]);
+            matrix.push(["", "", "", "", "", "", "", ""]);
+
+            // TABLA OPERATIVA - ENCABEZADO
+            matrix.push(["Fecha", "Día", "Barcaza", "Desde", "Hasta", "Observaciones", "Remarks", ""]);
+
+            // Evento de Amarre
+            const opDateFormatted = data.opDate.split('-').reverse().join('/');
+            const dayName = data.opDay;
+            matrix.push([opDateFormatted, dayName, "", data.arrivalTime.split(' ')[1], "", `${data.convoy} amarrado en ${data.moorageLocation}.`, "", ""]);
+
+            // Carta de Alistamiento Extendida
+            matrix.push(["", "", "", data.arrivalTime.split(' ')[1], "", "Carta de Alistamiento extendida.", "", ""]);
+
+            // Autoridades y agencia a bordo
+            matrix.push(["", "", "", data.authoritiesTime.split(' ')[1], "", "Autoridades y agencia a bordo.", "", ""]);
+
+            // Libre plática otorgada
+            matrix.push(["", "", "", data.freePracticaTime.split(' ')[1], "", "Libre plática otorgada.", "", ""]);
+
+            // Agregar eventos de operativa
+            data.events.forEach((e) => {
+                let obsText = e.evento;
+                
+                if (e.evento.toLowerCase().includes('draft inicial')) {
+                    obsText = `Inicia descarga barcaza ${e.barcaza}`;
+                } else if (e.evento.toLowerCase().includes('draft final')) {
+                    obsText = `Finaliza descarga barcaza ${e.barcaza}`;
+                } else if (e.evento.toLowerCase().includes('descarga a pila')) {
+                    obsText = e.barcaza ? `Reanuda descarga barcaza ${e.barcaza}` : `Reanuda descarga`;
+                } else if (e.evento.toLowerCase().includes('tractor')) {
+                    obsText = e.barcaza ? `Corta descarga barcaza ${e.barcaza} por ingreso de tractor` : `Corta descarga por ingreso de tractor`;
+                } else if (e.evento.toLowerCase().includes('muestras')) {
+                    obsText = e.barcaza ? `Corta descarga barcaza ${e.barcaza} por toma de muestras` : `Corta descarga por toma de muestras`;
+                } else if (e.evento.toLowerCase().includes('calados')) {
+                    obsText = e.barcaza ? `Corta descarga barcaza ${e.barcaza} por calados buque` : `Corta descarga por calados buque`;
+                } else if (e.evento.toLowerCase().includes('cambio')) {
+                    obsText = `Cambio de barcaza`;
+                } else if (e.evento.toLowerCase().includes('tapas')) {
+                    obsText = `Cierre de escotillas`;
+                }
+
+                matrix.push([
+                    e.fecha || "",
+                    "",
+                    e.barcaza || "",
+                    e.desde || "",
+                    e.hasta || "",
+                    obsText,
+                    "",
+                    ""
+                ]);
+            });
+
+            // Crear sheet
+            const ws = XLSX.utils.aoa_to_sheet(matrix);
+            ws['!cols'] = [
+                { wch: 15 }, 
+                { wch: 12 }, 
+                { wch: 15 }, 
+                { wch: 10 }, 
+                { wch: 10 }, 
+                { wch: 50 }, 
+                { wch: 15 }, 
+                { wch: 8 }
+            ];
+
+            XLSX.utils.book_append_sheet(wb, ws, ws_name);
+
+            const filename = `SOF_${data.opDate}_${data.convoy.split('+')[0].trim()}.xlsx`;
+            XLSX.writeFile(wb, filename);
+        }
+
+        // ===========================
+        // UI
+        // ===========================
+        function showAlert(msg, type) {
+            const elem = document.getElementById('alertMessage');
+            const icons = { success: '✓', error: '✗', warning: '⚠' };
+            elem.innerHTML = `<span>${icons[type]}</span><span>${msg}</span>`;
+            elem.className = `alert show alert-${type}`;
+            setTimeout(() => elem.classList.remove('show'), 4000);
+        }
+
+        function clearForm() {
+            document.querySelectorAll('input, select, textarea').forEach(e => {
+                if (e.type !== 'file' && e.type !== 'hidden') e.value = '';
+            });
+            document.getElementById('opDate').valueAsDate = new Date();
+            document.getElementById('totalQtyDisplay').textContent = '0.00 mtons';
+            document.getElementById('dischargeStartDisplay').textContent = 'Se calcula al pegar logs';
+            document.getElementById('dischargeEndDisplay').textContent = 'Se calcula al pegar logs';
+            document.getElementById('totalQty').value = '0';
+            document.getElementById('dischargeStart').value = '';
+            document.getElementById('dischargeEnd').value = '';
+            showAlert('✓ Formulario limpiado', 'success');
+        }
+
+        // Init
+        document.getElementById('opDate').valueAsDate = new Date();
+    </script>
 </body>
 </html>
