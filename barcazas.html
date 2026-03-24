@@ -102,7 +102,7 @@ textarea{resize:vertical;min-height:120px;font-family:'Courier New',monospace}
 
     <div class="card">
       <div class="card-header"><div class="card-title">Nómina de Barcazas</div></div>
-      <div class="note">Pegá: # | Barcaza | Cantidad | Producto | Viaje</div>
+      <div class="note">Pegá la tabla de barcazas (con # | Barcaza | Cantidad Origen | NOR | Amarre | Dsamarre | Inicio | Fin)</div>
       <textarea id="barcazas-paste" placeholder="Pegá aquí..." oninput="procesarBarcazas()"></textarea>
       <div id="bcz-status" style="margin:10px 0;font-size:12px"></div>
       <div id="bcz-preview" style="overflow-x:auto"></div>
@@ -160,18 +160,227 @@ textarea{resize:vertical;min-height:120px;font-family:'Courier New',monospace}
 
 <script>
 let lanchaIdx=0,extraIdx=0,drawIdx=0;
+window.barcazasData=[];
+window.barcazasTotal=0;
+
 function goTab(n){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));document.getElementById('tab-btn-'+n).classList.add('active');document.getElementById('tab-'+n).classList.add('active')}
 function toggleCollapse(btn){const c=btn.nextElementSibling;c.classList.toggle('active');btn.classList.toggle('open')}
 function v(id){const el=document.getElementById(id);return el?el.value.trim():''}
 function chk(id){const el=document.getElementById(id);return el&&el.checked}
 function maskDate(el){let val=el.value.replace(/\D/g,'');if(val.length>2)val=val.slice(0,2)+'/'+val.slice(2);if(val.length>5)val=val.slice(0,5)+'/'+val.slice(5);if(val.length>10)val=val.slice(0,10);el.value=val}
-function procesarBarcazas(){const raw=document.getElementById('barcazas-paste').value;const status=document.getElementById('bcz-status');const preview=document.getElementById('bcz-preview');if(!raw.trim()){status.innerHTML='';preview.innerHTML='';return}let lines=raw.split('\n').map(l=>l.trim()).filter(l=>l);const data=[];let i=0;while(i<lines.length){const line=lines[i];if(line==='#'||line.toUpperCase()==='BARCAZA'||line.toUpperCase()==='CANTIDAD ORIGEN'||line.toUpperCase()==='PRODUCTO'||line.toUpperCase()==='VIAJE'){i++;continue}if(line.toUpperCase()==='TTL'||/^[\d.]+$/.test(line)){i++;continue}const num=line;const barcaza=lines[i+1]||'';const cantidad=lines[i+2]||'';const producto=lines[i+3]||'';const viaje=lines[i+4]||'';if(barcaza&&cantidad&&/^HB|^TAF|^AC|^\d{4}/.test(barcaza)&&/[\d.,]+/.test(cantidad)){data.push({num:num,barcaza:barcaza,cantidad:cantidad,producto:producto,viaje:viaje});i+=5}else{i++}}if(!data.length){status.innerHTML='<span style="color:var(--isa-red)">⚠ No se detectaron</span>';return}status.innerHTML=`<span style="color:var(--isa-green)">✓ ${data.length} barcazas</span>`;let html='<table class="table-bcz"><tr><th>#</th><th>Barcaza</th><th>Cantidad</th><th>Producto</th><th>Viaje</th></tr>';let total=0;data.forEach((r,idx)=>{html+=`<tr><td>${idx+1}</td><td>${r.barcaza}</td><td>${r.cantidad}</td><td>${r.producto}</td><td>${r.viaje}</td></tr>`;const qty=parseFloat(r.cantidad.replace(/\./g,'').replace(',','.'));if(!isNaN(qty))total+=qty});if(total>0)html+=`<tr><td></td><td><b>TTL</b></td><td><b>${total.toLocaleString('es-UY')}</b></td><td></td><td></td></tr>`;html+='</table>';preview.innerHTML=html}
+
+function procesarBarcazas(){
+  const raw=document.getElementById('barcazas-paste').value;
+  const status=document.getElementById('bcz-status');
+  const preview=document.getElementById('bcz-preview');
+  if(!raw.trim()){status.innerHTML='';preview.innerHTML='';window.barcazasData=[];window.barcazasTotal=0;return}
+  
+  const lines=raw.split('\n').map(l=>l.trim()).filter(l=>l);
+  const data=[];
+  let inTable=false;
+  
+  for(let i=0;i<lines.length;i++){
+    const line=lines[i];
+    // Detectar inicio de tabla
+    if(line.match(/#.*Barcaza.*Cantidad|^#$/i)){inTable=true;continue}
+    if(!inTable)continue;
+    // Detectar fin de tabla
+    if(line.match(/^TTL|TOTAL|^Zarpó|^[0-9]\s*$/) && i > 2)break;
+    
+    // Dividir por espacios múltiples o tabulaciones
+    const parts=line.split(/\s{2,}|\t/);
+    if(parts.length>=2){
+      const num=parts[0].trim();
+      const barcaza=parts[1].trim();
+      const cantidad=parts[2]?parts[2].trim():'';
+      
+      // Validar que sea una fila válida
+      if(barcaza && /^[A-Z0-9]{1,5}$/.test(barcaza) && cantidad && /[\d.,]/.test(cantidad)){
+        const qtyStr=cantidad.replace(/\./g,'').replace(',','.');
+        const qtyNum=parseFloat(qtyStr);
+        if(!isNaN(qtyNum) && qtyNum>0){
+          data.push({num:num,barcaza:barcaza,cantidad:cantidad,qtyNum:qtyNum});
+        }
+      }
+    }
+  }
+  
+  if(!data.length){
+    status.innerHTML='<span style="color:var(--isa-red)">⚠ No se detectaron barcazas válidas</span>';
+    window.barcazasData=[];
+    window.barcazasTotal=0;
+    return;
+  }
+  
+  status.innerHTML=`<span style="color:var(--isa-green)">✓ ${data.length} barcazas detectadas</span>`;
+  
+  let html='<table class="table-bcz"><tr><th>#</th><th>Barcaza</th><th>Cantidad</th></tr>';
+  let total=0;
+  data.forEach((r,idx)=>{
+    html+=`<tr><td>${idx+1}</td><td>${r.barcaza}</td><td>${r.cantidad}</td></tr>`;
+    total+=r.qtyNum;
+  });
+  if(total>0){
+    html+=`<tr><td></td><td><b>TTL</b></td><td><b>${total.toLocaleString('es-UY')}</b></td></tr>`;
+  }
+  html+='</table>';
+  
+  preview.innerHTML=html;
+  window.barcazasData=data;
+  window.barcazasTotal=total;
+}
+
 function addLancha(){const id=lanchaIdx++;const div=document.createElement('div');div.className='sub-item';div.id='lc-'+id;div.innerHTML=`<div class="item-header"><span class="item-label">Lancha ${id+1}</span><button class="rm" onclick="document.getElementById('lc-${id}').remove()">X</button></div><div class="g3"><div><label>Tipo</label><input type="text" id="lct-${id}" placeholder="Entrada"></div><div><label>Fecha</label><input type="text" id="lcf-${id}" placeholder="DD/MM/YYYY" maxlength="10" oninput="maskDate(this)"></div><div><label>Hora</label><input type="time" id="lch-${id}"></div></div><div class="g2"><div><label>Proveedor</label><select id="lcp-${id}"><option>GOMISTAR</option><option>CG TRÁFICO</option><option>CORUMBA</option><option>Otro</option></select></div><div><label>Lugar</label><input type="text" id="lcn-${id}"></div></div>`;document.getElementById('lanchas-list').appendChild(div)}
+
 function addExtra(){const id=extraIdx++;const div=document.createElement('div');div.className='sub-item';div.id='ex-'+id;div.innerHTML=`<div class="item-header"><span class="item-label">Extra ${id+1}</span><button class="rm" onclick="document.getElementById('ex-${id}').remove()">X</button></div><div class="g2"><div style="grid-column:1/3"><label>Descripción</label><input type="text" id="exd-${id}"></div></div><div><label>USD</label><input type="number" id="exm-${id}"></div>`;document.getElementById('extras-list').appendChild(div)}
+
 function addDraw(){const id=drawIdx++;const div=document.createElement('div');div.className='sub-item';div.id='dr-'+id;div.innerHTML=`<div class="item-header"><span class="item-label">Trámite ${id+1}</span><button class="rm" onclick="document.getElementById('dr-${id}').remove()">X</button></div><div class="g2"><div><label>Trámite</label><input type="text" id="drt-${id}"></div><div><label>Detalle</label><input type="text" id="drd-${id}"></div></div><div><label>Proveedor</label><input type="text" id="drp-${id}"></div>`;document.getElementById('draw-list').appendChild(div)}
-function generate(){const rem=v('rem')||'REMOLCADOR';const arm=v('armador'),ref=v('ref'),merc=v('merc'),muelles=v('muelles');const ban=v('bandera'),oce=v('oce'),migra=v('migra');const operativa=v('operativa');let subj=`Gastos – ${rem}`;if(ref)subj+=` (${ref})`;if(merc)subj+=` – ${merc}`;if(muelles)subj+=` – ${muelles.split('+')[0].trim()}`;let b='Estimados,\n\nDetallo mensaje de gastos correspondiente a la operación en asunto.\n\n';b+=rem;if(ref)b+=` (${ref})`;if(merc)b+=` - ${merc}`;if(muelles)b+=` - ${muelles}`;b+='\n\n';if(arm)b+=`Armador: ${arm}\n`;if(ref)b+=`Referencia: ${ref}\n`;if(merc)b+=`Mercadería: ${merc}\n`;if(muelles)b+=`Muelle: ${muelles}\n`;const sanItems=[];if(ban)sanItems.push(`Bandera ${ban}`);if(oce)sanItems.push(`OCE ${oce}`);if(migra)sanItems.push(`${migra} Migraciones`);if(chk('chk-ld'))sanItems.push('Light Dues');if(chk('chk-vhf'))sanItems.push('VHF');if(sanItems.length)b+=`Sanidad: ${sanItems.join(', ')}\n`;if(chk('chk-desp'))b+=`Entrada/Despacho en muelle\n`;b+='\nOPERATIVA:\n';if(operativa)b+=operativa+'\n';const lanchasContainer=document.getElementById('lanchas-list');if(lanchasContainer.querySelectorAll('[id^="lc-"]').length>0){b+='\n';lanchasContainer.querySelectorAll('[id^="lc-"]').forEach(el=>{const id=el.id.substr(3);const tipo=v('lct-'+id),fecha=v('lcf-'+id),hora=v('lch-'+id),prov=v('lcp-'+id),nota=v('lcn-'+id);let ln=`LANCHA – ${tipo}`;if(fecha)ln+=` ${fecha}`;if(hora)ln+=` – ${hora} hrs`;if(nota)ln+=` (${nota})`;if(prov)ln+=` - ${prov}`;b+=ln+'\n'})}if(v('pt-fecha')){b+=`\nAmarra en petrovias ${v('pt-fecha')}`;if(v('pt-hora'))b+=` - ${v('pt-hora')} HRS`;b+='\n';if(v('pt-prov'))b+=`Custodia ${v('pt-prov')}\n`;if(v('pt-lf'))b+=`Lancha entrada/despacho ${v('pt-lf')}\n`}if(v('sc-fecha')){b+=`\nAmarra en sauce ${v('sc-fecha')}\n`;if(v('sc-prov'))b+=`Proveedor: ${v('sc-prov')}\n`}if(v('med-trip')){b+=`\nATENCION MEDICA\n`;b+=`Tripulante: ${v('med-trip')}\n`;if(v('med-cli'))b+=`Clínica: ${v('med-cli')}\n`;if(v('med-cons'))b+=`${v('med-cons')} ${v('med-cons')==='1'?'consulta':'consultas'}\n`;if(v('med-usd'))b+=`Total USD ${v('med-usd')}\n`;if(v('med-lanch'))b+=`${v('med-lanch')} lanchas desembarco\n`;if(chk('chk-meds'))b+=`Medicamentos\n`;if(chk('chk-tras'))b+=`Traslados\n`}const extrasContainer=document.getElementById('extras-list');if(extrasContainer.querySelectorAll('[id^="ex-"]').length>0){b+='\nEXTRAS:\n';extrasContainer.querySelectorAll('[id^="ex-"]').forEach(el=>{const id=el.id.substr(3),desc=v('exd-'+id),monto=v('exm-'+id);if(desc)b+=desc+(monto?` (USD ${monto})`:'')+'​\n'})}const drawContainer=document.getElementById('draw-list');if(drawContainer.querySelectorAll('[id^="dr-"]').length>0){b+='\nDESENROLE\n';drawContainer.querySelectorAll('[id^="dr-"]').forEach(el=>{const id=el.id.substr(3),tram=v('drt-'+id),det=v('drd-'+id),prov=v('drp-'+id);let ln=tram+(det?` – ${det}`:'')+(prov?` - Gestionado por ${prov}`:'');b+=ln+'\n'})}b+='\nCualquier duda quedo a las ordenes.\n\nSaludos cordiales,';document.getElementById('subj-out').textContent=subj;document.getElementById('body-out').textContent=b}
-function copyEl(id){const t=document.getElementById(id).textContent;navigator.clipboard.writeText(t).then(()=>{const btn=event.target;const o=btn.textContent;btn.textContent='¡Copiado!';setTimeout(()=>btn.textContent=o,1500)})}
-function sendMail(){const text=document.getElementById('body-out').textContent;if(!text||text==='Genera el mensaje para verlo aquí')return;const rem=v('rem')||'REMOLCADOR',ref=v('ref'),merc=v('merc'),muelles=v('muelles');let asunto=`Gastos – ${rem}`;if(ref)asunto+=` (${ref})`;if(merc)asunto+=` – ${merc}`;if(muelles)asunto+=` – ${muelles.split('+')[0].trim()}`;window.location.href=`mailto:?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(text)}`}
+
+function generate(){
+  const rem=v('rem')||'REMOLCADOR';
+  const arm=v('armador'),ref=v('ref'),merc=v('merc'),muelles=v('muelles');
+  const ban=v('bandera'),oce=v('oce'),migra=v('migra');
+  const operativa=v('operativa');
+  const barcazasCount=window.barcazasData.length;
+  
+  // ASUNTO
+  let subj=`Gastos – ${rem}`;
+  if(barcazasCount>0)subj+=` + ${barcazasCount} barcazas`;
+  if(ref)subj+=` (${ref})`;
+  if(merc)subj+=` – ${merc}`;
+  if(muelles)subj+=` – ${muelles.split('+')[0].trim()}`;
+  
+  // CUERPO
+  let b='Estimados,\n\nDetallo mensaje de gastos correspondiente a la operación en asunto.\n\n';
+  b+=rem;
+  if(barcazasCount>0)b+=` + ${barcazasCount} barcazas`;
+  if(ref)b+=` (${ref})`;
+  if(merc)b+=` – ${merc}`;
+  if(muelles)b+=` - ${muelles}`;
+  b+='\n\n';
+  
+  if(arm)b+=`Armador: ${arm}\n`;
+  if(ref)b+=`Referencia: ${ref}\n`;
+  if(merc)b+=`Mercadería: ${merc}\n`;
+  if(muelles)b+=`Muelle: ${muelles}\n`;
+  
+  const sanItems=[];
+  if(ban)sanItems.push(`Bandera ${ban}`);
+  if(oce)sanItems.push(`OCE ${oce}`);
+  if(migra)sanItems.push(`${migra} Migraciones`);
+  if(chk('chk-ld'))sanItems.push('Light Dues');
+  if(chk('chk-vhf'))sanItems.push('VHF');
+  if(sanItems.length)b+=`Sanidad: ${sanItems.join(', ')}\n`;
+  if(chk('chk-desp'))b+=`Entrada/Despacho en muelle\n`;
+  
+  b+='\nOPERATIVA:\n';
+  if(operativa)b+=operativa+'\n';
+  
+  // LANCHAS
+  const lanchasContainer=document.getElementById('lanchas-list');
+  if(lanchasContainer.querySelectorAll('[id^="lc-"]').length>0){
+    b+='\n';
+    lanchasContainer.querySelectorAll('[id^="lc-"]').forEach(el=>{
+      const id=el.id.substr(3);
+      const tipo=v('lct-'+id),fecha=v('lcf-'+id),hora=v('lch-'+id),prov=v('lcp-'+id),nota=v('lcn-'+id);
+      let ln=`LANCHA – ${tipo}`;
+      if(fecha)ln+=` ${fecha}`;
+      if(hora)ln+=` – ${hora} hrs`;
+      if(nota)ln+=` (${nota})`;
+      if(prov)ln+=` - ${prov}`;
+      b+=ln+'\n';
+    });
+  }
+  
+  // PETROVÍAS
+  if(v('pt-fecha')){
+    b+=`\nAmarra en petrovias ${v('pt-fecha')}`;
+    if(v('pt-hora'))b+=` - ${v('pt-hora')} HRS`;
+    b+='\n';
+    if(v('pt-prov'))b+=`Custodia ${v('pt-prov')}\n`;
+    if(v('pt-lf'))b+=`Lancha entrada/despacho ${v('pt-lf')}\n`;
+  }
+  
+  // SAUCE
+  if(v('sc-fecha')){
+    b+=`\nAmarra en sauce ${v('sc-fecha')}\n`;
+    if(v('sc-prov'))b+=`Proveedor: ${v('sc-prov')}\n`;
+  }
+  
+  // ATENCIÓN MÉDICA
+  if(v('med-trip')){
+    b+=`\nATENCION MEDICA\n`;
+    b+=`Tripulante: ${v('med-trip')}\n`;
+    if(v('med-cli'))b+=`Clínica: ${v('med-cli')}\n`;
+    if(v('med-cons'))b+=`${v('med-cons')} ${v('med-cons')==='1'?'consulta':'consultas'}\n`;
+    if(v('med-usd'))b+=`Total USD ${v('med-usd')}\n`;
+    if(v('med-lanch'))b+=`${v('med-lanch')} lanchas desembarco\n`;
+    if(chk('chk-meds'))b+=`Medicamentos\n`;
+    if(chk('chk-tras'))b+=`Traslados\n`;
+  }
+  
+  // EXTRAS
+  const extrasContainer=document.getElementById('extras-list');
+  if(extrasContainer.querySelectorAll('[id^="ex-"]').length>0){
+    b+='\nEXTRAS:\n';
+    extrasContainer.querySelectorAll('[id^="ex-"]').forEach(el=>{
+      const id=el.id.substr(3),desc=v('exd-'+id),monto=v('exm-'+id);
+      if(desc)b+=desc+(monto?` (USD ${monto})`:'')+'​\n';
+    });
+  }
+  
+  // CAMBIO DE TRIPULACIÓN
+  const drawContainer=document.getElementById('draw-list');
+  if(drawContainer.querySelectorAll('[id^="dr-"]').length>0){
+    b+='\nDESENROLE\n';
+    drawContainer.querySelectorAll('[id^="dr-"]').forEach(el=>{
+      const id=el.id.substr(3),tram=v('drt-'+id),det=v('drd-'+id),prov=v('drp-'+id);
+      let ln=tram+(det?` – ${det}`:'')+(prov?` - Gestionado por ${prov}`:'');
+      b+=ln+'\n';
+    });
+  }
+  
+  // NÓMINA DE BARCAZAS TABLA
+  if(window.barcazasData.length>0){
+    b+='\nNomina de barcazas:\n\n';
+    if(window.barcazasTotal>0)b+=window.barcazasTotal.toLocaleString('es-UY')+'\n';
+    b+='#\tBarcaza\tCantidad\n';
+    window.barcazasData.forEach((row,idx)=>{
+      b+=`${idx+1}\t${row.barcaza}\t${row.cantidad}\n`;
+    });
+    if(window.barcazasTotal>0)b+=`\nTTL\t${window.barcazasTotal.toLocaleString('es-UY')}\n`;
+  }
+  
+  b+='\n\nCualquier duda quedo a las ordenes.\n\nSaludos cordiales,';
+  
+  document.getElementById('subj-out').textContent=subj;
+  document.getElementById('body-out').textContent=b;
+}
+
+function copyEl(id){
+  const t=document.getElementById(id).textContent;
+  navigator.clipboard.writeText(t).then(()=>{
+    const btn=event.target;
+    const o=btn.textContent;
+    btn.textContent='¡Copiado!';
+    setTimeout(()=>btn.textContent=o,1500);
+  });
+}
+
+function sendMail(){
+  const text=document.getElementById('body-out').textContent;
+  if(!text||text==='Genera el mensaje para verlo aquí')return;
+  const rem=v('rem')||'REMOLCADOR',ref=v('ref'),merc=v('merc'),muelles=v('muelles');
+  const barcazasCount=window.barcazasData.length;
+  
+  let asunto=`Gastos – ${rem}`;
+  if(barcazasCount>0)asunto+=` + ${barcazasCount} barcazas`;
+  if(ref)asunto+=` (${ref})`;
+  if(merc)asunto+=` – ${merc}`;
+  if(muelles)asunto+=` – ${muelles.split('+')[0].trim()}`;
+  
+  window.location.href=`mailto:?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(text)}`;
+}
 </script>
 
 </body>
