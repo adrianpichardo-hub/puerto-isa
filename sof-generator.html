@@ -111,10 +111,10 @@ table.preview tr.row-cambio td{background:#f0fff4;}
       </div>
       <hr class="divider">
       <div class="grid2">
-        <div class="fg"><label class="req">Amarre</label><input type="datetime-local" id="arrivalTime"/></div>
-        <div class="fg"><label class="req">Carta de Alistamiento / NOR</label><input type="datetime-local" id="norTime"/></div>
-        <div class="fg"><label class="req">Autoridades</label><input type="datetime-local" id="authoritiesTime"/></div>
-        <div class="fg"><label class="req">Libre Plática</label><input type="datetime-local" id="freePracticaTime"/></div>
+        <div class="fg"><label class="req">Amarre (DD/MM/AAAA HH:MM)</label><input type="text" id="arrivalTime" placeholder="18/03/2026 06:30" maxlength="16" oninput="autoFmtDT(this)"/></div>
+        <div class="fg"><label class="req">Carta de Alistamiento / NOR (DD/MM/AAAA HH:MM)</label><input type="text" id="norTime" placeholder="18/03/2026 06:45" maxlength="16" oninput="autoFmtDT(this)"/></div>
+        <div class="fg"><label class="req">Autoridades (DD/MM/AAAA HH:MM)</label><input type="text" id="authoritiesTime" placeholder="18/03/2026 07:00" maxlength="16" oninput="autoFmtDT(this)"/></div>
+        <div class="fg"><label class="req">Libre Plática (DD/MM/AAAA HH:MM)</label><input type="text" id="freePracticaTime" placeholder="18/03/2026 07:15" maxlength="16" oninput="autoFmtDT(this)"/></div>
       </div>
     </div>
   </div>
@@ -232,12 +232,42 @@ function goStep(n){
 }
 
 /* ══ DATE/TIME HELPERS ══ */
-function fmtDT(v){
-  if(!v) return '';
-  const[d,t]=v.split('T');
-  const[y,m,day]=d.split('-');
-  return `${day}/${m}/${y} ${t.substring(0,5)}`;
+
+// Auto-format as user types: inserts / and space automatically
+function autoFmtDT(el){
+  let v=el.value.replace(/[^0-9]/g,'');
+  let out='';
+  if(v.length>0) out=v.substring(0,2);
+  if(v.length>2) out+='/'+v.substring(2,4);
+  if(v.length>4) out+='/'+v.substring(4,8);
+  if(v.length>8) out+=' '+v.substring(8,10);
+  if(v.length>10) out+=':'+v.substring(10,12);
+  el.value=out;
 }
+
+// Get value from text field: already in DD/MM/YYYY HH:MM
+function dtVal(id){
+  return document.getElementById(id).value.trim();
+}
+
+// Convert DD/MM/YYYY HH:MM → YYYY-MM-DD (ISO date only)
+function dtToISO(v){
+  if(!v) return '';
+  const m=v.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
+  if(!m) return '';
+  return `${m[3]}-${m[2]}-${m[1]}`;
+}
+
+// Get HH:MM from DD/MM/YYYY HH:MM
+function dtToTime(v){
+  if(!v) return '';
+  const m=v.match(/(\d{2}:\d{2})$/);
+  return m?m[1]:'';
+}
+
+// Format already-formatted value (passthrough — value is already DD/MM/YYYY HH:MM)
+function fmtDT(v){ return v||''; }
+
 function fmtDateOnly(iso){
   if(!iso) return '';
   const s=iso.includes('T')?iso.split('T')[0]:iso;
@@ -405,19 +435,19 @@ function buildSOFRows(){
   }
 
   const opDate=document.getElementById('opDate').value;
-  const arrivalTime=document.getElementById('arrivalTime').value;
-  const norTime=document.getElementById('norTime').value;
-  const authoritiesTime=document.getElementById('authoritiesTime').value;
-  const freePracticaTime=document.getElementById('freePracticaTime').value;
+  const arrivalTime=dtVal('arrivalTime');
+  const norTime=dtVal('norTime');
+  const authoritiesTime=dtVal('authoritiesTime');
+  const freePracticaTime=dtVal('freePracticaTime');
   const convoy=document.getElementById('convoy').value;
   const moorage=document.getElementById('moorageLocation').value;
 
   const opDateF=fmtDateOnly(opDate);
   const opDay=dayName(opDate);
-  const arrH=arrivalTime?arrivalTime.split('T')[1].substring(0,5):'';
-  const norH=norTime?norTime.split('T')[1].substring(0,5):'';
-  const authH=authoritiesTime?authoritiesTime.split('T')[1].substring(0,5):'';
-  const freeH=freePracticaTime?freePracticaTime.split('T')[1].substring(0,5):'';
+  const arrH=dtToTime(arrivalTime);
+  const norH=dtToTime(norTime);
+  const authH=dtToTime(authoritiesTime);
+  const freeH=dtToTime(freePracticaTime);
 
   // Initial events
   push(opDateF,opDay,'',arrH,'',`${convoy} amarrado en ${moorage}.`,'section');
@@ -430,8 +460,8 @@ function buildSOFRows(){
   if(firstDraftLog){
     const firstDraftISO=parseLogDate(firstDraftLog.fecha);
     const firstDraftTime=firstDraftLog.desde;
-    const norDateISO=norTime?norTime.split('T')[0]:'';
-    const norH2=norTime?norTime.split('T')[1].substring(0,5):'';
+    const norDateISO=dtToISO(norTime);
+    const norH2=dtToTime(norTime);
 
     if(norDateISO && firstDraftISO){
       if(norDateISO===firstDraftISO){
@@ -640,8 +670,8 @@ function generateAll(){
     }
   });
 
-  const norTimeRaw=document.getElementById('norTime').value;
-  const arrivalFmt=fmtDT(document.getElementById('arrivalTime').value);
+  const norTimeRaw=dtVal('norTime');
+  const arrivalFmt=dtVal('arrivalTime');
 
   const data={
     opDate:document.getElementById('opDate').value,
@@ -651,7 +681,7 @@ function generateAll(){
     charterers:document.getElementById('charterers').value,
     cargo:document.getElementById('cargo').value,
     dischargePort:document.getElementById('dischargePort').value,
-    norTime:fmtDT(norTimeRaw),
+    norTime:norTimeRaw,
     norTimeRaw,
     arrivalTime:arrivalFmt,
     totalQty,cantidades,barcazaTimes,
