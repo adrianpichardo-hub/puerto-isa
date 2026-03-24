@@ -3,157 +3,415 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ISA - Seguimiento Barcazas LHG-HB</title>
+<title>ISA — Seguimiento Barcazas LHG-HB</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --navy:#0a1628;--navy2:#0d1f3c;--navy3:#112040;
-  --blue:#1a3a8c;--blue-mid:#2d5cb8;--blue-light:#3a7bd5;--accent:#00b4d8;
-  --white:#fff;--off-white:#e8eef8;--muted:rgba(255,255,255,.45);
-  --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.12);
-  --pda:#22c55e;--pda-bg:rgba(34,197,94,.12);--pda-border:rgba(34,197,94,.25);
-  --npa:#f97316;--npa-bg:rgba(249,115,22,.12);--npa-border:rgba(249,115,22,.25);
-  --sin:#ef4444;--sin-bg:rgba(239,68,68,.12);--sin-border:rgba(239,68,68,.25);
-  --sal:#eab308;--sal-bg:rgba(234,179,8,.12);--sal-border:rgba(234,179,8,.25);
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy:        #07111f;
+  --navy2:       #0b1a2e;
+  --navy3:       #0e2040;
+
+  --blue:        #1a3a8c;
+  --blue-mid:    #2d5cb8;
+  --blue-light:  #4a8de0;
+
+  /* Accent principal — cian eléctrico */
+  --accent:      #00c8e8;
+  --accent2:     #0099b8;
+
+  /* PDA — verde esmeralda */
+  --pda:         #22d46a;
+  --pda-dim:     rgba(34, 212, 106, .14);
+  --pda-border:  rgba(34, 212, 106, .28);
+
+  /* NPA — naranja ámbar */
+  --npa:         #f97316;
+  --npa-dim:     rgba(249, 115, 22, .13);
+  --npa-border:  rgba(249, 115, 22, .28);
+
+  /* Alerta / error */
+  --red:         #f05050;
+  --red-dim:     rgba(240, 80, 80, .12);
+
+  /* Salida confirmada */
+  --teal:        #14b8a6;
+  --teal-dim:    rgba(20, 184, 166, .12);
+  --teal-border: rgba(20, 184, 166, .28);
+
+  --white:       #ffffff;
+  --off-white:   #dde6f4;
+  --muted:       rgba(255, 255, 255, .42);
+  --border:      rgba(255, 255, 255, .07);
+  --border2:     rgba(255, 255, 255, .12);
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
 }
-html,body{height:100%;overflow:hidden}
-body{font-family:'Barlow',sans-serif;background:var(--navy);color:var(--white);display:flex;flex-direction:column;}
-.bg{position:fixed;inset:0;z-index:0;}
-.bg-grad{position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 10% 50%,rgba(26,58,140,.4) 0%,transparent 70%),linear-gradient(160deg,#0a1628 0%,#0d1f3c 60%,#0a1628 100%);}
-.bg-lines{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:60px 60px;}
-.side-accent{position:fixed;left:0;top:0;bottom:0;width:3px;z-index:20;background:linear-gradient(180deg,transparent 0%,var(--accent) 40%,var(--blue-light) 70%,transparent 100%);opacity:.6;}
-.isa-header{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:56px;border-bottom:1px solid var(--border);}
-.logo-wrap{display:flex;align-items:center;}
-.logo-isa{font-family:'Barlow Condensed',sans-serif;font-size:38px;font-weight:800;font-style:italic;color:var(--white);letter-spacing:2px;line-height:1;position:relative;}
-.logo-isa::after{content:'';position:absolute;bottom:-3px;left:0;width:100%;height:2px;background:linear-gradient(90deg,var(--accent),var(--blue-light));}
-.logo-sub{margin-left:12px;padding-left:12px;border-left:1px solid rgba(255,255,255,.2);display:flex;flex-direction:column;gap:1px;}
-.logo-name{font-size:11px;font-weight:600;color:var(--off-white);letter-spacing:.14em;text-transform:uppercase}
-.logo-tag{font-size:9px;font-weight:300;color:var(--muted);letter-spacing:.16em;text-transform:uppercase}
-.header-right{display:flex;align-items:center;gap:16px;}
-.back-link{font-size:11px;font-weight:600;color:rgba(255,255,255,.5);text-decoration:none;letter-spacing:.08em;text-transform:uppercase;padding:5px 12px;border:1px solid rgba(255,255,255,.12);border-radius:6px;transition:all .15s;}
-.back-link:hover{color:var(--white);border-color:rgba(255,255,255,.3);}
-.refresh-btn{font-size:11px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;background:rgba(0,180,216,.1);border:1px solid rgba(0,180,216,.25);border-radius:6px;padding:5px 12px;cursor:pointer;font-family:'Barlow',sans-serif;transition:all .15s;display:flex;align-items:center;gap:5px;}
-.refresh-btn:hover{background:rgba(0,180,216,.2);}
-.refresh-btn.spin .icon{animation:spin .7s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg)}}
-.last-upd{font-size:10px;color:var(--muted);letter-spacing:.05em;}
-.title-bar{position:relative;z-index:10;padding:.9rem 2rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
-.page-title{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--white);}
-.page-sub{font-size:11px;color:var(--muted);margin-top:2px;letter-spacing:.04em;}
-.search-wrap{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-.search-input{font-size:13px;font-family:'Barlow',sans-serif;padding:7px 14px;background:rgba(255,255,255,.06);border:1px solid var(--border2);border-radius:8px;color:var(--white);outline:none;width:200px;transition:all .15s;}
-.search-input::placeholder{color:var(--muted);}
-.search-input:focus{border-color:var(--accent);background:rgba(255,255,255,.09);}
-.filter-sel{font-size:12px;font-family:'Barlow',sans-serif;padding:7px 12px;background:rgba(255,255,255,.06);border:1px solid var(--border2);border-radius:8px;color:var(--white);outline:none;cursor:pointer;}
-.filter-sel option{background:var(--navy2);color:var(--white);}
-.filter-sel:focus{border-color:var(--accent);}
-.main-layout{position:relative;z-index:10;display:flex;flex:1;overflow:hidden;}
-.sidebar{width:280px;flex-shrink:0;border-right:1px solid var(--border);overflow-y:auto;padding:1.25rem;}
-.sidebar-title{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid var(--border);}
-.stat-block{margin-bottom:.75rem;}
-.stat-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:.9rem 1rem;transition:all .2s;}
-.stat-card:hover{background:rgba(255,255,255,.07);}
-.stat-card.pda{border-color:var(--pda-border);background:var(--pda-bg);}
-.stat-card.npa{border-color:var(--npa-border);background:var(--npa-bg);}
-.sc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:.3rem;}
-.sc-label{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;}
-.stat-card.pda .sc-label{color:var(--pda);}
-.stat-card.npa .sc-label{color:var(--npa);}
-.sc-dot{width:8px;height:8px;border-radius:50%;}
-.stat-card.pda .sc-dot{background:var(--pda);}
-.stat-card.npa .sc-dot{background:var(--npa);}
-.sc-num{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:800;line-height:1;}
-.stat-card.pda .sc-num{color:var(--pda);}
-.stat-card.npa .sc-num{color:var(--npa);}
-.sc-sub{font-size:11px;color:var(--muted);margin-top:2px;}
-.sidebar-section{margin-top:1.25rem;}
-.sidebar-section-title{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem;display:flex;align-items:center;gap:6px;}
-.sidebar-section-title::after{content:'';flex:1;height:1px;background:var(--border);}
-.info-row{display:flex;align-items:center;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid rgba(255,255,255,.04);}
-.info-row:last-child{border-bottom:none;}
-.info-label{font-size:11px;color:var(--muted);}
-.info-val{font-size:13px;font-weight:600;color:var(--white);}
-.info-val.accent{color:var(--accent);}
-.rem-item{display:flex;align-items:center;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid rgba(255,255,255,.04);}
-.rem-item:last-child{border-bottom:none;}
-.rem-name{font-size:11px;color:var(--off-white);}
-.rem-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:rgba(0,180,216,.12);border:1px solid rgba(0,180,216,.2);color:var(--accent);}
-.stat-card-small{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:.6rem;margin-bottom:.5rem;transition:all .2s;}
-.stat-card-small:hover{background:rgba(255,255,255,.07);}
-.stat-card-small.pda{border-color:var(--pda-border);background:var(--pda-bg);}
-.stat-card-small.npa{border-color:var(--npa-border);background:var(--npa-bg);}
-.scs-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:.2rem;}
-.scs-label{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;}
-.stat-card-small.pda .scs-label{color:var(--pda);}
-.stat-card-small.npa .scs-label{color:var(--npa);}
-.scs-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
-.stat-card-small.pda .scs-dot{background:var(--pda);}
-.stat-card-small.npa .scs-dot{background:var(--npa);}
-.scs-num{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;line-height:1;}
-.stat-card-small.pda .scs-num{color:var(--pda);}
-.stat-card-small.npa .scs-num{color:var(--npa);}
-.scs-sub{font-size:9px;color:var(--muted);margin-top:1px;}
-.table-area{flex:1;overflow-y:auto;padding:1.25rem 1.5rem;}
-table{width:100%;border-collapse:collapse;}
-thead{position:sticky;top:0;z-index:5;}
-thead tr{background:rgba(26,58,140,.8);backdrop-filter:blur(10px);}
-thead th{padding:10px 14px;text-align:left;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.7);white-space:nowrap;border-bottom:1px solid var(--border2);}
-tbody tr{border-bottom:1px solid rgba(255,255,255,.04);transition:background .1s;}
-tbody tr:hover{background:rgba(255,255,255,.04);}
-tbody td{padding:9px 14px;font-size:12px;vertical-align:middle;}
-.cell-barcaza{font-weight:600;color:var(--white);font-size:13px;letter-spacing:.02em;}
-.cell-rem{color:var(--off-white);font-size:12px;}
-.cell-estado{color:var(--muted);font-size:12px;}
-.cell-fecha{color:rgba(255,255,255,.6);font-size:12px;white-space:nowrap;}
-.cell-salida{font-size:12px;font-weight:600;white-space:nowrap;}
-.cell-salida.red{color:var(--sin);}
-.cell-salida.green{color:var(--pda);}
-.cell-salida.empty{color:var(--muted);font-weight:400;font-style:italic;}
-.badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:3px 9px;border-radius:20px;border:1px solid;white-space:nowrap;}
-.bdot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
-.badge.pda{background:var(--pda-bg);border-color:var(--pda-border);color:var(--pda);}
-.badge.pda .bdot{background:var(--pda);}
-.badge.npa{background:var(--npa-bg);border-color:var(--npa-border);color:var(--npa);}
-.badge.npa .bdot{background:var(--npa);}
-.loading-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4rem;gap:1rem;}
-.spinner{width:32px;height:32px;border:2px solid rgba(255,255,255,.1);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;}
-.loading-txt{font-size:13px;color:var(--muted);}
-.error-wrap{text-align:center;padding:3rem;color:var(--sin);}
-.legend-row{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:.5rem;}
-.leg{display:flex;align-items:center;gap:5px;font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);}
-.leg-dot{width:8px;height:8px;border-radius:50%;}
-.empty-state{display:none;text-align:center;padding:3rem;color:var(--muted);font-size:13px;}
+
+html, body { height: 100%; overflow: hidden; }
+
+body {
+  font-family: 'Barlow', sans-serif;
+  background: var(--navy);
+  color: var(--white);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Fondo ── */
+.bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+.bg-grad {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 65% 55% at 8% 55%, rgba(26,58,140,.38) 0%, transparent 68%),
+    radial-gradient(ellipse 40% 35% at 95% 10%, rgba(0,200,232,.08) 0%, transparent 60%),
+    linear-gradient(160deg, #07111f 0%, #0b1a2e 55%, #07111f 100%);
+}
+.bg-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+.side-accent {
+  position: fixed; left: 0; top: 0; bottom: 0; width: 3px; z-index: 20;
+  background: linear-gradient(180deg, transparent 0%, var(--accent) 38%, var(--pda) 68%, transparent 100%);
+  opacity: .55;
+}
+
+/* ── Header ── */
+.isa-header {
+  position: relative; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2rem; height: 56px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(7,17,31,.6);
+  backdrop-filter: blur(12px);
+}
+.logo-wrap { display: flex; align-items: center; gap: 12px; }
+.logo-isa {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 36px; font-weight: 800; font-style: italic;
+  color: var(--white); letter-spacing: 2px; line-height: 1;
+  position: relative;
+}
+.logo-isa::after {
+  content: '';
+  position: absolute; bottom: -3px; left: 0; width: 100%; height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--blue-light));
+}
+.logo-divider {
+  width: 1px; height: 30px;
+  background: rgba(255,255,255,.18);
+}
+.logo-sub { display: flex; flex-direction: column; gap: 2px; }
+.logo-name { font-size: 10.5px; font-weight: 600; color: var(--off-white); letter-spacing: .15em; text-transform: uppercase; }
+.logo-tag  { font-size: 9px; font-weight: 300; color: var(--muted); letter-spacing: .18em; text-transform: uppercase; }
+
+.header-right { display: flex; align-items: center; gap: 14px; }
+.last-upd { font-size: 10px; color: var(--muted); letter-spacing: .04em; }
+
+.refresh-btn {
+  font-size: 11px; font-weight: 600; color: var(--accent);
+  text-transform: uppercase; letter-spacing: .08em;
+  background: rgba(0,200,232,.08);
+  border: 1px solid rgba(0,200,232,.22);
+  border-radius: var(--radius-sm);
+  padding: 5px 13px; cursor: pointer;
+  font-family: 'Barlow', sans-serif;
+  display: flex; align-items: center; gap: 6px;
+  transition: background .15s, border-color .15s;
+}
+.refresh-btn:hover { background: rgba(0,200,232,.18); border-color: rgba(0,200,232,.38); }
+.refresh-btn .icon { display: inline-block; }
+.refresh-btn.spin .icon { animation: spin .7s linear infinite; }
+
+.back-link {
+  font-size: 11px; font-weight: 600;
+  color: rgba(255,255,255,.45); text-decoration: none;
+  letter-spacing: .08em; text-transform: uppercase;
+  padding: 5px 12px;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: var(--radius-sm);
+  transition: color .15s, border-color .15s;
+}
+.back-link:hover { color: var(--white); border-color: rgba(255,255,255,.28); }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Barra de título ── */
+.title-bar {
+  position: relative; z-index: 10;
+  padding: .85rem 2rem;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 12px;
+  background: rgba(7,17,31,.4);
+}
+.page-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 17px; font-weight: 700;
+  letter-spacing: .09em; text-transform: uppercase;
+  color: var(--white);
+}
+.page-sub { font-size: 10.5px; color: var(--muted); margin-top: 3px; letter-spacing: .04em; }
+
+/* Filtros */
+.search-wrap { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.search-input {
+  font-size: 12.5px; font-family: 'Barlow', sans-serif;
+  padding: 6px 13px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-sm);
+  color: var(--white); outline: none; width: 195px;
+  transition: border-color .15s, background .15s;
+}
+.search-input::placeholder { color: var(--muted); }
+.search-input:focus { border-color: var(--accent); background: rgba(255,255,255,.08); }
+
+.filter-sel {
+  font-size: 11.5px; font-family: 'Barlow', sans-serif;
+  padding: 6px 11px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-sm);
+  color: var(--white); outline: none; cursor: pointer;
+  transition: border-color .15s;
+}
+.filter-sel option { background: var(--navy2); color: var(--white); }
+.filter-sel:focus { border-color: var(--accent); }
+
+/* ── Layout principal ── */
+.main-layout { position: relative; z-index: 10; display: flex; flex: 1; overflow: hidden; }
+
+/* ── Sidebar ── */
+.sidebar {
+  width: 264px; flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  overflow-y: auto; padding: 1.2rem 1.1rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,.1) transparent;
+}
+.sidebar-heading {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: .16em; text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1rem; padding-bottom: .5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Stat cards grandes */
+.stat-card {
+  border-radius: var(--radius-md);
+  padding: .8rem 1rem;
+  margin-bottom: .6rem;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,.035);
+  transition: background .18s;
+}
+.stat-card:hover { background: rgba(255,255,255,.06); }
+.stat-card.pda { background: var(--pda-dim); border-color: var(--pda-border); }
+.stat-card.npa { background: var(--npa-dim); border-color: var(--npa-border); }
+
+.sc-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: .25rem; }
+.sc-label { font-size: 9.5px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }
+.stat-card.pda .sc-label { color: var(--pda); }
+.stat-card.npa .sc-label { color: var(--npa); }
+
+.sc-dot { width: 7px; height: 7px; border-radius: 50%; }
+.stat-card.pda .sc-dot { background: var(--pda); }
+.stat-card.npa .sc-dot { background: var(--npa); }
+
+.sc-num {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 30px; font-weight: 800; line-height: 1;
+}
+.stat-card.pda .sc-num { color: var(--pda); }
+.stat-card.npa .sc-num { color: var(--npa); }
+.sc-sub { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+/* Separador de sección */
+.section-sep {
+  display: flex; align-items: center; gap: 7px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 10.5px; font-weight: 700;
+  letter-spacing: .15em; text-transform: uppercase;
+  color: var(--muted);
+  margin: 1.1rem 0 .75rem;
+}
+.section-sep::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* Stat cards pequeñas */
+.scs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .45rem; margin-bottom: .6rem; }
+.stat-card-sm {
+  border-radius: var(--radius-sm);
+  padding: .55rem .7rem;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,.03);
+  transition: background .18s;
+}
+.stat-card-sm:hover { background: rgba(255,255,255,.055); }
+.stat-card-sm.pda { background: var(--pda-dim); border-color: var(--pda-border); }
+.stat-card-sm.npa { background: var(--npa-dim); border-color: var(--npa-border); }
+
+.scs-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: .15rem; }
+.scs-label { font-size: 8.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.stat-card-sm.pda .scs-label { color: var(--pda); }
+.stat-card-sm.npa .scs-label { color: var(--npa); }
+.scs-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+.stat-card-sm.pda .scs-dot { background: var(--pda); }
+.stat-card-sm.npa .scs-dot { background: var(--npa); }
+.scs-num { font-family: 'Barlow Condensed', sans-serif; font-size: 22px; font-weight: 800; line-height: 1; }
+.stat-card-sm.pda .scs-num { color: var(--pda); }
+.stat-card-sm.npa .scs-num { color: var(--npa); }
+.scs-sub { font-size: 8.5px; color: var(--muted); margin-top: 1px; }
+
+/* Info rows */
+.info-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: .45rem 0;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+}
+.info-row:last-child { border-bottom: none; }
+.info-label { font-size: 10.5px; color: var(--muted); }
+.info-val { font-size: 12.5px; font-weight: 600; color: var(--white); }
+.info-val.accent { color: var(--accent); }
+
+/* Leyenda */
+.legend-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-top: .5rem; }
+.leg { display: flex; align-items: center; gap: 5px; font-size: 9.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.leg-dot { width: 7px; height: 7px; border-radius: 50%; }
+
+/* ── Tabla ── */
+.table-area {
+  flex: 1; overflow-y: auto;
+  padding: 1.25rem 1.5rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,.1) transparent;
+}
+
+table { width: 100%; border-collapse: collapse; }
+
+thead { position: sticky; top: 0; z-index: 5; }
+thead tr {
+  background: rgba(13, 26, 55, .92);
+  backdrop-filter: blur(12px);
+}
+thead th {
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 9.5px; font-weight: 700;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: rgba(255,255,255,.55);
+  white-space: nowrap;
+  border-bottom: 1px solid var(--border2);
+}
+
+tbody tr {
+  border-bottom: 1px solid rgba(255,255,255,.04);
+  transition: background .1s;
+}
+tbody tr:hover { background: rgba(255,255,255,.035); }
+
+tbody td { padding: 9px 14px; font-size: 12px; vertical-align: middle; }
+
+.cell-num   { font-size: 10.5px; color: var(--muted); }
+.cell-barc  { font-size: 13px; font-weight: 600; color: var(--white); letter-spacing: .02em; }
+.cell-rem   { font-size: 12px; color: var(--off-white); }
+.cell-est   { font-size: 11.5px; color: rgba(255,255,255,.55); letter-spacing: .03em; }
+.cell-fecha { font-size: 11.5px; color: rgba(255,255,255,.5); white-space: nowrap; }
+
+/* Salida */
+.cell-salida { font-size: 12px; font-weight: 600; white-space: nowrap; }
+.cell-salida.sin     { color: var(--muted); font-weight: 400; font-style: italic; }
+.cell-salida.con     { color: var(--teal); }
+
+/* Badge posición */
+.badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 9.5px; font-weight: 700;
+  letter-spacing: .08em; text-transform: uppercase;
+  padding: 3px 9px; border-radius: 20px; border: 1px solid;
+  white-space: nowrap;
+}
+.bdot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+
+.badge.pda { background: var(--pda-dim); border-color: var(--pda-border); color: var(--pda); }
+.badge.pda .bdot { background: var(--pda); }
+.badge.npa { background: var(--npa-dim); border-color: var(--npa-border); color: var(--npa); }
+.badge.npa .bdot { background: var(--npa); }
+.badge.otro { background: rgba(255,255,255,.06); border-color: var(--border2); color: var(--off-white); }
+.badge.otro .bdot { background: var(--off-white); }
+
+/* Estados de carga */
+.loading-wrap {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 5rem; gap: 1rem;
+}
+.spinner {
+  width: 30px; height: 30px;
+  border: 2px solid rgba(255,255,255,.08);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+}
+.loading-txt { font-size: 12.5px; color: var(--muted); }
+
+.empty-state {
+  display: none; text-align: center; padding: 3.5rem;
+  color: var(--muted); font-size: 13px;
+}
+.error-wrap {
+  display: none; text-align: center; padding: 3rem;
+  color: var(--red); font-size: 13px;
+}
+
+/* ── Scrollbar webkit ── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 3px; }
 </style>
 </head>
 <body>
 
-<div class="bg"><div class="bg-grad"></div><div class="bg-lines"></div></div>
+<div class="bg"><div class="bg-grad"></div><div class="bg-grid"></div></div>
 <div class="side-accent"></div>
 
+<!-- ══ HEADER ══ -->
 <div class="isa-header">
   <div class="logo-wrap">
     <div class="logo-isa">ISA</div>
+    <div class="logo-divider"></div>
     <div class="logo-sub">
-      <span class="logo-name">Agentes Maritimos</span>
+      <span class="logo-name">Agentes Marítimos</span>
       <span class="logo-tag">Exceeding expectations</span>
     </div>
   </div>
   <div class="header-right">
     <span class="last-upd" id="last-upd"></span>
-    <button class="refresh-btn" onclick="loadData()" id="refresh-btn"><span class="icon">â†»</span> Actualizar</button>
-    <a href="index.html" class="back-link">â† Portal</a>
+    <button class="refresh-btn" onclick="loadData()" id="refresh-btn">
+      <span class="icon">↻</span> Actualizar
+    </button>
+    <a href="index.html" class="back-link">← Portal</a>
   </div>
 </div>
 
+<!-- ══ BARRA TÍTULO + FILTROS ══ -->
 <div class="title-bar">
   <div>
-    <div class="page-title">Seguimiento Barcazas LHG-HB - Lastre / Cargadas</div>
-    <div class="page-sub">Datos en tiempo real - Google Sheets</div>
+    <div class="page-title">Seguimiento Barcazas LHG-HB — Lastre / Cargadas</div>
+    <div class="page-sub">Datos en tiempo real · Google Sheets</div>
   </div>
   <div class="search-wrap">
-    <input class="search-input" type="text" id="search" placeholder="Buscar barcaza o remolcador..." oninput="applyFilters()">
+    <input class="search-input" type="text" id="search"
+           placeholder="Buscar barcaza o remolcador…" oninput="applyFilters()">
     <select class="filter-sel" id="filter-salida" onchange="applyFilters()">
       <option value="">Todas las barcazas</option>
       <option value="sin">Sin salida (en puerto)</option>
@@ -175,99 +433,89 @@ tbody td{padding:9px 14px;font-size:12px;vertical-align:middle;}
   </div>
 </div>
 
+<!-- ══ LAYOUT ══ -->
 <div class="main-layout">
 
+  <!-- ── Sidebar ── -->
   <div class="sidebar">
-    <div class="sidebar-title">En Puerto (Sin Salida)</div>
+    <div class="sidebar-heading">En Puerto · Sin Salida</div>
 
-    <div class="stat-block">
-      <div class="stat-card pda">
-        <div class="sc-top"><span class="sc-label">Lastre en PDA</span><span class="sc-dot"></span></div>
-        <div class="sc-num" id="lastrePDA-sin">â€”</div>
-        <div class="sc-sub">Actualmente en puerto</div>
-      </div>
+    <div class="stat-card pda">
+      <div class="sc-top"><span class="sc-label">Lastre PDA</span><span class="sc-dot"></span></div>
+      <div class="sc-num" id="lastrePDA-sin">—</div>
+      <div class="sc-sub">Actualmente en puerto</div>
+    </div>
+    <div class="stat-card npa">
+      <div class="sc-top"><span class="sc-label">Lastre NPA</span><span class="sc-dot"></span></div>
+      <div class="sc-num" id="lastreNPA-sin">—</div>
+      <div class="sc-sub">Actualmente en puerto</div>
+    </div>
+    <div class="stat-card pda">
+      <div class="sc-top"><span class="sc-label">Cargada PDA</span><span class="sc-dot"></span></div>
+      <div class="sc-num" id="cargadaPDA-sin">—</div>
+      <div class="sc-sub">Actualmente en puerto</div>
+    </div>
+    <div class="stat-card npa">
+      <div class="sc-top"><span class="sc-label">Cargada NPA</span><span class="sc-dot"></span></div>
+      <div class="sc-num" id="cargadaNPA-sin">—</div>
+      <div class="sc-sub">Actualmente en puerto</div>
     </div>
 
-    <div class="stat-block">
-      <div class="stat-card npa">
-        <div class="sc-top"><span class="sc-label">Lastre en NPA</span><span class="sc-dot"></span></div>
-        <div class="sc-num" id="lastreNPA-sin">â€”</div>
-        <div class="sc-sub">Actualmente en puerto</div>
-      </div>
-    </div>
+    <!-- Histórico con salida asignada -->
+    <div class="section-sep">Histórico</div>
 
-    <div class="stat-block">
-      <div class="stat-card pda">
-        <div class="sc-top"><span class="sc-label">Cargada en PDA</span><span class="sc-dot"></span></div>
-        <div class="sc-num" id="cargadaPDA-sin">â€”</div>
-        <div class="sc-sub">Actualmente en puerto</div>
-      </div>
-    </div>
-
-    <div class="stat-block">
-      <div class="stat-card npa">
-        <div class="sc-top"><span class="sc-label">Cargada en NPA</span><span class="sc-dot"></span></div>
-        <div class="sc-num" id="cargadaNPA-sin">â€”</div>
-        <div class="sc-sub">Actualmente en puerto</div>
-      </div>
-    </div>
-
-    <div class="sidebar-section">
-      <div class="sidebar-section-title">Historico</div>
-    </div>
-
-    <div style="margin-bottom:1rem;">
-      <div class="stat-card-small pda">
+    <div class="scs-grid">
+      <div class="stat-card-sm pda">
         <div class="scs-top"><span class="scs-label">Lastre PDA</span><span class="scs-dot"></span></div>
-        <div class="scs-num" id="lastrePDA-sal">â€”</div>
-        <div class="scs-sub">Con salida asignada</div>
+        <div class="scs-num" id="lastrePDA-sal">—</div>
+        <div class="scs-sub">Con salida</div>
       </div>
-      <div class="stat-card-small npa">
+      <div class="stat-card-sm npa">
         <div class="scs-top"><span class="scs-label">Lastre NPA</span><span class="scs-dot"></span></div>
-        <div class="scs-num" id="lastreNPA-sal">â€”</div>
-        <div class="scs-sub">Con salida asignada</div>
+        <div class="scs-num" id="lastreNPA-sal">—</div>
+        <div class="scs-sub">Con salida</div>
       </div>
-    </div>
-
-    <div style="margin-bottom:1rem;">
-      <div class="stat-card-small pda">
+      <div class="stat-card-sm pda">
         <div class="scs-top"><span class="scs-label">Cargada PDA</span><span class="scs-dot"></span></div>
-        <div class="scs-num" id="cargadaPDA-sal">â€”</div>
-        <div class="scs-sub">Con salida asignada</div>
+        <div class="scs-num" id="cargadaPDA-sal">—</div>
+        <div class="scs-sub">Con salida</div>
       </div>
-      <div class="stat-card-small npa">
+      <div class="stat-card-sm npa">
         <div class="scs-top"><span class="scs-label">Cargada NPA</span><span class="scs-dot"></span></div>
-        <div class="scs-num" id="cargadaNPA-sal">â€”</div>
-        <div class="scs-sub">Con salida asignada</div>
+        <div class="scs-num" id="cargadaNPA-sal">—</div>
+        <div class="scs-sub">Con salida</div>
       </div>
     </div>
 
-    <div class="sidebar-section">
-      <div class="sidebar-section-title">General</div>
-      <div class="info-row"><span class="info-label">Total en puerto</span><span class="info-val accent" id="cnt-total-sin">â€”</span></div>
-      <div class="info-row"><span class="info-label">Con salida</span><span class="info-val accent" id="cnt-total-sal">â€”</span></div>
-      <div class="info-row"><span class="info-label">Remolcadores activos</span><span class="info-val" id="cnt-rems">â€”</span></div>
-      <div class="info-row"><span class="info-label">Ultima actualizacion</span><span class="info-val" id="upd-time">â€”</span></div>
+    <!-- Resumen general -->
+    <div class="section-sep">General</div>
+    <div class="info-row">
+      <span class="info-label">Total en puerto</span>
+      <span class="info-val accent" id="cnt-total-sin">—</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Con salida asignada</span>
+      <span class="info-val accent" id="cnt-total-sal">—</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Última actualización</span>
+      <span class="info-val" id="upd-time">—</span>
     </div>
 
-    <div class="sidebar-section">
-      <div class="sidebar-section-title">Por remolcador</div>
-      <div id="rem-list"></div>
-    </div>
-
-    <div class="sidebar-section">
-      <div class="sidebar-section-title">Referencias</div>
-      <div class="legend-row">
-        <div class="leg"><div class="leg-dot" style="background:var(--pda)"></div>PDA</div>
-        <div class="leg"><div class="leg-dot" style="background:var(--npa)"></div>NPA</div>
-      </div>
+    <!-- Leyenda -->
+    <div class="section-sep">Referencias</div>
+    <div class="legend-row">
+      <div class="leg"><div class="leg-dot" style="background:var(--pda)"></div>PDA</div>
+      <div class="leg"><div class="leg-dot" style="background:var(--npa)"></div>NPA</div>
+      <div class="leg"><div class="leg-dot" style="background:var(--teal)"></div>Salida</div>
     </div>
   </div>
 
+  <!-- ── Tabla ── -->
   <div class="table-area" id="table-area">
     <div class="loading-wrap" id="loading">
       <div class="spinner"></div>
-      <div class="loading-txt">Cargando datos desde Google Sheets...</div>
+      <div class="loading-txt">Cargando datos desde Google Sheets…</div>
     </div>
     <table id="data-table" style="display:none">
       <thead>
@@ -276,7 +524,7 @@ tbody td{padding:9px 14px;font-size:12px;vertical-align:middle;}
           <th>Barcaza</th>
           <th>Remolcador</th>
           <th>Estado</th>
-          <th>Posicion</th>
+          <th>Posición</th>
           <th>Ingreso</th>
           <th>Salida</th>
         </tr>
@@ -286,61 +534,73 @@ tbody td{padding:9px 14px;font-size:12px;vertical-align:middle;}
     <div id="empty-state" class="empty-state">
       No se encontraron barcazas con los filtros aplicados.
     </div>
-    <div id="error-state" style="display:none" class="error-wrap"></div>
+    <div id="error-state" class="error-wrap"></div>
   </div>
 
 </div>
 
 <script>
 const SHEET_ID = '1LHrw4Oih9h510UsoB_HsMm83U-g8zlXHgPqm8_7QPjM';
-const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`;
+const CSV_URL  = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`;
 
 let allRows = [];
 
+/* ── Carga principal ── */
 async function loadData() {
   const btn = document.getElementById('refresh-btn');
   btn.classList.add('spin');
-  document.getElementById('loading').style.display = 'flex';
-  document.getElementById('data-table').style.display = 'none';
+
+  document.getElementById('loading').style.display     = 'flex';
+  document.getElementById('data-table').style.display  = 'none';
   document.getElementById('empty-state').style.display = 'none';
   document.getElementById('error-state').style.display = 'none';
 
   try {
     const res = await fetch(CSV_URL + '&t=' + Date.now());
-    if (!res.ok) throw new Error('Error al cargar');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+
     const text = await res.text();
-    const rows = parseCSV(text);
-    allRows = rows;
-    populateFilters(rows);
+    allRows = parseCSV(text);
+
+    populateRemFilter(allRows);
     applyFilters();
-    updateSidebar(rows);
+    updateSidebar(allRows);
+
     const now = new Date();
-    const t = now.toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit'});
+    const t = now.toLocaleTimeString('es-UY', { hour: '2-digit', minute: '2-digit' });
     document.getElementById('last-upd').textContent = 'Actualizado ' + t;
     document.getElementById('upd-time').textContent = t;
-  } catch(e) {
-    document.getElementById('loading').style.display = 'none';
-    const err = document.getElementById('error-state');
-    err.style.display = 'block';
-    err.textContent = 'Error al cargar los datos. Verifica la conexion o los permisos del Sheet.';
+
+  } catch (err) {
+    document.getElementById('loading').style.display   = 'none';
+    const errEl = document.getElementById('error-state');
+    errEl.style.display = 'block';
+    errEl.textContent   = 'Error al cargar los datos. Verifique la conexión o los permisos del Sheet.';
+    console.error('loadData:', err);
   }
+
   btn.classList.remove('spin');
 }
 
+/* ── Parseo CSV ── */
 function parseCSV(text) {
   const lines = text.split('\n').filter(l => l.trim());
   if (lines.length < 2) return [];
+
   const rows = [];
   for (let i = 1; i < lines.length; i++) {
     const cols = splitCSVLine(lines[i]);
     if (cols.length < 4) continue;
-    const barcaza = (cols[0]||'').trim();
-    const remolcador = (cols[1]||'').trim();
-    const estado = (cols[2]||'').trim().toUpperCase();
-    const posicion = (cols[3]||'').trim().toUpperCase();
-    const ingreso = (cols[4]||'').trim();
-    const salida = (cols[5]||'').trim();
+
+    const barcaza    = (cols[0] || '').trim();
+    const remolcador = (cols[1] || '').trim();
+    const estado     = (cols[2] || '').trim().toUpperCase();
+    const posicion   = (cols[3] || '').trim().toUpperCase();
+    const ingreso    = (cols[4] || '').trim();
+    const salida     = (cols[5] || '').trim();
+
     if (!barcaza || barcaza.toUpperCase() === 'BARCAZA') continue;
+
     rows.push({ barcaza, remolcador, estado, posicion, ingreso, salida });
   }
   return rows;
@@ -349,31 +609,19 @@ function parseCSV(text) {
 function splitCSVLine(line) {
   const result = [];
   let cur = '', inQ = false;
-  for (let i = 0; i < line.length; i++) {
-    const ch = line[i];
-    if (ch === '"') { inQ = !inQ; }
+  for (const ch of line) {
+    if (ch === '"')            { inQ = !inQ; }
     else if (ch === ',' && !inQ) { result.push(cur); cur = ''; }
-    else { cur += ch; }
+    else                       { cur += ch; }
   }
   result.push(cur);
   return result;
 }
 
-function getBadgeClass(posicion) {
-  const p = (posicion||'').toUpperCase();
-  if (p.includes('PDA')) return 'pda';
-  if (p.includes('NPA')) return 'npa';
-  return 'sin';
-}
-
-function getSalidaClass(salida) {
-  if (!salida || salida.trim() === '') return 'empty';
-  return 'green';
-}
-
-function populateFilters(rows) {
+/* ── Filtros ── */
+function populateRemFilter(rows) {
   const rems = [...new Set(rows.map(r => r.remolcador).filter(Boolean))].sort();
-  const sel = document.getElementById('filter-rem');
+  const sel  = document.getElementById('filter-rem');
   sel.innerHTML = '<option value="">Todos los remolcadores</option>';
   rems.forEach(r => {
     const o = document.createElement('option');
@@ -383,29 +631,38 @@ function populateFilters(rows) {
 }
 
 function applyFilters() {
-  const search = (document.getElementById('search').value || '').toLowerCase();
+  const search = (document.getElementById('search').value || '').toLowerCase().trim();
   const salida = document.getElementById('filter-salida').value;
-  const pos = document.getElementById('filter-pos').value;
-  const rem = document.getElementById('filter-rem').value;
-  const est = document.getElementById('filter-est').value;
+  const pos    = document.getElementById('filter-pos').value;
+  const rem    = document.getElementById('filter-rem').value;
+  const est    = document.getElementById('filter-est').value;
 
   const filtered = allRows.filter(r => {
-    if (search && !r.barcaza.toLowerCase().includes(search) && !r.remolcador.toLowerCase().includes(search)) return false;
-    if (salida === 'sin' && r.salida && r.salida.trim() !== '') return false;
-    if (salida === 'con' && (!r.salida || r.salida.trim() === '')) return false;
-    if (pos && !r.posicion.includes(pos)) return false;
-    if (rem && r.remolcador !== rem) return false;
-    if (est && !r.estado.includes(est.toUpperCase())) return false;
+    if (search &&
+        !r.barcaza.toLowerCase().includes(search) &&
+        !r.remolcador.toLowerCase().includes(search)) return false;
+    if (salida === 'sin' && r.salida !== '')  return false;
+    if (salida === 'con' && r.salida === '')  return false;
+    if (pos && !r.posicion.includes(pos))     return false;
+    if (rem && r.remolcador !== rem)          return false;
+    if (est && !r.estado.includes(est))       return false;
     return true;
   });
 
   renderTable(filtered);
 }
 
+/* ── Render tabla ── */
+function getBadgeClass(pos) {
+  if (pos.includes('PDA')) return 'pda';
+  if (pos.includes('NPA')) return 'npa';
+  return 'otro';
+}
+
 function renderTable(rows) {
   document.getElementById('loading').style.display = 'none';
   const table = document.getElementById('data-table');
-  const body = document.getElementById('table-body');
+  const body  = document.getElementById('table-body');
   const empty = document.getElementById('empty-state');
 
   if (rows.length === 0) {
@@ -418,79 +675,58 @@ function renderTable(rows) {
   empty.style.display = 'none';
 
   body.innerHTML = rows.map((r, i) => {
-    const bc = getBadgeClass(r.posicion);
-    const sc = getSalidaClass(r.salida);
-    const salidaTxt = r.salida || 'â€”';
+    const bc  = getBadgeClass(r.posicion);
+    const hasSalida = r.salida !== '';
+    const salidaClass = hasSalida ? 'con' : 'sin';
+    const salidaTxt   = hasSalida ? r.salida : '—';
+
     return `<tr>
-      <td style="color:var(--muted);font-size:11px">${i+1}</td>
-      <td class="cell-barcaza">${r.barcaza}</td>
-      <td class="cell-rem">${r.remolcador}</td>
-      <td class="cell-estado">${r.estado}</td>
-      <td><span class="badge ${bc}"><span class="bdot"></span>${r.posicion||'â€”'}</span></td>
-      <td class="cell-fecha">${r.ingreso||'â€”'}</td>
-      <td class="cell-salida ${sc}">${salidaTxt}</td>
+      <td class="cell-num">${i + 1}</td>
+      <td class="cell-barc">${r.barcaza}</td>
+      <td class="cell-rem">${r.remolcador || '—'}</td>
+      <td class="cell-est">${r.estado || '—'}</td>
+      <td><span class="badge ${bc}"><span class="bdot"></span>${r.posicion || '—'}</span></td>
+      <td class="cell-fecha">${r.ingreso || '—'}</td>
+      <td class="cell-salida ${salidaClass}">${salidaTxt}</td>
     </tr>`;
   }).join('');
 }
 
+/* ── Sidebar stats ── */
 function updateSidebar(rows) {
-  const lastrePDA_sin = rows.filter(r => 
-    r.estado.includes('LASTRE') && r.posicion.includes('PDA') && (!r.salida || r.salida.trim() === '')
-  ).length;
+  const count = (predFn) => rows.filter(predFn).length;
 
-  const lastreNPA_sin = rows.filter(r => 
-    r.estado.includes('LASTRE') && r.posicion.includes('NPA') && (!r.salida || r.salida.trim() === '')
-  ).length;
+  const isCargada = r => r.estado.includes('CARGAD');
+  const isLastre  = r => r.estado.includes('LASTRE');
+  const sinSalida = r => r.salida === '';
+  const conSalida = r => r.salida !== '';
+  const esPDA     = r => r.posicion.includes('PDA');
+  const esNPA     = r => r.posicion.includes('NPA');
 
-  const cargadaPDA_sin = rows.filter(r => 
-    (r.estado.includes('CARGADA')||r.estado.includes('CARGAD')) && r.posicion.includes('PDA') && (!r.salida || r.salida.trim() === '')
-  ).length;
+  // Sin salida
+  set('lastrePDA-sin',  count(r => isLastre(r)  && esPDA(r) && sinSalida(r)));
+  set('lastreNPA-sin',  count(r => isLastre(r)  && esNPA(r) && sinSalida(r)));
+  set('cargadaPDA-sin', count(r => isCargada(r) && esPDA(r) && sinSalida(r)));
+  set('cargadaNPA-sin', count(r => isCargada(r) && esNPA(r) && sinSalida(r)));
 
-  const cargadaNPA_sin = rows.filter(r => 
-    (r.estado.includes('CARGADA')||r.estado.includes('CARGAD')) && r.posicion.includes('NPA') && (!r.salida || r.salida.trim() === '')
-  ).length;
+  // Con salida
+  set('lastrePDA-sal',  count(r => isLastre(r)  && esPDA(r) && conSalida(r)));
+  set('lastreNPA-sal',  count(r => isLastre(r)  && esNPA(r) && conSalida(r)));
+  set('cargadaPDA-sal', count(r => isCargada(r) && esPDA(r) && conSalida(r)));
+  set('cargadaNPA-sal', count(r => isCargada(r) && esNPA(r) && conSalida(r)));
 
-  const lastrePDA_sal = rows.filter(r => 
-    r.estado.includes('LASTRE') && r.posicion.includes('PDA') && r.salida && r.salida.trim() !== ''
-  ).length;
-
-  const lastreNPA_sal = rows.filter(r => 
-    r.estado.includes('LASTRE') && r.posicion.includes('NPA') && r.salida && r.salida.trim() !== ''
-  ).length;
-
-  const cargadaPDA_sal = rows.filter(r => 
-    (r.estado.includes('CARGADA')||r.estado.includes('CARGAD')) && r.posicion.includes('PDA') && r.salida && r.salida.trim() !== ''
-  ).length;
-
-  const cargadaNPA_sal = rows.filter(r => 
-    (r.estado.includes('CARGADA')||r.estado.includes('CARGAD')) && r.posicion.includes('NPA') && r.salida && r.salida.trim() !== ''
-  ).length;
-
-  const totalSin = rows.filter(r => !r.salida || r.salida.trim() === '').length;
-  const totalSal = rows.filter(r => r.salida && r.salida.trim() !== '').length;
-
-  document.getElementById('lastrePDA-sin').textContent = lastrePDA_sin;
-  document.getElementById('lastreNPA-sin').textContent = lastreNPA_sin;
-  document.getElementById('cargadaPDA-sin').textContent = cargadaPDA_sin;
-  document.getElementById('cargadaNPA-sin').textContent = cargadaNPA_sin;
-  document.getElementById('lastrePDA-sal').textContent = lastrePDA_sal;
-  document.getElementById('lastreNPA-sal').textContent = lastreNPA_sal;
-  document.getElementById('cargadaPDA-sal').textContent = cargadaPDA_sal;
-  document.getElementById('cargadaNPA-sal').textContent = cargadaNPA_sal;
-  document.getElementById('cnt-total-sin').textContent = totalSin;
-  document.getElementById('cnt-total-sal').textContent = totalSal;
-
-  const remCount = {};
-  rows.forEach(r => { if(r.remolcador) remCount[r.remolcador] = (remCount[r.remolcador]||0)+1; });
-  const rems = Object.entries(remCount).sort((a,b)=>b[1]-a[1]);
-  document.getElementById('cnt-rems').textContent = rems.length;
-  document.getElementById('rem-list').innerHTML = rems.map(([n,c]) =>
-    `<div class="rem-item"><span class="rem-name">${n}</span><span class="rem-badge">${c}</span></div>`
-  ).join('');
+  set('cnt-total-sin', count(sinSalida));
+  set('cnt-total-sal', count(conSalida));
 }
 
+function set(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+
+/* ── Inicio ── */
 loadData();
-setInterval(loadData, 5 * 60 * 1000);
+setInterval(loadData, 5 * 60 * 1000); // auto-refresh cada 5 min
 </script>
 </body>
 </html>
