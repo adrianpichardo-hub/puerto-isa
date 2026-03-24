@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ISA â€” Seguimiento Barcazas LHG-HB</title>
+<title>ISA - Seguimiento Barcazas LHG-HB</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -20,14 +20,10 @@
 }
 html,body{height:100%;overflow:hidden}
 body{font-family:'Barlow',sans-serif;background:var(--navy);color:var(--white);display:flex;flex-direction:column;}
-
-/* BG */
 .bg{position:fixed;inset:0;z-index:0;}
 .bg-grad{position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 10% 50%,rgba(26,58,140,.4) 0%,transparent 70%),linear-gradient(160deg,#0a1628 0%,#0d1f3c 60%,#0a1628 100%);}
 .bg-lines{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:60px 60px;}
 .side-accent{position:fixed;left:0;top:0;bottom:0;width:3px;z-index:20;background:linear-gradient(180deg,transparent 0%,var(--accent) 40%,var(--blue-light) 70%,transparent 100%);opacity:.6;}
-
-/* HEADER */
 .isa-header{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:56px;border-bottom:1px solid var(--border);}
 .logo-wrap{display:flex;align-items:center;}
 .logo-isa{font-family:'Barlow Condensed',sans-serif;font-size:38px;font-weight:800;font-style:italic;color:var(--white);letter-spacing:2px;line-height:1;position:relative;}
@@ -43,57 +39,35 @@ body{font-family:'Barlow',sans-serif;background:var(--navy);color:var(--white);d
 .refresh-btn.spin .icon{animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
 .last-upd{font-size:10px;color:var(--muted);letter-spacing:.05em;}
-
-/* PAGE TITLE BAR */
-.title-bar{position:relative;z-index:10;padding:.9rem 2rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.title-bar{position:relative;z-index:10;padding:.9rem 2rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
 .page-title{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--white);}
 .page-sub{font-size:11px;color:var(--muted);margin-top:2px;letter-spacing:.04em;}
-.search-wrap{display:flex;align-items:center;gap:8px;}
-.search-input{font-size:13px;font-family:'Barlow',sans-serif;padding:7px 14px;background:rgba(255,255,255,.06);border:1px solid var(--border2);border-radius:8px;color:var(--white);outline:none;width:220px;transition:all .15s;}
+.search-wrap{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.search-input{font-size:13px;font-family:'Barlow',sans-serif;padding:7px 14px;background:rgba(255,255,255,.06);border:1px solid var(--border2);border-radius:8px;color:var(--white);outline:none;width:200px;transition:all .15s;}
 .search-input::placeholder{color:var(--muted);}
 .search-input:focus{border-color:var(--accent);background:rgba(255,255,255,.09);}
 .filter-sel{font-size:12px;font-family:'Barlow',sans-serif;padding:7px 12px;background:rgba(255,255,255,.06);border:1px solid var(--border2);border-radius:8px;color:var(--white);outline:none;cursor:pointer;}
 .filter-sel option{background:var(--navy2);color:var(--white);}
 .filter-sel:focus{border-color:var(--accent);}
-
-/* MAIN LAYOUT */
 .main-layout{position:relative;z-index:10;display:flex;flex:1;overflow:hidden;}
-
-/* SIDEBAR */
 .sidebar{width:280px;flex-shrink:0;border-right:1px solid var(--border);overflow-y:auto;padding:1.25rem;}
 .sidebar-title{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid var(--border);}
-
-/* STAT CARDS SIDEBAR */
 .stat-block{margin-bottom:.75rem;}
 .stat-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:.9rem 1rem;transition:all .2s;}
 .stat-card:hover{background:rgba(255,255,255,.07);}
 .stat-card.pda{border-color:var(--pda-border);background:var(--pda-bg);}
 .stat-card.npa{border-color:var(--npa-border);background:var(--npa-bg);}
-.stat-card.sin{border-color:var(--sin-border);background:var(--sin-bg);}
-.stat-card.sal{border-color:var(--sal-border);background:var(--sal-bg);}
-.stat-card.neutral{border-color:rgba(0,180,216,.2);background:rgba(0,180,216,.06);}
 .sc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:.3rem;}
 .sc-label{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;}
 .stat-card.pda .sc-label{color:var(--pda);}
 .stat-card.npa .sc-label{color:var(--npa);}
-.stat-card.sin .sc-label{color:var(--sin);}
-.stat-card.sal .sc-label{color:var(--sal);}
-.stat-card.neutral .sc-label{color:var(--accent);}
 .sc-dot{width:8px;height:8px;border-radius:50%;}
 .stat-card.pda .sc-dot{background:var(--pda);}
 .stat-card.npa .sc-dot{background:var(--npa);}
-.stat-card.sin .sc-dot{background:var(--sin);}
-.stat-card.sal .sc-dot{background:var(--sal);}
-.stat-card.neutral .sc-dot{background:var(--accent);}
 .sc-num{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:800;line-height:1;}
 .stat-card.pda .sc-num{color:var(--pda);}
 .stat-card.npa .sc-num{color:var(--npa);}
-.stat-card.sin .sc-num{color:var(--sin);}
-.stat-card.sal .sc-num{color:var(--sal);}
-.stat-card.neutral .sc-num{color:var(--accent);}
 .sc-sub{font-size:11px;color:var(--muted);margin-top:2px;}
-
-/* DIVIDER STATS */
 .sidebar-section{margin-top:1.25rem;}
 .sidebar-section-title{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem;display:flex;align-items:center;gap:6px;}
 .sidebar-section-title::after{content:'';flex:1;height:1px;background:var(--border);}
@@ -102,17 +76,10 @@ body{font-family:'Barlow',sans-serif;background:var(--navy);color:var(--white);d
 .info-label{font-size:11px;color:var(--muted);}
 .info-val{font-size:13px;font-weight:600;color:var(--white);}
 .info-val.accent{color:var(--accent);}
-.info-val.green{color:var(--pda);}
-.info-val.red{color:var(--sin);}
-.info-val.orange{color:var(--npa);}
-
-/* REMOLCADORES LIST */
 .rem-item{display:flex;align-items:center;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid rgba(255,255,255,.04);}
 .rem-item:last-child{border-bottom:none;}
 .rem-name{font-size:11px;color:var(--off-white);}
 .rem-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:rgba(0,180,216,.12);border:1px solid rgba(0,180,216,.2);color:var(--accent);}
-
-/* STAT CARD PEQUENA (HISTORICO) */
 .stat-card-small{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:.6rem;margin-bottom:.5rem;transition:all .2s;}
 .stat-card-small:hover{background:rgba(255,255,255,.07);}
 .stat-card-small.pda{border-color:var(--pda-border);background:var(--pda-bg);}
@@ -128,8 +95,6 @@ body{font-family:'Barlow',sans-serif;background:var(--navy);color:var(--white);d
 .stat-card-small.pda .scs-num{color:var(--pda);}
 .stat-card-small.npa .scs-num{color:var(--npa);}
 .scs-sub{font-size:9px;color:var(--muted);margin-top:1px;}
-
-/* TABLE AREA */
 .table-area{flex:1;overflow-y:auto;padding:1.25rem 1.5rem;}
 table{width:100%;border-collapse:collapse;}
 thead{position:sticky;top:0;z-index:5;}
@@ -138,7 +103,6 @@ thead th{padding:10px 14px;text-align:left;font-size:10px;font-weight:700;letter
 tbody tr{border-bottom:1px solid rgba(255,255,255,.04);transition:background .1s;}
 tbody tr:hover{background:rgba(255,255,255,.04);}
 tbody td{padding:9px 14px;font-size:12px;vertical-align:middle;}
-
 .cell-barcaza{font-weight:600;color:var(--white);font-size:13px;letter-spacing:.02em;}
 .cell-rem{color:var(--off-white);font-size:12px;}
 .cell-estado{color:var(--muted);font-size:12px;}
@@ -147,29 +111,20 @@ tbody td{padding:9px 14px;font-size:12px;vertical-align:middle;}
 .cell-salida.red{color:var(--sin);}
 .cell-salida.green{color:var(--pda);}
 .cell-salida.empty{color:var(--muted);font-weight:400;font-style:italic;}
-
-/* BADGES */
 .badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:3px 9px;border-radius:20px;border:1px solid;white-space:nowrap;}
 .bdot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
 .badge.pda{background:var(--pda-bg);border-color:var(--pda-border);color:var(--pda);}
 .badge.pda .bdot{background:var(--pda);}
 .badge.npa{background:var(--npa-bg);border-color:var(--npa-border);color:var(--npa);}
 .badge.npa .bdot{background:var(--npa);}
-.badge.sin{background:var(--sin-bg);border-color:var(--sin-border);color:var(--sin);}
-.badge.sin .bdot{background:var(--sin);}
-.badge.sal{background:var(--sal-bg);border-color:var(--sal-border);color:var(--sal);}
-.badge.sal .bdot{background:var(--sal);}
-
-/* LOADING */
 .loading-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4rem;gap:1rem;}
 .spinner{width:32px;height:32px;border:2px solid rgba(255,255,255,.1);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;}
 .loading-txt{font-size:13px;color:var(--muted);}
 .error-wrap{text-align:center;padding:3rem;color:var(--sin);}
-
-/* LEGEND */
 .legend-row{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:.5rem;}
 .leg{display:flex;align-items:center;gap:5px;font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);}
 .leg-dot{width:8px;height:8px;border-radius:50%;}
+.empty-state{display:none;text-align:center;padding:3rem;color:var(--muted);font-size:13px;}
 </style>
 </head>
 <body>
@@ -177,12 +132,11 @@ tbody td{padding:9px 14px;font-size:12px;vertical-align:middle;}
 <div class="bg"><div class="bg-grad"></div><div class="bg-lines"></div></div>
 <div class="side-accent"></div>
 
-<!-- HEADER -->
 <div class="isa-header">
   <div class="logo-wrap">
     <div class="logo-isa">ISA</div>
     <div class="logo-sub">
-      <span class="logo-name">Agentes MarÃ­timos</span>
+      <span class="logo-name">Agentes Maritimos</span>
       <span class="logo-tag">Exceeding expectations</span>
     </div>
   </div>
@@ -193,14 +147,18 @@ tbody td{padding:9px 14px;font-size:12px;vertical-align:middle;}
   </div>
 </div>
 
-<!-- TITLE BAR -->
 <div class="title-bar">
   <div>
-    <div class="page-title">Seguimiento Barcazas LHG-HB â€” Lastre / Cargadas</div>
-    <div class="page-sub">Datos en tiempo real Â· Google Sheets</div>
+    <div class="page-title">Seguimiento Barcazas LHG-HB - Lastre / Cargadas</div>
+    <div class="page-sub">Datos en tiempo real - Google Sheets</div>
   </div>
   <div class="search-wrap">
     <input class="search-input" type="text" id="search" placeholder="Buscar barcaza o remolcador..." oninput="applyFilters()">
+    <select class="filter-sel" id="filter-salida" onchange="applyFilters()">
+      <option value="">Todas las barcazas</option>
+      <option value="sin">Sin salida (en puerto)</option>
+      <option value="con">Con salida asignada</option>
+    </select>
     <select class="filter-sel" id="filter-pos" onchange="applyFilters()">
       <option value="">Todas las posiciones</option>
       <option value="PDA">PDA</option>
@@ -217,14 +175,11 @@ tbody td{padding:9px 14px;font-size:12px;vertical-align:middle;}
   </div>
 </div>
 
-<!-- MAIN -->
 <div class="main-layout">
 
-  <!-- SIDEBAR OPTIMIZADA -->
   <div class="sidebar">
     <div class="sidebar-title">En Puerto (Sin Salida)</div>
 
-    <!-- LASTRE SIN SALIDA -->
     <div class="stat-block">
       <div class="stat-card pda">
         <div class="sc-top"><span class="sc-label">Lastre en PDA</span><span class="sc-dot"></span></div>
@@ -241,7 +196,6 @@ tbody td{padding:9px 14px;font-size:12px;vertical-align:middle;}
       </div>
     </div>
 
-    <!-- CARGADA SIN SALIDA -->
     <div class="stat-block">
       <div class="stat-card pda">
         <div class="sc-top"><span class="sc-label">Cargada en PDA</span><span class="sc-dot"></span></div>
@@ -258,12 +212,10 @@ tbody td{padding:9px 14px;font-size:12px;vertical-align:middle;}
       </div>
     </div>
 
-    <!-- DIVIDER Y HISTORICO -->
     <div class="sidebar-section">
-      <div class="sidebar-section-title">HistÃ³rico</div>
+      <div class="sidebar-section-title">Historico</div>
     </div>
 
-    <!-- HISTORICO: TOTAL CON SALIDA -->
     <div style="margin-bottom:1rem;">
       <div class="stat-card-small pda">
         <div class="scs-top"><span class="scs-label">Lastre PDA</span><span class="scs-dot"></span></div>
@@ -277,7 +229,6 @@ tbody td{padding:9px 14px;font-size:12px;vertical-align:middle;}
       </div>
     </div>
 
-    <!-- HISTORICO: CARGADA CON SALIDA -->
     <div style="margin-bottom:1rem;">
       <div class="stat-card-small pda">
         <div class="scs-top"><span class="scs-label">Cargada PDA</span><span class="scs-dot"></span></div>
@@ -291,22 +242,19 @@ tbody td{padding:9px 14px;font-size:12px;vertical-align:middle;}
       </div>
     </div>
 
-    <!-- RESUMEN GENERAL PEQUENO -->
     <div class="sidebar-section">
       <div class="sidebar-section-title">General</div>
       <div class="info-row"><span class="info-label">Total en puerto</span><span class="info-val accent" id="cnt-total-sin">â€”</span></div>
       <div class="info-row"><span class="info-label">Con salida</span><span class="info-val accent" id="cnt-total-sal">â€”</span></div>
       <div class="info-row"><span class="info-label">Remolcadores activos</span><span class="info-val" id="cnt-rems">â€”</span></div>
-      <div class="info-row"><span class="info-label">Ãšltima actualizaciÃ³n</span><span class="info-val" id="upd-time">â€”</span></div>
+      <div class="info-row"><span class="info-label">Ultima actualizacion</span><span class="info-val" id="upd-time">â€”</span></div>
     </div>
 
-    <!-- REMOLCADORES -->
     <div class="sidebar-section">
       <div class="sidebar-section-title">Por remolcador</div>
       <div id="rem-list"></div>
     </div>
 
-    <!-- LEYENDA -->
     <div class="sidebar-section">
       <div class="sidebar-section-title">Referencias</div>
       <div class="legend-row">
@@ -316,7 +264,6 @@ tbody td{padding:9px 14px;font-size:12px;vertical-align:middle;}
     </div>
   </div>
 
-  <!-- TABLE -->
   <div class="table-area" id="table-area">
     <div class="loading-wrap" id="loading">
       <div class="spinner"></div>
@@ -329,14 +276,14 @@ tbody td{padding:9px 14px;font-size:12px;vertical-align:middle;}
           <th>Barcaza</th>
           <th>Remolcador</th>
           <th>Estado</th>
-          <th>PosiciÃ³n</th>
+          <th>Posicion</th>
           <th>Ingreso</th>
           <th>Salida</th>
         </tr>
       </thead>
       <tbody id="table-body"></tbody>
     </table>
-    <div id="empty-state" style="display:none;text-align:center;padding:3rem;color:var(--muted);font-size:13px;">
+    <div id="empty-state" class="empty-state">
       No se encontraron barcazas con los filtros aplicados.
     </div>
     <div id="error-state" style="display:none" class="error-wrap"></div>
@@ -375,7 +322,7 @@ async function loadData() {
     document.getElementById('loading').style.display = 'none';
     const err = document.getElementById('error-state');
     err.style.display = 'block';
-    err.textContent = 'Error al cargar los datos. Verifica la conexiÃ³n o los permisos del Sheet.';
+    err.textContent = 'Error al cargar los datos. Verifica la conexion o los permisos del Sheet.';
   }
   btn.classList.remove('spin');
 }
@@ -437,12 +384,15 @@ function populateFilters(rows) {
 
 function applyFilters() {
   const search = (document.getElementById('search').value || '').toLowerCase();
+  const salida = document.getElementById('filter-salida').value;
   const pos = document.getElementById('filter-pos').value;
   const rem = document.getElementById('filter-rem').value;
   const est = document.getElementById('filter-est').value;
 
   const filtered = allRows.filter(r => {
     if (search && !r.barcaza.toLowerCase().includes(search) && !r.remolcador.toLowerCase().includes(search)) return false;
+    if (salida === 'sin' && r.salida && r.salida.trim() !== '') return false;
+    if (salida === 'con' && (!r.salida || r.salida.trim() === '')) return false;
     if (pos && !r.posicion.includes(pos)) return false;
     if (rem && r.remolcador !== rem) return false;
     if (est && !r.estado.includes(est.toUpperCase())) return false;
@@ -484,61 +434,41 @@ function renderTable(rows) {
 }
 
 function updateSidebar(rows) {
-  // PRINCIPALES: SIN SALIDA (EN PUERTO)
   const lastrePDA_sin = rows.filter(r => 
-    r.estado.includes('LASTRE') && 
-    r.posicion.includes('PDA') && 
-    (!r.salida || r.salida.trim() === '')
+    r.estado.includes('LASTRE') && r.posicion.includes('PDA') && (!r.salida || r.salida.trim() === '')
   ).length;
 
   const lastreNPA_sin = rows.filter(r => 
-    r.estado.includes('LASTRE') && 
-    r.posicion.includes('NPA') && 
-    (!r.salida || r.salida.trim() === '')
+    r.estado.includes('LASTRE') && r.posicion.includes('NPA') && (!r.salida || r.salida.trim() === '')
   ).length;
 
   const cargadaPDA_sin = rows.filter(r => 
-    (r.estado.includes('CARGADA')||r.estado.includes('CARGAD')) && 
-    r.posicion.includes('PDA') && 
-    (!r.salida || r.salida.trim() === '')
+    (r.estado.includes('CARGADA')||r.estado.includes('CARGAD')) && r.posicion.includes('PDA') && (!r.salida || r.salida.trim() === '')
   ).length;
 
   const cargadaNPA_sin = rows.filter(r => 
-    (r.estado.includes('CARGADA')||r.estado.includes('CARGAD')) && 
-    r.posicion.includes('NPA') && 
-    (!r.salida || r.salida.trim() === '')
+    (r.estado.includes('CARGADA')||r.estado.includes('CARGAD')) && r.posicion.includes('NPA') && (!r.salida || r.salida.trim() === '')
   ).length;
 
-  // HISTORICO: CON SALIDA
   const lastrePDA_sal = rows.filter(r => 
-    r.estado.includes('LASTRE') && 
-    r.posicion.includes('PDA') && 
-    r.salida && r.salida.trim() !== ''
+    r.estado.includes('LASTRE') && r.posicion.includes('PDA') && r.salida && r.salida.trim() !== ''
   ).length;
 
   const lastreNPA_sal = rows.filter(r => 
-    r.estado.includes('LASTRE') && 
-    r.posicion.includes('NPA') && 
-    r.salida && r.salida.trim() !== ''
+    r.estado.includes('LASTRE') && r.posicion.includes('NPA') && r.salida && r.salida.trim() !== ''
   ).length;
 
   const cargadaPDA_sal = rows.filter(r => 
-    (r.estado.includes('CARGADA')||r.estado.includes('CARGAD')) && 
-    r.posicion.includes('PDA') && 
-    r.salida && r.salida.trim() !== ''
+    (r.estado.includes('CARGADA')||r.estado.includes('CARGAD')) && r.posicion.includes('PDA') && r.salida && r.salida.trim() !== ''
   ).length;
 
   const cargadaNPA_sal = rows.filter(r => 
-    (r.estado.includes('CARGADA')||r.estado.includes('CARGAD')) && 
-    r.posicion.includes('NPA') && 
-    r.salida && r.salida.trim() !== ''
+    (r.estado.includes('CARGADA')||r.estado.includes('CARGAD')) && r.posicion.includes('NPA') && r.salida && r.salida.trim() !== ''
   ).length;
 
-  // TOTALES
   const totalSin = rows.filter(r => !r.salida || r.salida.trim() === '').length;
   const totalSal = rows.filter(r => r.salida && r.salida.trim() !== '').length;
 
-  // ACTUALIZAR DOM
   document.getElementById('lastrePDA-sin').textContent = lastrePDA_sin;
   document.getElementById('lastreNPA-sin').textContent = lastreNPA_sin;
   document.getElementById('cargadaPDA-sin').textContent = cargadaPDA_sin;
@@ -550,7 +480,6 @@ function updateSidebar(rows) {
   document.getElementById('cnt-total-sin').textContent = totalSin;
   document.getElementById('cnt-total-sal').textContent = totalSal;
 
-  // REMOLCADORES
   const remCount = {};
   rows.forEach(r => { if(r.remolcador) remCount[r.remolcador] = (remCount[r.remolcador]||0)+1; });
   const rems = Object.entries(remCount).sort((a,b)=>b[1]-a[1]);
@@ -558,8 +487,6 @@ function updateSidebar(rows) {
   document.getElementById('rem-list').innerHTML = rems.map(([n,c]) =>
     `<div class="rem-item"><span class="rem-name">${n}</span><span class="rem-badge">${c}</span></div>`
   ).join('');
-
-  console.log('Sidebar actualizada correctamente');
 }
 
 loadData();
