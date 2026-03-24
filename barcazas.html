@@ -3,385 +3,575 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ISA — Generador de Mensaje de Gastos</title>
+<title>ISA â€” Seguimiento Barcazas LHG-HB</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--isa-blue:#1a3a8c;--isa-blue-dark:#0f2460;--isa-blue-light:#e8eef8;--isa-green:#00a878;--isa-red:#c0392b;--isa-text:#1a1a2e;--isa-muted:#6b7a99;--isa-border:#d0daea;--isa-bg:#f4f7fb;--isa-white:#fff;--r:8px;}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Barlow',sans-serif;background:var(--isa-bg);color:var(--isa-text)}
-.isa-header{background:var(--isa-blue-dark);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100}
-.isa-logo{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;color:white;letter-spacing:2px}
-.isa-tagline{font-size:11px;color:rgba(255,255,255,.5);letter-spacing:.1em;text-transform:uppercase;margin-left:12px;padding-left:12px;border-left:1px solid rgba(255,255,255,.2)}
-.app{max-width:900px;margin:0 auto;padding:1.5rem 1rem 4rem}
-.page-title{margin-bottom:1.5rem}
-.page-title h2{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--isa-blue);letter-spacing:.04em;text-transform:uppercase}
-.tabs{display:flex;border-bottom:2px solid var(--isa-border);margin-bottom:1.5rem}
-.tab{padding:9px 18px;font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;border:none;background:none;cursor:pointer;color:var(--isa-muted);border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:color .15s}
-.tab:hover{color:var(--isa-blue)}.tab.active{color:var(--isa-blue);border-bottom-color:var(--isa-blue)}
-.pane{display:none}.pane.active{display:block}
-.card{background:var(--isa-white);border:1px solid var(--isa-border);border-radius:var(--r);padding:1.25rem;margin-bottom:1rem;box-shadow:0 1px 3px rgba(26,58,140,.06)}
-.card-header{display:flex;align-items:center;gap:8px;margin-bottom:1rem;padding-bottom:10px;border-bottom:1px solid var(--isa-blue-light)}
-.card-title{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.1em;color:var(--isa-blue);text-transform:uppercase}
-label{display:block;font-size:11px;font-weight:600;color:var(--isa-muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
-input,select,textarea{width:100%;font-size:13px;font-family:'Barlow',sans-serif;padding:8px 11px;border:1px solid var(--isa-border);border-radius:6px;background:var(--isa-white);color:var(--isa-text);outline:none}
-input:focus,select:focus,textarea:focus{border-color:var(--isa-blue);box-shadow:0 0 0 3px rgba(26,58,140,.1)}
-textarea{resize:vertical;min-height:120px;font-family:'Courier New',monospace}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
-.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px}
-@media(max-width:640px){.g2,.g3{grid-template-columns:1fr}}
-.tog-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-.tog{position:relative;width:36px;height:20px;flex-shrink:0}
-.tog input{opacity:0;width:0;height:0}
-.sl{position:absolute;inset:0;background:#c8d4e8;border-radius:20px;cursor:pointer;transition:.2s}
-.sl:before{content:'';position:absolute;width:14px;height:14px;left:3px;top:3px;background:white;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
-.tog input:checked+.sl{background:var(--isa-blue)}.tog input:checked+.sl:before{transform:translateX(16px)}
-.tog-lbl{font-size:13px;color:var(--isa-text);font-weight:500}
-.collapsible{cursor:pointer;padding:10px;background:var(--isa-blue-light);border-radius:6px;margin:10px 0;border:none;font-size:12px;font-weight:600;color:var(--isa-blue);transition:all .15s}
-.collapsible:hover{background:#dae3f0}
-.collapsible.open::before{content:'▼'}
-.collapsible::before{content:'▶';margin-right:4px;display:inline-block;transition:transform .15s}
-.collapsible-content{display:none;margin-top:10px}
-.collapsible-content.active{display:block}
-.sub-item{background:var(--isa-blue-light);border:1px solid #c8d4e8;border-radius:6px;padding:1rem;margin-bottom:10px}
-.item-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-.item-label{font-size:11px;font-weight:700;color:var(--isa-blue);text-transform:uppercase}
-.add-btn{display:inline-flex;gap:6px;font-size:12px;font-weight:600;padding:6px 14px;border:1.5px dashed var(--isa-blue);border-radius:6px;background:transparent;color:var(--isa-blue);cursor:pointer;margin-top:6px;text-transform:uppercase;transition:all .15s}
-.add-btn:hover{background:var(--isa-blue-light)}
-.rm{font-size:11px;color:var(--isa-red);background:none;border:1px solid transparent;cursor:pointer;padding:3px 8px;font-weight:600}
-.rm:hover{background:#fdecea;border-color:var(--isa-red)}
-.footer{display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--isa-border)}
-.btn{padding:9px 22px;border-radius:6px;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border:none;transition:all .15s}
-.btn-primary{background:var(--isa-green);color:white}.btn-primary:hover{background:#008c65}
-.btn-copy{border:1.5px solid var(--isa-blue);background:white;color:var(--isa-blue);padding:7px 18px}.btn-copy:hover{background:var(--isa-blue-light)}
-.note{font-size:12px;color:var(--isa-blue);background:var(--isa-blue-light);border-left:3px solid var(--isa-blue);padding:8px 12px;border-radius:0 6px 6px 0;margin:8px 0}
-.output-wrap{background:#f8faff;border:1px solid var(--isa-border);border-radius:var(--r);padding:1.25rem;font-family:'Courier New',monospace;font-size:12px;line-height:1.9;color:var(--isa-text);white-space:pre-wrap;word-wrap:break-word;overflow-x:auto;min-height:200px;max-height:500px;overflow-y:auto}
-.subj-box{font-size:14px;font-weight:600;padding:10px 14px;background:var(--isa-blue-light);border:1px solid var(--isa-border);border-radius:6px;color:var(--isa-blue);margin-bottom:10px}
-.table-bcz{width:100%;border-collapse:collapse;font-size:11px;margin:10px 0}
-.table-bcz th{background:var(--isa-blue);color:white;padding:6px 10px;text-align:left;font-weight:600;font-size:10px;text-transform:uppercase}
-.table-bcz td{padding:6px 10px;border-bottom:1px solid var(--isa-border)}
-.table-bcz tr:last-child{font-weight:700;background:var(--isa-blue-light)}
+:root{
+  --navy:#0a1628;--navy2:#0d1f3c;--navy3:#112040;
+  --blue:#1a3a8c;--blue-mid:#2d5cb8;--blue-light:#3a7bd5;--accent:#00b4d8;
+  --white:#fff;--off-white:#e8eef8;--muted:rgba(255,255,255,.45);
+  --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.12);
+  --pda:#22c55e;--pda-bg:rgba(34,197,94,.12);--pda-border:rgba(34,197,94,.25);
+  --npa:#f97316;--npa-bg:rgba(249,115,22,.12);--npa-border:rgba(249,115,22,.25);
+  --sin:#ef4444;--sin-bg:rgba(239,68,68,.12);--sin-border:rgba(239,68,68,.25);
+  --sal:#eab308;--sal-bg:rgba(234,179,8,.12);--sal-border:rgba(234,179,8,.25);
+}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Barlow',sans-serif;background:var(--navy);color:var(--white);display:flex;flex-direction:column;}
+
+/* BG */
+.bg{position:fixed;inset:0;z-index:0;}
+.bg-grad{position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 10% 50%,rgba(26,58,140,.4) 0%,transparent 70%),linear-gradient(160deg,#0a1628 0%,#0d1f3c 60%,#0a1628 100%);}
+.bg-lines{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:60px 60px;}
+.side-accent{position:fixed;left:0;top:0;bottom:0;width:3px;z-index:20;background:linear-gradient(180deg,transparent 0%,var(--accent) 40%,var(--blue-light) 70%,transparent 100%);opacity:.6;}
+
+/* HEADER */
+.isa-header{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:56px;border-bottom:1px solid var(--border);}
+.logo-wrap{display:flex;align-items:center;}
+.logo-isa{font-family:'Barlow Condensed',sans-serif;font-size:38px;font-weight:800;font-style:italic;color:var(--white);letter-spacing:2px;line-height:1;position:relative;}
+.logo-isa::after{content:'';position:absolute;bottom:-3px;left:0;width:100%;height:2px;background:linear-gradient(90deg,var(--accent),var(--blue-light));}
+.logo-sub{margin-left:12px;padding-left:12px;border-left:1px solid rgba(255,255,255,.2);display:flex;flex-direction:column;gap:1px;}
+.logo-name{font-size:11px;font-weight:600;color:var(--off-white);letter-spacing:.14em;text-transform:uppercase}
+.logo-tag{font-size:9px;font-weight:300;color:var(--muted);letter-spacing:.16em;text-transform:uppercase}
+.header-right{display:flex;align-items:center;gap:16px;}
+.back-link{font-size:11px;font-weight:600;color:rgba(255,255,255,.5);text-decoration:none;letter-spacing:.08em;text-transform:uppercase;padding:5px 12px;border:1px solid rgba(255,255,255,.12);border-radius:6px;transition:all .15s;}
+.back-link:hover{color:var(--white);border-color:rgba(255,255,255,.3);}
+.refresh-btn{font-size:11px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;background:rgba(0,180,216,.1);border:1px solid rgba(0,180,216,.25);border-radius:6px;padding:5px 12px;cursor:pointer;font-family:'Barlow',sans-serif;transition:all .15s;display:flex;align-items:center;gap:5px;}
+.refresh-btn:hover{background:rgba(0,180,216,.2);}
+.refresh-btn.spin .icon{animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.last-upd{font-size:10px;color:var(--muted);letter-spacing:.05em;}
+
+/* PAGE TITLE BAR */
+.title-bar{position:relative;z-index:10;padding:.9rem 2rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.page-title{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--white);}
+.page-sub{font-size:11px;color:var(--muted);margin-top:2px;letter-spacing:.04em;}
+.search-wrap{display:flex;align-items:center;gap:8px;}
+.search-input{font-size:13px;font-family:'Barlow',sans-serif;padding:7px 14px;background:rgba(255,255,255,.06);border:1px solid var(--border2);border-radius:8px;color:var(--white);outline:none;width:220px;transition:all .15s;}
+.search-input::placeholder{color:var(--muted);}
+.search-input:focus{border-color:var(--accent);background:rgba(255,255,255,.09);}
+.filter-sel{font-size:12px;font-family:'Barlow',sans-serif;padding:7px 12px;background:rgba(255,255,255,.06);border:1px solid var(--border2);border-radius:8px;color:var(--white);outline:none;cursor:pointer;}
+.filter-sel option{background:var(--navy2);color:var(--white);}
+.filter-sel:focus{border-color:var(--accent);}
+
+/* MAIN LAYOUT */
+.main-layout{position:relative;z-index:10;display:flex;flex:1;overflow:hidden;}
+
+/* SIDEBAR */
+.sidebar{width:280px;flex-shrink:0;border-right:1px solid var(--border);overflow-y:auto;padding:1.25rem;}
+.sidebar-title{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid var(--border);}
+
+/* STAT CARDS SIDEBAR */
+.stat-block{margin-bottom:.75rem;}
+.stat-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:.9rem 1rem;transition:all .2s;}
+.stat-card:hover{background:rgba(255,255,255,.07);}
+.stat-card.pda{border-color:var(--pda-border);background:var(--pda-bg);}
+.stat-card.npa{border-color:var(--npa-border);background:var(--npa-bg);}
+.stat-card.sin{border-color:var(--sin-border);background:var(--sin-bg);}
+.stat-card.sal{border-color:var(--sal-border);background:var(--sal-bg);}
+.stat-card.neutral{border-color:rgba(0,180,216,.2);background:rgba(0,180,216,.06);}
+.sc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:.3rem;}
+.sc-label{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;}
+.stat-card.pda .sc-label{color:var(--pda);}
+.stat-card.npa .sc-label{color:var(--npa);}
+.stat-card.sin .sc-label{color:var(--sin);}
+.stat-card.sal .sc-label{color:var(--sal);}
+.stat-card.neutral .sc-label{color:var(--accent);}
+.sc-dot{width:8px;height:8px;border-radius:50%;}
+.stat-card.pda .sc-dot{background:var(--pda);}
+.stat-card.npa .sc-dot{background:var(--npa);}
+.stat-card.sin .sc-dot{background:var(--sin);}
+.stat-card.sal .sc-dot{background:var(--sal);}
+.stat-card.neutral .sc-dot{background:var(--accent);}
+.sc-num{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:800;line-height:1;}
+.stat-card.pda .sc-num{color:var(--pda);}
+.stat-card.npa .sc-num{color:var(--npa);}
+.stat-card.sin .sc-num{color:var(--sin);}
+.stat-card.sal .sc-num{color:var(--sal);}
+.stat-card.neutral .sc-num{color:var(--accent);}
+.sc-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+
+/* DIVIDER STATS */
+.sidebar-section{margin-top:1.25rem;}
+.sidebar-section-title{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem;display:flex;align-items:center;gap:6px;}
+.sidebar-section-title::after{content:'';flex:1;height:1px;background:var(--border);}
+.info-row{display:flex;align-items:center;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.info-row:last-child{border-bottom:none;}
+.info-label{font-size:11px;color:var(--muted);}
+.info-val{font-size:13px;font-weight:600;color:var(--white);}
+.info-val.accent{color:var(--accent);}
+.info-val.green{color:var(--pda);}
+.info-val.red{color:var(--sin);}
+.info-val.orange{color:var(--npa);}
+
+/* REMOLCADORES LIST */
+.rem-item{display:flex;align-items:center;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.rem-item:last-child{border-bottom:none;}
+.rem-name{font-size:11px;color:var(--off-white);}
+.rem-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:rgba(0,180,216,.12);border:1px solid rgba(0,180,216,.2);color:var(--accent);}
+
+/* STAT CARD PEQUEÃ‘A (HISTÃ“RICO) */
+.stat-card-small{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:.6rem;margin-bottom:.5rem;transition:all .2s;}
+.stat-card-small:hover{background:rgba(255,255,255,.07);}
+.stat-card-small.pda{border-color:var(--pda-border);background:var(--pda-bg);}
+.stat-card-small.npa{border-color:var(--npa-border);background:var(--npa-bg);}
+.scs-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:.2rem;}
+.scs-label{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;}
+.stat-card-small.pda .scs-label{color:var(--pda);}
+.stat-card-small.npa .scs-label{color:var(--npa);}
+.scs-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.stat-card-small.pda .scs-dot{background:var(--pda);}
+.stat-card-small.npa .scs-dot{background:var(--npa);}
+.scs-num{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;line-height:1;}
+.stat-card-small.pda .scs-num{color:var(--pda);}
+.stat-card-small.npa .scs-num{color:var(--npa);}
+.scs-sub{font-size:9px;color:var(--muted);margin-top:1px;}
+
+/* TABLE AREA */
+.table-area{flex:1;overflow-y:auto;padding:1.25rem 1.5rem;}
+table{width:100%;border-collapse:collapse;}
+thead{position:sticky;top:0;z-index:5;}
+thead tr{background:rgba(26,58,140,.8);backdrop-filter:blur(10px);}
+thead th{padding:10px 14px;text-align:left;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.7);white-space:nowrap;border-bottom:1px solid var(--border2);}
+tbody tr{border-bottom:1px solid rgba(255,255,255,.04);transition:background .1s;}
+tbody tr:hover{background:rgba(255,255,255,.04);}
+tbody td{padding:9px 14px;font-size:12px;vertical-align:middle;}
+
+.cell-barcaza{font-weight:600;color:var(--white);font-size:13px;letter-spacing:.02em;}
+.cell-rem{color:var(--off-white);font-size:12px;}
+.cell-estado{color:var(--muted);font-size:12px;}
+.cell-fecha{color:rgba(255,255,255,.6);font-size:12px;white-space:nowrap;}
+.cell-salida{font-size:12px;font-weight:600;white-space:nowrap;}
+.cell-salida.red{color:var(--sin);}
+.cell-salida.green{color:var(--pda);}
+.cell-salida.empty{color:var(--muted);font-weight:400;font-style:italic;}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:3px 9px;border-radius:20px;border:1px solid;white-space:nowrap;}
+.bdot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+.badge.pda{background:var(--pda-bg);border-color:var(--pda-border);color:var(--pda);}
+.badge.pda .bdot{background:var(--pda);}
+.badge.npa{background:var(--npa-bg);border-color:var(--npa-border);color:var(--npa);}
+.badge.npa .bdot{background:var(--npa);}
+.badge.sin{background:var(--sin-bg);border-color:var(--sin-border);color:var(--sin);}
+.badge.sin .bdot{background:var(--sin);}
+.badge.sal{background:var(--sal-bg);border-color:var(--sal-border);color:var(--sal);}
+.badge.sal .bdot{background:var(--sal);}
+
+/* LOADING */
+.loading-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4rem;gap:1rem;}
+.spinner{width:32px;height:32px;border:2px solid rgba(255,255,255,.1);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;}
+.loading-txt{font-size:13px;color:var(--muted);}
+.error-wrap{text-align:center;padding:3rem;color:var(--sin);}
+
+/* LEGEND */
+.legend-row{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:.5rem;}
+.leg{display:flex;align-items:center;gap:5px;font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);}
+.leg-dot{width:8px;height:8px;border-radius:50%;}
 </style>
 </head>
 <body>
 
+<div class="bg"><div class="bg-grad"></div><div class="bg-lines"></div></div>
+<div class="side-accent"></div>
+
+<!-- HEADER -->
 <div class="isa-header">
-  <div style="display:flex;align-items:baseline">
-    <span class="isa-logo">ISA<span style="font-size:14px;font-weight:400;color:rgba(255,255,255,.6);margin-left:8px">AGENTES</span></span>
-    <span class="isa-tagline">Exceeding expectations</span>
+  <div class="logo-wrap">
+    <div class="logo-isa">ISA</div>
+    <div class="logo-sub">
+      <span class="logo-name">Agentes MarÃ­timos</span>
+      <span class="logo-tag">Exceeding expectations</span>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="last-upd" id="last-upd"></span>
+    <button class="refresh-btn" onclick="loadData()" id="refresh-btn"><span class="icon">â†»</span> Actualizar</button>
+    <a href="index.html" class="back-link">â† Portal</a>
   </div>
 </div>
 
-<div class="app">
-  <div class="page-title">
-    <h2>Generador de Mensaje de Gastos</h2>
+<!-- TITLE BAR -->
+<div class="title-bar">
+  <div>
+    <div class="page-title">Seguimiento Barcazas LHG-HB â€” Lastre / Cargadas</div>
+    <div class="page-sub">Datos en tiempo real Â· Google Sheets</div>
   </div>
-
-  <div class="tabs">
-    <button class="tab active" onclick="goTab(0)" id="tab-btn-0">1. Entrada de Datos</button>
-    <button class="tab" onclick="goTab(1)" id="tab-btn-1">2. Vista Previa</button>
+  <div class="search-wrap">
+    <input class="search-input" type="text" id="search" placeholder="Buscar barcaza o remolcador..." oninput="applyFilters()">
+    <select class="filter-sel" id="filter-pos" onchange="applyFilters()">
+      <option value="">Todas las posiciones</option>
+      <option value="PDA">PDA</option>
+      <option value="NPA">NPA</option>
+    </select>
+    <select class="filter-sel" id="filter-rem" onchange="applyFilters()">
+      <option value="">Todos los remolcadores</option>
+    </select>
+    <select class="filter-sel" id="filter-est" onchange="applyFilters()">
+      <option value="">Todos los estados</option>
+      <option value="LASTRE">Lastre</option>
+      <option value="CARGADA">Cargada</option>
+    </select>
   </div>
+</div>
 
-  <!-- TAB 0: ENTRADA -->
-  <div class="pane active" id="tab-0">
-    <div class="card">
-      <div class="card-header"><div class="card-title">Remolcador y Operación</div></div>
-      <div class="g2"><div><label>Remolcador</label><input type="text" id="rem" placeholder="HERACLITO FILHO"></div><div><label>Armador</label><select id="armador"><option>Seleccionar</option><option>LHG NAVEGACION</option><option>HIDROVIAS DO BRASIL</option><option>INTERBARGE</option><option>P&O</option></select></div></div>
-      <div class="g3"><div><label>Referencia</label><input type="text" id="ref" placeholder="LHGA 06-09-13-14"></div><div><label>Mercadería</label><select id="merc"><option>Seleccionar</option><option>LOHS</option><option>SFHG</option><option>SINTER</option><option>FERTILIZANTE</option><option>SINTER + LOHS</option></select></div><div><label>Muelle(s)</label><input type="text" id="muelles" placeholder="NAVIOS + POTIGUAR"></div></div>
-    </div>
+<!-- MAIN -->
+<div class="main-layout">
 
-    <div class="card">
-      <div class="card-header"><div class="card-title">Autoridades Portuarias</div></div>
-      <div class="g3"><div><label>Bandera</label><select id="bandera"><option>Seleccionar</option><option>BOLIVIA</option><option>ARGENTINA</option><option>PARAGUAY</option><option>BRASIL</option><option>URUGUAY</option></select></div><div><label>OCE</label><input type="text" id="oce" placeholder="6000360"></div><div><label>Migraciones</label><select id="migra"><option>x1</option><option>x2</option><option>x3</option><option>x4</option></select></div></div>
-      <div style="display:flex;gap:20px;flex-wrap:wrap;margin-top:10px">
-        <div class="tog-row"><label class="tog"><input type="checkbox" id="chk-ld" checked><span class="sl"></span></label><span class="tog-lbl">Light Dues</span></div>
-        <div class="tog-row"><label class="tog"><input type="checkbox" id="chk-vhf" checked><span class="sl"></span></label><span class="tog-lbl">VHF</span></div>
-        <div class="tog-row"><label class="tog"><input type="checkbox" id="chk-desp" checked><span class="sl"></span></label><span class="tog-lbl">Entrada/Despacho</span></div>
+  <!-- SIDEBAR OPTIMIZADA -->
+  <div class="sidebar">
+    <div class="sidebar-title">En Puerto (Sin Salida)</div>
+
+    <!-- LASTRE SIN SALIDA -->
+    <div class="stat-block">
+      <div class="stat-card pda">
+        <div class="sc-top"><span class="sc-label">Lastre en PDA</span><span class="sc-dot"></span></div>
+        <div class="sc-num" id="lastrePDA-sin">â€”</div>
+        <div class="sc-sub">Actualmente en puerto</div>
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-header"><div class="card-title">Nómina de Barcazas</div></div>
-      <div class="note">Pegá la tabla de barcazas (con # | Barcaza | Cantidad Origen | NOR | Amarre | Dsamarre | Inicio | Fin)</div>
-      <textarea id="barcazas-paste" placeholder="Pegá aquí..." oninput="procesarBarcazas()"></textarea>
-      <div id="bcz-status" style="margin:10px 0;font-size:12px"></div>
-      <div id="bcz-preview" style="overflow-x:auto"></div>
+    <div class="stat-block">
+      <div class="stat-card npa">
+        <div class="sc-top"><span class="sc-label">Lastre en NPA</span><span class="sc-dot"></span></div>
+        <div class="sc-num" id="lastreNPA-sin">â€”</div>
+        <div class="sc-sub">Actualmente en puerto</div>
+      </div>
     </div>
 
-    <div class="card">
-      <div class="card-header"><div class="card-title">Operativa y Servicios</div></div>
-      <label>Resumen de Operativa</label>
-      <textarea id="operativa" rows="3" placeholder="El remolcador arribo con 10 barcazas..."></textarea>
-
-      <button class="collapsible" onclick="toggleCollapse(this)">LANCHAS</button>
-      <div class="collapsible-content"><div id="lanchas-list"></div><button class="add-btn" onclick="addLancha()">+ Agregar lancha</button></div>
-
-      <button class="collapsible" onclick="toggleCollapse(this)">PETROVÍAS</button>
-      <div class="collapsible-content"><div class="g2"><div><label>Fecha</label><input type="text" id="pt-fecha" placeholder="DD/MM/YYYY" maxlength="10" oninput="maskDate(this)"></div><div><label>Hora</label><input type="time" id="pt-hora"></div></div><div class="g2"><div><label>Proveedor</label><input type="text" id="pt-prov" placeholder="GOMISTAR"></div><div><label>Fecha lancha</label><input type="text" id="pt-lf" placeholder="DD/MM/YYYY" maxlength="10" oninput="maskDate(this)"></div></div></div>
-
-      <button class="collapsible" onclick="toggleCollapse(this)">SAUCE</button>
-      <div class="collapsible-content"><div class="g2"><div><label>Fecha</label><input type="text" id="sc-fecha" placeholder="DD/MM/YYYY" maxlength="10" oninput="maskDate(this)"></div><div><label>Proveedor</label><input type="text" id="sc-prov"></div></div></div>
-
-      <button class="collapsible" onclick="toggleCollapse(this)">ATENCIÓN MÉDICA</button>
-      <div class="collapsible-content"><div class="g2"><div><label>Tripulante</label><input type="text" id="med-trip"></div><div><label>Clínica</label><input type="text" id="med-cli"></div></div><div class="g3"><div><label>Consultas</label><input type="number" id="med-cons" value="1"></div><div><label>USD</label><input type="number" id="med-usd"></div><div><label>Lanchas</label><input type="number" id="med-lanch"></div></div><div style="display:flex;gap:20px"><div class="tog-row"><label class="tog"><input type="checkbox" id="chk-meds"><span class="sl"></span></label><span class="tog-lbl">Medicamentos</span></div><div class="tog-row"><label class="tog"><input type="checkbox" id="chk-tras"><span class="sl"></span></label><span class="tog-lbl">Traslados</span></div></div></div>
-
-      <button class="collapsible" onclick="toggleCollapse(this)">EXTRAS / COSTOS</button>
-      <div class="collapsible-content"><div id="extras-list"></div><button class="add-btn" onclick="addExtra()">+ Agregar extra</button></div>
-
-      <button class="collapsible" onclick="toggleCollapse(this)">CAMBIO DE TRIPULACIÓN</button>
-      <div class="collapsible-content"><div id="draw-list"></div><button class="add-btn" onclick="addDraw()">+ Agregar trámite</button></div>
+    <!-- CARGADA SIN SALIDA -->
+    <div class="stat-block">
+      <div class="stat-card pda">
+        <div class="sc-top"><span class="sc-label">Cargada en PDA</span><span class="sc-dot"></span></div>
+        <div class="sc-num" id="cargadaPDA-sin">â€”</div>
+        <div class="sc-sub">Actualmente en puerto</div>
+      </div>
     </div>
 
-    <div class="footer"><span></span><button class="btn btn-primary" onclick="generate(); goTab(1)">Ver Vista Previa →</button></div>
-  </div>
-
-  <!-- TAB 1: PREVIEW -->
-  <div class="pane" id="tab-1">
-    <div class="card">
-      <div class="card-header"><div class="card-title">Asunto</div></div>
-      <div class="subj-box" id="subj-out">Genera el mensaje</div>
-      <button class="btn btn-copy" onclick="copyEl('subj-out')" style="margin-top:10px">Copiar Asunto</button>
+    <div class="stat-block">
+      <div class="stat-card npa">
+        <div class="sc-top"><span class="sc-label">Cargada en NPA</span><span class="sc-dot"></span></div>
+        <div class="sc-num" id="cargadaNPA-sin">â€”</div>
+        <div class="sc-sub">Actualmente en puerto</div>
+      </div>
     </div>
 
-    <div class="card">
-      <div class="card-header" style="justify-content:space-between"><div class="card-title">Mensaje</div><button class="btn btn-copy" onclick="copyEl('body-out')">Copiar Mensaje</button></div>
-      <div class="output-wrap" id="body-out">Genera el mensaje para verlo aquí</div>
+    <!-- DIVIDER Y HISTÃ“RICO -->
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">HistÃ³rico</div>
     </div>
 
-    <div class="footer">
-      <button class="btn btn-primary" style="border:1.5px solid var(--isa-blue);background:white;color:var(--isa-blue)" onclick="goTab(0)">← Editar</button>
-      <div style="display:flex;gap:12px">
-        <button class="btn btn-copy" onclick="copyEl('body-out')">📋 Copiar</button>
-        <button class="btn btn-primary" onclick="sendMail()">✉️ Enviar Mail</button>
+    <!-- HISTÃ“RICO: TOTAL CON SALIDA -->
+    <div style="margin-bottom:1rem;">
+      <div class="stat-card-small pda">
+        <div class="scs-top"><span class="scs-label">Lastre PDA</span><span class="scs-dot"></span></div>
+        <div class="scs-num" id="lastrePDA-sal">â€”</div>
+        <div class="scs-sub">Con salida asignada</div>
+      </div>
+      <div class="stat-card-small npa">
+        <div class="scs-top"><span class="scs-label">Lastre NPA</span><span class="scs-dot"></span></div>
+        <div class="scs-num" id="lastreNPA-sal">â€”</div>
+        <div class="scs-sub">Con salida asignada</div>
+      </div>
+    </div>
+
+    <!-- HISTÃ“RICO: CARGADA CON SALIDA -->
+    <div style="margin-bottom:1rem;">
+      <div class="stat-card-small pda">
+        <div class="scs-top"><span class="scs-label">Cargada PDA</span><span class="scs-dot"></span></div>
+        <div class="scs-num" id="cargadaPDA-sal">â€”</div>
+        <div class="scs-sub">Con salida asignada</div>
+      </div>
+      <div class="stat-card-small npa">
+        <div class="scs-top"><span class="scs-label">Cargada NPA</span><span class="scs-dot"></span></div>
+        <div class="scs-num" id="cargadaNPA-sal">â€”</div>
+        <div class="scs-sub">Con salida asignada</div>
+      </div>
+    </div>
+
+    <!-- RESUMEN GENERAL PEQUEÃ‘O -->
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">General</div>
+      <div class="info-row"><span class="info-label">Total en puerto</span><span class="info-val accent" id="cnt-total-sin">â€”</span></div>
+      <div class="info-row"><span class="info-label">Con salida</span><span class="info-val accent" id="cnt-total-sal">â€”</span></div>
+      <div class="info-row"><span class="info-label">Remolcadores activos</span><span class="info-val" id="cnt-rems">â€”</span></div>
+      <div class="info-row"><span class="info-label">Ãšltima actualizaciÃ³n</span><span class="info-val" id="upd-time">â€”</span></div>
+    </div>
+
+    <!-- REMOLCADORES -->
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">Por remolcador</div>
+      <div id="rem-list"></div>
+    </div>
+
+    <!-- LEYENDA -->
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">Referencias</div>
+      <div class="legend-row">
+        <div class="leg"><div class="leg-dot" style="background:var(--pda)"></div>PDA</div>
+        <div class="leg"><div class="leg-dot" style="background:var(--npa)"></div>NPA</div>
       </div>
     </div>
   </div>
+
+  <!-- TABLE -->
+  <div class="table-area" id="table-area">
+    <div class="loading-wrap" id="loading">
+      <div class="spinner"></div>
+      <div class="loading-txt">Cargando datos desde Google Sheets...</div>
+    </div>
+    <table id="data-table" style="display:none">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Barcaza</th>
+          <th>Remolcador</th>
+          <th>Estado</th>
+          <th>PosiciÃ³n</th>
+          <th>Ingreso</th>
+          <th>Salida</th>
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+    <div id="empty-state" style="display:none;text-align:center;padding:3rem;color:var(--muted);font-size:13px;">
+      No se encontraron barcazas con los filtros aplicados.
+    </div>
+    <div id="error-state" style="display:none" class="error-wrap"></div>
+  </div>
+
 </div>
 
 <script>
-let lanchaIdx=0,extraIdx=0,drawIdx=0;
-window.barcazasData=[];
-window.barcazasTotal=0;
+const SHEET_ID = '1LHrw4Oih9h510UsoB_HsMm83U-g8zlXHgPqm8_7QPjM';
+const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`;
 
-function goTab(n){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));document.getElementById('tab-btn-'+n).classList.add('active');document.getElementById('tab-'+n).classList.add('active')}
-function toggleCollapse(btn){const c=btn.nextElementSibling;c.classList.toggle('active');btn.classList.toggle('open')}
-function v(id){const el=document.getElementById(id);return el?el.value.trim():''}
-function chk(id){const el=document.getElementById(id);return el&&el.checked}
-function maskDate(el){let val=el.value.replace(/\D/g,'');if(val.length>2)val=val.slice(0,2)+'/'+val.slice(2);if(val.length>5)val=val.slice(0,5)+'/'+val.slice(5);if(val.length>10)val=val.slice(0,10);el.value=val}
+let allRows = [];
 
-function procesarBarcazas(){
-  const raw=document.getElementById('barcazas-paste').value;
-  const status=document.getElementById('bcz-status');
-  const preview=document.getElementById('bcz-preview');
-  if(!raw.trim()){status.innerHTML='';preview.innerHTML='';window.barcazasData=[];window.barcazasTotal=0;return}
-  
-  const lines=raw.split('\n').map(l=>l.trim()).filter(l=>l);
-  const data=[];
-  let inTable=false;
-  
-  for(let i=0;i<lines.length;i++){
-    const line=lines[i];
-    // Detectar inicio de tabla
-    if(line.match(/#.*Barcaza.*Cantidad|^#$/i)){inTable=true;continue}
-    if(!inTable)continue;
-    // Detectar fin de tabla
-    if(line.match(/^TTL|TOTAL|^Zarpó|^[0-9]\s*$/) && i > 2)break;
-    
-    // Dividir por espacios múltiples o tabulaciones
-    const parts=line.split(/\s{2,}|\t/);
-    if(parts.length>=2){
-      const num=parts[0].trim();
-      const barcaza=parts[1].trim();
-      const cantidad=parts[2]?parts[2].trim():'';
-      
-      // Validar que sea una fila válida
-      if(barcaza && /^[A-Z0-9]{1,5}$/.test(barcaza) && cantidad && /[\d.,]/.test(cantidad)){
-        const qtyStr=cantidad.replace(/\./g,'').replace(',','.');
-        const qtyNum=parseFloat(qtyStr);
-        if(!isNaN(qtyNum) && qtyNum>0){
-          data.push({num:num,barcaza:barcaza,cantidad:cantidad,qtyNum:qtyNum});
-        }
-      }
-    }
+async function loadData() {
+  const btn = document.getElementById('refresh-btn');
+  btn.classList.add('spin');
+  document.getElementById('loading').style.display = 'flex';
+  document.getElementById('data-table').style.display = 'none';
+  document.getElementById('empty-state').style.display = 'none';
+  document.getElementById('error-state').style.display = 'none';
+
+  try {
+    const res = await fetch(CSV_URL + '&t=' + Date.now());
+    if (!res.ok) throw new Error('Error al cargar');
+    const text = await res.text();
+    const rows = parseCSV(text);
+    allRows = rows;
+    populateFilters(rows);
+    applyFilters();
+    updateSidebar(rows);
+    const now = new Date();
+    const t = now.toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit'});
+    document.getElementById('last-upd').textContent = 'Actualizado ' + t;
+    document.getElementById('upd-time').textContent = t;
+  } catch(e) {
+    document.getElementById('loading').style.display = 'none';
+    const err = document.getElementById('error-state');
+    err.style.display = 'block';
+    err.textContent = 'Error al cargar los datos. VerificÃ¡ la conexiÃ³n o los permisos del Sheet.';
   }
-  
-  if(!data.length){
-    status.innerHTML='<span style="color:var(--isa-red)">⚠ No se detectaron barcazas válidas</span>';
-    window.barcazasData=[];
-    window.barcazasTotal=0;
+  btn.classList.remove('spin');
+}
+
+function parseCSV(text) {
+  const lines = text.split('\n').filter(l => l.trim());
+  if (lines.length < 2) return [];
+  const rows = [];
+  for (let i = 1; i < lines.length; i++) {
+    const cols = splitCSVLine(lines[i]);
+    if (cols.length < 4) continue;
+    const barcaza = (cols[0]||'').trim();
+    const remolcador = (cols[1]||'').trim();
+    const estado = (cols[2]||'').trim().toUpperCase();
+    const posicion = (cols[3]||'').trim().toUpperCase();
+    const ingreso = (cols[4]||'').trim();
+    const salida = (cols[5]||'').trim();
+    if (!barcaza || barcaza.toUpperCase() === 'BARCAZA') continue;
+    rows.push({ barcaza, remolcador, estado, posicion, ingreso, salida });
+  }
+  return rows;
+}
+
+function splitCSVLine(line) {
+  const result = [];
+  let cur = '', inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') { inQ = !inQ; }
+    else if (ch === ',' && !inQ) { result.push(cur); cur = ''; }
+    else { cur += ch; }
+  }
+  result.push(cur);
+  return result;
+}
+
+function getBadgeClass(posicion) {
+  const p = (posicion||'').toUpperCase();
+  if (p.includes('PDA')) return 'pda';
+  if (p.includes('NPA')) return 'npa';
+  return 'sin';
+}
+
+function getSalidaClass(salida) {
+  if (!salida || salida.trim() === '') return 'empty';
+  return 'green';
+}
+
+function populateFilters(rows) {
+  const rems = [...new Set(rows.map(r => r.remolcador).filter(Boolean))].sort();
+  const sel = document.getElementById('filter-rem');
+  sel.innerHTML = '<option value="">Todos los remolcadores</option>';
+  rems.forEach(r => {
+    const o = document.createElement('option');
+    o.value = r; o.textContent = r;
+    sel.appendChild(o);
+  });
+}
+
+function applyFilters() {
+  const search = (document.getElementById('search').value || '').toLowerCase();
+  const pos = document.getElementById('filter-pos').value;
+  const rem = document.getElementById('filter-rem').value;
+  const est = document.getElementById('filter-est').value;
+
+  const filtered = allRows.filter(r => {
+    if (search && !r.barcaza.toLowerCase().includes(search) && !r.remolcador.toLowerCase().includes(search)) return false;
+    if (pos && !r.posicion.includes(pos)) return false;
+    if (rem && r.remolcador !== rem) return false;
+    if (est && !r.estado.includes(est.toUpperCase())) return false;
+    return true;
+  });
+
+  renderTable(filtered);
+}
+
+function renderTable(rows) {
+  document.getElementById('loading').style.display = 'none';
+  const table = document.getElementById('data-table');
+  const body = document.getElementById('table-body');
+  const empty = document.getElementById('empty-state');
+
+  if (rows.length === 0) {
+    table.style.display = 'none';
+    empty.style.display = 'block';
     return;
   }
-  
-  status.innerHTML=`<span style="color:var(--isa-green)">✓ ${data.length} barcazas detectadas</span>`;
-  
-  let html='<table class="table-bcz"><tr><th>#</th><th>Barcaza</th><th>Cantidad</th></tr>';
-  let total=0;
-  data.forEach((r,idx)=>{
-    html+=`<tr><td>${idx+1}</td><td>${r.barcaza}</td><td>${r.cantidad}</td></tr>`;
-    total+=r.qtyNum;
-  });
-  if(total>0){
-    html+=`<tr><td></td><td><b>TTL</b></td><td><b>${total.toLocaleString('es-UY')}</b></td></tr>`;
-  }
-  html+='</table>';
-  
-  preview.innerHTML=html;
-  window.barcazasData=data;
-  window.barcazasTotal=total;
+
+  table.style.display = 'table';
+  empty.style.display = 'none';
+
+  body.innerHTML = rows.map((r, i) => {
+    const bc = getBadgeClass(r.posicion);
+    const sc = getSalidaClass(r.salida);
+    const salidaTxt = r.salida || 'â€”';
+    return `<tr>
+      <td style="color:var(--muted);font-size:11px">${i+1}</td>
+      <td class="cell-barcaza">${r.barcaza}</td>
+      <td class="cell-rem">${r.remolcador}</td>
+      <td class="cell-estado">${r.estado}</td>
+      <td><span class="badge ${bc}"><span class="bdot"></span>${r.posicion||'â€”'}</span></td>
+      <td class="cell-fecha">${r.ingreso||'â€”'}</td>
+      <td class="cell-salida ${sc}">${salidaTxt}</td>
+    </tr>`;
+  }).join('');
 }
 
-function addLancha(){const id=lanchaIdx++;const div=document.createElement('div');div.className='sub-item';div.id='lc-'+id;div.innerHTML=`<div class="item-header"><span class="item-label">Lancha ${id+1}</span><button class="rm" onclick="document.getElementById('lc-${id}').remove()">X</button></div><div class="g3"><div><label>Tipo</label><input type="text" id="lct-${id}" placeholder="Entrada"></div><div><label>Fecha</label><input type="text" id="lcf-${id}" placeholder="DD/MM/YYYY" maxlength="10" oninput="maskDate(this)"></div><div><label>Hora</label><input type="time" id="lch-${id}"></div></div><div class="g2"><div><label>Proveedor</label><select id="lcp-${id}"><option>GOMISTAR</option><option>CG TRÁFICO</option><option>CORUMBA</option><option>Otro</option></select></div><div><label>Lugar</label><input type="text" id="lcn-${id}"></div></div>`;document.getElementById('lanchas-list').appendChild(div)}
+function updateSidebar(rows) {
+  // ========== PRINCIPALES: SIN SALIDA (EN PUERTO) ==========
+  const lastrePDA_sin = rows.filter(r => 
+    r.estado.includes('LASTRE') && 
+    r.posicion.includes('PDA') && 
+    (!r.salida || r.salida.trim() === '')
+  ).length;
 
-function addExtra(){const id=extraIdx++;const div=document.createElement('div');div.className='sub-item';div.id='ex-'+id;div.innerHTML=`<div class="item-header"><span class="item-label">Extra ${id+1}</span><button class="rm" onclick="document.getElementById('ex-${id}').remove()">X</button></div><div class="g2"><div style="grid-column:1/3"><label>Descripción</label><input type="text" id="exd-${id}"></div></div><div><label>USD</label><input type="number" id="exm-${id}"></div>`;document.getElementById('extras-list').appendChild(div)}
+  const lastreNPA_sin = rows.filter(r => 
+    r.estado.includes('LASTRE') && 
+    r.posicion.includes('NPA') && 
+    (!r.salida || r.salida.trim() === '')
+  ).length;
 
-function addDraw(){const id=drawIdx++;const div=document.createElement('div');div.className='sub-item';div.id='dr-'+id;div.innerHTML=`<div class="item-header"><span class="item-label">Trámite ${id+1}</span><button class="rm" onclick="document.getElementById('dr-${id}').remove()">X</button></div><div class="g2"><div><label>Trámite</label><input type="text" id="drt-${id}"></div><div><label>Detalle</label><input type="text" id="drd-${id}"></div></div><div><label>Proveedor</label><input type="text" id="drp-${id}"></div>`;document.getElementById('draw-list').appendChild(div)}
+  const cargadaPDA_sin = rows.filter(r => 
+    (r.estado.includes('CARGADA')||r.estado.includes('CARGAD')) && 
+    r.posicion.includes('PDA') && 
+    (!r.salida || r.salida.trim() === '')
+  ).length;
 
-function generate(){
-  const rem=v('rem')||'REMOLCADOR';
-  const arm=v('armador'),ref=v('ref'),merc=v('merc'),muelles=v('muelles');
-  const ban=v('bandera'),oce=v('oce'),migra=v('migra');
-  const operativa=v('operativa');
-  const barcazasCount=window.barcazasData.length;
-  
-  // ASUNTO
-  let subj=`Gastos – ${rem}`;
-  if(barcazasCount>0)subj+=` + ${barcazasCount} barcazas`;
-  if(ref)subj+=` (${ref})`;
-  if(merc)subj+=` – ${merc}`;
-  if(muelles)subj+=` – ${muelles.split('+')[0].trim()}`;
-  
-  // CUERPO
-  let b='Estimados,\n\nDetallo mensaje de gastos correspondiente a la operación en asunto.\n\n';
-  b+=rem;
-  if(barcazasCount>0)b+=` + ${barcazasCount} barcazas`;
-  if(ref)b+=` (${ref})`;
-  if(merc)b+=` – ${merc}`;
-  if(muelles)b+=` - ${muelles}`;
-  b+='\n\n';
-  
-  if(arm)b+=`Armador: ${arm}\n`;
-  if(ref)b+=`Referencia: ${ref}\n`;
-  if(merc)b+=`Mercadería: ${merc}\n`;
-  if(muelles)b+=`Muelle: ${muelles}\n`;
-  
-  const sanItems=[];
-  if(ban)sanItems.push(`Bandera ${ban}`);
-  if(oce)sanItems.push(`OCE ${oce}`);
-  if(migra)sanItems.push(`${migra} Migraciones`);
-  if(chk('chk-ld'))sanItems.push('Light Dues');
-  if(chk('chk-vhf'))sanItems.push('VHF');
-  if(sanItems.length)b+=`Sanidad: ${sanItems.join(', ')}\n`;
-  if(chk('chk-desp'))b+=`Entrada/Despacho en muelle\n`;
-  
-  b+='\nOPERATIVA:\n';
-  if(operativa)b+=operativa+'\n';
-  
-  // LANCHAS
-  const lanchasContainer=document.getElementById('lanchas-list');
-  if(lanchasContainer.querySelectorAll('[id^="lc-"]').length>0){
-    b+='\n';
-    lanchasContainer.querySelectorAll('[id^="lc-"]').forEach(el=>{
-      const id=el.id.substr(3);
-      const tipo=v('lct-'+id),fecha=v('lcf-'+id),hora=v('lch-'+id),prov=v('lcp-'+id),nota=v('lcn-'+id);
-      let ln=`LANCHA – ${tipo}`;
-      if(fecha)ln+=` ${fecha}`;
-      if(hora)ln+=` – ${hora} hrs`;
-      if(nota)ln+=` (${nota})`;
-      if(prov)ln+=` - ${prov}`;
-      b+=ln+'\n';
-    });
-  }
-  
-  // PETROVÍAS
-  if(v('pt-fecha')){
-    b+=`\nAmarra en petrovias ${v('pt-fecha')}`;
-    if(v('pt-hora'))b+=` - ${v('pt-hora')} HRS`;
-    b+='\n';
-    if(v('pt-prov'))b+=`Custodia ${v('pt-prov')}\n`;
-    if(v('pt-lf'))b+=`Lancha entrada/despacho ${v('pt-lf')}\n`;
-  }
-  
-  // SAUCE
-  if(v('sc-fecha')){
-    b+=`\nAmarra en sauce ${v('sc-fecha')}\n`;
-    if(v('sc-prov'))b+=`Proveedor: ${v('sc-prov')}\n`;
-  }
-  
-  // ATENCIÓN MÉDICA
-  if(v('med-trip')){
-    b+=`\nATENCION MEDICA\n`;
-    b+=`Tripulante: ${v('med-trip')}\n`;
-    if(v('med-cli'))b+=`Clínica: ${v('med-cli')}\n`;
-    if(v('med-cons'))b+=`${v('med-cons')} ${v('med-cons')==='1'?'consulta':'consultas'}\n`;
-    if(v('med-usd'))b+=`Total USD ${v('med-usd')}\n`;
-    if(v('med-lanch'))b+=`${v('med-lanch')} lanchas desembarco\n`;
-    if(chk('chk-meds'))b+=`Medicamentos\n`;
-    if(chk('chk-tras'))b+=`Traslados\n`;
-  }
-  
-  // EXTRAS
-  const extrasContainer=document.getElementById('extras-list');
-  if(extrasContainer.querySelectorAll('[id^="ex-"]').length>0){
-    b+='\nEXTRAS:\n';
-    extrasContainer.querySelectorAll('[id^="ex-"]').forEach(el=>{
-      const id=el.id.substr(3),desc=v('exd-'+id),monto=v('exm-'+id);
-      if(desc)b+=desc+(monto?` (USD ${monto})`:'')+'​\n';
-    });
-  }
-  
-  // CAMBIO DE TRIPULACIÓN
-  const drawContainer=document.getElementById('draw-list');
-  if(drawContainer.querySelectorAll('[id^="dr-"]').length>0){
-    b+='\nDESENROLE\n';
-    drawContainer.querySelectorAll('[id^="dr-"]').forEach(el=>{
-      const id=el.id.substr(3),tram=v('drt-'+id),det=v('drd-'+id),prov=v('drp-'+id);
-      let ln=tram+(det?` – ${det}`:'')+(prov?` - Gestionado por ${prov}`:'');
-      b+=ln+'\n';
-    });
-  }
-  
-  // NÓMINA DE BARCAZAS TABLA
-  if(window.barcazasData.length>0){
-    b+='\nNomina de barcazas:\n\n';
-    if(window.barcazasTotal>0)b+=window.barcazasTotal.toLocaleString('es-UY')+'\n';
-    b+='#\tBarcaza\tCantidad\n';
-    window.barcazasData.forEach((row,idx)=>{
-      b+=`${idx+1}\t${row.barcaza}\t${row.cantidad}\n`;
-    });
-    if(window.barcazasTotal>0)b+=`\nTTL\t${window.barcazasTotal.toLocaleString('es-UY')}\n`;
-  }
-  
-  b+='\n\nCualquier duda quedo a las ordenes.\n\nSaludos cordiales,';
-  
-  document.getElementById('subj-out').textContent=subj;
-  document.getElementById('body-out').textContent=b;
-}
+  const cargadaNPA_sin = rows.filter(r => 
+    (r.estado.includes('CARGADA')||r.estado.includes('CARGAD')) && 
+    r.posicion.includes('NPA') && 
+    (!r.salida || r.salida.trim() === '')
+  ).length;
 
-function copyEl(id){
-  const t=document.getElementById(id).textContent;
-  navigator.clipboard.writeText(t).then(()=>{
-    const btn=event.target;
-    const o=btn.textContent;
-    btn.textContent='¡Copiado!';
-    setTimeout(()=>btn.textContent=o,1500);
+  // ========== HISTÃ“RICO: CON SALIDA ==========
+  const lastrePDA_sal = rows.filter(r => 
+    r.estado.includes('LASTRE') && 
+    r.posicion.includes('PDA') && 
+    r.salida && r.salida.trim() !== ''
+  ).length;
+
+  const lastreNPA_sal = rows.filter(r => 
+    r.estado.includes('LASTRE') && 
+    r.posicion.includes('NPA') && 
+    r.salida && r.salida.trim() !== ''
+  ).length;
+
+  const cargadaPDA_sal = rows.filter(r => 
+    (r.estado.includes('CARGADA')||r.estado.includes('CARGAD')) && 
+    r.posicion.includes('PDA') && 
+    r.salida && r.salida.trim() !== ''
+  ).length;
+
+  const cargadaNPA_sal = rows.filter(r => 
+    (r.estado.includes('CARGADA')||r.estado.includes('CARGAD')) && 
+    r.posicion.includes('NPA') && 
+    r.salida && r.salida.trim() !== ''
+  ).length;
+
+  // ========== TOTALES ==========
+  const totalSin = rows.filter(r => !r.salida || r.salida.trim() === '').length;
+  const totalSal = rows.filter(r => r.salida && r.salida.trim() !== '').length;
+
+  // ========== ACTUALIZAR DOM: SIN SALIDA (PRINCIPALES) ==========
+  document.getElementById('lastrePDA-sin').textContent = lastrePDA_sin;
+  document.getElementById('lastreNPA-sin').textContent = lastreNPA_sin;
+  document.getElementById('cargadaPDA-sin').textContent = cargadaPDA_sin;
+  document.getElementById('cargadaNPA-sin').textContent = cargadaNPA_sin;
+
+  // ========== ACTUALIZAR DOM: CON SALIDA (HISTÃ“RICO) ==========
+  document.getElementById('lastrePDA-sal').textContent = lastrePDA_sal;
+  document.getElementById('lastreNPA-sal').textContent = lastreNPA_sal;
+  document.getElementById('cargadaPDA-sal').textContent = cargadaPDA_sal;
+  document.getElementById('cargadaNPA-sal').textContent = cargadaNPA_sal;
+
+  // ========== TOTALES ==========
+  document.getElementById('cnt-total-sin').textContent = totalSin;
+  document.getElementById('cnt-total-sal').textContent = totalSal;
+
+  // ========== REMOLCADORES ==========
+  const remCount = {};
+  rows.forEach(r => { if(r.remolcador) remCount[r.remolcador] = (remCount[r.remolcador]||0)+1; });
+  const rems = Object.entries(remCount).sort((a,b)=>b[1]-a[1]);
+  document.getElementById('cnt-rems').textContent = rems.length;
+  document.getElementById('rem-list').innerHTML = rems.map(([n,c]) =>
+    `<div class="rem-item"><span class="rem-name">${n}</span><span class="rem-badge">${c}</span></div>`
+  ).join('');
+
+  // ========== LOG ==========
+  console.log('ðŸ“Š Sidebar actualizada:', {
+    'En Puerto (Sin Salida)': { lastrePDA_sin, lastreNPA_sin, cargadaPDA_sin, cargadaNPA_sin },
+    'HistÃ³rico (Con Salida)': { lastrePDA_sal, lastreNPA_sal, cargadaPDA_sal, cargadaNPA_sal }
   });
 }
 
-function sendMail(){
-  const text=document.getElementById('body-out').textContent;
-  if(!text||text==='Genera el mensaje para verlo aquí')return;
-  const rem=v('rem')||'REMOLCADOR',ref=v('ref'),merc=v('merc'),muelles=v('muelles');
-  const barcazasCount=window.barcazasData.length;
-  
-  let asunto=`Gastos – ${rem}`;
-  if(barcazasCount>0)asunto+=` + ${barcazasCount} barcazas`;
-  if(ref)asunto+=` (${ref})`;
-  if(merc)asunto+=` – ${merc}`;
-  if(muelles)asunto+=` – ${muelles.split('+')[0].trim()}`;
-  
-  window.location.href=`mailto:?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(text)}`;
-}
+loadData();
+setInterval(loadData, 5 * 60 * 1000); // auto-refresh cada 5 min
 </script>
-
 </body>
 </html>
