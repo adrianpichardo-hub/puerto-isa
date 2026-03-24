@@ -112,7 +112,7 @@ body{font-family:'Barlow',sans-serif;background:var(--navy);color:var(--white);d
 .rem-name{font-size:11px;color:var(--off-white);}
 .rem-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:rgba(0,180,216,.12);border:1px solid rgba(0,180,216,.2);color:var(--accent);}
 
-/* STAT CARD PEQUEÃ‘A (HISTÃ“RICO) */
+/* STAT CARD PEQUENA (HISTORICO) */
 .stat-card-small{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:.6rem;margin-bottom:.5rem;transition:all .2s;}
 .stat-card-small:hover{background:rgba(255,255,255,.07);}
 .stat-card-small.pda{border-color:var(--pda-border);background:var(--pda-bg);}
@@ -258,12 +258,12 @@ tbody td{padding:9px 14px;font-size:12px;vertical-align:middle;}
       </div>
     </div>
 
-    <!-- DIVIDER Y HISTÃ“RICO -->
+    <!-- DIVIDER Y HISTORICO -->
     <div class="sidebar-section">
       <div class="sidebar-section-title">HistÃ³rico</div>
     </div>
 
-    <!-- HISTÃ“RICO: TOTAL CON SALIDA -->
+    <!-- HISTORICO: TOTAL CON SALIDA -->
     <div style="margin-bottom:1rem;">
       <div class="stat-card-small pda">
         <div class="scs-top"><span class="scs-label">Lastre PDA</span><span class="scs-dot"></span></div>
@@ -277,7 +277,7 @@ tbody td{padding:9px 14px;font-size:12px;vertical-align:middle;}
       </div>
     </div>
 
-    <!-- HISTÃ“RICO: CARGADA CON SALIDA -->
+    <!-- HISTORICO: CARGADA CON SALIDA -->
     <div style="margin-bottom:1rem;">
       <div class="stat-card-small pda">
         <div class="scs-top"><span class="scs-label">Cargada PDA</span><span class="scs-dot"></span></div>
@@ -291,7 +291,7 @@ tbody td{padding:9px 14px;font-size:12px;vertical-align:middle;}
       </div>
     </div>
 
-    <!-- RESUMEN GENERAL PEQUEÃ‘O -->
+    <!-- RESUMEN GENERAL PEQUENO -->
     <div class="sidebar-section">
       <div class="sidebar-section-title">General</div>
       <div class="info-row"><span class="info-label">Total en puerto</span><span class="info-val accent" id="cnt-total-sin">â€”</span></div>
@@ -375,7 +375,7 @@ async function loadData() {
     document.getElementById('loading').style.display = 'none';
     const err = document.getElementById('error-state');
     err.style.display = 'block';
-    err.textContent = 'Error al cargar los datos. VerificÃ¡ la conexiÃ³n o los permisos del Sheet.';
+    err.textContent = 'Error al cargar los datos. Verifica la conexiÃ³n o los permisos del Sheet.';
   }
   btn.classList.remove('spin');
 }
@@ -484,7 +484,7 @@ function renderTable(rows) {
 }
 
 function updateSidebar(rows) {
-  // ========== PRINCIPALES: SIN SALIDA (EN PUERTO) ==========
+  // PRINCIPALES: SIN SALIDA (EN PUERTO)
   const lastrePDA_sin = rows.filter(r => 
     r.estado.includes('LASTRE') && 
     r.posicion.includes('PDA') && 
@@ -509,7 +509,7 @@ function updateSidebar(rows) {
     (!r.salida || r.salida.trim() === '')
   ).length;
 
-  // ========== HISTÃ“RICO: CON SALIDA ==========
+  // HISTORICO: CON SALIDA
   const lastrePDA_sal = rows.filter(r => 
     r.estado.includes('LASTRE') && 
     r.posicion.includes('PDA') && 
@@ -534,27 +534,23 @@ function updateSidebar(rows) {
     r.salida && r.salida.trim() !== ''
   ).length;
 
-  // ========== TOTALES ==========
+  // TOTALES
   const totalSin = rows.filter(r => !r.salida || r.salida.trim() === '').length;
   const totalSal = rows.filter(r => r.salida && r.salida.trim() !== '').length;
 
-  // ========== ACTUALIZAR DOM: SIN SALIDA (PRINCIPALES) ==========
+  // ACTUALIZAR DOM
   document.getElementById('lastrePDA-sin').textContent = lastrePDA_sin;
   document.getElementById('lastreNPA-sin').textContent = lastreNPA_sin;
   document.getElementById('cargadaPDA-sin').textContent = cargadaPDA_sin;
   document.getElementById('cargadaNPA-sin').textContent = cargadaNPA_sin;
-
-  // ========== ACTUALIZAR DOM: CON SALIDA (HISTÃ“RICO) ==========
   document.getElementById('lastrePDA-sal').textContent = lastrePDA_sal;
   document.getElementById('lastreNPA-sal').textContent = lastreNPA_sal;
   document.getElementById('cargadaPDA-sal').textContent = cargadaPDA_sal;
   document.getElementById('cargadaNPA-sal').textContent = cargadaNPA_sal;
-
-  // ========== TOTALES ==========
   document.getElementById('cnt-total-sin').textContent = totalSin;
   document.getElementById('cnt-total-sal').textContent = totalSal;
 
-  // ========== REMOLCADORES ==========
+  // REMOLCADORES
   const remCount = {};
   rows.forEach(r => { if(r.remolcador) remCount[r.remolcador] = (remCount[r.remolcador]||0)+1; });
   const rems = Object.entries(remCount).sort((a,b)=>b[1]-a[1]);
@@ -563,15 +559,11 @@ function updateSidebar(rows) {
     `<div class="rem-item"><span class="rem-name">${n}</span><span class="rem-badge">${c}</span></div>`
   ).join('');
 
-  // ========== LOG ==========
-  console.log('ðŸ“Š Sidebar actualizada:', {
-    'En Puerto (Sin Salida)': { lastrePDA_sin, lastreNPA_sin, cargadaPDA_sin, cargadaNPA_sin },
-    'HistÃ³rico (Con Salida)': { lastrePDA_sal, lastreNPA_sal, cargadaPDA_sal, cargadaNPA_sal }
-  });
+  console.log('Sidebar actualizada correctamente');
 }
 
 loadData();
-setInterval(loadData, 5 * 60 * 1000); // auto-refresh cada 5 min
+setInterval(loadData, 5 * 60 * 1000);
 </script>
 </body>
 </html>
