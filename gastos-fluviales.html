@@ -102,7 +102,7 @@ textarea{resize:vertical;min-height:120px;font-family:'Courier New',monospace}
 
     <div class="card">
       <div class="card-header"><div class="card-title">Nómina de Barcazas</div></div>
-      <div class="note">Pegá la tabla de barcazas (con # | Barcaza | Cantidad Origen | NOR | Amarre | Dsamarre | Inicio | Fin)</div>
+      <div class="note">Pegá la tabla Excel tal cual: # BARCAZA CANTIDAD PRODUCTO VIAJE</div>
       <textarea id="barcazas-paste" placeholder="Pegá aquí..." oninput="procesarBarcazas()"></textarea>
       <div id="bcz-status" style="margin:10px 0;font-size:12px"></div>
       <div id="bcz-preview" style="overflow-x:auto"></div>
@@ -159,145 +159,116 @@ textarea{resize:vertical;min-height:120px;font-family:'Courier New',monospace}
 </div>
 
 <script>
-let lanchaIdx=0,extraIdx=0,drawIdx=0;
-window.barcazasData=[];
-window.barcazasTotal=0;
+let lanchaIdx=0,extraIdx=0,drawIdx=0,barcazasData=[];
 
 function goTab(n){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));document.getElementById('tab-btn-'+n).classList.add('active');document.getElementById('tab-'+n).classList.add('active')}
+
 function toggleCollapse(btn){const c=btn.nextElementSibling;c.classList.toggle('active');btn.classList.toggle('open')}
+
 function v(id){const el=document.getElementById(id);return el?el.value.trim():''}
+
 function chk(id){const el=document.getElementById(id);return el&&el.checked}
+
 function maskDate(el){let val=el.value.replace(/\D/g,'');if(val.length>2)val=val.slice(0,2)+'/'+val.slice(2);if(val.length>5)val=val.slice(0,5)+'/'+val.slice(5);if(val.length>10)val=val.slice(0,10);el.value=val}
 
 function procesarBarcazas(){
   const raw=document.getElementById('barcazas-paste').value;
   const status=document.getElementById('bcz-status');
   const preview=document.getElementById('bcz-preview');
-  if(!raw.trim()){status.innerHTML='';preview.innerHTML='';window.barcazasData=[];window.barcazasTotal=0;return}
   
-  const lines=raw.split('\n');
+  if(!raw.trim()){status.innerHTML='';preview.innerHTML='';barcazasData=[];return}
+  
+  const lines=raw.split('\n').map(l=>l.trim()).filter(l=>l);
   const data=[];
-  let inTable=false;
-  let headerLine=-1;
   
-  // Buscar línea de headers
-  for(let i=0;i<lines.length;i++){
-    if(lines[i].match(/^#\s*$|Barcaza.*Cantidad|^#\s+Barcaza/i)){
-      headerLine=i;
-      inTable=true;
-      break;
+  let i=0;
+  while(i<lines.length){
+    const line=lines[i];
+    
+    if(line.includes('BARCAZA')||line==='#'||line.includes('Barcaza')||line.includes('CANTIDAD')||line.includes('Cantidad')||line.includes('Producto')||line.includes('Viaje')){
+      i++;
+      continue
     }
-  }
-  
-  if(headerLine<0){
-    status.innerHTML='<span style="color:var(--isa-red)">⚠ No se encontró cabecera de tabla (busca "#")</span>';
-    window.barcazasData=[];
-    window.barcazasTotal=0;
-    return;
-  }
-  
-  // Procesar líneas después del header
-  for(let i=headerLine+1;i<lines.length;i++){
-    const line=lines[i].trim();
+    if(line.toUpperCase().includes('TTL')||line==='TTL'){break}
     
-    // Saltar líneas vacías
-    if(!line)continue;
+    const num=line;
+    const barcaza=lines[i+1];
+    const cantidad=lines[i+2];
+    const producto=lines[i+3];
+    const viaje=lines[i+4];
     
-    // Detectar fin de tabla (línea con solo números y punto decimal = total)
-    if(/^\d+[\.,]\d{3}(?:\s*[\.,]\d{3})*$/.test(line.replace(/\s/g,''))){
-      break;
-    }
-    
-    // Saltear headers secundarios
-    if(line.match(/Producto|Viaje|Origen|NOR|Amarre|Dsamarre/i))continue;
-    
-    // Dividir por espacios múltiples, tabulaciones o cambios de línea
-    let parts=line.split(/\s{2,}|\t/);
-    
-    // Si pocas partes, intentar split por espacios normales
-    if(parts.length<2){
-      parts=line.split(/\s+/);
-    }
-    
-    if(parts.length>=3){
-      const num=parts[0].trim();
-      const barcaza=parts[1].trim();
-      const cantidad=parts[2].trim();
-      
-      // Validar estructura: número + código barcaza + cantidad
-      // Código barcaza: puede ser números, letras o combinación
-      // Cantidad: debe ser número con comas y/o puntos
-      const isNum=/^\d+$/.test(num);
-      const isBarcaza=/^[A-Z0-9]{2,10}$/.test(barcaza);
-      const isQty=/^[\d.,]+$/.test(cantidad);
-      
-      if(isNum && isBarcaza && isQty){
-        const qtyStr=cantidad.replace(/\./g,'').replace(',','.');
-        const qtyNum=parseFloat(qtyStr);
-        
-        if(!isNaN(qtyNum) && qtyNum>0 && qtyNum<100000){
-          data.push({
-            num:num,
-            barcaza:barcaza,
-            cantidad:cantidad,
-            qtyNum:qtyNum
-          });
-        }
-      }
+    if(barcaza&&cantidad&&producto&&/^HB|^TAF|^AC|^1[0-9]|^2[0-9]|^3[0-9]/.test(barcaza)&&/[\d.,]+/.test(cantidad)){
+      data.push({num:num,barcaza:barcaza,cantidad:cantidad,producto:producto,viaje:viaje});
+      i+=5
+    }else{
+      i++
     }
   }
   
   if(!data.length){
-    status.innerHTML='<span style="color:var(--isa-red)">⚠ No se detectaron barcazas válidas. Formato: # | Barcaza | Cantidad</span>';
-    window.barcazasData=[];
-    window.barcazasTotal=0;
-    return;
+    status.innerHTML='<span style="color:var(--isa-red)">⚠ No se detectaron barcazas. Pegá: # Barcaza Cantidad Producto Viaje (una línea = un dato)</span>';
+    preview.innerHTML='';
+    barcazasData=[];
+    return
   }
   
   status.innerHTML=`<span style="color:var(--isa-green)">✓ ${data.length} barcazas detectadas</span>`;
   
-  let html='<table class="table-bcz"><tr><th>#</th><th>Barcaza</th><th>Cantidad</th></tr>';
+  let html='<table class="table-bcz"><tr><th>#</th><th>Barcaza</th><th>Cantidad</th><th>Producto</th><th>Viaje</th></tr>';
   let total=0;
   data.forEach((r,idx)=>{
-    html+=`<tr><td>${r.num}</td><td>${r.barcaza}</td><td>${r.cantidad}</td></tr>`;
-    total+=r.qtyNum;
+    html+=`<tr><td>${idx+1}</td><td>${r.barcaza}</td><td>${r.cantidad}</td><td>${r.producto}</td><td>${r.viaje}</td></tr>`;
+    const qty=parseFloat(r.cantidad.replace(/\./g,'').replace(',','.'));
+    if(!isNaN(qty))total+=qty
   });
-  if(total>0){
-    html+=`<tr><td></td><td><b>TTL</b></td><td><b>${total.toLocaleString('es-UY')}</b></td></tr>`;
-  }
+  if(total>0)html+=`<tr><td></td><td><b>TTL</b></td><td><b>${total.toLocaleString('es-UY')}</b></td><td></td><td></td></tr>`;
   html+='</table>';
-  
   preview.innerHTML=html;
-  window.barcazasData=data;
-  window.barcazasTotal=total;
+  barcazasData=data
 }
 
-function addLancha(){const id=lanchaIdx++;const div=document.createElement('div');div.className='sub-item';div.id='lc-'+id;div.innerHTML=`<div class="item-header"><span class="item-label">Lancha ${id+1}</span><button class="rm" onclick="document.getElementById('lc-${id}').remove()">X</button></div><div class="g3"><div><label>Tipo</label><input type="text" id="lct-${id}" placeholder="Entrada"></div><div><label>Fecha</label><input type="text" id="lcf-${id}" placeholder="DD/MM/YYYY" maxlength="10" oninput="maskDate(this)"></div><div><label>Hora</label><input type="time" id="lch-${id}"></div></div><div class="g2"><div><label>Proveedor</label><select id="lcp-${id}"><option>GOMISTAR</option><option>CG TRÁFICO</option><option>CORUMBA</option><option>Otro</option></select></div><div><label>Lugar</label><input type="text" id="lcn-${id}"></div></div>`;document.getElementById('lanchas-list').appendChild(div)}
+function addLancha(){
+  const id=lanchaIdx++;
+  const div=document.createElement('div');
+  div.className='sub-item';
+  div.id='lc-'+id;
+  div.innerHTML=`<div class="item-header"><span class="item-label">Lancha ${id+1}</span><button class="rm" onclick="document.getElementById('lc-${id}').remove()">X</button></div><div class="g3"><div><label>Tipo</label><input type="text" id="lct-${id}" placeholder="Entrada"></div><div><label>Fecha</label><input type="text" id="lcf-${id}" placeholder="DD/MM/YYYY" maxlength="10" oninput="maskDate(this)"></div><div><label>Hora</label><input type="time" id="lch-${id}"></div></div><div class="g2"><div><label>Proveedor</label><select id="lcp-${id}"><option>GOMISTAR</option><option>CG TRÁFICO</option><option>CORUMBA</option><option>Otro</option></select></div><div><label>Lugar</label><input type="text" id="lcn-${id}"></div></div>`;
+  document.getElementById('lanchas-list').appendChild(div)
+}
 
-function addExtra(){const id=extraIdx++;const div=document.createElement('div');div.className='sub-item';div.id='ex-'+id;div.innerHTML=`<div class="item-header"><span class="item-label">Extra ${id+1}</span><button class="rm" onclick="document.getElementById('ex-${id}').remove()">X</button></div><div class="g2"><div style="grid-column:1/3"><label>Descripción</label><input type="text" id="exd-${id}"></div></div><div><label>USD</label><input type="number" id="exm-${id}"></div>`;document.getElementById('extras-list').appendChild(div)}
+function addExtra(){
+  const id=extraIdx++;
+  const div=document.createElement('div');
+  div.className='sub-item';
+  div.id='ex-'+id;
+  div.innerHTML=`<div class="item-header"><span class="item-label">Extra ${id+1}</span><button class="rm" onclick="document.getElementById('ex-${id}').remove()">X</button></div><div class="g2"><div style="grid-column:1/3"><label>Descripción</label><input type="text" id="exd-${id}"></div></div><div><label>USD</label><input type="number" id="exm-${id}"></div>`;
+  document.getElementById('extras-list').appendChild(div)
+}
 
-function addDraw(){const id=drawIdx++;const div=document.createElement('div');div.className='sub-item';div.id='dr-'+id;div.innerHTML=`<div class="item-header"><span class="item-label">Trámite ${id+1}</span><button class="rm" onclick="document.getElementById('dr-${id}').remove()">X</button></div><div class="g2"><div><label>Trámite</label><input type="text" id="drt-${id}"></div><div><label>Detalle</label><input type="text" id="drd-${id}"></div></div><div><label>Proveedor</label><input type="text" id="drp-${id}"></div>`;document.getElementById('draw-list').appendChild(div)}
+function addDraw(){
+  const id=drawIdx++;
+  const div=document.createElement('div');
+  div.className='sub-item';
+  div.id='dr-'+id;
+  div.innerHTML=`<div class="item-header"><span class="item-label">Trámite ${id+1}</span><button class="rm" onclick="document.getElementById('dr-${id}').remove()">X</button></div><div class="g2"><div><label>Trámite</label><input type="text" id="drt-${id}"></div><div><label>Detalle</label><input type="text" id="drd-${id}"></div></div><div><label>Proveedor</label><input type="text" id="drp-${id}"></div>`;
+  document.getElementById('draw-list').appendChild(div)
+}
 
 function generate(){
   const rem=v('rem')||'REMOLCADOR';
   const arm=v('armador'),ref=v('ref'),merc=v('merc'),muelles=v('muelles');
   const ban=v('bandera'),oce=v('oce'),migra=v('migra');
   const operativa=v('operativa');
-  const barcazasCount=window.barcazasData.length;
   
-  // ASUNTO
   let subj=`Gastos – ${rem}`;
-  if(barcazasCount>0)subj+=` + ${barcazasCount} barcazas`;
   if(ref)subj+=` (${ref})`;
   if(merc)subj+=` – ${merc}`;
   if(muelles)subj+=` – ${muelles.split('+')[0].trim()}`;
   
-  // CUERPO
   let b='Estimados,\n\nDetallo mensaje de gastos correspondiente a la operación en asunto.\n\n';
   b+=rem;
-  if(barcazasCount>0)b+=` + ${barcazasCount} barcazas`;
   if(ref)b+=` (${ref})`;
-  if(merc)b+=` – ${merc}`;
+  if(merc)b+=` - ${merc}`;
   if(muelles)b+=` - ${muelles}`;
   b+='\n\n';
   
@@ -318,7 +289,6 @@ function generate(){
   b+='\nOPERATIVA:\n';
   if(operativa)b+=operativa+'\n';
   
-  // LANCHAS
   const lanchasContainer=document.getElementById('lanchas-list');
   if(lanchasContainer.querySelectorAll('[id^="lc-"]').length>0){
     b+='\n';
@@ -330,26 +300,23 @@ function generate(){
       if(hora)ln+=` – ${hora} hrs`;
       if(nota)ln+=` (${nota})`;
       if(prov)ln+=` - ${prov}`;
-      b+=ln+'\n';
-    });
+      b+=ln+'\n'
+    })
   }
   
-  // PETROVÍAS
   if(v('pt-fecha')){
     b+=`\nAmarra en petrovias ${v('pt-fecha')}`;
     if(v('pt-hora'))b+=` - ${v('pt-hora')} HRS`;
     b+='\n';
     if(v('pt-prov'))b+=`Custodia ${v('pt-prov')}\n`;
-    if(v('pt-lf'))b+=`Lancha entrada/despacho ${v('pt-lf')}\n`;
+    if(v('pt-lf'))b+=`Lancha entrada/despacho ${v('pt-lf')}\n`
   }
   
-  // SAUCE
   if(v('sc-fecha')){
     b+=`\nAmarra en sauce ${v('sc-fecha')}\n`;
-    if(v('sc-prov'))b+=`Proveedor: ${v('sc-prov')}\n`;
+    if(v('sc-prov'))b+=`Proveedor: ${v('sc-prov')}\n`
   }
   
-  // ATENCIÓN MÉDICA
   if(v('med-trip')){
     b+=`\nATENCION MEDICA\n`;
     b+=`Tripulante: ${v('med-trip')}\n`;
@@ -358,45 +325,48 @@ function generate(){
     if(v('med-usd'))b+=`Total USD ${v('med-usd')}\n`;
     if(v('med-lanch'))b+=`${v('med-lanch')} lanchas desembarco\n`;
     if(chk('chk-meds'))b+=`Medicamentos\n`;
-    if(chk('chk-tras'))b+=`Traslados\n`;
+    if(chk('chk-tras'))b+=`Traslados\n`
   }
   
-  // EXTRAS
   const extrasContainer=document.getElementById('extras-list');
   if(extrasContainer.querySelectorAll('[id^="ex-"]').length>0){
     b+='\nEXTRAS:\n';
     extrasContainer.querySelectorAll('[id^="ex-"]').forEach(el=>{
       const id=el.id.substr(3),desc=v('exd-'+id),monto=v('exm-'+id);
-      if(desc)b+=desc+(monto?` (USD ${monto})`:'')+'​\n';
-    });
+      if(desc)b+=desc+(monto?` (USD ${monto})`:'')+'​\n'
+    })
   }
   
-  // CAMBIO DE TRIPULACIÓN
   const drawContainer=document.getElementById('draw-list');
   if(drawContainer.querySelectorAll('[id^="dr-"]').length>0){
     b+='\nDESENROLE\n';
     drawContainer.querySelectorAll('[id^="dr-"]').forEach(el=>{
       const id=el.id.substr(3),tram=v('drt-'+id),det=v('drd-'+id),prov=v('drp-'+id);
       let ln=tram+(det?` – ${det}`:'')+(prov?` - Gestionado por ${prov}`:'');
-      b+=ln+'\n';
-    });
+      b+=ln+'\n'
+    })
   }
   
-  // NÓMINA DE BARCAZAS
-  if(window.barcazasData.length>0){
-    b+='\nNomina de barcazas:\n\n';
-    if(window.barcazasTotal>0)b+=window.barcazasTotal.toLocaleString('es-UY')+'\n';
-    b+='#\tBarcaza\tCantidad Origen\n';
-    window.barcazasData.forEach((row)=>{
-      b+=`${row.num}\t${row.barcaza}\t${row.cantidad}\n`;
+  if(barcazasData.length>0){
+    b+='\n\nNOMINA DE BARCAZAS:\n\n';
+    b+=rem;
+    if(ref)b+=` - ${ref}`;
+    b+='\n\n# | Barcaza | Cantidad | Producto | Viaje\n';
+    let total=0;
+    barcazasData.forEach((r,idx)=>{
+      b+=`${idx+1} | ${r.barcaza} | ${r.cantidad} | ${r.producto} | ${r.viaje}\n`;
+      const qty=parseFloat(r.cantidad.replace(/\./g,'').replace(',','.'));
+      if(!isNaN(qty))total+=qty
     });
-    if(window.barcazasTotal>0)b+=`\t\n\nTTL\t${window.barcazasTotal.toLocaleString('es-UY')}\n`;
+    if(total>0){
+      b+=`TTL | | ${total.toLocaleString('es-UY')} | | \n`
+    }
   }
   
   b+='\n\nCualquier duda quedo a las ordenes.\n\nSaludos cordiales,';
   
   document.getElementById('subj-out').textContent=subj;
-  document.getElementById('body-out').textContent=b;
+  document.getElementById('body-out').textContent=b
 }
 
 function copyEl(id){
@@ -405,23 +375,19 @@ function copyEl(id){
     const btn=event.target;
     const o=btn.textContent;
     btn.textContent='¡Copiado!';
-    setTimeout(()=>btn.textContent=o,1500);
-  });
+    setTimeout(()=>btn.textContent=o,1500)
+  })
 }
 
 function sendMail(){
   const text=document.getElementById('body-out').textContent;
   if(!text||text==='Genera el mensaje para verlo aquí')return;
   const rem=v('rem')||'REMOLCADOR',ref=v('ref'),merc=v('merc'),muelles=v('muelles');
-  const barcazasCount=window.barcazasData.length;
-  
   let asunto=`Gastos – ${rem}`;
-  if(barcazasCount>0)asunto+=` + ${barcazasCount} barcazas`;
   if(ref)asunto+=` (${ref})`;
   if(merc)asunto+=` – ${merc}`;
   if(muelles)asunto+=` – ${muelles.split('+')[0].trim()}`;
-  
-  window.location.href=`mailto:?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(text)}`;
+  window.location.href=`mailto:?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(text)}`
 }
 </script>
 
