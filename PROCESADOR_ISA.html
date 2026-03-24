@@ -414,8 +414,8 @@
             
             <div class="form-group">
                 <label>Pega aquí el programa de descarga (barcaza + cantidad)</label>
-                <textarea id="programData" placeholder="Barcaza&#9;Cantidad Origen&#10;2405&#9;2.151,526&#10;LHG 2I1 0357&#9;2.136,405&#10;..." onchange="calculateTotalQty()" oninput="calculateTotalQty()"></textarea>
-                <div class="form-hint">Columnas: Barcaza, Cantidad Origen - La cantidad se suma automáticamente</div>
+                <textarea id="programData" placeholder="HERKULES XVII - HB17&#10;#&#9;Barcaza&#9;Cantidad Origen&#9;Producto&#9;Viaje&#10;1&#9;HB044091&#9;1.838.583&#9;LOHT&#9;HB17&#10;2&#9;HB044048&#9;1.940.314&#9;LOHT&#9;HB17&#10;..." onchange="calculateTotalQty()" oninput="calculateTotalQty()"></textarea>
+                <div class="form-hint">Formato: # | Barcaza | Cantidad (con puntos de miles) | Producto | Viaje - Se suma automáticamente</div>
             </div>
         </div>
 
@@ -455,7 +455,7 @@
         // ===========================
         function extractDischargeTimings() {
             const gruasRaw = document.getElementById('gruasData').value;
-            const lines = gruasRaw.split('\n').filter(l => l.trim());
+            const lines = gruasRaw.split('\n');
             
             let firstInitiaEvent = null;
             let lastFinalEvent = null;
@@ -463,20 +463,35 @@
             
             lines.forEach(line => {
                 const cols = line.split('\t').map(c => c.trim());
-                if (cols.length >= 6) {
-                    const evento = cols[5].toLowerCase();
-                    const fecha = cols[0];
-                    const hora = cols[2]; // Inicio
-                    
-                    // Buscar primer evento "Inicia descarga"
-                    if (!firstInitiaEvent && evento.includes('inicia') && evento.includes('descarga')) {
-                        firstInitiaEvent = { fecha, hora };
+                
+                // Procesar GRÚA NORTE (cols 0-5)
+                if (cols[0] && cols[5] && cols[5].toLowerCase().includes('inicia')) {
+                    if (!firstInitiaEvent) {
+                        firstInitiaEvent = { fecha: cols[0], hora: cols[2] };
                     }
-                    
-                    // Buscar último evento "Finaliza descarga"
-                    if (evento.includes('finaliza') && evento.includes('descarga')) {
-                        lastFinalEvent = { fecha, hora: cols[3] }; // Fin
+                }
+                if (cols[0] && cols[5] && cols[5].toLowerCase().includes('finaliza')) {
+                    lastFinalEvent = { fecha: cols[0], hora: cols[3] };
+                }
+                
+                // Procesar GRÚA SUR (cols 6-11)
+                if (cols[6] && cols[11] && cols[11].toLowerCase().includes('inicia')) {
+                    if (!firstInitiaEvent) {
+                        firstInitiaEvent = { fecha: cols[6], hora: cols[8] };
                     }
+                }
+                if (cols[6] && cols[11] && cols[11].toLowerCase().includes('finaliza')) {
+                    lastFinalEvent = { fecha: cols[6], hora: cols[9] };
+                }
+                
+                // Procesar GRÚA MUELLE 5 (cols 12-17)
+                if (cols[12] && cols[17] && cols[17].toLowerCase().includes('inicia')) {
+                    if (!firstInitiaEvent) {
+                        firstInitiaEvent = { fecha: cols[12], hora: cols[14] };
+                    }
+                }
+                if (cols[12] && cols[17] && cols[17].toLowerCase().includes('finaliza')) {
+                    lastFinalEvent = { fecha: cols[12], hora: cols[15] };
                 }
             });
             
@@ -503,9 +518,32 @@
             
             let total = 0;
             lines.forEach(line => {
-                const cols = line.split('\t');
-                if (cols.length >= 2 && cols[0] && cols[0].toLowerCase() !== 'barcaza') {
-                    const qty = parseFloat(cols[1].trim().replace(',', '.'));
+                const cols = line.split('\t').map(c => c.trim());
+                
+                // Soporta 2 formatos:
+                // Formato simple: Barcaza, Cantidad
+                // Formato completo: #, Barcaza, Cantidad, Producto, Viaje
+                
+                let qtyCol = -1;
+                
+                // Detectar posición de la cantidad
+                if (cols.length >= 2) {
+                    // Si primer col es número (# de fila), cantidad está en índice 2
+                    if (!isNaN(cols[0]) && cols[0] !== 'TTL' && cols[0] !== '#') {
+                        qtyCol = 2;
+                    } else if (cols[0] !== '#' && cols[0].toLowerCase() !== 'barcaza' && cols[0].toLowerCase() !== 'ttl') {
+                        // Sino, es formato simple, cantidad en índice 1
+                        qtyCol = 1;
+                    }
+                }
+                
+                if (qtyCol !== -1 && cols[qtyCol]) {
+                    // Convertir cantidad (eliminar puntos y reemplazar coma por punto)
+                    const qtyStr = cols[qtyCol].trim()
+                        .replace(/\./g, '')  // Eliminar puntos (miles)
+                        .replace(',', '.');   // Reemplazar coma por punto (decimales)
+                    
+                    const qty = parseFloat(qtyStr);
                     if (!isNaN(qty)) {
                         total += qty;
                     }
@@ -526,19 +564,53 @@
         // PROCESAMIENTO DE DATOS
         // ===========================
         function parseGruasData(text) {
-            const lines = text.split('\n').filter(l => l.trim());
+            const lines = text.split('\n');
             const events = [];
             
             lines.forEach(line => {
+                // Dividir por tabs
                 const cols = line.split('\t').map(c => c.trim());
-                if (cols.length >= 6 && cols[0]) {
+                
+                // Procesar cada grúa (columnas: 0-5 Grúa Norte, 6-11 Grúa Sur, 12-17 Grúa Muelle 5)
+                // Estructura esperada: Fecha, Barcaza, Inicio, [Fin], Tiempo, Evento
+                
+                // GRÚA NORTE (cols 0-5)
+                if (cols[0] && cols[5]) {
+                    // Si hay fecha y evento
                     events.push({
-                        fecha: cols[0],
+                        grua: 'NORTE',
+                        fecha: cols[0] || '',
                         barcaza: cols[1] || '',
                         desde: cols[2] || '',
                         hasta: cols[3] || '',
                         tiempo: cols[4] || '',
                         evento: cols[5] || ''
+                    });
+                }
+                
+                // GRÚA SUR (cols 6-11)
+                if (cols[6] && cols[11]) {
+                    events.push({
+                        grua: 'SUR',
+                        fecha: cols[6] || '',
+                        barcaza: cols[7] || '',
+                        desde: cols[8] || '',
+                        hasta: cols[9] || '',
+                        tiempo: cols[10] || '',
+                        evento: cols[11] || ''
+                    });
+                }
+                
+                // GRÚA MUELLE 5 (cols 12-17)
+                if (cols[12] && cols[17]) {
+                    events.push({
+                        grua: 'M5',
+                        fecha: cols[12] || '',
+                        barcaza: cols[13] || '',
+                        desde: cols[14] || '',
+                        hasta: cols[15] || '',
+                        tiempo: cols[16] || '',
+                        evento: cols[17] || ''
                     });
                 }
             });
@@ -670,8 +742,16 @@
             // Libre plática otorgada
             matrix.push(["", "", "", data.freePracticaTime.split(' ')[1], "", "Libre plática otorgada.", "", ""]);
 
-            // Agregar eventos de operativa
-            data.events.forEach((e) => {
+            // Agregar eventos de operativa - ORDENADOS POR TIEMPO
+            const sortedEvents = data.events.sort((a, b) => {
+                const timeA = (a.desde || a.desde || '00:00').replace(':', '');
+                const timeB = (b.desde || b.desde || '00:00').replace(':', '');
+                return timeA - timeB;
+            });
+
+            sortedEvents.forEach((e) => {
+                if (!e.evento || !e.evento.trim()) return; // Saltar líneas vacías
+                
                 let obsText = e.evento;
                 
                 if (e.evento.toLowerCase().includes('draft inicial')) {
@@ -686,10 +766,16 @@
                     obsText = e.barcaza ? `Corta descarga barcaza ${e.barcaza} por toma de muestras` : `Corta descarga por toma de muestras`;
                 } else if (e.evento.toLowerCase().includes('calados')) {
                     obsText = e.barcaza ? `Corta descarga barcaza ${e.barcaza} por calados buque` : `Corta descarga por calados buque`;
+                } else if (e.evento.toLowerCase().includes('cambio de circuito')) {
+                    obsText = e.barcaza ? `Corta descarga barcaza ${e.barcaza} por cambio de circuito` : `Corta descarga por cambio de circuito`;
                 } else if (e.evento.toLowerCase().includes('cambio')) {
                     obsText = `Cambio de barcaza`;
                 } else if (e.evento.toLowerCase().includes('tapas')) {
                     obsText = `Cierre de escotillas`;
+                } else if (e.evento.toLowerCase().includes('trasbordo')) {
+                    obsText = `Trasbordo a buque`;
+                } else if (e.evento.toLowerCase().includes('bodega')) {
+                    obsText = `Cambio de bodega`;
                 }
 
                 matrix.push([
