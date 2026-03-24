@@ -3,590 +3,175 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ISA — Generador de Gastos</title>
+<title>ISA — Generador de Mensaje de Gastos</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
 <style>
-:root{--isa-blue:#1a3a8c;--isa-blue-dark:#0f2460;--isa-blue-light:#e8eef8;--isa-green:#00a878;--isa-red:#c0392b;--isa-text:#1a1a2e;--isa-muted:#6b7a99;--isa-border:#d0daea;--isa-bg:#f4f7fb;--isa-white:#fff}
+:root{--isa-blue:#1a3a8c;--isa-blue-dark:#0f2460;--isa-blue-light:#e8eef8;--isa-green:#00a878;--isa-red:#c0392b;--isa-text:#1a1a2e;--isa-muted:#6b7a99;--isa-border:#d0daea;--isa-bg:#f4f7fb;--isa-white:#fff;--r:8px;}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Barlow',sans-serif;background:var(--isa-bg);color:var(--isa-text)}
-.header{background:var(--isa-blue-dark);padding:1rem 2rem;position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center}
-.logo{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:700;color:white;letter-spacing:2px}
-.tagline{font-size:11px;color:rgba(255,255,255,.5);letter-spacing:.1em;text-transform:uppercase;margin-left:12px}
-.app{max-width:1100px;margin:0 auto;padding:2rem 1rem}
-.title h1{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:700;color:var(--isa-blue);margin-bottom:.5rem}
-.title p{font-size:13px;color:var(--isa-muted)}
-.container{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:2rem}
-@media(max-width:1000px){.container{grid-template-columns:1fr}}
-.card{background:var(--isa-white);border:1px solid var(--isa-border);border-radius:8px;padding:1.5rem;box-shadow:0 1px 3px rgba(26,58,140,.08)}
-.card-title{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:var(--isa-blue);letter-spacing:.1em;text-transform:uppercase;margin-bottom:1rem;padding-bottom:8px;border-bottom:2px solid var(--isa-blue-light)}
+.isa-header{background:var(--isa-blue-dark);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100}
+.isa-logo{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;color:white;letter-spacing:2px}
+.isa-tagline{font-size:11px;color:rgba(255,255,255,.5);letter-spacing:.1em;text-transform:uppercase;margin-left:12px;padding-left:12px;border-left:1px solid rgba(255,255,255,.2)}
+.app{max-width:900px;margin:0 auto;padding:1.5rem 1rem 4rem}
+.page-title{margin-bottom:1.5rem}
+.page-title h2{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--isa-blue);letter-spacing:.04em;text-transform:uppercase}
+.tabs{display:flex;border-bottom:2px solid var(--isa-border);margin-bottom:1.5rem}
+.tab{padding:9px 18px;font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;border:none;background:none;cursor:pointer;color:var(--isa-muted);border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:color .15s}
+.tab:hover{color:var(--isa-blue)}.tab.active{color:var(--isa-blue);border-bottom-color:var(--isa-blue)}
+.pane{display:none}.pane.active{display:block}
+.card{background:var(--isa-white);border:1px solid var(--isa-border);border-radius:var(--r);padding:1.25rem;margin-bottom:1rem;box-shadow:0 1px 3px rgba(26,58,140,.06)}
+.card-header{display:flex;align-items:center;gap:8px;margin-bottom:1rem;padding-bottom:10px;border-bottom:1px solid var(--isa-blue-light)}
+.card-title{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.1em;color:var(--isa-blue);text-transform:uppercase}
 label{display:block;font-size:11px;font-weight:600;color:var(--isa-muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
-input,select,textarea{width:100%;font-size:13px;font-family:'Barlow',sans-serif;padding:9px 11px;border:1px solid var(--isa-border);border-radius:6px;background:var(--isa-white);color:var(--isa-text);outline:none}
+input,select,textarea{width:100%;font-size:13px;font-family:'Barlow',sans-serif;padding:8px 11px;border:1px solid var(--isa-border);border-radius:6px;background:var(--isa-white);color:var(--isa-text);outline:none}
 input:focus,select:focus,textarea:focus{border-color:var(--isa-blue);box-shadow:0 0 0 3px rgba(26,58,140,.1)}
-textarea{resize:vertical;min-height:280px;font-family:'Courier New',monospace}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:15px}
-.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:15px}
+textarea{resize:vertical;min-height:120px;font-family:'Courier New',monospace}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px}
 @media(max-width:640px){.g2,.g3{grid-template-columns:1fr}}
-.checkbox-group{display:flex;gap:20px;margin:15px 0;flex-wrap:wrap}
-.checkbox-item{display:flex;align-items:center;gap:8px}
-.checkbox-item input{width:18px;height:18px;margin:0}
-.checkbox-item label{margin:0;text-transform:none;font-weight:500;font-size:13px}
-.collapsible{cursor:pointer;padding:10px;background:var(--isa-blue-light);border-radius:6px;border:1px solid var(--isa-border);font-size:12px;font-weight:600;color:var(--isa-blue);display:flex;align-items:center;gap:8px;margin:12px 0}
+.tog-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.tog{position:relative;width:36px;height:20px;flex-shrink:0}
+.tog input{opacity:0;width:0;height:0}
+.sl{position:absolute;inset:0;background:#c8d4e8;border-radius:20px;cursor:pointer;transition:.2s}
+.sl:before{content:'';position:absolute;width:14px;height:14px;left:3px;top:3px;background:white;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.tog input:checked+.sl{background:var(--isa-blue)}.tog input:checked+.sl:before{transform:translateX(16px)}
+.tog-lbl{font-size:13px;color:var(--isa-text);font-weight:500}
+.collapsible{cursor:pointer;padding:10px;background:var(--isa-blue-light);border-radius:6px;margin:10px 0;border:none;font-size:12px;font-weight:600;color:var(--isa-blue);transition:all .15s}
 .collapsible:hover{background:#dae3f0}
-.collapsible-content{max-height:0;overflow:hidden;transition:max-height .3s ease}
-.collapsible-content.active{max-height:2000px;padding-top:10px}
-.sub-item{background:var(--isa-blue-light);border:1px solid var(--isa-border);border-radius:6px;padding:1rem;margin-bottom:10px}
-.sub-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:11px;font-weight:700;color:var(--isa-blue);text-transform:uppercase}
-.btn-remove{background:none;border:1px solid var(--isa-red);color:var(--isa-red);padding:3px 8px;font-size:11px;font-weight:600;border-radius:4px;cursor:pointer}
-.btn-remove:hover{background:#fdecea}
-.btn-add{display:inline-block;border:1.5px dashed var(--isa-blue);background:none;color:var(--isa-blue);padding:6px 14px;font-size:11px;font-weight:600;border-radius:6px;cursor:pointer;margin-top:10px}
-.btn-add:hover{background:var(--isa-blue-light)}
-.btn{padding:10px 22px;border-radius:6px;font-size:12px;font-weight:700;border:none;cursor:pointer;transition:all .15s}
-.btn-primary{background:var(--isa-green);color:white}
-.btn-primary:hover{background:#008c65}
-.btn-copy{background:white;border:1.5px solid var(--isa-blue);color:var(--isa-blue);padding:8px 18px}
-.btn-copy:hover{background:var(--isa-blue-light)}
-.output{background:#f8faff;border:1px solid var(--isa-border);border-radius:8px;padding:1.5rem;font-family:'Courier New',monospace;font-size:12px;line-height:1.8;color:var(--isa-text);white-space:pre-wrap;word-wrap:break-word;max-height:500px;overflow-y:auto}
-.footer{display:flex;gap:12px;justify-content:space-between;margin-top:20px;flex-wrap:wrap}
-.feedback{font-size:12px;color:var(--isa-green);font-weight:600;opacity:0;transition:opacity .3s}
-.feedback.show{opacity:1}
+.collapsible.open::before{content:'▼'}
+.collapsible::before{content:'▶';margin-right:4px;display:inline-block;transition:transform .15s}
+.collapsible-content{display:none;margin-top:10px}
+.collapsible-content.active{display:block}
+.sub-item{background:var(--isa-blue-light);border:1px solid #c8d4e8;border-radius:6px;padding:1rem;margin-bottom:10px}
+.item-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.item-label{font-size:11px;font-weight:700;color:var(--isa-blue);text-transform:uppercase}
+.add-btn{display:inline-flex;gap:6px;font-size:12px;font-weight:600;padding:6px 14px;border:1.5px dashed var(--isa-blue);border-radius:6px;background:transparent;color:var(--isa-blue);cursor:pointer;margin-top:6px;text-transform:uppercase;transition:all .15s}
+.add-btn:hover{background:var(--isa-blue-light)}
+.rm{font-size:11px;color:var(--isa-red);background:none;border:1px solid transparent;cursor:pointer;padding:3px 8px;font-weight:600}
+.rm:hover{background:#fdecea;border-color:var(--isa-red)}
+.footer{display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--isa-border)}
+.btn{padding:9px 22px;border-radius:6px;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border:none;transition:all .15s}
+.btn-primary{background:var(--isa-green);color:white}.btn-primary:hover{background:#008c65}
+.btn-copy{border:1.5px solid var(--isa-blue);background:white;color:var(--isa-blue);padding:7px 18px}.btn-copy:hover{background:var(--isa-blue-light)}
+.note{font-size:12px;color:var(--isa-blue);background:var(--isa-blue-light);border-left:3px solid var(--isa-blue);padding:8px 12px;border-radius:0 6px 6px 0;margin:8px 0}
+.output-wrap{background:#f8faff;border:1px solid var(--isa-border);border-radius:var(--r);padding:1.25rem;font-family:'Courier New',monospace;font-size:12px;line-height:1.9;color:var(--isa-text);white-space:pre-wrap;word-wrap:break-word;overflow-x:auto;min-height:200px;max-height:500px;overflow-y:auto}
+.subj-box{font-size:14px;font-weight:600;padding:10px 14px;background:var(--isa-blue-light);border:1px solid var(--isa-border);border-radius:6px;color:var(--isa-blue);margin-bottom:10px}
 .table-bcz{width:100%;border-collapse:collapse;font-size:11px;margin:10px 0}
-.table-bcz th{background:var(--isa-blue);color:white;padding:8px 10px;text-align:left;font-weight:600;font-size:10px;text-transform:uppercase}
-.table-bcz td{padding:7px 10px;border-bottom:1px solid var(--isa-border)}
+.table-bcz th{background:var(--isa-blue);color:white;padding:6px 10px;text-align:left;font-weight:600;font-size:10px;text-transform:uppercase}
+.table-bcz td{padding:6px 10px;border-bottom:1px solid var(--isa-border)}
 .table-bcz tr:last-child{font-weight:700;background:var(--isa-blue-light)}
-.note{font-size:12px;color:var(--isa-blue);background:var(--isa-blue-light);border-left:3px solid var(--isa-blue);padding:8px 12px;border-radius:0 6px 6px 0;margin:10px 0}
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div style="display:flex;align-items:center">
-    <span class="logo">ISA<span style="font-size:13px;font-weight:400;color:rgba(255,255,255,.6);margin-left:8px">AGENTES</span></span>
-    <span class="tagline">Gastos Fluviales</span>
+<div class="isa-header">
+  <div style="display:flex;align-items:baseline">
+    <span class="isa-logo">ISA<span style="font-size:14px;font-weight:400;color:rgba(255,255,255,.6);margin-left:8px">AGENTES</span></span>
+    <span class="isa-tagline">Exceeding expectations</span>
   </div>
 </div>
 
 <div class="app">
-  <div class="title">
-    <h1>Generador de Mensaje de Gastos</h1>
-    <p>Completá los datos y generá el mensaje listo para enviar</p>
+  <div class="page-title">
+    <h2>Generador de Mensaje de Gastos</h2>
   </div>
 
-  <div class="container">
-    <!-- COLUMNA IZQUIERDA: ENTRADA -->
-    <div>
-      <!-- BÁSICOS -->
-      <div class="card">
-        <div class="card-title">Datos Básicos</div>
-        <div class="g2">
-          <div>
-            <label>Remolcador</label>
-            <input type="text" id="rem" placeholder="HERACLITO FILHO" oninput="updatePreview()">
-          </div>
-          <div>
-            <label>Armador</label>
-            <select id="armador" oninput="updatePreview()">
-              <option>Seleccionar</option>
-              <option>LHG NAVEGACION</option>
-              <option>HIDROVIAS DO BRASIL</option>
-              <option>INTERBARGE</option>
-              <option>P&O</option>
-            </select>
-          </div>
-        </div>
+  <div class="tabs">
+    <button class="tab active" onclick="goTab(0)" id="tab-btn-0">1. Entrada de Datos</button>
+    <button class="tab" onclick="goTab(1)" id="tab-btn-1">2. Vista Previa</button>
+  </div>
 
-        <div class="g2">
-          <div>
-            <label>Referencia</label>
-            <input type="text" id="ref" placeholder="LHGA 06-09-13-14" oninput="updatePreview()">
-          </div>
-          <div>
-            <label>Mercadería</label>
-            <select id="merc" oninput="updatePreview()">
-              <option>Seleccionar</option>
-              <option>LOHS</option>
-              <option>SFHG</option>
-              <option>SINTER</option>
-              <option>FERTILIZANTE</option>
-              <option>SINTER + LOHS</option>
-            </select>
-          </div>
-        </div>
+  <!-- TAB 0: ENTRADA -->
+  <div class="pane active" id="tab-0">
+    <div class="card">
+      <div class="card-header"><div class="card-title">Remolcador y Operación</div></div>
+      <div class="g2"><div><label>Remolcador</label><input type="text" id="rem" placeholder="HERACLITO FILHO"></div><div><label>Armador</label><select id="armador"><option>Seleccionar</option><option>LHG NAVEGACION</option><option>HIDROVIAS DO BRASIL</option><option>INTERBARGE</option><option>P&O</option></select></div></div>
+      <div class="g3"><div><label>Referencia</label><input type="text" id="ref" placeholder="LHGA 06-09-13-14"></div><div><label>Mercadería</label><select id="merc"><option>Seleccionar</option><option>LOHS</option><option>SFHG</option><option>SINTER</option><option>FERTILIZANTE</option><option>SINTER + LOHS</option></select></div><div><label>Muelle(s)</label><input type="text" id="muelles" placeholder="NAVIOS + POTIGUAR"></div></div>
+    </div>
 
-        <div>
-          <label>Muelle(s)</label>
-          <input type="text" id="muelles" placeholder="NAVIOS + POTIGUAR" oninput="updatePreview()">
-        </div>
-      </div>
-
-      <!-- AUTORIDADES -->
-      <div class="card" style="margin-top:1.5rem">
-        <div class="card-title">Autoridades Portuarias</div>
-        <div class="g2">
-          <div>
-            <label>Bandera</label>
-            <select id="bandera" oninput="updatePreview()">
-              <option>Seleccionar</option>
-              <option>BOLIVIA</option>
-              <option>ARGENTINA</option>
-              <option>PARAGUAY</option>
-              <option>BRASIL</option>
-              <option>URUGUAY</option>
-            </select>
-          </div>
-          <div>
-            <label>OCE</label>
-            <input type="text" id="oce" placeholder="6000360" oninput="updatePreview()">
-          </div>
-        </div>
-
-        <div class="g2">
-          <div>
-            <label>Migraciones</label>
-            <select id="migra" oninput="updatePreview()">
-              <option>x1</option>
-              <option>x2</option>
-              <option>x3</option>
-              <option>x4</option>
-            </select>
-          </div>
-          <div></div>
-        </div>
-
-        <div class="checkbox-group">
-          <div class="checkbox-item">
-            <input type="checkbox" id="chk-ld" checked>
-            <label for="chk-ld">Light Dues</label>
-          </div>
-          <div class="checkbox-item">
-            <input type="checkbox" id="chk-vhf" checked>
-            <label for="chk-vhf">VHF</label>
-          </div>
-          <div class="checkbox-item">
-            <input type="checkbox" id="chk-desp" checked>
-            <label for="chk-desp">Entrada/Despacho</label>
-          </div>
-        </div>
-      </div>
-
-      <!-- OPCIONALES -->
-      <div class="card" style="margin-top:1.5rem">
-        <div class="card-title">Servicios Opcionales</div>
-
-        <!-- Lanchas -->
-        <button class="collapsible" onclick="toggleSection(this, 'lanchas')">▶ LANCHAS</button>
-        <div id="lanchas" class="collapsible-content">
-          <div id="lanchas-list"></div>
-          <button class="btn-add" onclick="addLancha()">+ Agregar lancha</button>
-        </div>
-
-        <!-- Petrovías -->
-        <button class="collapsible" onclick="toggleSection(this, 'petro')">▶ AMARRE EN PETROVÍAS</button>
-        <div id="petro" class="collapsible-content">
-          <div class="g2">
-            <div>
-              <label>Fecha amarra</label>
-              <input type="text" id="pt-fecha" placeholder="DD/MM/YYYY" maxlength="10" oninput="maskDate(this)">
-            </div>
-            <div>
-              <label>Hora</label>
-              <input type="time" id="pt-hora">
-            </div>
-          </div>
-          <div class="g2">
-            <div>
-              <label>Proveedor</label>
-              <input type="text" id="pt-prov" placeholder="GOMISTAR">
-            </div>
-            <div>
-              <label>Fecha lancha ent./desp.</label>
-              <input type="text" id="pt-lf" placeholder="DD/MM/YYYY" maxlength="10" oninput="maskDate(this)">
-            </div>
-          </div>
-        </div>
-
-        <!-- Sauce -->
-        <button class="collapsible" onclick="toggleSection(this, 'sauce')">▶ AMARRE EN SAUCE</button>
-        <div id="sauce" class="collapsible-content">
-          <div class="g2">
-            <div>
-              <label>Fecha amarra</label>
-              <input type="text" id="sc-fecha" placeholder="DD/MM/YYYY" maxlength="10" oninput="maskDate(this)">
-            </div>
-            <div>
-              <label>Proveedor</label>
-              <input type="text" id="sc-prov" placeholder="Proveedor">
-            </div>
-          </div>
-        </div>
-
-        <!-- Médico -->
-        <button class="collapsible" onclick="toggleSection(this, 'med')">▶ ATENCIÓN MÉDICA</button>
-        <div id="med" class="collapsible-content">
-          <div class="g2">
-            <div>
-              <label>Tripulante</label>
-              <input type="text" id="med-trip" placeholder="FRANCISCO OJEDA">
-            </div>
-            <div>
-              <label>Clínica</label>
-              <input type="text" id="med-cli" placeholder="Clínica">
-            </div>
-          </div>
-          <div class="g3">
-            <div>
-              <label>Consultas</label>
-              <input type="number" id="med-cons" value="1">
-            </div>
-            <div>
-              <label>USD</label>
-              <input type="number" id="med-usd" placeholder="250">
-            </div>
-            <div>
-              <label>Lanchas desembarco</label>
-              <input type="number" id="med-lanch" placeholder="1">
-            </div>
-          </div>
-          <div class="checkbox-group">
-            <div class="checkbox-item">
-              <input type="checkbox" id="chk-meds">
-              <label for="chk-meds">Medicamentos</label>
-            </div>
-            <div class="checkbox-item">
-              <input type="checkbox" id="chk-tras">
-              <label for="chk-tras">Traslados</label>
-            </div>
-          </div>
-        </div>
-
-        <!-- Extras -->
-        <button class="collapsible" onclick="toggleSection(this, 'extras')">▶ EXTRAS / COSTOS</button>
-        <div id="extras" class="collapsible-content">
-          <div id="extras-list"></div>
-          <button class="btn-add" onclick="addExtra()">+ Agregar extra</button>
-        </div>
-
-        <!-- Desenrole -->
-        <button class="collapsible" onclick="toggleSection(this, 'draw')">▶ CAMBIO DE TRIPULACIÓN</button>
-        <div id="draw" class="collapsible-content">
-          <div id="draw-list"></div>
-          <button class="btn-add" onclick="addDraw()">+ Agregar trámite</button>
-        </div>
-      </div>
-
-      <!-- Barcazas -->
-      <div class="card" style="margin-top:1.5rem">
-        <div class="card-title">Nómina de Barcazas</div>
-        <div class="note">Pegá el cuadro desde Excel: # | Barcaza | Cantidad | Producto | Viaje</div>
-        <textarea id="barcazas-paste" class="paste-zone" rows="6" placeholder="Pegá aquí..." style="border:1.5px dashed var(--isa-border);min-height:120px" oninput="procesarBarcazas()"></textarea>
-        <div id="bcz-status" style="margin:10px 0;font-size:12px"></div>
-        <div id="bcz-preview" style="overflow-x:auto"></div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Autoridades Portuarias</div></div>
+      <div class="g3"><div><label>Bandera</label><select id="bandera"><option>Seleccionar</option><option>BOLIVIA</option><option>ARGENTINA</option><option>PARAGUAY</option><option>BRASIL</option><option>URUGUAY</option></select></div><div><label>OCE</label><input type="text" id="oce" placeholder="6000360"></div><div><label>Migraciones</label><select id="migra"><option>x1</option><option>x2</option><option>x3</option><option>x4</option></select></div></div>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;margin-top:10px">
+        <div class="tog-row"><label class="tog"><input type="checkbox" id="chk-ld" checked><span class="sl"></span></label><span class="tog-lbl">Light Dues</span></div>
+        <div class="tog-row"><label class="tog"><input type="checkbox" id="chk-vhf" checked><span class="sl"></span></label><span class="tog-lbl">VHF</span></div>
+        <div class="tog-row"><label class="tog"><input type="checkbox" id="chk-desp" checked><span class="sl"></span></label><span class="tog-lbl">Entrada/Despacho</span></div>
       </div>
     </div>
 
-    <!-- COLUMNA DERECHA: CONTENIDO -->
-    <div>
-      <div class="card">
-        <div class="card-title">Contenido del Mensaje</div>
-        <div class="note">Edita aquí el cuerpo del mensaje (OPERATIVA, lanchas, etc)</div>
-        <textarea id="contenido" placeholder="Armador: ...&#10;Sanidad: ...&#10;---&#10;OPERATIVA:&#10;El remolcador arribo con..."></textarea>
-        <div style="margin-top:15px">
-          <button class="btn btn-primary" onclick="generateMessage()" style="width:100%">Generar Mensaje</button>
-        </div>
-      </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Nómina de Barcazas</div></div>
+      <div class="note">Pegá: # | Barcaza | Cantidad | Producto | Viaje</div>
+      <textarea id="barcazas-paste" placeholder="Pegá aquí..." oninput="procesarBarcazas()"></textarea>
+      <div id="bcz-status" style="margin:10px 0;font-size:12px"></div>
+      <div id="bcz-preview" style="overflow-x:auto"></div>
     </div>
+
+    <div class="card">
+      <div class="card-header"><div class="card-title">Operativa y Servicios</div></div>
+      <label>Resumen de Operativa</label>
+      <textarea id="operativa" rows="3" placeholder="El remolcador arribo con 10 barcazas..."></textarea>
+
+      <button class="collapsible" onclick="toggleCollapse(this)">LANCHAS</button>
+      <div class="collapsible-content"><div id="lanchas-list"></div><button class="add-btn" onclick="addLancha()">+ Agregar lancha</button></div>
+
+      <button class="collapsible" onclick="toggleCollapse(this)">PETROVÍAS</button>
+      <div class="collapsible-content"><div class="g2"><div><label>Fecha</label><input type="text" id="pt-fecha" placeholder="DD/MM/YYYY" maxlength="10" oninput="maskDate(this)"></div><div><label>Hora</label><input type="time" id="pt-hora"></div></div><div class="g2"><div><label>Proveedor</label><input type="text" id="pt-prov" placeholder="GOMISTAR"></div><div><label>Fecha lancha</label><input type="text" id="pt-lf" placeholder="DD/MM/YYYY" maxlength="10" oninput="maskDate(this)"></div></div></div>
+
+      <button class="collapsible" onclick="toggleCollapse(this)">SAUCE</button>
+      <div class="collapsible-content"><div class="g2"><div><label>Fecha</label><input type="text" id="sc-fecha" placeholder="DD/MM/YYYY" maxlength="10" oninput="maskDate(this)"></div><div><label>Proveedor</label><input type="text" id="sc-prov"></div></div></div>
+
+      <button class="collapsible" onclick="toggleCollapse(this)">ATENCIÓN MÉDICA</button>
+      <div class="collapsible-content"><div class="g2"><div><label>Tripulante</label><input type="text" id="med-trip"></div><div><label>Clínica</label><input type="text" id="med-cli"></div></div><div class="g3"><div><label>Consultas</label><input type="number" id="med-cons" value="1"></div><div><label>USD</label><input type="number" id="med-usd"></div><div><label>Lanchas</label><input type="number" id="med-lanch"></div></div><div style="display:flex;gap:20px"><div class="tog-row"><label class="tog"><input type="checkbox" id="chk-meds"><span class="sl"></span></label><span class="tog-lbl">Medicamentos</span></div><div class="tog-row"><label class="tog"><input type="checkbox" id="chk-tras"><span class="sl"></span></label><span class="tog-lbl">Traslados</span></div></div></div>
+
+      <button class="collapsible" onclick="toggleCollapse(this)">EXTRAS / COSTOS</button>
+      <div class="collapsible-content"><div id="extras-list"></div><button class="add-btn" onclick="addExtra()">+ Agregar extra</button></div>
+
+      <button class="collapsible" onclick="toggleCollapse(this)">CAMBIO DE TRIPULACIÓN</button>
+      <div class="collapsible-content"><div id="draw-list"></div><button class="add-btn" onclick="addDraw()">+ Agregar trámite</button></div>
+    </div>
+
+    <div class="footer"><span></span><button class="btn btn-primary" onclick="generate(); goTab(1)">Ver Vista Previa →</button></div>
   </div>
 
-  <!-- OUTPUT -->
-  <div class="card">
-    <div class="card-title">Mensaje Final</div>
-    <div class="output" id="output">Genera el mensaje para verlo aquí</div>
+  <!-- TAB 1: PREVIEW -->
+  <div class="pane" id="tab-1">
+    <div class="card">
+      <div class="card-header"><div class="card-title">Asunto</div></div>
+      <div class="subj-box" id="subj-out">Genera el mensaje</div>
+      <button class="btn btn-copy" onclick="copyEl('subj-out')" style="margin-top:10px">Copiar Asunto</button>
+    </div>
+
+    <div class="card">
+      <div class="card-header" style="justify-content:space-between"><div class="card-title">Mensaje</div><button class="btn btn-copy" onclick="copyEl('body-out')">Copiar Mensaje</button></div>
+      <div class="output-wrap" id="body-out">Genera el mensaje para verlo aquí</div>
+    </div>
+
     <div class="footer">
-      <button class="btn btn-copy" onclick="copyMessage()">📋 Copiar</button>
-      <button class="btn btn-primary" onclick="sendMail()">✉️ Enviar Mail</button>
-      <span class="feedback" id="feedback">¡Copiado!</span>
+      <button class="btn btn-primary" style="border:1.5px solid var(--isa-blue);background:white;color:var(--isa-blue)" onclick="goTab(0)">← Editar</button>
+      <div style="display:flex;gap:12px">
+        <button class="btn btn-copy" onclick="copyEl('body-out')">📋 Copiar</button>
+        <button class="btn btn-primary" onclick="sendMail()">✉️ Enviar Mail</button>
+      </div>
     </div>
   </div>
 </div>
 
 <script>
-let lanchaIdx = 0, extraIdx = 0, drawIdx = 0;
-
+let lanchaIdx=0,extraIdx=0,drawIdx=0;
+function goTab(n){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));document.getElementById('tab-btn-'+n).classList.add('active');document.getElementById('tab-'+n).classList.add('active')}
+function toggleCollapse(btn){const c=btn.nextElementSibling;c.classList.toggle('active');btn.classList.toggle('open')}
 function v(id){const el=document.getElementById(id);return el?el.value.trim():''}
 function chk(id){const el=document.getElementById(id);return el&&el.checked}
-
-function toggleSection(btn, id){
-  const el = document.getElementById(id);
-  el.classList.toggle('active');
-  btn.style.transform = el.classList.contains('active') ? 'none' : 'none';
-}
-
-function maskDate(el){
-  let val=el.value.replace(/\D/g,'');
-  if(val.length>2)val=val.slice(0,2)+'/'+val.slice(2);
-  if(val.length>5)val=val.slice(0,5)+'/'+val.slice(5);
-  if(val.length>10)val=val.slice(0,10);
-  el.value=val;
-}
-
-function procesarBarcazas(){
-  const raw = document.getElementById('barcazas-paste').value;
-  const status = document.getElementById('bcz-status');
-  const preview = document.getElementById('bcz-preview');
-  
-  if(!raw.trim()){
-    status.innerHTML = '';
-    preview.innerHTML = '';
-    return;
-  }
-  
-  const lines = raw.split('\n').filter(l => l.trim());
-  const data = [];
-  
-  lines.forEach(line => {
-    const cells = line.split('|').map(c => c.trim());
-    if(cells.length >= 2 && cells[0] !== '#' && cells[0].toUpperCase() !== 'TTL'){
-      if(cells[1]) data.push({num:cells[0],barcaza:cells[1],cantidad:cells[2],producto:cells[3],viaje:cells[4]});
-    }
-  });
-  
-  if(!data.length){
-    status.innerHTML = '<span style="color:var(--isa-red)">⚠ No se detectaron barcazas</span>';
-    return;
-  }
-  
-  status.innerHTML = `<span style="color:var(--isa-green)">✓ ${data.length} barcazas detectadas</span>`;
-  
-  let html = '<table class="table-bcz"><tr><th>#</th><th>Barcaza</th><th>Cantidad</th><th>Producto</th><th>Viaje</th></tr>';
-  let total = 0;
-  data.forEach((r,i) => {
-    html += `<tr><td>${i+1}</td><td>${r.barcaza}</td><td>${r.cantidad}</td><td>${r.producto}</td><td>${r.viaje}</td></tr>`;
-    const qty = parseFloat(r.cantidad.replace(/\./g,'').replace(',','.'));
-    if(!isNaN(qty)) total += qty;
-  });
-  if(total > 0) html += `<tr><td></td><td><strong>TTL</strong></td><td><strong>${total.toLocaleString('es-UY')}</strong></td><td></td><td></td></tr>`;
-  html += '</table>';
-  preview.innerHTML = html;
-}
-
-function addLancha(){
-  const id = lanchaIdx++;
-  const div = document.createElement('div');
-  div.className = 'sub-item';
-  div.id = 'lc-'+id;
-  div.innerHTML = `
-    <div class="sub-header">
-      <span>Lancha ${id+1}</span>
-      <button class="btn-remove" onclick="document.getElementById('lc-${id}').remove()">Eliminar</button>
-    </div>
-    <div class="g3">
-      <div><label>Tipo</label><input type="text" id="lct-${id}" placeholder="Entrada en lancha"></div>
-      <div><label>Fecha</label><input type="text" id="lcf-${id}" placeholder="DD/MM/YYYY" maxlength="10" oninput="maskDate(this)"></div>
-      <div><label>Hora</label><input type="time" id="lch-${id}"></div>
-    </div>
-    <div class="g2">
-      <div><label>Proveedor</label><select id="lcp-${id}"><option>GOMISTAR</option><option>CG TRÁFICO</option><option>CORUMBA</option><option>Otro</option></select></div>
-      <div><label>Lugar / Nota</label><input type="text" id="lcn-${id}" placeholder="en rada"></div>
-    </div>
-  `;
-  document.getElementById('lanchas-list').appendChild(div);
-}
-
-function addExtra(){
-  const id = extraIdx++;
-  const div = document.createElement('div');
-  div.className = 'sub-item';
-  div.id = 'ex-'+id;
-  div.innerHTML = `
-    <div class="sub-header">
-      <span>Extra ${id+1}</span>
-      <button class="btn-remove" onclick="document.getElementById('ex-${id}').remove()">Eliminar</button>
-    </div>
-    <div class="g2">
-      <div style="grid-column:1/3"><label>Descripción</label><input type="text" id="exd-${id}" placeholder="Estadía amarradero ANP"></div>
-    </div>
-    <div><label>USD</label><input type="number" id="exm-${id}" placeholder="500"></div>
-  `;
-  document.getElementById('extras-list').appendChild(div);
-}
-
-function addDraw(){
-  const id = drawIdx++;
-  const div = document.createElement('div');
-  div.className = 'sub-item';
-  div.id = 'dr-'+id;
-  div.innerHTML = `
-    <div class="sub-header">
-      <span>Trámite ${id+1}</span>
-      <button class="btn-remove" onclick="document.getElementById('dr-${id}').remove()">Eliminar</button>
-    </div>
-    <div class="g2">
-      <div><label>Trámite</label><input type="text" id="drt-${id}" placeholder="TRAMITE DE MIGRACION"></div>
-      <div><label>Detalle</label><input type="text" id="drd-${id}" placeholder="Documento tramitado"></div>
-    </div>
-    <div><label>Proveedor / Gestionado por</label><input type="text" id="drp-${id}" placeholder="MSA Buenos Aires"></div>
-  `;
-  document.getElementById('draw-list').appendChild(div);
-}
-
-function updatePreview(){
-  const rem = v('rem') || 'REMOLCADOR';
-  const arm = v('armador');
-  const ban = v('bandera');
-  const oce = v('oce');
-  const migra = v('migra');
-  
-  let items = [];
-  if(arm) items.push(`Armador: ${arm}`);
-  if(ban) items.push(`Bandera: ${ban}`);
-  if(oce) items.push(`OCE: ${oce}`);
-  if(migra) items.push(`${migra} Migraciones`);
-  if(chk('chk-ld')) items.push('Light Dues');
-  if(chk('chk-vhf')) items.push('VHF');
-  
-  document.getElementById('contenido').placeholder = items.join('\n') + '\n\n---\n\nOPERATIVA:\n[Edita aquí]';
-}
-
-function generateMessage(){
-  const rem = v('rem') || 'REMOLCADOR';
-  const arm = v('armador');
-  const ref = v('ref');
-  const merc = v('merc');
-  const muelles = v('muelles');
-  const ban = v('bandera');
-  const oce = v('oce');
-  const migra = v('migra');
-  const contenido = v('contenido');
-  
-  let msg = 'Estimados,\n\nDetallo mensaje de gastos correspondiente a la operación en asunto.\n\n';
-  msg += rem;
-  if(ref) msg += ` (${ref})`;
-  if(merc) msg += ` - ${merc}`;
-  if(muelles) msg += ` - ${muelles}`;
-  msg += '\n\n';
-  
-  if(arm) msg += `Armador: ${arm}\n`;
-  if(ref) msg += `Referencia: ${ref}\n`;
-  if(merc) msg += `Mercadería: ${merc}\n`;
-  if(muelles) msg += `Muelle: ${muelles}\n`;
-  
-  const sanItems = [];
-  if(ban) sanItems.push(`Bandera ${ban}`);
-  if(oce) sanItems.push(`OCE ${oce}`);
-  if(migra) sanItems.push(`${migra} Migraciones`);
-  if(chk('chk-ld')) sanItems.push('Light Dues');
-  if(chk('chk-vhf')) sanItems.push('VHF');
-  if(sanItems.length) msg += `Sanidad: ${sanItems.join(', ')}\n`;
-  if(chk('chk-desp')) msg += `Entrada/Despacho en muelle\n`;
-  
-  msg += '\n' + contenido + '\n';
-  
-  // Lanchas
-  const lanchasContainer = document.getElementById('lanchas-list');
-  if(lanchasContainer.querySelectorAll('[id^="lc-"]').length > 0){
-    msg += '\nLANCHAS:\n';
-    lanchasContainer.querySelectorAll('[id^="lc-"]').forEach(el => {
-      const id = el.id.substr(3);
-      const tipo = v('lct-'+id);
-      const fecha = v('lcf-'+id);
-      const hora = v('lch-'+id);
-      const prov = v('lcp-'+id);
-      const nota = v('lcn-'+id);
-      let ln = `LANCHA – ${tipo}`;
-      if(fecha) ln += ` ${fecha}`;
-      if(hora) ln += ` – ${hora} hrs`;
-      if(nota) ln += ` (${nota})`;
-      if(prov) ln += ` - ${prov}`;
-      msg += ln + '\n';
-    });
-  }
-  
-  // Petrovías
-  if(v('pt-fecha')){
-    msg += `\nAmarra en petrovias ${v('pt-fecha')}`;
-    if(v('pt-hora')) msg += ` - ${v('pt-hora')} HRS`;
-    msg += '\n';
-    if(v('pt-prov')) msg += `Custodia ${v('pt-prov')}\n`;
-    if(v('pt-lf')) msg += `Lancha entrada/despacho en petrovias ${v('pt-lf')}\n`;
-  }
-  
-  // Sauce
-  if(v('sc-fecha')){
-    msg += `\nAmarra en sauce ${v('sc-fecha')}\n`;
-    if(v('sc-prov')) msg += `Proveedor: ${v('sc-prov')}\n`;
-  }
-  
-  // Médico
-  if(v('med-trip')){
-    msg += `\nATENCION MEDICA\n`;
-    msg += `Tripulante: ${v('med-trip')}\n`;
-    if(v('med-cli')) msg += `Clínica: ${v('med-cli')}\n`;
-    if(v('med-cons')) msg += `${v('med-cons')} ${v('med-cons') === '1' ? 'consulta' : 'consultas'}\n`;
-    if(v('med-usd')) msg += `Total USD ${v('med-usd')}\n`;
-    if(v('med-lanch')) msg += `${v('med-lanch')} lanchas desembarco médico\n`;
-    if(chk('chk-meds')) msg += `Medicamentos\n`;
-    if(chk('chk-tras')) msg += `Traslados\n`;
-  }
-  
-  // Extras
-  const extrasContainer = document.getElementById('extras-list');
-  if(extrasContainer.querySelectorAll('[id^="ex-"]').length > 0){
-    msg += '\nEXTRAS:\n';
-    extrasContainer.querySelectorAll('[id^="ex-"]').forEach(el => {
-      const id = el.id.substr(3);
-      const desc = v('exd-'+id);
-      const monto = v('exm-'+id);
-      if(desc) msg += desc + (monto ? ` (USD ${monto})` : '') + '\n';
-    });
-  }
-  
-  // Desenrole
-  const drawContainer = document.getElementById('draw-list');
-  if(drawContainer.querySelectorAll('[id^="dr-"]').length > 0){
-    msg += '\nDESENROLE\n';
-    drawContainer.querySelectorAll('[id^="dr-"]').forEach(el => {
-      const id = el.id.substr(3);
-      const tram = v('drt-'+id);
-      const det = v('drd-'+id);
-      const prov = v('drp-'+id);
-      let ln = tram + (det ? ` – ${det}` : '') + (prov ? ` - Gestionado por ${prov}` : '');
-      msg += ln + '\n';
-    });
-  }
-  
-  msg += '\n\nCualquier duda quedo a las ordenes.\n\nSaludos cordiales,';
-  
-  document.getElementById('output').textContent = msg;
-}
-
-function copyMessage(){
-  const text = document.getElementById('output').textContent;
-  if(text === 'Genera el mensaje para verlo aquí') return;
-  navigator.clipboard.writeText(text).then(() => {
-    const fb = document.getElementById('feedback');
-    fb.classList.add('show');
-    setTimeout(() => fb.classList.remove('show'), 2000);
-  });
-}
-
-function sendMail(){
-  const text = document.getElementById('output').textContent;
-  if(text === 'Genera el mensaje para verlo aquí') return;
-  
-  const rem = v('rem') || 'REMOLCADOR';
-  const ref = v('ref');
-  const merc = v('merc');
-  const muelles = v('muelles');
-  
-  let asunto = `Gastos – ${rem}`;
-  if(ref) asunto += ` (${ref})`;
-  if(merc) asunto += ` – ${merc}`;
-  if(muelles) asunto += ` – ${muelles.split('+')[0].trim()}`;
-  
-  window.location.href = `mailto:?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(text)}`;
-}
-
-updatePreview();
+function maskDate(el){let val=el.value.replace(/\D/g,'');if(val.length>2)val=val.slice(0,2)+'/'+val.slice(2);if(val.length>5)val=val.slice(0,5)+'/'+val.slice(5);if(val.length>10)val=val.slice(0,10);el.value=val}
+function procesarBarcazas(){const raw=document.getElementById('barcazas-paste').value;const status=document.getElementById('bcz-status');const preview=document.getElementById('bcz-preview');if(!raw.trim()){status.innerHTML='';preview.innerHTML='';return}const lines=raw.split('\n').filter(l=>l.trim());const data=[];lines.forEach(line=>{const cells=line.split('|').map(c=>c.trim());if(cells.length>=2&&cells[0]!=='#'&&cells[0].toUpperCase()!=='TTL'&&cells[1]){data.push({num:cells[0],barcaza:cells[1],cantidad:cells[2],producto:cells[3],viaje:cells[4]})}});if(!data.length){status.innerHTML='<span style="color:var(--isa-red)">⚠ No se detectaron</span>';return}status.innerHTML=`<span style="color:var(--isa-green)">✓ ${data.length} barcazas</span>`;let html='<table class="table-bcz"><tr><th>#</th><th>Barcaza</th><th>Cantidad</th><th>Producto</th><th>Viaje</th></tr>';let total=0;data.forEach((r,i)=>{html+=`<tr><td>${i+1}</td><td>${r.barcaza}</td><td>${r.cantidad}</td><td>${r.producto}</td><td>${r.viaje}</td></tr>`;const qty=parseFloat(r.cantidad.replace(/\./g,'').replace(',','.'));if(!isNaN(qty))total+=qty});if(total>0)html+=`<tr><td></td><td><b>TTL</b></td><td><b>${total.toLocaleString('es-UY')}</b></td><td></td><td></td></tr>`;html+='</table>';preview.innerHTML=html}
+function addLancha(){const id=lanchaIdx++;const div=document.createElement('div');div.className='sub-item';div.id='lc-'+id;div.innerHTML=`<div class="item-header"><span class="item-label">Lancha ${id+1}</span><button class="rm" onclick="document.getElementById('lc-${id}').remove()">X</button></div><div class="g3"><div><label>Tipo</label><input type="text" id="lct-${id}" placeholder="Entrada"></div><div><label>Fecha</label><input type="text" id="lcf-${id}" placeholder="DD/MM/YYYY" maxlength="10" oninput="maskDate(this)"></div><div><label>Hora</label><input type="time" id="lch-${id}"></div></div><div class="g2"><div><label>Proveedor</label><select id="lcp-${id}"><option>GOMISTAR</option><option>CG TRÁFICO</option><option>CORUMBA</option><option>Otro</option></select></div><div><label>Lugar</label><input type="text" id="lcn-${id}"></div></div>`;document.getElementById('lanchas-list').appendChild(div)}
+function addExtra(){const id=extraIdx++;const div=document.createElement('div');div.className='sub-item';div.id='ex-'+id;div.innerHTML=`<div class="item-header"><span class="item-label">Extra ${id+1}</span><button class="rm" onclick="document.getElementById('ex-${id}').remove()">X</button></div><div class="g2"><div style="grid-column:1/3"><label>Descripción</label><input type="text" id="exd-${id}"></div></div><div><label>USD</label><input type="number" id="exm-${id}"></div>`;document.getElementById('extras-list').appendChild(div)}
+function addDraw(){const id=drawIdx++;const div=document.createElement('div');div.className='sub-item';div.id='dr-'+id;div.innerHTML=`<div class="item-header"><span class="item-label">Trámite ${id+1}</span><button class="rm" onclick="document.getElementById('dr-${id}').remove()">X</button></div><div class="g2"><div><label>Trámite</label><input type="text" id="drt-${id}"></div><div><label>Detalle</label><input type="text" id="drd-${id}"></div></div><div><label>Proveedor</label><input type="text" id="drp-${id}"></div>`;document.getElementById('draw-list').appendChild(div)}
+function generate(){const rem=v('rem')||'REMOLCADOR';const arm=v('armador'),ref=v('ref'),merc=v('merc'),muelles=v('muelles');const ban=v('bandera'),oce=v('oce'),migra=v('migra');const operativa=v('operativa');let subj=`Gastos – ${rem}`;if(ref)subj+=` (${ref})`;if(merc)subj+=` – ${merc}`;if(muelles)subj+=` – ${muelles.split('+')[0].trim()}`;let b='Estimados,\n\nDetallo mensaje de gastos correspondiente a la operación en asunto.\n\n';b+=rem;if(ref)b+=` (${ref})`;if(merc)b+=` - ${merc}`;if(muelles)b+=` - ${muelles}`;b+='\n\n';if(arm)b+=`Armador: ${arm}\n`;if(ref)b+=`Referencia: ${ref}\n`;if(merc)b+=`Mercadería: ${merc}\n`;if(muelles)b+=`Muelle: ${muelles}\n`;const sanItems=[];if(ban)sanItems.push(`Bandera ${ban}`);if(oce)sanItems.push(`OCE ${oce}`);if(migra)sanItems.push(`${migra} Migraciones`);if(chk('chk-ld'))sanItems.push('Light Dues');if(chk('chk-vhf'))sanItems.push('VHF');if(sanItems.length)b+=`Sanidad: ${sanItems.join(', ')}\n`;if(chk('chk-desp'))b+=`Entrada/Despacho en muelle\n`;b+='\nOPERATIVA:\n';if(operativa)b+=operativa+'\n';const lanchasContainer=document.getElementById('lanchas-list');if(lanchasContainer.querySelectorAll('[id^="lc-"]').length>0){b+='\n';lanchasContainer.querySelectorAll('[id^="lc-"]').forEach(el=>{const id=el.id.substr(3);const tipo=v('lct-'+id),fecha=v('lcf-'+id),hora=v('lch-'+id),prov=v('lcp-'+id),nota=v('lcn-'+id);let ln=`LANCHA – ${tipo}`;if(fecha)ln+=` ${fecha}`;if(hora)ln+=` – ${hora} hrs`;if(nota)ln+=` (${nota})`;if(prov)ln+=` - ${prov}`;b+=ln+'\n'})}if(v('pt-fecha')){b+=`\nAmarra en petrovias ${v('pt-fecha')}`;if(v('pt-hora'))b+=` - ${v('pt-hora')} HRS`;b+='\n';if(v('pt-prov'))b+=`Custodia ${v('pt-prov')}\n`;if(v('pt-lf'))b+=`Lancha entrada/despacho ${v('pt-lf')}\n`}if(v('sc-fecha')){b+=`\nAmarra en sauce ${v('sc-fecha')}\n`;if(v('sc-prov'))b+=`Proveedor: ${v('sc-prov')}\n`}if(v('med-trip')){b+=`\nATENCION MEDICA\n`;b+=`Tripulante: ${v('med-trip')}\n`;if(v('med-cli'))b+=`Clínica: ${v('med-cli')}\n`;if(v('med-cons'))b+=`${v('med-cons')} ${v('med-cons')==='1'?'consulta':'consultas'}\n`;if(v('med-usd'))b+=`Total USD ${v('med-usd')}\n`;if(v('med-lanch'))b+=`${v('med-lanch')} lanchas desembarco\n`;if(chk('chk-meds'))b+=`Medicamentos\n`;if(chk('chk-tras'))b+=`Traslados\n`}const extrasContainer=document.getElementById('extras-list');if(extrasContainer.querySelectorAll('[id^="ex-"]').length>0){b+='\nEXTRAS:\n';extrasContainer.querySelectorAll('[id^="ex-"]').forEach(el=>{const id=el.id.substr(3),desc=v('exd-'+id),monto=v('exm-'+id);if(desc)b+=desc+(monto?` (USD ${monto})`:'')+'​\n'})}const drawContainer=document.getElementById('draw-list');if(drawContainer.querySelectorAll('[id^="dr-"]').length>0){b+='\nDESENROLE\n';drawContainer.querySelectorAll('[id^="dr-"]').forEach(el=>{const id=el.id.substr(3),tram=v('drt-'+id),det=v('drd-'+id),prov=v('drp-'+id);let ln=tram+(det?` – ${det}`:'')+(prov?` - Gestionado por ${prov}`:'');b+=ln+'\n'})}b+='\nCualquier duda quedo a las ordenes.\n\nSaludos cordiales,';document.getElementById('subj-out').textContent=subj;document.getElementById('body-out').textContent=b}
+function copyEl(id){const t=document.getElementById(id).textContent;navigator.clipboard.writeText(t).then(()=>{const btn=event.target;const o=btn.textContent;btn.textContent='¡Copiado!';setTimeout(()=>btn.textContent=o,1500)})}
+function sendMail(){const text=document.getElementById('body-out').textContent;if(!text||text==='Genera el mensaje para verlo aquí')return;const rem=v('rem')||'REMOLCADOR',ref=v('ref'),merc=v('merc'),muelles=v('muelles');let asunto=`Gastos – ${rem}`;if(ref)asunto+=` (${ref})`;if(merc)asunto+=` – ${merc}`;if(muelles)asunto+=` – ${muelles.split('+')[0].trim()}`;window.location.href=`mailto:?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(text)}`}
 </script>
 
 </body>
