@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>PUERTO â€” ISA Nueva Palmira</title>
+<title>PUERTO &mdash; ISA Nueva Palmira</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,800&family=Barlow:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -185,13 +185,13 @@ td{padding:7px 12px;vertical-align:middle;}
 <!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
-    <div class="login-hex">âš“</div>
+    <div class="login-hex">&#9875;</div>
     <div class="login-title">ISA</div>
     <div class="login-divider"></div>
-    <div class="login-sub">Nueva Palmira Â· GestiÃ³n de Tripulaciones</div>
-    <button class="login-btn" onclick="handleAuth()" id="login-btn">ðŸ”— Conectar con Google Drive</button>
-    <div class="login-note" id="login-note">AccedÃ© con tu cuenta de Google autorizada</div>
-    <a href="index.html" style="display:inline-block;margin-top:16px;font-size:11px;color:rgba(255,255,255,.35);text-decoration:none;letter-spacing:.08em;text-transform:uppercase;transition:color .15s" onmouseover="this.style.color='rgba(255,255,255,.7)'" onmouseout="this.style.color='rgba(255,255,255,.35)'">â† Volver al portal</a>
+    <div class="login-sub">Nueva Palmira &middot; Gesti&oacute;n de Tripulaciones</div>
+    <button class="login-btn" onclick="handleAuth()" id="login-btn">&#128279; Conectar con Google Drive</button>
+    <div class="login-note" id="login-note">Acced&eacute; con tu cuenta de Google autorizada</div>
+    <a href="index.html" style="display:inline-block;margin-top:16px;font-size:11px;color:rgba(255,255,255,.35);text-decoration:none;letter-spacing:.08em;text-transform:uppercase;transition:color .15s" onmouseover="this.style.color='rgba(255,255,255,.7)'" onmouseout="this.style.color='rgba(255,255,255,.35)'">&#8592; Volver al portal</a>
   </div>
 </div>
 
@@ -199,17 +199,17 @@ td{padding:7px 12px;vertical-align:middle;}
 <div id="app" style="display:none">
   <header>
     <div class="logo">
-      <div class="logo-hex">âš“</div>
+      <div class="logo-hex">&#9875;</div>
       <div class="logo-title">PUERTO</div>
       <div class="logo-sub-wrap">
         <span class="logo-sub">ISA Nueva Palmira</span>
-        <span class="logo-subtag">GestiÃ³n de Tripulaciones</span>
+        <span class="logo-subtag">Gesti&oacute;n de Tripulaciones</span>
       </div>
     </div>
     <div class="header-right">
-      <a href="index.html" class="back-portal">â† Portal</a>
-      <button class="btn-db" id="org-toggle" onclick="toggleOrg()">ðŸ“‚ Organizar docs</button>
-      <button class="btn-db" id="db-toggle" onclick="toggleDB()">ðŸ—ƒ Base de datos</button>
+      <a href="index.html" class="back-portal">&#8592; Portal</a>
+      <button class="btn-db" id="org-toggle" onclick="toggleOrg()">&#128194; Organizar docs</button>
+      <button class="btn-db" id="db-toggle" onclick="toggleDB()">&#128451; Base de datos</button>
       <div style="display:flex;align-items:center;gap:6px">
         <div class="status-dot"></div>
         <span class="status-txt" id="user-email">Conectado</span>
@@ -225,27 +225,27 @@ td{padding:7px 12px;vertical-align:middle;}
         <div class="db-sub">La IA lee cada PDF, identifica al tripulante y lo mueve al lugar correcto en Drive</div>
       </div>
       <div class="btn-row">
-        <button class="btn btn-gh btn-sm" onclick="toggleOrg()">âœ• Cerrar</button>
+        <button class="btn btn-gh btn-sm" onclick="toggleOrg()">&#10005; Cerrar</button>
       </div>
     </div>
     <div class="info-box-yellow">
-      <strong>CÃ³mo funciona:</strong><br>
-      1. HacÃ© clic en "Abrir _PENDIENTES" y pegÃ¡ los PDFs ahÃ­<br>
-      2. HacÃ© clic en Procesar â€” la IA los identifica y organiza automÃ¡ticamente
+      <strong>C&oacute;mo funciona:</strong><br>
+      1. Hac&eacute; clic en "Abrir _PENDIENTES" y peg&aacute; los PDFs ah&iacute;<br>
+      2. Hac&eacute; clic en Procesar &mdash; la IA los identifica y organiza autom&aacute;ticamente
     </div>
     <div style="margin-bottom:14px">
       <button class="btn btn-gh btn-sm" onclick="openPendientes()" style="display:inline-flex;align-items:center;gap:6px;border-color:rgba(234,179,8,.3);color:var(--yellow)">
-        ðŸ“‚ Abrir carpeta _PENDIENTES en Drive
+        &#128194; Abrir carpeta _PENDIENTES en Drive
       </button>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
       <div>
         <div class="field-label">Tipo de documento</div>
-        <select id="org-tipo"><option value="auto">Detectar automÃ¡ticamente</option><option value="libreta">Libretas</option><option value="cedula">CÃ©dulas</option></select>
+        <select id="org-tipo"><option value="auto">Detectar autom&aacute;ticamente</option><option value="libreta">Libretas</option><option value="cedula">C&eacute;dulas</option></select>
       </div>
       <div>
         <div class="field-label">Armador</div>
-        <select id="org-armador"><option value="auto">Detectar automÃ¡ticamente</option><option>LHG</option><option>HIDROVIAS</option><option>INTERBARGE</option><option>P&O</option><option>CARGO LINE</option><option>BAQUEANOS ARG</option></select>
+        <select id="org-armador"><option value="auto">Detectar autom&aacute;ticamente</option><option>LHG</option><option>HIDROVIAS</option><option>INTERBARGE</option><option>P&O</option><option>CARGO LINE</option><option>BAQUEANOS ARG</option></select>
       </div>
     </div>
     <button class="btn btn-pri" onclick="procesarPendientes()" id="org-btn" style="margin-bottom:14px">Procesar carpeta _PENDIENTES con IA</button>
@@ -255,7 +255,7 @@ td{padding:7px 12px;vertical-align:middle;}
       <div class="logbox-lines" id="org-lines"></div>
     </div>
     <div id="org-manual" style="display:none">
-      <div style="font-size:9px;color:var(--yellow);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;padding-top:10px;border-top:1px solid var(--border)">AsignaciÃ³n manual</div>
+      <div style="font-size:9px;color:var(--yellow);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;padding-top:10px;border-top:1px solid var(--border)">Asignaci&oacute;n manual</div>
       <div id="org-manual-list"></div>
     </div>
   </div>
@@ -263,15 +263,15 @@ td{padding:7px 12px;vertical-align:middle;}
   <!-- DB PANEL -->
   <div class="db-panel" id="db-panel">
     <div class="db-header">
-      <div><div class="db-title">Base de Datos Â· Tripulantes</div><div class="db-sub" id="db-sub">Google Sheets Â· cargando...</div></div>
+      <div><div class="db-title">Base de Datos &middot; Tripulantes</div><div class="db-sub" id="db-sub">Google Sheets &middot; cargando...</div></div>
       <div class="btn-row">
-        <button class="btn btn-bl btn-sm" onclick="loadDB()">â†º Actualizar</button>
-        <button class="btn btn-gh btn-sm" onclick="toggleDB()">âœ•</button>
+        <button class="btn btn-bl btn-sm" onclick="loadDB()">&#8634; Actualizar</button>
+        <button class="btn btn-gh btn-sm" onclick="toggleDB()">&#10005;</button>
       </div>
     </div>
     <div id="db-loading" style="color:var(--muted);font-size:12px;text-align:center;padding:24px">Cargando...</div>
     <div style="overflow-x:auto;display:none" id="db-table-wrap">
-      <table><thead><tr><th>Nombre</th><th>Cargo</th><th>CI NÂº</th><th>Venc. CI</th><th>Libreta</th><th>Armador</th><th>Estado</th></tr></thead>
+      <table><thead><tr><th>Nombre</th><th>Cargo</th><th>CI N&ordm;</th><th>Venc. CI</th><th>Libreta</th><th>Armador</th><th>Estado</th></tr></thead>
       <tbody id="db-tbody"></tbody></table>
     </div>
   </div>
@@ -287,101 +287,101 @@ td{padding:7px 12px;vertical-align:middle;}
   <!-- PANEL 1 -->
   <div class="panel active" id="panel-1">
     <div class="panel-title">Datos del Viaje</div>
-    <div class="panel-sub">CompletÃ¡ los datos. La carpeta se genera automÃ¡ticamente con el nombre correcto.</div>
+    <div class="panel-sub">Complet&aacute; los datos. La carpeta se genera autom&aacute;ticamente con el nombre correcto.</div>
     <div class="field-grid">
       <div><div class="field-label">Prefijo del buque *</div>
         <select id="ship-prefix" onchange="updateFolder()">
-          <option value="R/E">R/E â€” Remolcador Empujador</option><option value="R/P">R/P â€” Remolcador de Puerto</option>
-          <option value="M/N">M/N â€” Motonave</option><option value="B/T">B/T â€” Buque Tanque</option><option value="C/B">C/B â€” Convoy de Barcazas</option>
+          <option value="R/E">R/E &mdash; Remolcador Empujador</option><option value="R/P">R/P &mdash; Remolcador de Puerto</option>
+          <option value="M/N">M/N &mdash; Motonave</option><option value="B/T">B/T &mdash; Buque Tanque</option><option value="C/B">C/B &mdash; Convoy de Barcazas</option>
         </select></div>
       <div><div class="field-label">Nombre del remolcador *</div><input type="text" id="ship" placeholder="HB SCORPIUS" oninput="updateFolder()"/></div>
-      <div><div class="field-label">CÃ³digo de viaje *</div><input type="text" id="voyageCode" placeholder="HB16" oninput="updateFolder()"/></div>
-      <div><div class="field-label">ETA *</div><input type="text" id="eta" placeholder="SÃ¡b 15/03 â€“ 22:00 hs"/></div>
+      <div><div class="field-label">C&oacute;digo de viaje *</div><input type="text" id="voyageCode" placeholder="HB16" oninput="updateFolder()"/></div>
+      <div><div class="field-label">ETA *</div><input type="text" id="eta" placeholder="S&aacute;b 15/03 &ndash; 22:00 hs"/></div>
       <div><div class="field-label">Muelle</div><input type="text" id="dock" placeholder="NAVIOS" value="NAVIOS"/></div>
       <div><div class="field-label">Armador</div>
         <select id="armador" onchange="updateFolder()">
-          <option value="">â€” SeleccionÃ¡ â€”</option><option>HIDROVIAS</option><option>LHG</option><option>P&O</option>
+          <option value="">&mdash; Seleccion&aacute; &mdash;</option><option>HIDROVIAS</option><option>LHG</option><option>P&O</option>
           <option>INTERBARGE</option><option>CARGO LINE</option><option>BAQUEANOS ARG</option>
         </select></div>
     </div>
     <div class="folder-preview">
-      <div class="field-label">ðŸ“ Carpeta que se crearÃ¡ en Drive</div>
-      <div class="folder-name" id="folder-preview">CompletÃ¡ nombre y cÃ³digo...</div>
+      <div class="field-label">&#128193; Carpeta que se crear&aacute; en Drive</div>
+      <div class="folder-name" id="folder-preview">Complet&aacute; nombre y c&oacute;digo...</div>
       <div class="folder-path" id="folder-path"></div>
     </div>
-    <div class="btn-row"><button class="btn btn-pri" onclick="step1Next()">Continuar â†’ Subir Rol PDF</button></div>
+    <div class="btn-row"><button class="btn btn-pri" onclick="step1Next()">Continuar &#8594; Subir Rol PDF</button></div>
   </div>
 
   <!-- PANEL 2 -->
   <div class="panel" id="panel-2">
-    <div class="panel-title">Rol de TripulaciÃ³n</div>
-    <div class="panel-sub">SubÃ­ el PDF del rol. La IA extrae los nombres y los cruza con la base de datos para completar todos los campos.</div>
-    <div class="info-box-yellow">ðŸ“ <span id="folder-remind"></span></div>
+    <div class="panel-title">Rol de Tripulaci&oacute;n</div>
+    <div class="panel-sub">Sub&iacute; el PDF del rol. La IA extrae los nombres y los cruza con la base de datos para completar todos los campos.</div>
+    <div class="info-box-yellow">&#128193; <span id="folder-remind"></span></div>
     <div class="dropzone" id="rol-dropzone">
       <input type="file" accept=".pdf" id="rol-file" onchange="onRolFileChange(this)"/>
-      <div class="dropzone-icon">ðŸ“‹</div>
-      <div class="dropzone-text" id="rol-dropzone-text">HacÃ© clic para subir el Rol PDF</div>
+      <div class="dropzone-icon">&#128203;</div>
+      <div class="dropzone-text" id="rol-dropzone-text">Hac&eacute; clic para subir el Rol PDF</div>
       <div class="dropzone-sub">Formato Prefectura Naval</div>
     </div>
     <div id="parse-btn-wrap" style="display:none;margin-bottom:12px">
-      <button class="btn btn-pri" id="parse-btn" onclick="parseRol()">âš¡ Procesar con IA</button>
+      <button class="btn btn-pri" id="parse-btn" onclick="parseRol()">&#9889; Procesar con IA</button>
     </div>
     <div class="logbox" id="parse-log" style="display:none">
-      <div class="logbox-header"><span class="logbox-title">âš¡ Procesando...</span></div>
+      <div class="logbox-header"><span class="logbox-title">&#9889; Procesando...</span></div>
       <div class="logbox-lines" id="parse-lines"></div>
     </div>
     <div id="alerts-wrap" style="display:none"></div>
     <div id="crew-table-wrap" style="display:none"></div>
     <div class="btn-row" style="margin-top:12px">
-      <button class="btn btn-pri" id="step2-next" style="display:none" onclick="goStep(3)">Continuar â†’ Documentos</button>
-      <button class="btn btn-gh" onclick="goStep(1)">â† AtrÃ¡s</button>
+      <button class="btn btn-pri" id="step2-next" style="display:none" onclick="goStep(3)">Continuar &#8594; Documentos</button>
+      <button class="btn btn-gh" onclick="goStep(1)">&#8592; Atr&aacute;s</button>
     </div>
   </div>
 
   <!-- PANEL 3 -->
   <div class="panel" id="panel-3">
     <div class="panel-title">Documentos</div>
-    <div class="panel-sub">BÃºsqueda automÃ¡tica en /LIBRETAS y /CEDULAS por carpeta de armador.</div>
+    <div class="panel-sub">B&uacute;squeda autom&aacute;tica en /LIBRETAS y /CEDULAS por carpeta de armador.</div>
     <div id="p3-alerts"></div>
     <div class="drive-struct">
       <div class="drive-struct-title">Estructura Drive a buscar</div>
       <div style="font-size:11px;line-height:2;color:var(--fg);display:grid;grid-template-columns:1fr 1fr;gap:0 20px">
-        <div>ðŸ“ <span style="color:var(--white)">LIBRETAS/</span><br>&nbsp;&nbsp;ðŸ“ LIBRETAS LHG/<br>&nbsp;&nbsp;ðŸ“ LIBRETAS P&amp;O/<br>&nbsp;&nbsp;ðŸ“ LIBRETAS HIDROVIAS/<br>&nbsp;&nbsp;ðŸ“ LIBRETAS IB/</div>
-        <div>ðŸ“ <span style="color:var(--white)">CEDULAS/</span><br>&nbsp;&nbsp;ðŸ“ CEDULAS LHG/<br>&nbsp;&nbsp;ðŸ“ CEDULAS P&amp;O/<br>&nbsp;&nbsp;ðŸ“ CEDULAS HIDROVIAS/<br>&nbsp;&nbsp;ðŸ“ CEDULAS IB/</div>
+        <div>&#128193; <span style="color:var(--white)">LIBRETAS/</span><br>&nbsp;&nbsp;&#128193; LIBRETAS LHG/<br>&nbsp;&nbsp;&#128193; LIBRETAS P&amp;O/<br>&nbsp;&nbsp;&#128193; LIBRETAS HIDROVIAS/<br>&nbsp;&nbsp;&#128193; LIBRETAS IB/</div>
+        <div>&#128193; <span style="color:var(--white)">CEDULAS/</span><br>&nbsp;&nbsp;&#128193; CEDULAS LHG/<br>&nbsp;&nbsp;&#128193; CEDULAS P&amp;O/<br>&nbsp;&nbsp;&#128193; CEDULAS HIDROVIAS/<br>&nbsp;&nbsp;&#128193; CEDULAS IB/</div>
       </div>
     </div>
-    <button class="btn btn-bl" id="search-btn" onclick="searchDrive()" style="margin-bottom:12px">ðŸ” Buscar documentos en Drive</button>
+    <button class="btn btn-bl" id="search-btn" onclick="searchDrive()" style="margin-bottom:12px">&#128269; Buscar documentos en Drive</button>
     <div class="logbox" id="search-log" style="display:none">
-      <div class="logbox-header"><span class="logbox-title">BÃºsqueda en Drive</span><span class="logbox-pct" id="search-pct">0%</span></div>
+      <div class="logbox-header"><span class="logbox-title">B&uacute;squeda en Drive</span><span class="logbox-pct" id="search-pct">0%</span></div>
       <div class="progress-bar-wrap"><div class="progress-bar" id="search-bar" style="width:0%"></div></div>
       <div class="logbox-lines" id="search-lines"></div>
     </div>
     <div id="search-stats" style="display:none"></div>
     <div id="doc-list-wrap" style="display:none"></div>
     <div class="btn-row" style="margin-top:12px">
-      <button class="btn btn-pri" id="step3-next" style="display:none" onclick="goStep(4)">Continuar â†’ Generar</button>
-      <button class="btn btn-gh" onclick="goStep(2)">â† AtrÃ¡s</button>
+      <button class="btn btn-pri" id="step3-next" style="display:none" onclick="goStep(4)">Continuar &#8594; Generar</button>
+      <button class="btn btn-gh" onclick="goStep(2)">&#8592; Atr&aacute;s</button>
     </div>
   </div>
 
   <!-- PANEL 4 -->
   <div class="panel" id="panel-4">
     <div class="panel-title">Generar y Enviar</div>
-    <div class="panel-sub">CreÃ¡ la carpeta del viaje en Drive y preparÃ¡ el mail para Migraciones.</div>
+    <div class="panel-sub">Cre&aacute; la carpeta del viaje en Drive y prepar&aacute; el mail para Migraciones.</div>
     <div id="p4-blockers"></div>
     <div id="p4-folder" class="folder-preview">
-      <div class="field-label">ðŸ“ Carpeta a crear en Drive</div>
+      <div class="field-label">&#128193; Carpeta a crear en Drive</div>
       <div class="folder-name" id="p4-folder-name"></div>
       <div class="folder-path" id="p4-folder-path"></div>
     </div>
     <div class="summary-box">
-      <div class="summary-title">ðŸ“¦ Resumen del viaje</div>
+      <div class="summary-title">&#128230; Resumen del viaje</div>
       <div id="summary-rows"></div>
     </div>
     <div class="email-box">
       <div class="email-header">
-        <span class="email-title">ðŸ“§ Mail para Migraciones</span>
-        <button class="btn-copy" onclick="copyEmail()">ðŸ“‹ Copiar</button>
+        <span class="email-title">&#128231; Mail para Migraciones</span>
+        <button class="btn-copy" onclick="copyEmail()">&#128203; Copiar</button>
       </div>
       <pre class="email-body" id="email-body"></pre>
     </div>
@@ -392,9 +392,9 @@ td{padding:7px 12px;vertical-align:middle;}
     </div>
     <div id="gen-success" style="display:none"></div>
     <div class="btn-row">
-      <button class="btn btn-pri" id="gen-btn" onclick="generate()">âš¡ Generar y subir a Drive</button>
-      <button class="btn btn-gn" id="gmail-btn" style="display:none" onclick="openGmail()">âœ‰ï¸ Abrir en Gmail</button>
-      <button class="btn btn-gh" onclick="goStep(3)">â† AtrÃ¡s</button>
+      <button class="btn btn-pri" id="gen-btn" onclick="generate()">&#9889; Generar y subir a Drive</button>
+      <button class="btn btn-gn" id="gmail-btn" style="display:none" onclick="openGmail()">&#9993; Abrir en Gmail</button>
+      <button class="btn btn-gh" onclick="goStep(3)">&#8592; Atr&aacute;s</button>
     </div>
   </div>
 
@@ -418,20 +418,20 @@ const TODAY = new Date();
 let TOKEN=null, DB_DATA=[], CREW=[], ALERTS=[], CREW_DOCS={};
 let CURRENT_STEP=1, STEP_DONE=[false,false,false,false], PARSED_SHIP={};
 
-// â”€â”€ NORMALIZAR nombres para matching robusto â”€â”€
+// &#9472;&#9472; NORMALIZAR nombres para matching robusto &#9472;&#9472;
 function norm(s){
   return (s||'').toUpperCase()
     .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
     .replace(/[^A-Z0-9 ]/g,' ').replace(/\s+/g,' ').trim();
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
 // MATCH DE CARPETAS DE ARMADOR
 // Soporta nombres como: "LIBRETAS LHG", "LIBRETAS HIDROVIAS",
 // "LIBRETAS P&O", "LHG_LIBRETAS", "P&O_LIBRETAS", etc.
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
 
-// Tabla de sinÃ³nimos/palabras clave por armador
+// Tabla de sin&oacute;nimos/palabras clave por armador
 const ARMADOR_KEYS = {
   'LHG':        ['LHG'],
   'HIDROVIAS':  ['HIDROVIAS', 'HB', 'HDB'],
@@ -477,7 +477,7 @@ function findArmadorFolder(armador, folders) {
   }) || null;
 }
 
-// â”€â”€ BUSCAR tripulante en DB con fuzzy matching â”€â”€
+// &#9472;&#9472; BUSCAR tripulante en DB con fuzzy matching &#9472;&#9472;
 function findInDB(pdfNombre){
   const pdfN = norm(pdfNombre);
   const pdfApellido = pdfN.split(',')[0].trim();
@@ -510,8 +510,8 @@ window.addEventListener('load',()=>{
 });
 
 function getUserEmail(){fetch("https://www.googleapis.com/oauth2/v2/userinfo",{headers:{"Authorization":"Bearer "+TOKEN}}).then(r=>r.json()).then(d=>{const el=document.getElementById("user-email");if(el)el.textContent=d.email||"Conectado";}).catch(()=>{});}
-function tokenExpired(){TOKEN=null;sessionStorage.removeItem('puerto_token');document.getElementById("login-screen").style.display="flex";document.getElementById("app").style.display="none";const n=document.getElementById("login-note");if(n)n.textContent="âš  SesiÃ³n expirada â€” volvÃ© a conectar";const b=document.getElementById("login-btn");if(b)b.textContent="ðŸ”— Reconectar con Google Drive";}
-setInterval(()=>{if(TOKEN)fetch("https://www.googleapis.com/oauth2/v2/userinfo",{headers:{"Authorization":"Bearer "+TOKEN}}).then(r=>{if(r.status===401)tokenExpired();}).catch(()=>{});},45*60*1000);
+function tokenExpired(){TOKEN=null;sessionStorage.removeItem('puerto_token');document.getElementById("login-screen").style.display="flex";document.getElementById("app").style.display="none";const n=document.getElementById("login-note");if(n)n.textContent="&#9888; Sesi&oacute;n expirada &mdash; volv&eacute; a conectar";const b=document.getElementById("login-btn");if(b)b.textContent="&#128279; Reconectar con Google Drive";}
+setInterval(()=>{if(TOKEN)fetch("https://www.googleapis.com/oauth2/v2/userinfo",{headers:{"Authorization":"Bearer "+TOKEN}}).then(r=>{if(r.status===401)tokenExpired();}).catch(()=>{});},10*60*1000);
 function showApp(){document.getElementById("login-screen").style.display="none";document.getElementById("app").style.display="block";}
 function canGoStep(n){return n<=CURRENT_STEP||STEP_DONE[n-2];}
 function goStep(n){
@@ -523,25 +523,25 @@ function goStep(n){
 }
 function markDone(n){
   STEP_DONE[n-1]=true;const tab=document.getElementById('tab-'+n);tab.classList.add('done');
-  if(!tab.querySelector('.step-check')){const c=document.createElement('div');c.className='step-check';c.textContent='âœ“';tab.appendChild(c);}
+  if(!tab.querySelector('.step-check')){const c=document.createElement('div');c.className='step-check';c.textContent='&#10003;';tab.appendChild(c);}
 }
 function getShipFullName(){const p=document.getElementById('ship-prefix').value;const n=document.getElementById('ship').value.trim().toUpperCase();return n?`${p} ${n}`:'';}
 function updateFolder(){
   const s=getShipFullName(),c=document.getElementById('voyageCode').value.trim().toUpperCase(),a=document.getElementById('armador').value;
   const f=s&&c?`${a?a+' ':''}${s} - ${c}`:'';
-  document.getElementById('folder-preview').textContent=f||'CompletÃ¡ nombre y cÃ³digo...';
+  document.getElementById('folder-preview').textContent=f||'Complet&aacute; nombre y c&oacute;digo...';
   document.getElementById('folder-preview').style.color=f?'var(--accent)':'var(--muted)';
   document.getElementById('folder-path').textContent=f?'/VIAJES/'+f+'/':'';
   document.getElementById('folder-remind').textContent=f;
 }
 function step1Next(){
-  if(!document.getElementById('ship').value.trim()||!document.getElementById('voyageCode').value.trim()||!document.getElementById('eta').value.trim()){alert('CompletÃ¡ los campos obligatorios (*)');return;}
+  if(!document.getElementById('ship').value.trim()||!document.getElementById('voyageCode').value.trim()||!document.getElementById('eta').value.trim()){alert('Complet&aacute; los campos obligatorios (*)');return;}
   markDone(1);goStep(2);
 }
 function onRolFileChange(input){
   const file=input.files[0];if(!file)return;
   document.getElementById('rol-dropzone').classList.add('done');
-  document.getElementById('rol-dropzone-text').textContent='âœ“ '+file.name;
+  document.getElementById('rol-dropzone-text').textContent='&#10003; '+file.name;
   document.getElementById('parse-btn-wrap').style.display='block';
   CREW=[];ALERTS=[];PARSED_SHIP={};
   document.getElementById('step2-next').style.display='none';
@@ -551,18 +551,18 @@ function onRolFileChange(input){
 
 async function parseRol(){
   const file=document.getElementById('rol-file').files[0];if(!file)return;
-  const btn=document.getElementById('parse-btn');btn.disabled=true;btn.textContent='â³ Procesando...';
+  const btn=document.getElementById('parse-btn');btn.disabled=true;btn.textContent='&#9203; Procesando...';
   if(DB_DATA.length===0&&TOKEN){
     const logBox=document.getElementById('parse-log');const lines=document.getElementById('parse-lines');
     logBox.style.display='block';
     const d=document.createElement('div');d.className='log-line';d.innerHTML='<span class="log-ts"></span><span class="log-msg">Cargando base de datos...</span>';
     lines.appendChild(d);await loadDB();
-    d.querySelector('.log-msg').textContent=`âœ“ Base de datos: ${DB_DATA.length} tripulantes`;
+    d.querySelector('.log-msg').textContent=`&#10003; Base de datos: ${DB_DATA.length} tripulantes`;
   }
   const logBox=document.getElementById('parse-log');const lines=document.getElementById('parse-lines');
   logBox.style.display='block';lines.innerHTML='';
   const addLine=(txt,type='')=>{const d=document.createElement('div');d.className='log-line '+type;d.innerHTML=`<span class="log-ts"></span><span class="log-msg">${txt}</span>`;lines.appendChild(d);lines.scrollTop=9999;};
-  addLine('Leyendo PDF Â· formato Prefectura Naval...');
+  addLine('Leyendo PDF &middot; formato Prefectura Naval...');
   const b64=await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result.split(',')[1]);r.onerror=rej;r.readAsDataURL(file);});
   addLine('Enviando a IA para extraer nombres y datos del barco...');
   try {
@@ -572,9 +572,9 @@ async function parseRol(){
         model:'claude-sonnet-4-20250514',max_tokens:2000,
         messages:[{role:'user',content:[
           {type:'document',source:{type:'base64',media_type:'application/pdf',data:b64}},
-          {type:'text',text:`AnalizÃ¡ este rol de tripulaciÃ³n formato Prefectura Naval Uruguay/Paraguay.
-ExtraÃ© los datos REALES del documento. NO inventes ni uses datos de ejemplo.
-DevolvÃ© SOLO JSON sin texto extra ni markdown:
+          {type:'text',text:`Analiz&aacute; este rol de tripulaci&oacute;n formato Prefectura Naval Uruguay/Paraguay.
+Extra&eacute; los datos REALES del documento. NO inventes ni uses datos de ejemplo.
+Devolv&eacute; SOLO JSON sin texto extra ni markdown:
 {"ship":{"nombre":"","puertoSalida":"","puertoLlegada":"","fecha":""},"crew":[{"num":1,"nombre":"APELLIDO, NOMBRE","cargo":"","nacionalidad":"","fechaNac":"","ci":"","vencCI":"","libreta":""}]}`}
         ]}]
       })
@@ -595,11 +595,11 @@ DevolvÃ© SOLO JSON sin texto extra ni markdown:
         else{shipInput.value=rawName;}
         updateFolder();
       }
-      addLine('âœ“ Buque: '+rawName,'ok');
+      addLine('&#10003; Buque: '+rawName,'ok');
     }
-    addLine('âœ“ Puerto salida: '+(parsed.ship?.puertoSalida||'â€”'),parsed.ship?.puertoSalida?'ok':'warn');
-    addLine('âœ“ Puerto llegada: '+(parsed.ship?.puertoLlegada||'â€”'),'ok');
-    addLine('â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€');
+    addLine('&#10003; Puerto salida: '+(parsed.ship?.puertoSalida||'&mdash;'),parsed.ship?.puertoSalida?'ok':'warn');
+    addLine('&#10003; Puerto llegada: '+(parsed.ship?.puertoLlegada||'&mdash;'),'ok');
+    addLine('&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;');
     addLine(`Base de datos: ${DB_DATA.length} tripulantes disponibles`,'ok');
     addLine('Cruzando con base de datos (Sheet tiene prioridad)...');
     CREW=(parsed.crew||[]).map(m=>{
@@ -623,24 +623,24 @@ DevolvÃ© SOLO JSON sin texto extra ni markdown:
     ALERTS=[];
     for(const m of CREW){
       const st=docStatus(m.vencCI);
-      const ic=st.s==='venc'?'ðŸ”´':st.s==='warn'||st.s==='crit'?'ðŸŸ¡':'âœ“';
-      const dbTxt=m.inDB?' [DB âœ“]':' âš  NUEVO';
-      addLine(`${ic} ${m.num}. ${m.nombre} Â· CI venc. ${m.vencCI||'no figura'}${dbTxt}`);
+      const ic=st.s==='venc'?'&#128308;':st.s==='warn'||st.s==='crit'?'&#128993;':'&#10003;';
+      const dbTxt=m.inDB?' [DB &#10003;]':' &#9888; NUEVO';
+      addLine(`${ic} ${m.num}. ${m.nombre} &middot; CI venc. ${m.vencCI||'no figura'}${dbTxt}`);
       if(st.s==='venc') ALERTS.push({level:'BLOQUEANTE',name:m.nombre,msg:`CI ${m.ci} VENCIDA el ${m.vencCI}`});
-      else if(st.s==='crit') ALERTS.push({level:'CRÃTICO',name:m.nombre,msg:`CI vence en ${daysUntil(m.vencCI)} dÃ­as (${m.vencCI})`});
-      else if(st.s==='warn') ALERTS.push({level:'ALERTA',name:m.nombre,msg:`CI vence en ${daysUntil(m.vencCI)} dÃ­as (${m.vencCI})`});
-      if(!m.inDB&&DB_DATA.length>0) ALERTS.push({level:'NUEVO',name:m.nombre,msg:'No estÃ¡ en BASE_TRIPULANTES â€” completÃ¡ sus datos'});
+      else if(st.s==='crit') ALERTS.push({level:'CR&Iacute;TICO',name:m.nombre,msg:`CI vence en ${daysUntil(m.vencCI)} d&iacute;as (${m.vencCI})`});
+      else if(st.s==='warn') ALERTS.push({level:'ALERTA',name:m.nombre,msg:`CI vence en ${daysUntil(m.vencCI)} d&iacute;as (${m.vencCI})`});
+      if(!m.inDB&&DB_DATA.length>0) ALERTS.push({level:'NUEVO',name:m.nombre,msg:'No est&aacute; en BASE_TRIPULANTES &mdash; complet&aacute; sus datos'});
     }
-    addLine('â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€');
+    addLine('&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;');
     const enDB=CREW.filter(m=>m.inDB).length;
-    addLine(`âœ… ${CREW.length} tripulantes Â· ${enDB} en base Â· ${CREW.length-enDB} nuevos Â· ${ALERTS.length} alerta(s)`,'ok');
+    addLine(`&#9989; ${CREW.length} tripulantes &middot; ${enDB} en base &middot; ${CREW.length-enDB} nuevos &middot; ${ALERTS.length} alerta(s)`,'ok');
     renderAlerts('alerts-wrap',ALERTS);
     renderCrewTable();
     document.getElementById('step2-next').style.display='inline-flex';
     if(ALERTS.length>0){const dot=document.createElement('div');dot.className='alert-dot';dot.id='tab2-dot';document.getElementById('tab-2').appendChild(dot);}
     markDone(2);
-  }catch(e){addLine('âŒ Error: '+e.message,'err');}
-  btn.disabled=false;btn.textContent='âš¡ Procesar con IA';
+  }catch(e){addLine('&#10060; Error: '+e.message,'err');}
+  btn.disabled=false;btn.textContent='&#9889; Procesar con IA';
 }
 
 function renderAlerts(containerId,alerts){
@@ -648,11 +648,11 @@ function renderAlerts(containerId,alerts){
   if(!alerts.length){wrap.style.display='none';return;}
   wrap.style.display='block';
   const banner=document.createElement('div');banner.className='alert-banner';
-  banner.innerHTML=`<div class="alert-banner-title"><span style="font-size:14px">ðŸš¨</span>${alerts.length} alertas detectadas</div>`;
+  banner.innerHTML=`<div class="alert-banner-title"><span style="font-size:14px">&#128680;</span>${alerts.length} alertas detectadas</div>`;
   alerts.forEach(a=>{
-    const lvl=a.level.toLowerCase().replace('Ã©','e').replace('Ã­','i');
+    const lvl=a.level.toLowerCase().replace('&eacute;','e').replace('&iacute;','i');
     const pillMap={bloqueante:'pill-bloqueante',critico:'pill-critico',alerta:'pill-alerta',nuevo:'pill-nuevo'};
-    const icons={BLOQUEANTE:'ðŸš«','CRÃTICO':'â›”',ALERTA:'âš ï¸',NUEVO:'ðŸ†•'};
+    const icons={BLOQUEANTE:'&#128683;','CR&Iacute;TICO':'&#9940;',ALERTA:'&#9888;&#65039;',NUEVO:'&#127381;'};
     const item=document.createElement('div');item.className=`alert-item ${lvl==='critico'?'bloqueante':lvl}`;
     item.innerHTML=`<span class="alert-pill ${pillMap[lvl]||''}">${icons[a.level]||''} ${a.level}</span>
       <div><div class="alert-name">${a.name}</div><div class="alert-msg ${lvl==='critico'?'bloqueante':lvl}">${a.msg}</div></div>`;
@@ -668,7 +668,7 @@ function renderCrewTable(){
   if(nuevos.length>0){
     editSection=`<div style="background:rgba(0,180,216,.06);border:1px solid rgba(0,180,216,.2);border-radius:8px;padding:14px 16px;margin-bottom:12px">
       <div style="font-size:11px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px">
-        ðŸ†• ${nuevos.length} tripulante(s) nuevo(s) â€” CompletÃ¡ sus datos para agregar al Sheet
+        &#127381; ${nuevos.length} tripulante(s) nuevo(s) &mdash; Complet&aacute; sus datos para agregar al Sheet
       </div>
       ${nuevos.map(m=>`
         <div style="background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:8px" id="nuevo-card-${m.num}">
@@ -676,15 +676,15 @@ function renderCrewTable(){
           <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:8px;margin-bottom:8px">
             <div><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Cargo</div><input type="text" id="nv-cargo-${m.num}" value="${m.cargo||''}" placeholder="MARINERO"/></div>
             <div><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Nacionalidad</div><input type="text" id="nv-nac-${m.num}" value="${m.nacionalidad||''}" placeholder="Paraguaya"/></div>
-            <div><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">CI NÂº</div><input type="text" id="nv-ci-${m.num}" value="${m.ci||''}" placeholder="1.234.567"/></div>
+            <div><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">CI N&ordm;</div><input type="text" id="nv-ci-${m.num}" value="${m.ci||''}" placeholder="1.234.567"/></div>
             <div><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Venc. CI</div><input type="text" id="nv-venci-${m.num}" value="${m.vencCI||''}" placeholder="DD/MM/AAAA"/></div>
-            <div><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Libreta</div><input type="text" id="nv-lib-${m.num}" value="${m.libreta||''}" placeholder="NÂº libreta"/></div>
+            <div><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Libreta</div><input type="text" id="nv-lib-${m.num}" value="${m.libreta||''}" placeholder="N&ordm; libreta"/></div>
           </div>
           <div style="display:flex;gap:8px;align-items:center">
             <div style="flex:1"><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Armador</div>
-              <select id="nv-arm-${m.num}"><option value="">SeleccionÃ¡ armador...</option><option>HIDROVIAS</option><option>LHG</option><option>P&O</option><option>INTERBARGE</option><option>CARGO LINE</option><option>BAQUEANOS ARG</option></select>
+              <select id="nv-arm-${m.num}"><option value="">Seleccion&aacute; armador...</option><option>HIDROVIAS</option><option>LHG</option><option>P&O</option><option>INTERBARGE</option><option>CARGO LINE</option><option>BAQUEANOS ARG</option></select>
             </div>
-            <button class="btn btn-pri btn-sm" style="margin-top:14px;white-space:nowrap" onclick="agregarAlSheet(${m.num})">âœš Agregar al Sheet</button>
+            <button class="btn btn-pri btn-sm" style="margin-top:14px;white-space:nowrap" onclick="agregarAlSheet(${m.num})">&#10010; Agregar al Sheet</button>
           </div>
           <div id="nv-status-${m.num}" style="font-size:11px;margin-top:6px;display:none"></div>
         </div>`).join('')}
@@ -693,11 +693,11 @@ function renderCrewTable(){
   const rows=CREW.map(m=>{
     const st=docStatus(m.vencCI);
     const days=daysUntil(m.vencCI);
-    const badgeTxt=st.s==='ok'?'âœ“ OK':st.s==='sv'?'S/V':st.s==='venc'?'ðŸš« VENC':st.s==='warn'?('âš  '+days+'d'):('â›” '+days+'d');
+    const badgeTxt=st.s==='ok'?'&#10003; OK':st.s==='sv'?'S/V':st.s==='venc'?'&#128683; VENC':st.s==='warn'?('&#9888; '+days+'d'):('&#9940; '+days+'d');
     const badge='<span class="status-badge" style="background:'+st.bg+';border:1px solid '+st.b+';color:'+st.c+'">'+badgeTxt+'</span>';
     const newTag=!m.inDB?'<span class="status-badge" style="background:rgba(0,180,216,.12);border:1px solid rgba(0,180,216,.25);color:var(--accent);margin-left:4px;font-size:8px">NUEVO</span>':'';
     const fw=st.s==='venc'?700:400;
-    return '<tr class="rh"><td style="color:var(--muted)">'+m.num+'</td><td style="color:var(--white);font-weight:500;white-space:nowrap">'+m.nombre+newTag+'</td><td><span class="tag">'+m.cargo+'</span></td><td style="color:var(--fg)">'+(m.ci||'â€”')+'</td><td style="color:'+st.c+';font-weight:'+fw+'">'+(m.vencCI||'â€”')+'</td><td>'+badge+'</td></tr>';
+    return '<tr class="rh"><td style="color:var(--muted)">'+m.num+'</td><td style="color:var(--white);font-weight:500;white-space:nowrap">'+m.nombre+newTag+'</td><td><span class="tag">'+m.cargo+'</span></td><td style="color:var(--fg)">'+(m.ci||'&mdash;')+'</td><td style="color:'+st.c+';font-weight:'+fw+'">'+(m.vencCI||'&mdash;')+'</td><td>'+badge+'</td></tr>';
   }).join('');
   wrap.innerHTML=editSection+`<div class="table-wrap"><table><thead><tr><th>#</th><th>Nombre</th><th>Cargo</th><th>CI</th><th>Venc.CI</th><th>Estado</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
@@ -711,7 +711,7 @@ async function agregarAlSheet(num){
   const libreta=document.getElementById(`nv-lib-${num}`)?.value.trim();
   const armador=document.getElementById(`nv-arm-${num}`)?.value;
   const statusEl=document.getElementById(`nv-status-${num}`);
-  if(!armador){if(statusEl){statusEl.style.display='block';statusEl.style.color='var(--orange)';statusEl.textContent='âš  SeleccionÃ¡ el armador primero.';}return;}
+  if(!armador){if(statusEl){statusEl.style.display='block';statusEl.style.color='var(--orange)';statusEl.textContent='&#9888; Seleccion&aacute; el armador primero.';}return;}
   const tabMap={'HIDROVIAS':'HB,HK,KYRIOS,DON ABRAHAM,YERUTI','LHG':'LHG','P&O':'P&O','INTERBARGE':'IB','CARGO LINE':'CARGO LINE','BAQUEANOS ARG':'BAQUEANOS ARG'};
   const tab=tabMap[armador]||armador;
   if(statusEl){statusEl.style.display='block';statusEl.style.color='var(--accent)';statusEl.textContent='Agregando...';}
@@ -727,14 +727,14 @@ async function agregarAlSheet(num){
     const idx=CREW.findIndex(x=>x.num===num);
     if(idx>=0)CREW[idx]={...CREW[idx],cargo,nacionalidad:nac,ci,vencCI,libreta,armador,inDB:true};
     ALERTS=ALERTS.filter(a=>!(a.level==='NUEVO'&&a.name===m.nombre));
-    if(statusEl){statusEl.style.color='var(--green)';statusEl.textContent='âœ“ Agregado al Sheet correctamente';}
+    if(statusEl){statusEl.style.color='var(--green)';statusEl.textContent='&#10003; Agregado al Sheet correctamente';}
     setTimeout(()=>{const card=document.getElementById(`nuevo-card-${num}`);if(card)card.style.opacity='0.4';},2000);
     await loadDB();
-  }catch(e){if(statusEl){statusEl.style.color='var(--red)';statusEl.textContent='âŒ Error: '+e.message;}}
+  }catch(e){if(statusEl){statusEl.style.color='var(--red)';statusEl.textContent='&#10060; Error: '+e.message;}}
 }
 
 async function searchDrive(){
-  const btn=document.getElementById('search-btn');btn.disabled=true;btn.textContent='â³ Buscando...';
+  const btn=document.getElementById('search-btn');btn.disabled=true;btn.textContent='&#9203; Buscando...';
   const logBox=document.getElementById('search-log');const lines=document.getElementById('search-lines');
   logBox.style.display='block';lines.innerHTML='';
   renderAlerts('p3-alerts',ALERTS.filter(a=>a.level==='BLOQUEANTE'));
@@ -745,29 +745,29 @@ async function searchDrive(){
     const libFolders=await listFolders(CONFIG.libretas);
     const cedFolders=await listFolders(CONFIG.cedulas);
     addLine(`Carpetas libretas: ${libFolders.map(f=>f.name).join(', ')||'ninguna'}`, libFolders.length?'ok':'warn');
-    addLine(`Carpetas cÃ©dulas: ${cedFolders.map(f=>f.name).join(', ')||'ninguna'}`, cedFolders.length?'ok':'warn');
+    addLine(`Carpetas c&eacute;dulas: ${cedFolders.map(f=>f.name).join(', ')||'ninguna'}`, cedFolders.length?'ok':'warn');
     CREW_DOCS={};
     for(let i=0;i<CREW.length;i++){
       const m=CREW[i];setPct(Math.round(((i+1)/CREW.length)*100));
       const arm=m.armador||document.getElementById('armador').value||'';
-      addLine(`${m.nombre} â†’ armador: ${arm||'desconocido'}`);
-      // â† USA LA NUEVA FUNCIÃ“N DE MATCH
+      addLine(`${m.nombre} &#8594; armador: ${arm||'desconocido'}`);
+      // &#8592; USA LA NUEVA FUNCI&Oacute;N DE MATCH
       const libFolder = findArmadorFolder(arm, libFolders);
       const cedFolder = findArmadorFolder(arm, cedFolders);
-      if(!libFolder) addLine(`   âš  No se encontrÃ³ carpeta de libretas para "${arm}"`, 'warn');
-      if(!cedFolder) addLine(`   âš  No se encontrÃ³ carpeta de cÃ©dulas para "${arm}"`, 'warn');
+      if(!libFolder) addLine(`   &#9888; No se encontr&oacute; carpeta de libretas para "${arm}"`, 'warn');
+      if(!cedFolder) addLine(`   &#9888; No se encontr&oacute; carpeta de c&eacute;dulas para "${arm}"`, 'warn');
       const nameParts=m.nombre.replace(',','').split(' ').slice(0,2).map(s=>norm(s));
       let libFile=null,cedFile=null;
-      if(libFolder){const files=await listFiles(libFolder.id);libFile=files.find(f=>nameParts.some(p=>norm(f.name).includes(p)));addLine('   ðŸ“„ '+(libFile?libFile.name+' âœ“':'libreta â€” no encontrada'),libFile?'ok':'warn');}
-      if(cedFolder){const files=await listFiles(cedFolder.id);cedFile=files.find(f=>nameParts.some(p=>norm(f.name).includes(p)));addLine('   ðŸªª '+(cedFile?cedFile.name+' âœ“':'cÃ©dula â€” no encontrada'),cedFile?'ok':'warn');}
+      if(libFolder){const files=await listFiles(libFolder.id);libFile=files.find(f=>nameParts.some(p=>norm(f.name).includes(p)));addLine('   &#128196; '+(libFile?libFile.name+' &#10003;':'libreta &mdash; no encontrada'),libFile?'ok':'warn');}
+      if(cedFolder){const files=await listFiles(cedFolder.id);cedFile=files.find(f=>nameParts.some(p=>norm(f.name).includes(p)));addLine('   &#129738; '+(cedFile?cedFile.name+' &#10003;':'c&eacute;dula &mdash; no encontrada'),cedFile?'ok':'warn');}
       CREW_DOCS[m.nombre]={libOk:!!libFile,lib:libFile,cedOk:!!cedFile,ced:cedFile,armador:arm};
       await sleep(100);
     }
     const complete=Object.values(CREW_DOCS).filter(d=>d.libOk&&d.cedOk).length;
-    addLine(`BÃºsqueda completa Â· ${complete}/${CREW.length} con docs completos`,'ok');
+    addLine(`B&uacute;squeda completa &middot; ${complete}/${CREW.length} con docs completos`,'ok');
     renderSearchResults();document.getElementById('step3-next').style.display='inline-flex';markDone(3);
-  }catch(e){addLine('âŒ Error: '+e.message,'err');}
-  btn.disabled=false;btn.textContent='â†º Buscar de nuevo';
+  }catch(e){addLine('&#10060; Error: '+e.message,'err');}
+  btn.disabled=false;btn.textContent='&#8634; Buscar de nuevo';
 }
 
 function renderSearchResults(){
@@ -782,10 +782,10 @@ function renderSearchResults(){
   const listWrap=document.getElementById('doc-list-wrap');listWrap.style.display='block';
   listWrap.innerHTML='<div style="border:1px solid var(--border);border-radius:8px;overflow:hidden">'+CREW.map(m=>{
     const d=CREW_DOCS[m.nombre]||{};const st=docStatus(m.vencCI);const days=daysUntil(m.vencCI);
-    const stTxt=st.s==='ok'?'âœ“ OK':st.s==='sv'?'S/V':st.s==='venc'?'ðŸš«':st.s==='warn'?('âš  '+days+'d'):('â›” '+days+'d');
-    return '<div class="doc-row rh"><div><div class="doc-name">'+m.nombre+'</div><div class="doc-sub">CI venc. <span style="color:'+st.c+'">'+(m.vencCI||'â€”')+'</span></div></div>'
-      +'<div class="doc-badge '+(d.libOk?'ok':'miss')+'">'+(d.libOk?'âœ“ Libreta':'âœ— Libreta')+'</div>'
-      +'<div class="doc-badge '+(d.cedOk?'ok':'miss')+'">'+(d.cedOk?'âœ“ CÃ©dula':'âœ— CÃ©dula')+'</div>'
+    const stTxt=st.s==='ok'?'&#10003; OK':st.s==='sv'?'S/V':st.s==='venc'?'&#128683;':st.s==='warn'?('&#9888; '+days+'d'):('&#9940; '+days+'d');
+    return '<div class="doc-row rh"><div><div class="doc-name">'+m.nombre+'</div><div class="doc-sub">CI venc. <span style="color:'+st.c+'">'+(m.vencCI||'&mdash;')+'</span></div></div>'
+      +'<div class="doc-badge '+(d.libOk?'ok':'miss')+'">'+(d.libOk?'&#10003; Libreta':'&#10007; Libreta')+'</div>'
+      +'<div class="doc-badge '+(d.cedOk?'ok':'miss')+'">'+(d.cedOk?'&#10003; C&eacute;dula':'&#10007; C&eacute;dula')+'</div>'
       +'<span class="status-badge" style="background:'+st.bg+';border:1px solid '+st.b+';color:'+st.c+';text-align:center;display:block">'+stTxt+'</span>'
       +'</div>';}).join('')+'</div>';
 }
@@ -797,22 +797,22 @@ function buildStep4(){
   document.getElementById('p4-folder-name').textContent=folder;
   document.getElementById('p4-folder-path').textContent='/VIAJES/'+folder+'/';
   const bWrap=document.getElementById('p4-blockers');
-  if(blockers.length)bWrap.innerHTML='<div class="blocker-box"><span style="font-size:16px">ðŸš«</span><div class="blocker-content"><strong>ATENCIÃ“N: '+blockers.length+' CI VENCIDA</strong><br>'+blockers.map(b=>'Â· '+b.name+': '+b.msg).join('<br>')+'</div></div>';
+  if(blockers.length)bWrap.innerHTML='<div class="blocker-box"><span style="font-size:16px">&#128683;</span><div class="blocker-content"><strong>ATENCI&Oacute;N: '+blockers.length+' CI VENCIDA</strong><br>'+blockers.map(b=>'&middot; '+b.name+': '+b.msg).join('<br>')+'</div></div>';
   document.getElementById('summary-rows').innerHTML=[
-    ['Remolcador',shipFull],['Armador',arm||'â€”'],['ETA',eta],['Muelle',dock],
-    ['Puerto salida',PARSED_SHIP.puertoSalida||'â€”'],['Puerto llegada',PARSED_SHIP.puertoLlegada||'â€”'],
-    ['Tripulantes',CREW.length+' incluyendo capitÃ¡n'],['Docs completos',complete+'/'+CREW.length],
-    ['Alertas',blockers.length+' bloqueante(s) Â· '+ALERTS.filter(a=>a.level!=='BLOQUEANTE').length+' aviso(s)']
+    ['Remolcador',shipFull],['Armador',arm||'&mdash;'],['ETA',eta],['Muelle',dock],
+    ['Puerto salida',PARSED_SHIP.puertoSalida||'&mdash;'],['Puerto llegada',PARSED_SHIP.puertoLlegada||'&mdash;'],
+    ['Tripulantes',CREW.length+' incluyendo capit&aacute;n'],['Docs completos',complete+'/'+CREW.length],
+    ['Alertas',blockers.length+' bloqueante(s) &middot; '+ALERTS.filter(a=>a.level!=='BLOQUEANTE').length+' aviso(s)']
   ].map(([k,v])=>`<div class="summary-row"><span class="summary-key">${k}</span><span class="summary-val">${v}</span></div>`).join('');
-  const email=`DirecciÃ³n Nacional de MigraciÃ³n\nMigraciÃ³n de Nueva Palmira\n\nEstimados, buenas tardes.\n\nPor el presente anunciamos el siguiente remolcador nominado para nuestra agencia:\n\nRemolcador: ${shipFull}\nBandera: Paraguay\nEstimativa llegada: ${eta}\nMuelle: ${dock}\n\nAdjuntamos rol, cÃ©dulas y libretas.\n\nSaludos cordiales,\nOps - Juan Manuel Herrero\nISA Nueva Palmira\nFelipe Fontana 818 esq. Dr. Cuneo Â· 70700 Nueva Palmira Â· Uruguay\nPh: (+598) 45449529\nnpa@isa-agents.com.ar`;
+  const email=`Direcci&oacute;n Nacional de Migraci&oacute;n\nMigraci&oacute;n de Nueva Palmira\n\nEstimados, buenas tardes.\n\nPor el presente anunciamos el siguiente remolcador nominado para nuestra agencia:\n\nRemolcador: ${shipFull}\nBandera: Paraguay\nEstimativa llegada: ${eta}\nMuelle: ${dock}\n\nAdjuntamos rol, c&eacute;dulas y libretas.\n\nSaludos cordiales,\nOps - Juan Manuel Herrero\nISA Nueva Palmira\nFelipe Fontana 818 esq. Dr. Cuneo &middot; 70700 Nueva Palmira &middot; Uruguay\nPh: (+598) 45449529\nnpa@isa-agents.com.ar`;
   document.getElementById('email-body').textContent=email;window._email=email;window._ship=shipFull;
 }
 
-function copyEmail(){navigator.clipboard?.writeText(window._email||'').then(()=>alert('âœ“ Mail copiado al portapapeles'));}
+function copyEmail(){navigator.clipboard?.writeText(window._email||'').then(()=>alert('&#10003; Mail copiado al portapapeles'));}
 function openGmail(){const s=encodeURIComponent('Anuncio remolcador - '+(window._ship||'')+' (Maritime Shipping Agency)');const b=encodeURIComponent(window._email||'');window.open(`https://mail.google.com/mail/?view=cm&to=dnm-nuevapalmira@minterior.gub.uy&su=${s}&body=${b}`,'_blank');}
 
 async function generate(){
-  const btn=document.getElementById('gen-btn');btn.disabled=true;btn.textContent='â³ Generando...';
+  const btn=document.getElementById('gen-btn');btn.disabled=true;btn.textContent='&#9203; Generando...';
   const folder=document.getElementById('folder-preview').textContent;const shipFull=getShipFullName();
   const logBox=document.getElementById('gen-log');const lines=document.getElementById('gen-lines');
   logBox.style.display='block';lines.innerHTML='';
@@ -821,13 +821,13 @@ async function generate(){
   try{
     addLine(`Creando /VIAJES/${folder}/...`);
     const newFolder=await createDriveFolder(folder,CONFIG.viajes);
-    addLine('âœ“ Carpeta creada en Drive','ok');setPct(10);
+    addLine('&#10003; Carpeta creada en Drive','ok');setPct(10);
     addLine('Copiando plantilla del rol...');
     const safeShipName=shipFull.replace(/\//g,'-').replace(/\s+/g,'_');
     const copyRes=await fetch(`https://www.googleapis.com/drive/v3/files/${CONFIG.rolTemplateId}/copy`,{method:'POST',headers:{'Authorization':'Bearer '+TOKEN,'Content-Type':'application/json'},body:JSON.stringify({name:`ROL_${safeShipName}`,parents:[newFolder.id]})});
     const newRol=await copyRes.json();
     if(!newRol.id)throw new Error('No se pudo copiar la plantilla');
-    addLine('âœ“ ROL copiado','ok');setPct(15);
+    addLine('&#10003; ROL copiado','ok');setPct(15);
     addLine('Completando datos del rol...');
     try{
       const numWords=['','Uno','Dos','Tres','Cuatro','Cinco','Seis','Siete','Ocho','Nueve','Diez','Once','Doce','Trece','Catorce','Quince','Dieciseis','Diecisiete','Dieciocho','Diecinueve','Veinte'];
@@ -837,8 +837,8 @@ async function generate(){
       const fmtRequests=[];
       for(let i=condRules.length-1;i>=0;i--)fmtRequests.push({deleteConditionalFormatRule:{sheetId,index:i}});
       fmtRequests.push({repeatCell:{range:{sheetId,startRowIndex:0,endRowIndex:50,startColumnIndex:0,endColumnIndex:10},cell:{userEnteredFormat:{backgroundColor:{red:1,green:1,blue:1,alpha:1}}},fields:'userEnteredFormat.backgroundColor'}});
-      if(fmtRequests.length>0){const fr=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${newRol.id}:batchUpdate`,{method:'POST',headers:{'Authorization':'Bearer '+TOKEN,'Content-Type':'application/json'},body:JSON.stringify({requests:fmtRequests})});if(fr.ok)addLine('âœ“ Formato limpiado','ok');}
-      const cargoOrder=c=>{const lc=(c||'').toLowerCase();if(lc.includes('capit'))return 1;if(lc.includes('pract')||lc.includes('prÃ¡c'))return 2;if(lc.includes('patron')||lc.includes('patrÃ³n')||lc.includes('baqueano'))return 3;if(lc.includes('jefe')&&lc.includes('maq'))return 4;if(lc.includes('segundo')||lc.includes('2do'))return 5;if(lc.includes('engras'))return 6;if(lc.includes('contra'))return 7;if(lc.includes('marine'))return 8;if(lc.includes('cocin'))return 9;return 10;};
+      if(fmtRequests.length>0){const fr=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${newRol.id}:batchUpdate`,{method:'POST',headers:{'Authorization':'Bearer '+TOKEN,'Content-Type':'application/json'},body:JSON.stringify({requests:fmtRequests})});if(fr.ok)addLine('&#10003; Formato limpiado','ok');}
+      const cargoOrder=c=>{const lc=(c||'').toLowerCase();if(lc.includes('capit'))return 1;if(lc.includes('pract')||lc.includes('pr&aacute;c'))return 2;if(lc.includes('patron')||lc.includes('patr&oacute;n')||lc.includes('baqueano'))return 3;if(lc.includes('jefe')&&lc.includes('maq'))return 4;if(lc.includes('segundo')||lc.includes('2do'))return 5;if(lc.includes('engras'))return 6;if(lc.includes('contra'))return 7;if(lc.includes('marine'))return 8;if(lc.includes('cocin'))return 9;return 10;};
       const sortedCrew=[...CREW].sort((a,b)=>cargoOrder(a.cargo)-cargoOrder(b.cargo));
       const crewValues=sortedCrew.map((m,i)=>{
         const dbMatch=findInDB(m.nombre);
@@ -856,7 +856,7 @@ async function generate(){
       const yyyy=new Date().getFullYear();
       const etaForSheet=etaMatch?`${String(etaMatch[1]).padStart(2,'0')}/${String(etaMatch[2]).padStart(2,'0')}/${yyyy}`:etaRaw;
       const crewCount=sortedCrew.length;
-      const totalText=`Son: (${crewCount}) ${numWords[crewCount]||crewCount} tripulantes incluido su capitÃ¡n.`;
+      const totalText=`Son: (${crewCount}) ${numWords[crewCount]||crewCount} tripulantes incluido su capit&aacute;n.`;
       const CREW_START=14,lastCrewRow=CREW_START+crewCount-1,footerRow=lastCrewRow+2;
       const emptyBlock=Array(footerRow+10-CREW_START+1).fill(['','','','','','','']);
       const batchBody={valueInputOption:'USER_ENTERED',data:[
@@ -868,40 +868,42 @@ async function generate(){
         {range:`Rol!B${footerRow}`,values:[[totalText]]}
       ]};
       const sr=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${newRol.id}/values:batchUpdate`,{method:'POST',headers:{'Authorization':'Bearer '+TOKEN,'Content-Type':'application/json'},body:JSON.stringify(batchBody)});
-      if(sr.ok)addLine(`âœ“ ${crewCount} tripulantes volcados al rol`,'ok');else addLine('âš  Error al volcar datos','warn');
-    }catch(e){addLine('âš  Error completando rol: '+e.message,'warn');}
+      if(sr.ok)addLine(`&#10003; ${crewCount} tripulantes volcados al rol`,'ok');else addLine('&#9888; Error al volcar datos','warn');
+    }catch(e){addLine('&#9888; Error completando rol: '+e.message,'warn');}
     setPct(20);
     let copied=0;
     for(let i=0;i<CREW.length;i++){
       const m=CREW[i];const d=CREW_DOCS[m.nombre]||{};setPct(20+Math.round((i/CREW.length)*75));
       const safeName=m.nombre.replace(/[^A-Z0-9]/gi,'_');
-      if(d.lib?.id){try{await copyDriveFile(d.lib.id,`LIBRETA_${safeName}.pdf`,newFolder.id);addLine(`âœ“ Libreta Â· ${m.nombre}`,'ok');copied++;}catch(e){addLine(`âš  Error libreta ${m.nombre}`,'warn');}}
-      else addLine(`âš  Sin libreta Â· ${m.nombre}`,'warn');
-      if(d.ced?.id){try{await copyDriveFile(d.ced.id,`CEDULA_${safeName}.pdf`,newFolder.id);addLine(`âœ“ CÃ©dula Â· ${m.nombre}`,'ok');copied++;}catch(e){addLine(`âš  Error cÃ©dula ${m.nombre}`,'warn');}}
-      else addLine(`âš  Sin cÃ©dula Â· ${m.nombre}`,'warn');
+      if(d.lib?.id){try{await copyDriveFile(d.lib.id,`LIBRETA_${safeName}.pdf`,newFolder.id);addLine(`&#10003; Libreta &middot; ${m.nombre}`,'ok');copied++;}catch(e){addLine(`&#9888; Error libreta ${m.nombre}`,'warn');}}
+      else addLine(`&#9888; Sin libreta &middot; ${m.nombre}`,'warn');
+      if(d.ced?.id){try{await copyDriveFile(d.ced.id,`CEDULA_${safeName}.pdf`,newFolder.id);addLine(`&#10003; C&eacute;dula &middot; ${m.nombre}`,'ok');copied++;}catch(e){addLine(`&#9888; Error c&eacute;dula ${m.nombre}`,'warn');}}
+      else addLine(`&#9888; Sin c&eacute;dula &middot; ${m.nombre}`,'warn');
       await sleep(150);
     }
-    setPct(100);addLine(`âœ… Listo Â· ${copied} archivos copiados`,'ok');
+    setPct(100);addLine(`&#9989; Listo &middot; ${copied} archivos copiados`,'ok');
     const complete=Object.values(CREW_DOCS).filter(d=>d.libOk&&d.cedOk).length;
     const blockers=ALERTS.filter(a=>a.level==='BLOQUEANTE');
     document.getElementById('gen-success').style.display='block';
-    document.getElementById('gen-success').innerHTML=`<div class="success-box"><span style="font-size:18px">âœ…</span><div class="success-text">
+    document.getElementById('gen-success').innerHTML=`<div class="success-box"><span style="font-size:18px">&#9989;</span><div class="success-text">
       Carpeta <strong style="color:var(--accent)">/VIAJES/${folder}/</strong> creada en Drive.<br>
-      Rol copiado Â· ${complete} libretas Â· ${complete} cÃ©dulas.<br>
-      ${blockers.length>0?'<span style="color:var(--red)">ðŸš« '+blockers.length+' CI vencida(s) â€” pendiente de resoluciÃ³n.</span>':''}
-      <div style="margin-top:10px"><a href="https://drive.google.com/drive/folders/${newFolder.id}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;padding:7px 16px;background:rgba(0,180,216,.15);border:1px solid rgba(0,180,216,.35);border-radius:6px;color:var(--accent);text-decoration:none;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;">ðŸ“ Abrir carpeta en Drive</a></div>
+      Rol copiado &middot; ${complete} libretas &middot; ${complete} c&eacute;dulas.<br>
+      ${blockers.length>0?'<span style="color:var(--red)">&#128683; '+blockers.length+' CI vencida(s) &mdash; pendiente de resoluci&oacute;n.</span>':''}
+      <div style="margin-top:10px"><a href="https://drive.google.com/drive/folders/${newFolder.id}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;padding:7px 16px;background:rgba(0,180,216,.15);border:1px solid rgba(0,180,216,.35);border-radius:6px;color:var(--accent);text-decoration:none;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;">&#128193; Abrir carpeta en Drive</a></div>
     </div></div>`;
     document.getElementById('gmail-btn').style.display='inline-flex';markDone(4);
-  }catch(e){addLine('âŒ Error: '+e.message,'err');}
-  btn.disabled=false;btn.textContent='âš¡ Generar de nuevo';
+  }catch(e){addLine('&#10060; Error: '+e.message,'err');}
+  btn.disabled=false;btn.textContent='&#9889; Generar de nuevo';
 }
 
 async function driveReq(path,opts={}){
   const res=await fetch('https://www.googleapis.com/drive/v3/'+path,{...opts,headers:{'Authorization':'Bearer '+TOKEN,'Content-Type':'application/json',...(opts.headers||{})}});
+  if(res.status===401){tokenExpired();throw new Error('Sesi&oacute;n expirada &mdash; reconect&aacute; con Google Drive');}
   if(!res.ok)throw new Error(await res.text());return res.json();
 }
 async function sheetsReq(path){
   const res=await fetch('https://sheets.googleapis.com/v4/spreadsheets/'+path,{headers:{'Authorization':'Bearer '+TOKEN}});
+  if(res.status===401){tokenExpired();throw new Error('Sesi&oacute;n expirada &mdash; reconect&aacute; con Google Drive');}
   if(!res.ok)throw new Error(await res.text());return res.json();
 }
 async function listFolders(parentId){const q=encodeURIComponent(`'${parentId}' in parents and mimeType='application/vnd.google-apps.folder' and trashed=false`);const res=await driveReq(`files?q=${q}&fields=files(id,name)&pageSize=100`);return res.files||[];}
@@ -938,19 +940,19 @@ async function procesarPendientes(){
   try{
     const q=encodeURIComponent("name='_PENDIENTES' and mimeType='application/vnd.google-apps.folder' and trashed=false");
     const res=await driveReq('files?q='+q+'&fields=files(id,name)&pageSize=5');
-    if(!res.files||res.files.length===0){addLine('No encontrÃ© _PENDIENTES. UsÃ¡ el botÃ³n de arriba para crearla.','err');btn.disabled=false;btn.textContent='Procesar carpeta _PENDIENTES con IA';return;}
+    if(!res.files||res.files.length===0){addLine('No encontr&eacute; _PENDIENTES. Us&aacute; el bot&oacute;n de arriba para crearla.','err');btn.disabled=false;btn.textContent='Procesar carpeta _PENDIENTES con IA';return;}
     pendFolder=res.files[0];addLine('Carpeta encontrada','ok');
   }catch(e){addLine('Error: '+e.message,'err');btn.disabled=false;btn.textContent='Procesar carpeta _PENDIENTES con IA';return;}
 
   let files=[];
   try{files=await listFiles(pendFolder.id);addLine(files.length+' archivos encontrados','ok');}
   catch(e){addLine('Error: '+e.message,'err');btn.disabled=false;btn.textContent='Procesar carpeta _PENDIENTES con IA';return;}
-  if(files.length===0){addLine('La carpeta estÃ¡ vacÃ­a.','warn');btn.disabled=false;btn.textContent='Procesar carpeta _PENDIENTES con IA';return;}
+  if(files.length===0){addLine('La carpeta est&aacute; vac&iacute;a.','warn');btn.disabled=false;btn.textContent='Procesar carpeta _PENDIENTES con IA';return;}
 
   const libFolders=await listFolders(CONFIG.libretas);
   const cedFolders=await listFolders(CONFIG.cedulas);
   addLine('Carpetas libretas disponibles: '+libFolders.map(f=>f.name).join(', '),'ok');
-  addLine('Carpetas cÃ©dulas disponibles: '+cedFolders.map(f=>f.name).join(', '),'ok');
+  addLine('Carpetas c&eacute;dulas disponibles: '+cedFolders.map(f=>f.name).join(', '),'ok');
 
   const manualItems=[];
   const tipoDefault=document.getElementById('org-tipo').value;
@@ -972,7 +974,7 @@ async function procesarPendientes(){
         :{type:'document',source:{type:'base64',media_type:'application/pdf',data:b64}};
       const response=await fetch('https://puerto-isa-proxy.adrianpichardo.workers.dev',{
         method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:500,messages:[{role:'user',content:[contentItem,{type:'text',text:'Documento marÃ­timo. IdentificÃ¡: nombre completo (APELLIDO, NOMBRE) y tipo (libreta/cedula). SOLO JSON: {"nombre":"","tipo":"libreta o cedula","confianza":"alta o baja"}'}]}]})
+        body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:500,messages:[{role:'user',content:[contentItem,{type:'text',text:'Documento mar&iacute;timo. Identific&aacute;: nombre completo (APELLIDO, NOMBRE) y tipo (libreta/cedula). SOLO JSON: {"nombre":"","tipo":"libreta o cedula","confianza":"alta o baja"}'}]}]})
       });
       const data=await response.json();if(!data.content)throw new Error('Sin respuesta');
       const text=data.content.map(c=>c.text||'').join('');const match=text.match(/\{[\s\S]*\}/);if(!match)throw new Error('No JSON');
@@ -980,11 +982,11 @@ async function procesarPendientes(){
       let tipo=parsed.tipo||tipoDefault;if(tipoDefault!=='auto')tipo=tipoDefault;
       const armIA=armadorDefault!=='auto'?armadorDefault:'';
 
-      if(!nombre||parsed.confianza==='baja'){addLine('  No identificado con certeza â€” manual','warn');manualItems.push({file:f,sugerido:parsed});continue;}
+      if(!nombre||parsed.confianza==='baja'){addLine('  No identificado con certeza &mdash; manual','warn');manualItems.push({file:f,sugerido:parsed});continue;}
       addLine('  Identificado: '+nombre+' ('+tipo+')','ok');
 
-      // ARMADOR: si el usuario lo eligiÃ³ en el selector, usarlo SIEMPRE
-      // Solo buscar en DB si el selector estÃ¡ en "auto"
+      // ARMADOR: si el usuario lo eligi&oacute; en el selector, usarlo SIEMPRE
+      // Solo buscar en DB si el selector est&aacute; en "auto"
       let armFinal = '';
       if(armadorDefault !== 'auto') {
         armFinal = armadorDefault;
@@ -995,7 +997,7 @@ async function procesarPendientes(){
           armFinal=dbMatch.armador;
           addLine('  Armador (DB): '+armFinal,'ok');
         } else {
-          addLine('  Armador no detectado â€” manual','warn');
+          addLine('  Armador no detectado &mdash; manual','warn');
           manualItems.push({file:f,nombre,tipo,sugerido:parsed});
           continue;
         }
@@ -1005,19 +1007,19 @@ async function procesarPendientes(){
       let targetFolder = findArmadorFolder(armFinal, targetFolders);
 
       if(!targetFolder){
-        addLine('  No encontrÃ© carpeta para "'+armFinal+'" en Drive â€” manual','warn');
+        addLine('  No encontr&eacute; carpeta para "'+armFinal+'" en Drive &mdash; manual','warn');
         addLine('  Carpetas disponibles: '+targetFolders.map(f=>f.name).join(', '),'warn');
         manualItems.push({file:f,nombre,tipo,sugerido:parsed});
         continue;
       }
 
-      addLine('  â†’ Carpeta destino: '+targetFolder.name,'ok');
+      addLine('  &#8594; Carpeta destino: '+targetFolder.name,'ok');
       const safeName=nombre.replace(/[^A-Z0-9 ]/gi,'_').replace(/\s+/g,'_').toUpperCase()+'.pdf';
       await driveReq(
         `files/${f.id}?addParents=${encodeURIComponent(targetFolder.id)}&removeParents=${encodeURIComponent(pendFolder.id)}`,
         {method:'PATCH',body:JSON.stringify({name:safeName})}
       );
-      addLine('  âœ“ Movido a /'+targetFolder.name+'/'+safeName,'ok');
+      addLine('  &#10003; Movido a /'+targetFolder.name+'/'+safeName,'ok');
     }catch(e){addLine('  Error IA: '+e.message,'err');manualItems.push({file:f,error:e.message});}
     await sleep(500);
   }
@@ -1028,10 +1030,10 @@ async function procesarPendientes(){
     document.getElementById('org-manual').style.display='block';
     document.getElementById('org-manual-list').innerHTML=manualItems.map(item=>`
       <div style="background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:8px">
-        <div style="font-size:11px;color:var(--white);margin-bottom:8px">ðŸ“„ ${item.file.name}</div>
+        <div style="font-size:11px;color:var(--white);margin-bottom:8px">&#128196; ${item.file.name}</div>
         <div style="display:grid;grid-template-columns:1fr 1fr 100px;gap:8px">
           <input type="text" placeholder="APELLIDO NOMBRE" id="man-nombre-${item.file.id}" value="${item.nombre||item.sugerido?.nombre||''}"/>
-          <select id="man-tipo-${item.file.id}"><option value="libreta">Libreta</option><option value="cedula">CÃ©dula</option></select>
+          <select id="man-tipo-${item.file.id}"><option value="libreta">Libreta</option><option value="cedula">C&eacute;dula</option></select>
           <select id="man-arm-${item.file.id}"><option value="">Armador...</option><option>LHG</option><option>HIDROVIAS</option><option>INTERBARGE</option><option>P&O</option></select>
         </div>
         <button class="btn btn-pri btn-sm" style="margin-top:8px" onclick="asignarManual('${item.file.id}','${pendFolder.id}')">Asignar</button>
@@ -1044,19 +1046,19 @@ async function asignarManual(fileId,pendFolderId){
   const nombre=document.getElementById('man-nombre-'+fileId)?.value.trim();
   const tipo=document.getElementById('man-tipo-'+fileId)?.value;
   const arm=document.getElementById('man-arm-'+fileId)?.value;
-  if(!nombre||!arm){alert('CompletÃ¡ nombre y armador');return;}
+  if(!nombre||!arm){alert('Complet&aacute; nombre y armador');return;}
   const libFolders=await listFolders(CONFIG.libretas);
   const cedFolders=await listFolders(CONFIG.cedulas);
   const targetFolders=tipo==='libreta'?libFolders:cedFolders;
-  // â† USA LA NUEVA FUNCIÃ“N DE MATCH TAMBIÃ‰N EN MANUAL
+  // &#8592; USA LA NUEVA FUNCI&Oacute;N DE MATCH TAMBI&Eacute;N EN MANUAL
   const targetFolder=findArmadorFolder(arm, targetFolders);
-  if(!targetFolder){alert('No encontrÃ© carpeta para '+arm);return;}
+  if(!targetFolder){alert('No encontr&eacute; carpeta para '+arm);return;}
   const safeName=nombre.replace(/[^A-Z0-9 ]/gi,'_').replace(/\s+/g,'_').toUpperCase()+'.pdf';
   await driveReq(
     `files/${fileId}?addParents=${encodeURIComponent(targetFolder.id)}&removeParents=${encodeURIComponent(pendFolderId)}`,
     {method:'PATCH',body:JSON.stringify({name:safeName})}
   );
-  alert('âœ“ Movido a '+targetFolder.name+': '+safeName);
+  alert('&#10003; Movido a '+targetFolder.name+': '+safeName);
 }
 
 function toggleDB(){
@@ -1080,7 +1082,7 @@ async function loadDB(){
         }
       });
     }
-    renderDB();document.getElementById('db-sub').textContent=`Google Sheets Â· ${DB_DATA.length} registros`;
+    renderDB();document.getElementById('db-sub').textContent=`Google Sheets &middot; ${DB_DATA.length} registros`;
   }catch(e){document.getElementById('db-loading').textContent='Error: '+e.message;}
 }
 
@@ -1088,16 +1090,16 @@ function renderDB(){
   const tbody=document.getElementById('db-tbody');
   tbody.innerHTML=DB_DATA.slice(0,100).map(m=>{
     const st=docStatus(m.vencCI);const days=daysUntil(m.vencCI);
-    const stTxt=st.s==='ok'?'âœ“ OK':st.s==='sv'?'S/V':st.s==='venc'?'ðŸš« VENCIDA':('âš  '+days+'d');
+    const stTxt=st.s==='ok'?'&#10003; OK':st.s==='sv'?'S/V':st.s==='venc'?'&#128683; VENCIDA':('&#9888; '+days+'d');
     const fw=st.s==='venc'?700:400;
-    return '<tr class="rh"><td style="color:var(--white);font-weight:500;white-space:nowrap">'+m.nombre+'</td><td><span class="tag">'+m.cargo+'</span></td><td style="color:var(--fg)">'+m.ci+'</td><td style="color:'+st.c+';font-weight:'+fw+'">'+(m.vencCI||'â€”')+'</td><td style="color:var(--fg)">'+m.libreta+'</td><td><span class="tag tag-bl">'+m.armador+'</span></td><td><span class="status-badge" style="background:'+st.bg+';border:1px solid '+st.b+';color:'+st.c+'">'+stTxt+'</span></td></tr>';
+    return '<tr class="rh"><td style="color:var(--white);font-weight:500;white-space:nowrap">'+m.nombre+'</td><td><span class="tag">'+m.cargo+'</span></td><td style="color:var(--fg)">'+m.ci+'</td><td style="color:'+st.c+';font-weight:'+fw+'">'+(m.vencCI||'&mdash;')+'</td><td style="color:var(--fg)">'+m.libreta+'</td><td><span class="tag tag-bl">'+m.armador+'</span></td><td><span class="status-badge" style="background:'+st.bg+';border:1px solid '+st.b+';color:'+st.c+'">'+stTxt+'</span></td></tr>';
   }).join('');
   if(DB_DATA.length>100)tbody.innerHTML+=`<tr><td colspan="7" style="text-align:center;color:var(--muted);font-size:10px;padding:10px">Mostrando 100 de ${DB_DATA.length}</td></tr>`;
   document.getElementById('db-loading').style.display='none';document.getElementById('db-table-wrap').style.display='block';
 }
 
 function daysUntil(str){
-  if(!str||str.toString().toLowerCase().includes('s.v')||str==='â€”')return null;
+  if(!str||str.toString().toLowerCase().includes('s.v')||str==='&mdash;')return null;
   let d;if(str.includes('/')){const[dd,mm,yyyy]=str.split('/');d=new Date(`${yyyy}-${mm}-${dd}`);}else d=new Date(str);
   if(isNaN(d))return null;return Math.floor((d-TODAY)/(1000*60*60*24));
 }
