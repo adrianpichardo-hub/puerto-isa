@@ -77,7 +77,7 @@ table.preview tr.row-cambio td{background:#f0fff4;}
 
 <nav>
   <div class="nav-brand"><a href="index.html">← Portal</a> ISA PUERTO</div>
-  <div class="nav-tag">GENERADOR SOF v9</div>
+  <div class="nav-tag">SOF DESCARGA MINERAL - NAVIOS</div>
 </nav>
 
 <div class="steps">
@@ -199,6 +199,7 @@ table.preview tr.row-cambio td{background:#f0fff4;}
               <th style="width:88px;">Fecha</th>
               <th style="width:82px;">Día</th>
               <th style="width:100px;">Barcaza</th>
+              <th style="width:90px;">Viaje</th>
               <th style="width:62px;">Desde</th>
               <th style="width:62px;">Hasta</th>
               <th>Observaciones</th>
@@ -340,21 +341,18 @@ function cranePos(crane){
   return 'muelle 5';
 }
 
-// Convert HH:MM (from logs, same day as opDate) → DD/MM/YYYY HH:MM
-// Handles midnight crossing: if inicio > fin in minutes, fin is next day
+// Convert HH:MM + baseISO (YYYY-MM-DD) → DD/MM/YYYY HH:MM
 function timeToFullDT(hhmm, baseISO){
   if(!hhmm||!baseISO) return hhmm||'';
   const[y,mo,d]=baseISO.split('-');
   return `${d}/${mo}/${y} ${hhmm}`;
 }
 
-// Given inicio HH:MM and fin HH:MM on baseISO date, return full DT strings
-// fin gets +1 day if it crossed midnight (fin < inicio in minutes)
+// Resolve inicio/fin as full timestamps, handling midnight crossing
 function resolveIniFin(inicioHH, finHH, baseISO){
   if(!inicioHH) return {ini:'', fin:''};
   const ini = timeToFullDT(inicioHH, baseISO);
   if(!finHH) return {ini, fin:''};
-  // midnight crossing: if fin minutes < inicio minutes, fin is next day
   const finDate = t2m(finHH) < t2m(inicioHH) ? addDays(baseISO, 1) : baseISO;
   const[y,mo,d]=finDate.split('-');
   const fin = `${d}/${mo}/${y} ${finHH}`;
@@ -451,8 +449,8 @@ function buildSOFRows(){
   });
 
   const rows=[];
-  function push(fecha,dia,barcaza,desde,hasta,obs,rowType){
-    rows.push({fecha:fecha||'',dia:dia||'',barcaza:barcaza||'',desde:desde||'',hasta:hasta||'',obs:obs||'',rowType:rowType||'normal'});
+  function push(fecha,dia,barcaza,viaje,desde,hasta,obs,rowType){
+    rows.push({fecha:fecha||'',dia:dia||'',barcaza:barcaza||'',viaje:viaje||'',desde:desde||'',hasta:hasta||'',obs:obs||'',rowType:rowType||'normal'});
   }
 
   const opDate=document.getElementById('opDate').value;
@@ -470,11 +468,29 @@ function buildSOFRows(){
   const authH=dtToTime(authoritiesTime);
   const freeH=dtToTime(freePracticaTime);
 
-  // Initial events
-  push(opDateF,opDay,'',arrH,'',`${convoy} amarrado en ${moorage}.`,'section');
-  push('','','',norH,'','Carta de Alistamiento extendida.','section');
-  push('','','',authH,'','Autoridades y agencia a bordo.','section');
-  push('','','',freeH,'','Libre plática otorgada.','section');
+  // Build a viaje lookup from cantidades (barcaza → viaje)
+  const{items:cantItems}=parseCantidades();
+  const viajeMap={};
+  cantItems.forEach(c=>{ if(c.barcaza&&c.viaje) viajeMap[c.barcaza]=c.viaje; });
+
+  // Helper: get fecha/dia for an event, showing date only on FIRST event of each calendar day
+  // seenDates tracks which ISO dates have already had a fecha/dia shown
+  const seenDates=new Set();
+  // Initial events are all on opDate — mark it as seen right away
+  seenDates.add(opDate);
+
+  function getDateCells(isoDate){
+    if(!isoDate) return {f:'',d:''};
+    if(seenDates.has(isoDate)) return {f:'',d:''};
+    seenDates.add(isoDate);
+    return {f:fmtDateOnly(isoDate), d:dayName(isoDate)};
+  }
+
+  // Initial events (all on opDate — already in seenDates)
+  push(opDateF,opDay,'','',arrH,'',`${convoy} amarrado en ${moorage}.`,'section');
+  push('','','','',norH,'','Carta de Alistamiento extendida.','section');
+  push('','','','',authH,'','Autoridades y agencia a bordo.','section');
+  push('','','','',freeH,'','Libre plática otorgada.','section');
 
   // "Terminal realizando otras operaciones" — desde NOR hasta primer Draft Inicial
   const firstDraftLog=allLogs.find(e=>e.evento.toLowerCase().includes('draft inicial'));
@@ -486,26 +502,25 @@ function buildSOFRows(){
 
     if(norDateISO && firstDraftISO){
       if(norDateISO===firstDraftISO){
-        // Mismo día: una sola fila con horario parcial
-        push(fmtDateOnly(norDateISO),dayName(norDateISO),'',norH2,firstDraftTime,'Terminal realizando otras operaciones.','section');
+        push(fmtDateOnly(norDateISO),dayName(norDateISO),'','',norH2,firstDraftTime,'Terminal realizando otras operaciones.','section');
+        seenDates.add(norDateISO);
       } else {
-        // Resto del día de NOR
-        push(fmtDateOnly(norDateISO),dayName(norDateISO),'',norH2,'23:59','Terminal realizando otras operaciones.','section');
-        // Días completos intermedios
+        push(fmtDateOnly(norDateISO),dayName(norDateISO),'','',norH2,'23:59','Terminal realizando otras operaciones.','section');
+        seenDates.add(norDateISO);
         let cur=addDays(norDateISO,1);
         while(cur<firstDraftISO){
-          push(fmtDateOnly(cur),dayName(cur),'','00:00','23:59','Terminal realizando otras operaciones.','section');
+          push(fmtDateOnly(cur),dayName(cur),'','','00:00','23:59','Terminal realizando otras operaciones.','section');
+          seenDates.add(cur);
           cur=addDays(cur,1);
         }
-        // Inicio del día del primer draft hasta hora del draft
-        push(fmtDateOnly(firstDraftISO),dayName(firstDraftISO),'','00:00',firstDraftTime,'Terminal realizando otras operaciones.','section');
+        push(fmtDateOnly(firstDraftISO),dayName(firstDraftISO),'','','00:00',firstDraftTime,'Terminal realizando otras operaciones.','section');
+        seenDates.add(firstDraftISO);
       }
     }
   }
 
   // Track per-barcaza state
   const barcazaState={};
-  // Track global events already added (to dedup calados/circuito)
   const globalEventsSeen=new Set();
 
   allLogs.forEach(e=>{
@@ -516,33 +531,32 @@ function buildSOFRows(){
 
     if(layer==='skip') return;
 
-    // Duration check for layer 'if15'
     const dur=diffMins(e.desde,e.hasta);
     if(layer==='if15'&&dur<15) return;
 
-    // Init barcaza state
     if(!barcazaState[b]) barcazaState[b]={seenFirstDescarga:false,crane:e.crane,lastDescargaIdx:-1};
     barcazaState[b].crane=e.crane;
 
     const fechaISO=parseLogDate(e.fecha);
-    // Only show date on first event of each date
-    const isFirstOfDate=!rows.some(r=>r.fecha===fmtDateOnly(fechaISO)&&r.rowType!=='section');
+    // Show fecha/dia on first real event of each new day
+    const dc=getDateCells(fechaISO);
+    const viaje=viajeMap[b]||'';
 
     // DRAFT INICIAL
     if(ev.includes('draft inicial')){
-      push('','',b,e.desde,e.hasta,`Draft inicial de barcaza ${b}.`,'draft');
+      push(dc.f,dc.d,b,viaje,e.desde,e.hasta,`Draft inicial de barcaza ${b}.`,'draft');
       return;
     }
 
     // DRAFT FINAL
     if(ev.includes('draft final')){
-      push('','',b,e.desde,e.hasta,`Draft final de barcaza ${b}.`,'draft');
+      push(dc.f,dc.d,b,viaje,e.desde,e.hasta,`Draft final de barcaza ${b}.`,'draft');
       return;
     }
 
-    // CAMBIO DE BARCAZA — always, with inicio and fin
+    // CAMBIO DE BARCAZA
     if(ev.includes('cambio de barcaza')){
-      push('','','',e.desde,e.hasta,'Cambio de barcaza.','cambio');
+      push(dc.f,dc.d,'','',e.desde,e.hasta,'Cambio de barcaza.','cambio');
       return;
     }
 
@@ -551,27 +565,26 @@ function buildSOFRows(){
       if(!barcazaState[b].seenFirstDescarga){
         barcazaState[b].seenFirstDescarga=true;
         barcazaState[b].lastDescargaIdx=rows.length;
-        push('','',b,e.desde,'',`Inicia descarga barcaza ${b} en ${pos}.`,'normal');
+        push(dc.f,dc.d,b,viaje,e.desde,'',`Inicia descarga barcaza ${b} en ${pos}.`,'normal');
       } else {
-        // Will resolve last descarga below
         barcazaState[b].lastDescargaIdx=rows.length;
-        rows.push({fecha:'',dia:'',barcaza:b,desde:e.desde,hasta:'',obs:`__REANUDA__${b}__${pos}`,rowType:'normal'});
+        rows.push({fecha:dc.f,dia:dc.d,barcaza:b,viaje,desde:e.desde,hasta:'',obs:`__REANUDA__${b}__${pos}`,rowType:'normal'});
       }
       return;
     }
 
     // TRACTOR
     if(ev.includes('tractor')){
-      push('','',b,e.desde,e.hasta,`Corta descarga barcaza ${b} por ingreso de tractor.`,'normal');
+      push(dc.f,dc.d,b,viaje,e.desde,e.hasta,`Corta descarga barcaza ${b} por ingreso de tractor.`,'normal');
       return;
     }
 
-    // CALADOS BUQUE — dedup by time key
+    // CALADOS BUQUE — dedup
     if(ev.includes('calados buque')){
       const key=`calados_${e.desde}_${e.hasta}`;
       if(!globalEventsSeen.has(key)){
         globalEventsSeen.add(key);
-        push('','','',e.desde,e.hasta,'Corta descarga por lectura de calados en buque.','general');
+        push(dc.f,dc.d,'','',e.desde,e.hasta,'Corta descarga por lectura de calados en buque.','general');
       }
       return;
     }
@@ -581,23 +594,23 @@ function buildSOFRows(){
       const key=`circuito_${e.desde}_${e.hasta}`;
       if(!globalEventsSeen.has(key)){
         globalEventsSeen.add(key);
-        push('','','',e.desde,e.hasta,'Corta descarga por cambio de circuito.','general');
+        push(dc.f,dc.d,'','',e.desde,e.hasta,'Corta descarga por cambio de circuito.','general');
       }
       return;
     }
 
-    // CLIMÁTICOS (layer if15, already filtered for >15min)
+    // CLIMÁTICOS
     if(ev.includes('lluvia')||ev.includes('viento')||ev.includes('tormenta')||ev.includes('niebla')||ev.includes('clima')){
       const label=e.evento.charAt(0).toUpperCase()+e.evento.slice(1).trim();
-      push('','','',e.desde,e.hasta,`Corta descarga. ${label}.`,'clima');
+      push(dc.f,dc.d,'','',e.desde,e.hasta,`Corta descarga. ${label}.`,'clima');
       return;
     }
 
-    // ANYTHING ELSE with layer if15 (already >15 min)
-    push('','',b,e.desde,e.hasta,e.evento,'normal');
+    // RESTO (layer if15, ya filtrado >15 min)
+    push(dc.f,dc.d,b,viaje,e.desde,e.hasta,e.evento,'normal');
   });
 
-  // Post-process: resolve __REANUDA__ — last one becomes "Finaliza"
+  // Post-process: resolve __REANUDA__ → Reanuda / Finaliza
   const barcazasWithReanuda=[...new Set(rows.filter(r=>r.obs&&r.obs.startsWith('__REANUDA__')).map(r=>r.barcaza))];
   barcazasWithReanuda.forEach(b=>{
     const idxs=rows.map((r,i)=>({r,i})).filter(({r})=>r.barcaza===b&&r.obs&&r.obs.startsWith('__REANUDA__'));
@@ -632,10 +645,12 @@ function renderPreview(){
     const cls={section:'row-section',draft:'row-draft',clima:'row-clima',general:'row-general',cambio:'row-cambio'}[row.rowType]||'';
     if(cls) tr.className=cls;
     const obs=(row.obs||'').replace(/"/g,'&quot;');
+    const viaje=(row.viaje||'').replace(/"/g,'&quot;');
     tr.innerHTML=`
       <td><input value="${row.fecha}" style="width:84px;" oninput="previewRows[${i}].fecha=this.value"/></td>
       <td><input value="${row.dia}" style="width:78px;" oninput="previewRows[${i}].dia=this.value"/></td>
       <td><input value="${row.barcaza}" style="width:92px;" oninput="previewRows[${i}].barcaza=this.value"/></td>
+      <td><input value="${viaje}" style="width:86px;" oninput="previewRows[${i}].viaje=this.value"/></td>
       <td><input value="${row.desde}" style="width:56px;" oninput="previewRows[${i}].desde=this.value"/></td>
       <td><input value="${row.hasta}" style="width:56px;" oninput="previewRows[${i}].hasta=this.value"/></td>
       <td><input value="${obs}" class="wide" oninput="previewRows[${i}].obs=this.value"/></td>
@@ -645,7 +660,7 @@ function renderPreview(){
 }
 function deleteRow(i){previewRows.splice(i,1);renderPreview();}
 function addRowManual(){
-  previewRows.push({fecha:'',dia:'',barcaza:'',desde:'',hasta:'',obs:'',rowType:'normal'});
+  previewRows.push({fecha:'',dia:'',barcaza:'',viaje:'',desde:'',hasta:'',obs:'',rowType:'normal'});
   renderPreview();
   document.getElementById('previewBody').lastElementChild?.scrollIntoView({behavior:'smooth'});
 }
@@ -736,13 +751,13 @@ function generateSOF(d){
   rows.push(["","","","","","","",""]);
   rows.push(["","","","","","","",""]);
   // TABLE HEADER — once only
-  rows.push(["Fecha","Día","Barcaza","Desde","Hasta","Observaciones","Remarks",""]);
+  rows.push(["Fecha","Día","Barcaza","Viaje","Desde","Hasta","Observaciones","Remarks",""]);
   // Events from preview
   d.previewRows.forEach(r=>{
-    rows.push([r.fecha,r.dia,r.barcaza,r.desde,r.hasta,r.obs,'','']);
+    rows.push([r.fecha,r.dia,r.barcaza,r.viaje||'',r.desde,r.hasta,r.obs,'','']);
   });
   const ws=XLSX.utils.aoa_to_sheet(rows);
-  ws['!cols']=[{wch:14},{wch:11},{wch:14},{wch:9},{wch:9},{wch:55},{wch:14},{wch:8}];
+  ws['!cols']=[{wch:14},{wch:11},{wch:14},{wch:14},{wch:9},{wch:9},{wch:55},{wch:14},{wch:8}];
   XLSX.utils.book_append_sheet(wb,ws,"SOF FORMATO MSA - HB");
   const safe=d.convoy.split('+')[0].trim().replace(/[^a-zA-Z0-9_\- ]/g,'');
   XLSX.writeFile(wb,`SOF_${d.opDate}_${safe}.xlsx`);
@@ -757,7 +772,7 @@ function generateCantidades(d){
   rows.push(["","","",fmtNum(total),0,-total,"","","","","","","",""]);
   rows.push(["","#","Barcaza","Cantidad Origen","Descargado por draft","Dif","NOR","Amarre","Inicio","Fin","Tiempo","Viaje","Remolcador","Posición"]);
 
-  // Sort cantidades chronologically by inicio time (earliest discharge first)
+  // Sort chronologically by inicio (earliest discharge first)
   const cantOrdenadas=[...d.cantidades].sort((a,b)=>{
     const ia=d.barcazaTimes[a.barcaza]?.inicio||'';
     const ib=d.barcazaTimes[b.barcaza]?.inicio||'';
@@ -774,7 +789,6 @@ function generateCantidades(d){
     const mins=diffMins(inicioHH,finHH);
     const tiempo=inicioHH&&finHH?minsToHHMM(mins):'';
     const pos=cranePos(info.crane||'');
-    // Format inicio/fin as DD/MM/YYYY HH:MM, resolving midnight crossing
     const {ini:inicioFmt, fin:finFmt}=resolveIniFin(inicioHH,finHH,d.opDate);
     rows.push(["",i+1,c.barcaza,c.cantidad,"",
       -c.cantidad,
@@ -786,15 +800,14 @@ function generateCantidades(d){
   });
 
   const ws=XLSX.utils.aoa_to_sheet(rows);
-  // Styles
   const hSt={font:{bold:true,color:{rgb:"FFFFFF"}},fill:{fgColor:{rgb:"0D1F3C"}},alignment:{horizontal:"center"}};
   const redSt={font:{color:{rgb:"C0392B"}}};
   const boldSt={font:{bold:true}};
   for(let c=1;c<=13;c++){const cell=XLSX.utils.encode_cell({r:3,c});if(ws[cell])ws[cell].s=hSt;}
   const r2d=XLSX.utils.encode_cell({r:2,c:3});const r2f=XLSX.utils.encode_cell({r:2,c:5});
   if(ws[r2d])ws[r2d].s=boldSt;if(ws[r2f])ws[r2f].s=redSt;
-  for(let r=4;r<4+d.cantidades.length;r++){const cell=XLSX.utils.encode_cell({r,c:5});if(ws[cell])ws[cell].s=redSt;}
-  ws['!cols']=[{wch:2},{wch:5},{wch:14},{wch:16},{wch:20},{wch:14},{wch:20},{wch:20},{wch:10},{wch:10},{wch:10},{wch:22},{wch:16},{wch:16}];
+  for(let r=4;r<4+cantOrdenadas.length;r++){const cell=XLSX.utils.encode_cell({r,c:5});if(ws[cell])ws[cell].s=redSt;}
+  ws['!cols']=[{wch:2},{wch:5},{wch:14},{wch:16},{wch:20},{wch:14},{wch:20},{wch:20},{wch:20},{wch:20},{wch:10},{wch:22},{wch:16},{wch:16}];
   XLSX.utils.book_append_sheet(wb,ws,"LHG");
   const safe=d.convoy.split('+')[0].trim().replace(/[^a-zA-Z0-9_\- ]/g,'');
   XLSX.writeFile(wb,`CANTIDADES_${d.opDate}_${safe}.xlsx`);
