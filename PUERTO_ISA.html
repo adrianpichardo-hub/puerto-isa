@@ -332,7 +332,7 @@ td{padding:7px 12px;vertical-align:middle;}
   <!-- PANEL 2 -->
   <div class="panel" id="panel-2">
     <div class="panel-title">Rol de Tripulaci&oacute;n</div>
-    <div class="panel-sub">Sub&iacute; el PDF del rol. La IA extrae nombres, cargos y fechas de nacimiento, y los coteja contra la base.</div>
+    <div class="panel-sub">Sub&iacute; el PDF del rol. La IA extrae los datos y los coteja contra la base &mdash; <strong style="color:var(--accent)">revis&aacute; y confirm&aacute; antes de continuar.</strong></div>
     <div class="info-box-yellow">Carpeta: <span id="folder-remind" style="font-weight:700"></span></div>
     <div class="dropzone" id="rol-dropzone">
       <input type="file" accept=".pdf,.PDF" id="rol-file" onchange="onRolFileChange(this)"/>
@@ -801,7 +801,28 @@ async function parseRol(){
     var text = data.content.map(function(c){return c.text||'';}).join('');
     var jsonMatch = text.match(/\{[\s\S]*\}/);
     if(!jsonMatch) throw new Error('No se encontro JSON en la respuesta');
-    var parsed = JSON.parse(jsonMatch[0]);
+    // Sanitizar el JSON antes de parsear: limpiar caracteres de control
+    // que el OCR puede inyectar dentro de strings (tabs, newlines, nulls, etc.)
+    var rawJson = jsonMatch[0]
+      .replace(/[\u0000-\u001F\u007F]/g, function(ch){
+        // Preservar escapes validos de JSON
+        var safe = {'\n':'\\n','\r':'\\r','\t':'\\t'};
+        return safe[ch] !== undefined ? safe[ch] : '';
+      })
+      // Doble backslash suelto que no sea escape valido
+      .replace(/\\([^"\\/bfnrtu])/g, '$1');
+    var parsed;
+    try {
+      parsed = JSON.parse(rawJson);
+    } catch(parseErr) {
+      // Segundo intento: extraer solo el bloque crew con regex manual
+      addLog('parse-lines','JSON con errores, intentando recuperacion...','warn');
+      var crewMatch = rawJson.match(/"crew"\s*:\s*\[[\s\S]*?\]\s*(?=,|\})/);
+      var shipMatch = rawJson.match(/"ship"\s*:\s*\{[^}]*\}/);
+      if(!crewMatch) throw new Error('No se pudo recuperar el JSON: '+parseErr.message);
+      var safeJson = '{'+(shipMatch?shipMatch[0]+',':'')+crewMatch[0]+'}';
+      parsed = JSON.parse(safeJson);
+    }
 
     if(parsed.ship && parsed.ship.nombre){
       PARSED_SHIP = parsed.ship;
@@ -857,13 +878,14 @@ async function parseRol(){
     addLog('parse-lines','--- '+CREW.length+' tripulantes | '+CREW.filter(function(x){return x.inDB;}).length+' en base | '+ALERTS.length+' alertas ---','ok');
     renderAlerts('alerts-wrap', ALERTS);
     renderCrewTable();
-    document.getElementById('step2-next').style.display='inline-flex';
+    // step2-next y markDone(2) se habilitan en confirmCrewReview()
+    // para forzar revisión humana antes de continuar
     if(ALERTS.length>0){
       var dot = document.createElement('div');
       dot.className='alert-dot'; dot.id='tab2-dot';
-      document.getElementById('tab-2').appendChild(dot);
+      if(!document.getElementById('tab2-dot'))
+        document.getElementById('tab-2').appendChild(dot);
     }
-    markDone(2);
 
   }catch(e){
     addLog('parse-lines','ERROR: '+e.message,'err');
@@ -891,15 +913,78 @@ function renderAlerts(containerId, alerts){
   wrap.innerHTML=''; wrap.appendChild(banner);
 }
 
+// ============================================================
+// REVISION DE TRIPULACION — tabla editable pre-ROL
+// ============================================================
+var CARGO_LIST = ['CAPITAN','PRACTICO','PATRON BAQUEANO','JEFE DE MAQUINAS',
+  '2DO MAQUINISTA','ENGRASADOR','CONTRAMAESTRE','MARINERO','COCINERO'];
+
+function _cargoOpts(current){
+  return CARGO_LIST.map(function(c){
+    return '<option value="'+c+'"'+(norm(c)===norm(current||'')?' selected':'')+'>'+c+'</option>';
+  }).join('');
+}
+
+function _reviewRowHtml(m, i){
+  var st = docStatus(m.vencCI);
+  var leftColor = m.inDB ? 'rgba(34,197,94,.35)' : 'rgba(0,180,216,.35)';
+  var vencColor = (st.s==='venc'||st.s==='crit') ? 'var(--red)' : st.s==='warn' ? 'var(--orange)' : 'inherit';
+  var dbBadge   = m.inDB
+    ? '<span style="font-size:8px;color:var(--green)">&#10003; DB</span>'
+    : '<span style="font-size:8px;color:var(--accent)">NUEVO</span>';
+  var matchWarn = (m.inDB && m.matchMethod==='solo nombre')
+    ? '<div style="font-size:8px;color:var(--orange)">solo nombre</div>' : '';
+  return '<tr data-rid="'+i+'" style="border-left:3px solid '+leftColor+'">'
+    +'<td style="color:var(--muted);font-size:10px;width:28px">'+(i+1)+'</td>'
+    +'<td><input type="text" id="rv-nombre-'+i+'" value="'+(m.nombre||'').replace(/"/g,'&quot;').replace(/'/g,'&#39;')+'" style="min-width:180px;font-weight:500"/></td>'
+    +'<td><select id="rv-cargo-'+i+'"><option value="">--</option>'+_cargoOpts(m.cargo)+'</select></td>'
+    +'<td><input type="text" id="rv-fnac-'+i+'" value="'+(m.fechaNac||'')+'" placeholder="DD/MM/AAAA" style="width:96px"/></td>'
+    +'<td><input type="text" id="rv-ci-'+i+'" value="'+(m.ci||'')+'" style="width:108px"/></td>'
+    +'<td><input type="text" id="rv-venci-'+i+'" value="'+(m.vencCI||'')+'" placeholder="DD/MM/AAAA" style="width:96px;color:'+vencColor+'"/></td>'
+    +'<td><input type="text" id="rv-lib-'+i+'" value="'+(m.libreta||'')+'" style="width:82px"/></td>'
+    +'<td style="text-align:center">'+dbBadge+matchWarn+'</td>'
+    +'<td><button onclick="deleteCrewRow('+i+')" style="background:transparent;border:1px solid rgba(239,68,68,.3);color:var(--red);border-radius:4px;cursor:pointer;padding:2px 8px;font-size:11px;font-family:Barlow,sans-serif;line-height:1">&#x2715;</button></td>'
+    +'</tr>';
+}
+
 function renderCrewTable(){
   var wrap = document.getElementById('crew-table-wrap');
-  wrap.style.display='block';
+  wrap.style.display = 'block';
+
+  // — Tabla editable —
+  var tableSection =
+    '<div style="background:rgba(0,180,216,.05);border:1px solid rgba(0,180,216,.2);border-radius:8px;padding:12px 14px;margin-bottom:12px">'
+    +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">'
+    +'<div style="font-size:11px;font-weight:700;color:var(--white);letter-spacing:.04em;text-transform:uppercase">'
+    +'Revisi\u00f3n de Tripulaci\u00f3n &mdash; <span style="color:var(--accent)">'+CREW.length+' tripulantes</span></div>'
+    +'<span style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Edit\u00e1 · confirm\u00e1 · reci\u00e9n entonces continu\u00e1</span>'
+    +'</div>'
+    +'<div style="overflow-x:auto"><div class="table-wrap" style="margin-bottom:0">'
+    +'<table><thead><tr>'
+    +'<th>#</th><th>Nombre <span style="font-weight:300;color:rgba(255,255,255,.3)">APELLIDO, NOMBRE</span></th>'
+    +'<th>Cargo</th><th>Fecha Nac.</th><th>CI N\u00b0</th><th>Venc. CI</th><th>Libreta</th><th>DB</th><th></th>'
+    +'</tr></thead>'
+    +'<tbody id="review-tbody">'
+    +CREW.map(function(m,i){return _reviewRowHtml(m,i);}).join('')
+    +'</tbody></table></div></div>'
+    +'<div style="display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap">'
+    +'<button class="btn btn-gh btn-sm" onclick="addCrewRow()" style="border-color:rgba(0,180,216,.3);color:var(--accent)">+ Agregar tripulante</button>'
+    +'<span style="font-size:9px;color:var(--muted)">Verde = en base de datos &nbsp;|&nbsp; Azul = nuevo</span>'
+    +'</div>'
+    +'<div style="margin-top:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">'
+    +'<button class="btn btn-gn" onclick="confirmCrewReview()" id="confirm-crew-btn">\u2713 Confirmar tripulaci\u00f3n</button>'
+    +'<span id="review-status" style="font-size:11px;color:var(--muted)">Confirm\u00e1 para habilitar el siguiente paso</span>'
+    +'</div>'
+    +'</div>';
+
+  // — Sección nuevos (agregar a base) — separada de la revisión del ROL
   var nuevos = CREW.filter(function(m){return !m.inDB;});
-  var editSection = '';
-  if(nuevos.length>0){
-    editSection = '<div style="background:rgba(0,180,216,.06);border:1px solid rgba(0,180,216,.2);border-radius:8px;padding:14px 16px;margin-bottom:12px">'
-      +'<div style="font-size:11px;font-weight:600;color:var(--accent);text-transform:uppercase;margin-bottom:10px">'
-      +nuevos.length+' tripulante(s) nuevo(s) &mdash; complet\u00e1 para agregar a la base</div>'
+  var nuevosSection = '';
+  if(nuevos.length > 0){
+    nuevosSection =
+      '<div style="background:rgba(0,180,216,.04);border:1px solid rgba(0,180,216,.15);border-radius:8px;padding:12px 14px;margin-bottom:12px">'
+      +'<div style="font-size:10px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px">'
+      +'\u2193 Opcional: agreg\u00e1 tripulantes nuevos a la base de datos</div>'
       +nuevos.map(function(m){
         return '<div style="background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:8px" id="nuevo-card-'+m.num+'">'
           +'<div style="font-size:12px;font-weight:600;color:var(--white);margin-bottom:10px">'+m.nombre+'</div>'
@@ -920,25 +1005,104 @@ function renderCrewTable(){
       }).join('')+'</div>';
   }
 
-  var rows = CREW.map(function(m){
-    var st   = docStatus(m.vencCI);
-    var days = daysUntil(m.vencCI);
-    var badgeTxt = st.s==='ok'?'OK':st.s==='sv'?'S/V':st.s==='venc'?'VENC':st.s==='warn'?('ALERTA '+days+'d'):('CRIT '+days+'d');
-    var badge = '<span class="status-badge" style="background:'+st.bg+';border:1px solid '+st.b+';color:'+st.c+'">'+badgeTxt+'</span>';
-    var newTag = !m.inDB?'<span class="status-badge" style="background:rgba(0,180,216,.12);border:1px solid rgba(0,180,216,.25);color:var(--accent);margin-left:4px;font-size:8px">NUEVO</span>':'';
-    var warnTag = (m.inDB&&m.matchMethod==='solo nombre')?'<span style="font-size:8px;color:var(--orange);margin-left:4px">solo nombre</span>':'';
-    return '<tr class="rh"><td style="color:var(--muted)">'+m.num+'</td>'
-      +'<td style="color:var(--white);font-weight:500;white-space:nowrap">'+m.nombre+newTag+warnTag+'</td>'
-      +'<td><span class="tag">'+m.cargo+'</span></td>'
-      +'<td style="color:var(--fg)">'+(m.ci||'&mdash;')+'</td>'
-      +'<td style="color:var(--fg)">'+(m.fechaNac||'&mdash;')+'</td>'
-      +'<td style="color:'+st.c+';font-weight:'+(st.s==='venc'?700:400)+'">'+(m.vencCI||'&mdash;')+'</td>'
-      +'<td>'+badge+'</td></tr>';
-  }).join('');
+  wrap.innerHTML = tableSection + nuevosSection;
+}
 
-  wrap.innerHTML = editSection
-    +'<div class="table-wrap"><table><thead><tr><th>#</th><th>Nombre</th><th>Cargo</th><th>CI</th><th>Nac.</th><th>Venc.CI</th><th>Estado</th></tr></thead>'
-    +'<tbody>'+rows+'</tbody></table></div>';
+// ============================================================
+// AGREGAR FILA — tabla de revisión
+// ============================================================
+function addCrewRow(){
+  var tbody = document.getElementById('review-tbody');
+  if(!tbody) return;
+  var i = tbody.querySelectorAll('tr[data-rid]').length;
+  var html = '<tr data-rid="'+i+'" style="border-left:3px solid rgba(0,180,216,.4)">'
+    +'<td style="color:var(--muted);font-size:10px;width:28px">'+(i+1)+'</td>'
+    +'<td><input type="text" id="rv-nombre-'+i+'" value="" placeholder="APELLIDO, NOMBRE" style="min-width:180px;font-weight:500"/></td>'
+    +'<td><select id="rv-cargo-'+i+'"><option value="">--</option>'+_cargoOpts('MARINERO')+'</select></td>'
+    +'<td><input type="text" id="rv-fnac-'+i+'" value="" placeholder="DD/MM/AAAA" style="width:96px"/></td>'
+    +'<td><input type="text" id="rv-ci-'+i+'" value="" style="width:108px"/></td>'
+    +'<td><input type="text" id="rv-venci-'+i+'" value="" placeholder="DD/MM/AAAA" style="width:96px"/></td>'
+    +'<td><input type="text" id="rv-lib-'+i+'" value="" style="width:82px"/></td>'
+    +'<td style="text-align:center"><span style="font-size:8px;color:var(--accent)">NUEVO</span></td>'
+    +'<td><button onclick="deleteCrewRow('+i+')" style="background:transparent;border:1px solid rgba(239,68,68,.3);color:var(--red);border-radius:4px;cursor:pointer;padding:2px 8px;font-size:11px;font-family:Barlow,sans-serif;line-height:1">&#x2715;</button></td>'
+    +'</tr>';
+  tbody.insertAdjacentHTML('beforeend', html);
+}
+
+// ============================================================
+// ELIMINAR FILA — tabla de revisión
+// ============================================================
+function deleteCrewRow(i){
+  var row = document.querySelector('#review-tbody tr[data-rid="'+i+'"]');
+  if(!row) return;
+  var nombreInput = document.getElementById('rv-nombre-'+i);
+  if(nombreInput) nombreInput.value = '';
+  row.style.opacity    = '0.3';
+  row.style.pointerEvents = 'none';
+  row.style.textDecoration = 'line-through';
+}
+
+// ============================================================
+// CONFIRMAR TRIPULACION — bloquea CREW para el ROL
+// ============================================================
+function confirmCrewReview(){
+  var tbody = document.getElementById('review-tbody');
+  if(!tbody){ alert('Error: tabla no encontrada'); return; }
+
+  var rows = tbody.querySelectorAll('tr[data-rid]');
+  var newCrew = [];
+
+  rows.forEach(function(row){
+    var i       = parseInt(row.getAttribute('data-rid'));
+    var nombre  = ((document.getElementById('rv-nombre-'+i)||{}).value||'').trim().toUpperCase();
+    if(!nombre) return; // fila eliminada o vacía
+    var cargo   = (document.getElementById('rv-cargo-'+i)||{}).value||'';
+    var fnac    = (document.getElementById('rv-fnac-'+i)||{}).value||'';
+    var ci      = (document.getElementById('rv-ci-'+i)||{}).value||'';
+    var venci   = (document.getElementById('rv-venci-'+i)||{}).value||'';
+    var lib     = (document.getElementById('rv-lib-'+i)||{}).value||'';
+    var orig    = CREW[i]||{};
+    newCrew.push(Object.assign({}, orig, {
+      nombre:nombre, cargo:cargo, fechaNac:fnac, ci:ci, vencCI:venci, libreta:lib,
+      inDB: orig.inDB||false
+    }));
+  });
+
+  if(newCrew.length === 0){ alert('No hay tripulantes v\u00e1lidos para confirmar'); return; }
+
+  // Re-ordenar por cargo y renumerar
+  newCrew.sort(function(a,b){ return cargoRank(a.cargo)-cargoRank(b.cargo); });
+  newCrew.forEach(function(m,i){ m.num = i+1; });
+  CREW = newCrew;
+
+  // Recalcular alertas con los datos editados
+  ALERTS = [];
+  CREW.forEach(function(m){
+    var st = docStatus(m.vencCI);
+    if(st.s==='venc')       ALERTS.push({level:'BLOQUEANTE', name:m.nombre, msg:'CI VENCIDA el '+m.vencCI});
+    else if(st.s==='crit')  ALERTS.push({level:'CRITICO',    name:m.nombre, msg:'CI vence en '+daysUntil(m.vencCI)+' dias ('+m.vencCI+')'});
+    else if(st.s==='warn')  ALERTS.push({level:'ALERTA',     name:m.nombre, msg:'CI vence en '+daysUntil(m.vencCI)+' dias ('+m.vencCI+')'});
+    if(!m.inDB && DB_DATA.length>0) ALERTS.push({level:'NUEVO', name:m.nombre, msg:'No est\u00e1 en la base de datos'});
+  });
+  renderAlerts('alerts-wrap', ALERTS);
+
+  // Feedback visual — botón y status
+  var btn = document.getElementById('confirm-crew-btn');
+  if(btn){
+    btn.textContent = '\u2713 Confirmado \u2014 '+CREW.length+' tripulantes';
+    btn.style.opacity = '0.75';
+    btn.style.cursor  = 'default';
+    btn.disabled = true;
+  }
+  var statusEl = document.getElementById('review-status');
+  if(statusEl){
+    statusEl.textContent = 'ROL listo \u00b7 pod\u00e9s continuar al Paso 3';
+    statusEl.style.color = 'var(--green)';
+  }
+
+  // Habilitar "Continuar → Documentos"
+  document.getElementById('step2-next').style.display = 'inline-flex';
+  markDone(2);
 }
 
 async function agregarAlSheet(num){
