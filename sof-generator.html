@@ -340,6 +340,27 @@ function cranePos(crane){
   return 'muelle 5';
 }
 
+// Convert HH:MM (from logs, same day as opDate) → DD/MM/YYYY HH:MM
+// Handles midnight crossing: if inicio > fin in minutes, fin is next day
+function timeToFullDT(hhmm, baseISO){
+  if(!hhmm||!baseISO) return hhmm||'';
+  const[y,mo,d]=baseISO.split('-');
+  return `${d}/${mo}/${y} ${hhmm}`;
+}
+
+// Given inicio HH:MM and fin HH:MM on baseISO date, return full DT strings
+// fin gets +1 day if it crossed midnight (fin < inicio in minutes)
+function resolveIniFin(inicioHH, finHH, baseISO){
+  if(!inicioHH) return {ini:'', fin:''};
+  const ini = timeToFullDT(inicioHH, baseISO);
+  if(!finHH) return {ini, fin:''};
+  // midnight crossing: if fin minutes < inicio minutes, fin is next day
+  const finDate = t2m(finHH) < t2m(inicioHH) ? addDays(baseISO, 1) : baseISO;
+  const[y,mo,d]=finDate.split('-');
+  const fin = `${d}/${mo}/${y} ${finHH}`;
+  return {ini, fin};
+}
+
 /* ══ PARSE LOGS ══ */
 function parseLogs(text,crane){
   return text.split('\n').map(l=>l.trim()).filter(Boolean).map(l=>{
@@ -736,18 +757,30 @@ function generateCantidades(d){
   rows.push(["","","",fmtNum(total),0,-total,"","","","","","","",""]);
   rows.push(["","#","Barcaza","Cantidad Origen","Descargado por draft","Dif","NOR","Amarre","Inicio","Fin","Tiempo","Viaje","Remolcador","Posición"]);
 
-  d.cantidades.forEach((c,i)=>{
+  // Sort cantidades chronologically by inicio time (earliest discharge first)
+  const cantOrdenadas=[...d.cantidades].sort((a,b)=>{
+    const ia=d.barcazaTimes[a.barcaza]?.inicio||'';
+    const ib=d.barcazaTimes[b.barcaza]?.inicio||'';
+    if(!ia&&!ib) return 0;
+    if(!ia) return 1;
+    if(!ib) return -1;
+    return t2m(ia)-t2m(ib);
+  });
+
+  cantOrdenadas.forEach((c,i)=>{
     const info=d.barcazaTimes[c.barcaza]||{};
-    const inicio=info.inicio||'';
-    const fin=info.fin||'';
-    const mins=diffMins(inicio,fin);
-    const tiempo=inicio&&fin?minsToHHMM(mins):'';
+    const inicioHH=info.inicio||'';
+    const finHH=info.fin||'';
+    const mins=diffMins(inicioHH,finHH);
+    const tiempo=inicioHH&&finHH?minsToHHMM(mins):'';
     const pos=cranePos(info.crane||'');
+    // Format inicio/fin as DD/MM/YYYY HH:MM, resolving midnight crossing
+    const {ini:inicioFmt, fin:finFmt}=resolveIniFin(inicioHH,finHH,d.opDate);
     rows.push(["",i+1,c.barcaza,c.cantidad,"",
       -c.cantidad,
       fmtDT(d.norTimeRaw),
       d.arrivalTime,
-      inicio,fin,tiempo,
+      inicioFmt,finFmt,tiempo,
       c.viaje||'',d.tugboat,pos
     ]);
   });
