@@ -983,20 +983,30 @@ async function procesarPendientes(){
       if(!nombre||parsed.confianza==='baja'){addLine('  No identificado con certeza â€” manual','warn');manualItems.push({file:f,sugerido:parsed});continue;}
       addLine('  Identificado: '+nombre+' ('+tipo+')','ok');
 
-      // Determinar armador: del selector, o de la DB si estÃ¡ disponible
-      let armFinal=armIA;
-      if(!armFinal){
+      // ARMADOR: si el usuario lo eligiÃ³ en el selector, usarlo SIEMPRE
+      // Solo buscar en DB si el selector estÃ¡ en "auto"
+      let armFinal = '';
+      if(armadorDefault !== 'auto') {
+        armFinal = armadorDefault;
+        addLine('  Armador (selector): '+armFinal,'ok');
+      } else {
         const dbMatch=findInDB(nombre);
-        if(dbMatch&&dbMatch.armador) armFinal=dbMatch.armador;
+        if(dbMatch&&dbMatch.armador){
+          armFinal=dbMatch.armador;
+          addLine('  Armador (DB): '+armFinal,'ok');
+        } else {
+          addLine('  Armador no detectado â€” manual','warn');
+          manualItems.push({file:f,nombre,tipo,sugerido:parsed});
+          continue;
+        }
       }
 
       const targetFolders=tipo==='libreta'?libFolders:cedFolders;
-
-      // â† USA LA NUEVA FUNCIÃ“N DE MATCH
-      let targetFolder = armFinal ? findArmadorFolder(armFinal, targetFolders) : null;
+      let targetFolder = findArmadorFolder(armFinal, targetFolders);
 
       if(!targetFolder){
-        addLine('  No encontrÃ© carpeta para armador "'+armFinal+'" â€” manual','warn');
+        addLine('  No encontrÃ© carpeta para "'+armFinal+'" en Drive â€” manual','warn');
+        addLine('  Carpetas disponibles: '+targetFolders.map(f=>f.name).join(', '),'warn');
         manualItems.push({file:f,nombre,tipo,sugerido:parsed});
         continue;
       }
