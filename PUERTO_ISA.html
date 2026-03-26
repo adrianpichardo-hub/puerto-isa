@@ -805,26 +805,21 @@ async function parseRol(){
     var text = data.content.map(function(c){return c.text||'';}).join('');
     var jsonMatch = text.match(/\{[\s\S]*\}/);
     if(!jsonMatch) throw new Error('No se encontro JSON en la respuesta');
-    // Sanitizar el JSON antes de parsear: limpiar caracteres de control
-    // que el OCR puede inyectar dentro de strings (tabs, newlines, nulls, etc.)
+    // Sanitizar: eliminar solo chars de control ilegales (NO tocar \n \r \t — son whitespace JSON valido)
     var rawJson = jsonMatch[0]
-      .replace(/[\u0000-\u001F\u007F]/g, function(ch){
-        // Preservar escapes validos de JSON
-        var safe = {'\n':'\\n','\r':'\\r','\t':'\\t'};
-        return safe[ch] !== undefined ? safe[ch] : '';
-      })
-      // Doble backslash suelto que no sea escape valido
-      .replace(/\\([^"\\/bfnrtu])/g, '$1');
+      .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, '')  // chars ilegales, preserva \t \n \r
+      .replace(/,(\s*[}\]])/g, '$1')                                     // trailing commas
+      .replace(/\\([^"\\/bfnrtu0-9])/g, '$1');                          // backslashes sueltos
     var parsed;
     try {
       parsed = JSON.parse(rawJson);
     } catch(parseErr) {
-      // Segundo intento: extraer solo el bloque crew con regex manual
       addLog('parse-lines','JSON con errores, intentando recuperacion...','warn');
-      var crewMatch = rawJson.match(/"crew"\s*:\s*\[[\s\S]*?\]\s*(?=,|\})/);
-      var shipMatch = rawJson.match(/"ship"\s*:\s*\{[^}]*\}/);
+      // crew: greedy para capturar objetos anidados correctamente
+      var crewMatch = rawJson.match(/"crew"\s*:\s*(\[[\s\S]*\])/);
+      var shipMatch = rawJson.match(/"ship"\s*:\s*(\{[^}]*\})/);
       if(!crewMatch) throw new Error('No se pudo recuperar el JSON: '+parseErr.message);
-      var safeJson = '{'+(shipMatch?shipMatch[0]+',':'')+crewMatch[0]+'}';
+      var safeJson = '{'+(shipMatch?'"ship":'+shipMatch[1]+',':'')+'"crew":'+crewMatch[1]+'}';
       parsed = JSON.parse(safeJson);
     }
 
