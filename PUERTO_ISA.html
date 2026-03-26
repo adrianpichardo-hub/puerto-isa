@@ -519,7 +519,8 @@ function handleAuth(){
 
 function tokenExpired(){
   TOKEN = null;
-  sessionStorage.removeItem('puerto_token');
+  localStorage.removeItem('puerto_token');
+  localStorage.removeItem('puerto_token_ts');
   document.getElementById('login-screen').style.display = 'flex';
   document.getElementById('app').style.display = 'none';
   var n = document.getElementById('login-note');
@@ -534,15 +535,18 @@ window.addEventListener('load', function(){
     var t = new URLSearchParams(hash.substring(1)).get('access_token');
     if(t){
       TOKEN = t;
-      sessionStorage.setItem('puerto_token', t);
+      localStorage.setItem('puerto_token', t);
+      localStorage.setItem('puerto_token_ts', Date.now().toString());
       history.replaceState(null,'',window.location.pathname);
       showApp();
       getUserEmail();
       return;
     }
   }
-  var saved = sessionStorage.getItem('puerto_token');
-  if(saved){
+  var saved = localStorage.getItem('puerto_token');
+  var savedTs = parseInt(localStorage.getItem('puerto_token_ts')||'0');
+  var tokenAge = Date.now() - savedTs;
+  if(saved && tokenAge < 55*60*1000){
     TOKEN = saved;
     fetch('https://www.googleapis.com/oauth2/v2/userinfo',{headers:{'Authorization':'Bearer '+TOKEN}})
       .then(function(r){
@@ -552,7 +556,7 @@ window.addEventListener('load', function(){
       .then(function(d){
         if(d){ showApp(); var el=document.getElementById('user-email'); if(el) el.textContent=d.email||'Conectado'; }
       })
-      .catch(function(){ sessionStorage.removeItem('puerto_token'); TOKEN=null; });
+      .catch(function(){ localStorage.removeItem('puerto_token'); localStorage.removeItem('puerto_token_ts'); TOKEN=null; });
   }
 });
 
@@ -925,6 +929,16 @@ function _cargoOpts(current){
   }).join('');
 }
 
+// ============================================================
+// FORMATO FECHA DD/MM/AAAA — auto-insert slashes
+// ============================================================
+function fmtFecha(input){
+  var v = input.value.replace(/\D/g,'').substring(0,8);
+  if(v.length>=5)      input.value = v.substring(0,2)+'/'+v.substring(2,4)+'/'+v.substring(4);
+  else if(v.length>=3) input.value = v.substring(0,2)+'/'+v.substring(2);
+  else                 input.value = v;
+}
+
 function _reviewRowHtml(m, i){
   var st = docStatus(m.vencCI);
   var leftColor = m.inDB ? 'rgba(34,197,94,.35)' : 'rgba(0,180,216,.35)';
@@ -937,10 +951,10 @@ function _reviewRowHtml(m, i){
   return '<tr data-rid="'+i+'" style="border-left:3px solid '+leftColor+'">'
     +'<td style="color:var(--muted);font-size:10px;width:28px">'+(i+1)+'</td>'
     +'<td><input type="text" id="rv-nombre-'+i+'" value="'+(m.nombre||'').replace(/"/g,'&quot;').replace(/'/g,'&#39;')+'" style="min-width:180px;font-weight:500"/></td>'
-    +'<td><select id="rv-cargo-'+i+'"><option value="">--</option>'+_cargoOpts(m.cargo)+'</select></td>'
-    +'<td><input type="text" id="rv-fnac-'+i+'" value="'+(m.fechaNac||'')+'" placeholder="DD/MM/AAAA" style="width:96px"/></td>'
+    +'<td><select id="rv-cargo-'+i+'" style="min-width:175px"><option value="">--</option>'+_cargoOpts(m.cargo)+'</select></td>'
+    +'<td><input type="text" id="rv-fnac-'+i+'" value="'+(m.fechaNac||'')+'" placeholder="DD/MM/AAAA" maxlength="10" oninput="fmtFecha(this)" style="width:100px"/></td>'
     +'<td><input type="text" id="rv-ci-'+i+'" value="'+(m.ci||'')+'" style="width:108px"/></td>'
-    +'<td><input type="text" id="rv-venci-'+i+'" value="'+(m.vencCI||'')+'" placeholder="DD/MM/AAAA" style="width:96px;color:'+vencColor+'"/></td>'
+    +'<td><input type="text" id="rv-venci-'+i+'" value="'+(m.vencCI||'')+'" placeholder="DD/MM/AAAA" maxlength="10" oninput="fmtFecha(this)" style="width:100px;color:'+vencColor+'"/></td>'
     +'<td><input type="text" id="rv-lib-'+i+'" value="'+(m.libreta||'')+'" style="width:82px"/></td>'
     +'<td style="text-align:center">'+dbBadge+matchWarn+'</td>'
     +'<td><button onclick="deleteCrewRow('+i+')" style="background:transparent;border:1px solid rgba(239,68,68,.3);color:var(--red);border-radius:4px;cursor:pointer;padding:2px 8px;font-size:11px;font-family:Barlow,sans-serif;line-height:1">&#x2715;</button></td>'
@@ -1018,10 +1032,10 @@ function addCrewRow(){
   var html = '<tr data-rid="'+i+'" style="border-left:3px solid rgba(0,180,216,.4)">'
     +'<td style="color:var(--muted);font-size:10px;width:28px">'+(i+1)+'</td>'
     +'<td><input type="text" id="rv-nombre-'+i+'" value="" placeholder="APELLIDO, NOMBRE" style="min-width:180px;font-weight:500"/></td>'
-    +'<td><select id="rv-cargo-'+i+'"><option value="">--</option>'+_cargoOpts('MARINERO')+'</select></td>'
-    +'<td><input type="text" id="rv-fnac-'+i+'" value="" placeholder="DD/MM/AAAA" style="width:96px"/></td>'
+    +'<td><select id="rv-cargo-'+i+'" style="min-width:175px"><option value="">--</option>'+_cargoOpts('MARINERO')+'</select></td>'
+    +'<td><input type="text" id="rv-fnac-'+i+'" value="" placeholder="DD/MM/AAAA" maxlength="10" oninput="fmtFecha(this)" style="width:100px"/></td>'
     +'<td><input type="text" id="rv-ci-'+i+'" value="" style="width:108px"/></td>'
-    +'<td><input type="text" id="rv-venci-'+i+'" value="" placeholder="DD/MM/AAAA" style="width:96px"/></td>'
+    +'<td><input type="text" id="rv-venci-'+i+'" value="" placeholder="DD/MM/AAAA" maxlength="10" oninput="fmtFecha(this)" style="width:100px"/></td>'
     +'<td><input type="text" id="rv-lib-'+i+'" value="" style="width:82px"/></td>'
     +'<td style="text-align:center"><span style="font-size:8px;color:var(--accent)">NUEVO</span></td>'
     +'<td><button onclick="deleteCrewRow('+i+')" style="background:transparent;border:1px solid rgba(239,68,68,.3);color:var(--red);border-radius:4px;cursor:pointer;padding:2px 8px;font-size:11px;font-family:Barlow,sans-serif;line-height:1">&#x2715;</button></td>'
