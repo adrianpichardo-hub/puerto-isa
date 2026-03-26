@@ -2,8 +2,9 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ISA Próximas Operaciones Nueva Palmira</title>
+<title>ISA - Proximas Operaciones Nueva Palmira</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -144,23 +145,23 @@ tbody td{padding:8px 12px;vertical-align:middle;}
   <div class="logo-wrap">
     <div class="logo-isa">ISA</div>
     <div class="logo-sub">
-      <span class="logo-name">Agentes MarÃ­timos</span>
+      <span class="logo-name">Agentes Maritimos</span>
       <span class="logo-tag">Exceeding expectations</span>
     </div>
   </div>
   <div class="header-right">
     <div class="status-dot"><div class="dot"></div>En vivo</div>
     <span class="last-upd" id="last-upd"></span>
-    <button class="refresh-btn" onclick="loadAll()" id="refresh-btn"><span class="icon">â†»</span> Actualizar</button>
-    <a href="index.html" class="back-link">â† Portal</a>
+    <button class="refresh-btn" onclick="loadAll()" id="refresh-btn"><span class="icon">_</span> Actualizar</button>
+    <a href="index.html" class="back-link">- Portal</a>
   </div>
 </div>
 
 <!-- TITLE BAR -->
 <div class="title-bar">
   <div>
-    <div class="page-title">Nueva Palmira Próximas Operaciones</div>
-    <div class="page-sub">Datos en tiempo real Â· Google Sheets</div>
+    <div class="page-title">Nueva Palmira - Proximas Operaciones</div>
+    <div class="page-sub">Datos en tiempo real - Google Sheets</div>
   </div>
   <input class="search-input" type="text" id="search" placeholder="Buscar buque o remolcador..." oninput="applySearch()">
 </div>
@@ -168,10 +169,10 @@ tbody td{padding:8px 12px;vertical-align:middle;}
 <!-- TABS -->
 <div class="tabs-bar">
   <button class="tab-btn active" onclick="switchTab('buques')" id="tab-buques">
-    ðŸš¢ Buques <span class="tab-count" id="cnt-buques">â€”</span>
+    Buques <span class="tab-count" id="cnt-buques">-</span>
   </button>
   <button class="tab-btn" onclick="switchTab('fluvial')" id="tab-fluvial">
-    ðŸ›³ï¸ Fluvial <span class="tab-count" id="cnt-fluvial">â€”</span>
+    Fluvial <span class="tab-count" id="cnt-fluvial">-</span>
   </button>
 </div>
 
@@ -203,7 +204,6 @@ const SHEET_ID = '1qiVGOMETa9z0mDuJAVR-cl0vlL-CV7gUxz1WJ7coG5M';
 const GID_BUQUES  = '1062912056';
 const GID_FLUVIAL = '793637404';
 
-// ===== STORAGE KEYS =====
 const STORAGE_KEY_BUQUES = 'isa_finalizados_buques';
 const STORAGE_KEY_FLUVIAL = 'isa_finalizados_fluvial';
 
@@ -227,108 +227,75 @@ function parseSheet(text){
   return text.split('\n').map(l=>splitLine(l));
 }
 
-// ===== PARSING ROBUSTO DE FECHAS =====
-// Entiende: DD/MM/YYYY, DD-MM-YYYY, YYYY-MM-DD, etc.
 function parseDate(dateStr) {
   if (!dateStr || dateStr.trim() === '') return null;
-  
   const s = dateStr.trim();
-  
-  // Intenta ISO primero (YYYY-MM-DD o YYYY-MM-DDTHH:MM:SS)
   if (/^\d{4}-\d{2}-\d{2}/.test(s)) {
     const d = new Date(s);
     return isNaN(d.getTime()) ? null : d;
   }
-  
-  // Intenta DD/MM/YYYY o DD-MM-YYYY
   const match = s.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{4})$/);
   if (match) {
     const [, day, month, year] = match.map(Number);
-    // Validar rango bÃ¡sico
     if (day < 1 || day > 31 || month < 1 || month > 12 || year < 2000) {
       return null;
     }
-    // Crear fecha en UTC para evitar problemas de timezone
     const d = new Date(Date.UTC(year, month - 1, day));
     return isNaN(d.getTime()) ? null : d;
   }
-  
   return null;
 }
 
-// ===== GENERAR ID ÚNICO PARA UN REGISTRO =====
-// Usa nombre (col 0) + fecha finalización (col 11) como clave Ãºnica
 function getRegistroId(row, tipo) {
   if (!row || row.length < 12) return null;
   const nombre = (row[0] || '').trim();
   const fecha = (row[11] || '').trim();
-  
   if (!nombre) return null;
-  
-  // Si no hay fecha de finalización, no se puede marcar como finalizado
   if (!fecha) return null;
-  
-  // Hash simple: tipo_nombre_fecha
   return `${tipo}_${nombre}_${fecha}`.replace(/\s+/g, '_');
 }
 
-// ===== MARCAR REGISTRO COMO FINALIZADO =====
 function markAsFinalized(registroId, tipo) {
   const storageKey = tipo === 'buques' ? STORAGE_KEY_BUQUES : STORAGE_KEY_FLUVIAL;
   let finalizados = {};
-  
   try {
     const stored = localStorage.getItem(storageKey);
     if (stored) {
       finalizados = JSON.parse(stored);
     }
   } catch (e) {
-    console.warn('Error leyendo localStorage:', e);
+    console.warn('Error:', e);
   }
-  
-  // Guardar timestamp de cuando fue finalizado
   finalizados[registroId] = Date.now();
-  
   try {
     localStorage.setItem(storageKey, JSON.stringify(finalizados));
   } catch (e) {
-    console.warn('Error escribiendo localStorage:', e);
+    console.warn('Error:', e);
   }
 }
 
-// ===== VERIFICAR SI DEBE OCULTARSE =====
 function shouldHideRecord(registroId, tipo) {
   if (!registroId) return false;
-  
   const storageKey = tipo === 'buques' ? STORAGE_KEY_BUQUES : STORAGE_KEY_FLUVIAL;
   let finalizados = {};
-  
   try {
     const stored = localStorage.getItem(storageKey);
     if (stored) {
       finalizados = JSON.parse(stored);
     }
   } catch (e) {
-    console.warn('Error leyendo localStorage:', e);
     return false;
   }
-  
   const timestamp = finalizados[registroId];
   if (!timestamp) return false;
-  
-  // Pasaron mas de 24 horas desde que fue marcado como finalizado?
   const ahora = Date.now();
   const horasTranscurridas = (ahora - timestamp) / (1000 * 60 * 60);
-  
   return horasTranscurridas > 24;
 }
 
-// ===== LIMPIAR REGISTROS OBSOLETOS =====
-// Elimina del localStorage los que ya hace mas de 24hs
 function cleanUpOldRecords(tipo) {
   const storageKey = tipo === 'buques' ? STORAGE_KEY_BUQUES : STORAGE_KEY_FLUVIAL;
   let finalizados = {};
-  
   try {
     const stored = localStorage.getItem(storageKey);
     if (stored) {
@@ -337,25 +304,21 @@ function cleanUpOldRecords(tipo) {
   } catch (e) {
     return;
   }
-  
   const ahora = Date.now();
   const cleaned = {};
-  
   for (const [key, timestamp] of Object.entries(finalizados)) {
     const horasTranscurridas = (ahora - timestamp) / (1000 * 60 * 60);
     if (horasTranscurridas <= 24) {
       cleaned[key] = timestamp;
     }
   }
-  
   try {
     localStorage.setItem(storageKey, JSON.stringify(cleaned));
   } catch (e) {
-    console.warn('Error limpiando localStorage:', e);
+    console.warn('Error:', e);
   }
 }
 
-// ---- MUELLE COLOR CLASS ----
 function muelleClass(name){
   const n=(name||'').toUpperCase();
   if(n.includes('ANP')||n.includes('TGU')) return 'anp';
@@ -365,7 +328,6 @@ function muelleClass(name){
   return 'navios';
 }
 
-// ---- STATUS BADGE ----
 function statusBadge(val){
   const v=(val||'').toUpperCase();
   if(v.includes('PUERTO')) return `<span class="badge puerto"><span class="bdot"></span>En Puerto</span>`;
@@ -374,13 +336,11 @@ function statusBadge(val){
   return `<span class="badge tbc"><span class="bdot"></span>${val}</span>`;
 }
 
-// ---- PARSE BUQUES ----
 function parseBuques(rows){
   const sections=[];
   let current=null;
   const MUELLE_KEYWORDS=['NAVIOS','ANP','PUNTA','ONTUR','MUELLE','TGU'];
   const HEADER_KEYWORDS=['BUQUE','REMOLCADOR','ETA','ETB','ETC','CARGA','VOLUMEN'];
-
   for(let i=0;i<rows.length;i++){
     const row=rows[i];
     const a=(row[0]||'').trim();
@@ -401,13 +361,11 @@ function parseBuques(rows){
   return sections;
 }
 
-// ---- PARSE FLUVIAL ----
 function parseFluvial(rows){
   const sections=[];
   let current=null;
   const MUELLE_KEYWORDS=['NAVIOS','ANP','PUNTA','ONTUR','MUELLE'];
   const HEADER_KEYWORDS=['REMOLCADOR','BARCAZA','ESTADO','ETA','DESCARGA'];
-
   for(let i=0;i<rows.length;i++){
     const row=rows[i];
     const a=(row[0]||'').trim();
@@ -427,14 +385,11 @@ function parseFluvial(rows){
   return sections;
 }
 
-// ---- RENDER BUQUES ----
 function renderBuques(sections, search=''){
   cleanUpOldRecords('buques');
   const s=search.toLowerCase();
   let totalBuques=0;
   let html='';
-
-  // Contar solo registros que NO estan ocultos (no finalizados hace 24hs)
   sections.forEach(sec=>{
     sec.rows.forEach(r=>{
       if(r[0]){
@@ -445,15 +400,12 @@ function renderBuques(sections, search=''){
       }
     });
   });
-
   html+=`<div class="summary-row">
     <div class="sum-card accent"><div class="sum-label">Total Buques</div><div class="sum-num">${totalBuques}</div><div class="sum-sub">En planilla</div></div>
     <div class="sum-card green"><div class="sum-label">Muelles activos</div><div class="sum-num">${sections.filter(s=>s.rows.some(r=>{const id=getRegistroId(r,'buques');return !shouldHideRecord(id,'buques');})).length}</div><div class="sum-sub">Con operaciones</div></div>
-    <div class="sum-card orange"><div class="sum-label">ActualizaciÃ³n</div><div class="sum-num" style="font-size:16px;padding-top:4px" id="upd-b">â€”</div><div class="sum-sub">Tiempo real</div></div>
+    <div class="sum-card orange"><div class="sum-label">Actualizacion</div><div class="sum-num" style="font-size:16px;padding-top:4px" id="upd-b">-</div><div class="sum-sub">Tiempo real</div></div>
   </div>`;
-
   sections.forEach(sec=>{
-    // Filtrar por bÃºsqueda Y por estado (no ocultos)
     const filtered=sec.rows.filter(r=>{
       const registroId = getRegistroId(r, 'buques');
       const isHidden = shouldHideRecord(registroId, 'buques');
@@ -461,7 +413,6 @@ function renderBuques(sections, search=''){
       if(!s) return true;
       return r.some(c=>c.toLowerCase().includes(s));
     });
-
     if(s && filtered.length===0) return;
     const mc=muelleClass(sec.name);
     html+=`<div class="muelle-section">
@@ -469,7 +420,6 @@ function renderBuques(sections, search=''){
         <span class="muelle-name">${sec.name}</span>
         <span class="muelle-badge">${filtered.length} buque${filtered.length!==1?'s':''}</span>
       </div>`;
-    
     if(filtered.length===0){
       html+=`<div class="empty-muelle">Sin operaciones programadas</div>`;
     } else {
@@ -483,14 +433,10 @@ function renderBuques(sections, search=''){
         const carga=r[4]||'';const vol=r[5]||'';const cliente=r[6]||'';
         const destino=r[7]||'';const persona=r[8]||'';const comment=r[9]||'';
         const fechaFin=r[11]||'';
-        
         if(!buque) return;
-        
-        // Si tiene fecha de finalizacion, ofrecer marcar como finalizado
         const onclick = fechaFin ? `onclick="markAsFinalized(getRegistroId(['${buque}',null,null,null,null,null,null,null,null,null,null,'${fechaFin}'], 'buques'), 'buques'); loadAll();"` : '';
         const style = fechaFin ? 'cursor:pointer;opacity:0.7;' : '';
         const title = fechaFin ? 'Haz clic para ocultarlo' : '';
-        
         html+=`<tr style="${style}" title="${title}" ${onclick}>
           <td class="cell-main">${buque}</td>
           <td class="cell-sec">${eta}</td>
@@ -508,7 +454,6 @@ function renderBuques(sections, search=''){
     }
     html+=`</div>`;
   });
-
   document.getElementById('loading-buques').style.display='none';
   const cont=document.getElementById('content-buques');
   cont.style.display='block';
@@ -518,14 +463,11 @@ function renderBuques(sections, search=''){
   if(updB) updB.textContent=new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
 }
 
-// ---- RENDER FLUVIAL ----
 function renderFluvial(sections, search=''){
   cleanUpOldRecords('fluvial');
   const s=search.toLowerCase();
   let totalRems=0;
   let html='';
-
-  // Contar solo registros que NO estÃ¡n ocultos
   sections.forEach(sec=>{
     sec.rows.forEach(r=>{
       if(r[0]){
@@ -536,15 +478,12 @@ function renderFluvial(sections, search=''){
       }
     });
   });
-
   html+=`<div class="summary-row">
     <div class="sum-card accent"><div class="sum-label">Remolcadores</div><div class="sum-num">${totalRems}</div><div class="sum-sub">En planilla</div></div>
     <div class="sum-card green"><div class="sum-label">Muelles activos</div><div class="sum-num">${sections.filter(s=>s.rows.some(r=>{const id=getRegistroId(r,'fluvial');return !shouldHideRecord(id,'fluvial');})).length}</div><div class="sum-sub">Con operaciones</div></div>
-    <div class="sum-card orange"><div class="sum-label">ActualizaciÃ³n</div><div class="sum-num" style="font-size:16px;padding-top:4px" id="upd-f">â€”</div><div class="sum-sub">Tiempo real</div></div>
+    <div class="sum-card orange"><div class="sum-label">Actualizacion</div><div class="sum-num" style="font-size:16px;padding-top:4px" id="upd-f">-</div><div class="sum-sub">Tiempo real</div></div>
   </div>`;
-
   sections.forEach(sec=>{
-    // Filtrar por busqueda Y por estado (no ocultos)
     const filtered=sec.rows.filter(r=>{
       const registroId = getRegistroId(r, 'fluvial');
       const isHidden = shouldHideRecord(registroId, 'fluvial');
@@ -552,7 +491,6 @@ function renderFluvial(sections, search=''){
       if(!s) return true;
       return r.some(c=>c.toLowerCase().includes(s));
     });
-
     if(s && filtered.length===0) return;
     const mc=muelleClass(sec.name);
     html+=`<div class="muelle-section">
@@ -560,7 +498,6 @@ function renderFluvial(sections, search=''){
         <span class="muelle-name">${sec.name}</span>
         <span class="muelle-badge">${filtered.length} remolcador${filtered.length!==1?'es':''}</span>
       </div>`;
-    
     if(filtered.length===0){
       html+=`<div class="empty-muelle">Sin operaciones programadas</div>`;
     } else {
@@ -574,13 +511,10 @@ function renderFluvial(sections, search=''){
         const etb=r[4]||'';const fin=r[5]||'';const desc=r[6]||'';const vol=r[7]||'';
         const cli=r[8]||'';const pers=r[9]||'';const comm=r[10]||'';
         const fechaFin=r[11]||'';
-        
         if(!rem) return;
-        
         const onclick = fechaFin ? `onclick="markAsFinalized(getRegistroId(['${rem}',null,null,null,null,null,null,null,null,null,null,'${fechaFin}'], 'fluvial'), 'fluvial'); loadAll();"` : '';
         const style = fechaFin ? 'cursor:pointer;opacity:0.7;' : '';
         const title = fechaFin ? 'Haz clic para ocultarlo' : '';
-        
         html+=`<tr style="${style}" title="${title}" ${onclick}>
           <td class="cell-main">${rem}</td>
           <td class="cell-num">${bczs}</td>
@@ -599,7 +533,6 @@ function renderFluvial(sections, search=''){
     }
     html+=`</div>`;
   });
-
   document.getElementById('loading-fluvial').style.display='none';
   const cont=document.getElementById('content-fluvial');
   cont.style.display='block';
@@ -624,11 +557,11 @@ async function loadAll(){
     const t=new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
     document.getElementById('last-upd').textContent='Actualizado '+t;
   } catch(e) {
-    console.error('Error cargando datos:', e);
+    console.error('Error:', e);
     ['buques','fluvial'].forEach(tab=>{
       document.getElementById('loading-'+tab).style.display='none';
       document.getElementById('content-'+tab).style.display='block';
-      document.getElementById('content-'+tab).innerHTML=`<div class="error-state">Error al cargar los datos. VerificÃ¡ los permisos del Sheet.</div>`;
+      document.getElementById('content-'+tab).innerHTML=`<div class="error-state">Error al cargar los datos. Verifica los permisos del Sheet.</div>`;
     });
   }
   btn.classList.remove('spin');
@@ -647,12 +580,8 @@ function applySearch(){
   renderFluvial(rawFluvial, s);
 }
 
-// Auto-refresh cada 5 minutos
 loadAll();
 setInterval(loadAll, 5*60*1000);
-
-// Verificar cada minuto si hay registros que deben ocultarse (>24hs)
-// Esto re-renderiza sin descargar el Sheet nuevamente
 setInterval(() => {
   renderBuques(rawBuques);
   renderFluvial(rawFluvial);
