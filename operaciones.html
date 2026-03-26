@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ISA â€” PrÃ³ximas Operaciones Nueva Palmira</title>
+<title>ISA Próximas Operaciones Nueva Palmira</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -159,7 +159,7 @@ tbody td{padding:8px 12px;vertical-align:middle;}
 <!-- TITLE BAR -->
 <div class="title-bar">
   <div>
-    <div class="page-title">Nueva Palmira â€” PrÃ³ximas Operaciones</div>
+    <div class="page-title">Nueva Palmira Próximas Operaciones</div>
     <div class="page-sub">Datos en tiempo real Â· Google Sheets</div>
   </div>
   <input class="search-input" type="text" id="search" placeholder="Buscar buque o remolcador..." oninput="applySearch()">
@@ -256,8 +256,8 @@ function parseDate(dateStr) {
   return null;
 }
 
-// ===== GENERAR ID ÃšNICO PARA UN REGISTRO =====
-// Usa nombre (col 0) + fecha finalizaciÃ³n (col 11) como clave Ãºnica
+// ===== GENERAR ID ÚNICO PARA UN REGISTRO =====
+// Usa nombre (col 0) + fecha finalización (col 11) como clave Ãºnica
 function getRegistroId(row, tipo) {
   if (!row || row.length < 12) return null;
   const nombre = (row[0] || '').trim();
@@ -265,7 +265,7 @@ function getRegistroId(row, tipo) {
   
   if (!nombre) return null;
   
-  // Si no hay fecha de finalizaciÃ³n, no se puede marcar como finalizado
+  // Si no hay fecha de finalización, no se puede marcar como finalizado
   if (!fecha) return null;
   
   // Hash simple: tipo_nombre_fecha
@@ -316,7 +316,7 @@ function shouldHideRecord(registroId, tipo) {
   const timestamp = finalizados[registroId];
   if (!timestamp) return false;
   
-  // Â¿Pasaron mÃ¡s de 24 horas desde que fue marcado como finalizado?
+  // Pasaron mas de 24 horas desde que fue marcado como finalizado?
   const ahora = Date.now();
   const horasTranscurridas = (ahora - timestamp) / (1000 * 60 * 60);
   
@@ -324,7 +324,7 @@ function shouldHideRecord(registroId, tipo) {
 }
 
 // ===== LIMPIAR REGISTROS OBSOLETOS =====
-// Elimina del localStorage los que ya hace mÃ¡s de 24hs
+// Elimina del localStorage los que ya hace mas de 24hs
 function cleanUpOldRecords(tipo) {
   const storageKey = tipo === 'buques' ? STORAGE_KEY_BUQUES : STORAGE_KEY_FLUVIAL;
   let finalizados = {};
@@ -434,7 +434,7 @@ function renderBuques(sections, search=''){
   let totalBuques=0;
   let html='';
 
-  // Contar solo registros que NO estÃ¡n ocultos (no finalizados hace 24hs)
+  // Contar solo registros que NO estan ocultos (no finalizados hace 24hs)
   sections.forEach(sec=>{
     sec.rows.forEach(r=>{
       if(r[0]){
@@ -486,7 +486,7 @@ function renderBuques(sections, search=''){
         
         if(!buque) return;
         
-        // Si tiene fecha de finalizaciÃ³n, ofrecer marcar como finalizado
+        // Si tiene fecha de finalizacion, ofrecer marcar como finalizado
         const onclick = fechaFin ? `onclick="markAsFinalized(getRegistroId(['${buque}',null,null,null,null,null,null,null,null,null,null,'${fechaFin}'], 'buques'), 'buques'); loadAll();"` : '';
         const style = fechaFin ? 'cursor:pointer;opacity:0.7;' : '';
         const title = fechaFin ? 'Haz clic para ocultarlo' : '';
@@ -544,7 +544,7 @@ function renderFluvial(sections, search=''){
   </div>`;
 
   sections.forEach(sec=>{
-    // Filtrar por bÃºsqueda Y por estado (no ocultos)
+    // Filtrar por busqueda Y por estado (no ocultos)
     const filtered=sec.rows.filter(r=>{
       const registroId = getRegistroId(r, 'fluvial');
       const isHidden = shouldHideRecord(registroId, 'fluvial');
