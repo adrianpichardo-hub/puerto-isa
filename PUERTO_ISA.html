@@ -823,6 +823,25 @@ async function parseRol(){
       parsed = JSON.parse(safeJson);
     }
 
+    // — Validación de schema del proxy —
+    if(parsed.error){
+      throw new Error('El proxy devolvió error: '+(parsed.error.message||JSON.stringify(parsed.error)));
+    }
+    if(!parsed.crew || !Array.isArray(parsed.crew) || parsed.crew.length === 0){
+      throw new Error('Schema inválido: el proxy no devolvió tripulantes (crew ausente o vacío). Respuesta: '+JSON.stringify(parsed).substring(0,200));
+    }
+    var schemaWarns = [];
+    parsed.crew.forEach(function(m, idx){
+      if(!m || typeof m !== 'object') { schemaWarns.push('#'+(idx+1)+': objeto inválido'); return; }
+      if(typeof m.nombre !== 'string' || !m.nombre.trim()) schemaWarns.push('#'+(idx+1)+': nombre ausente');
+      if(typeof m.cargo  !== 'string') schemaWarns.push('#'+(idx+1)+': cargo inválido');
+      if(m.fechaNac && typeof m.fechaNac === 'string' && !/^\d{2}\/\d{2}\/\d{4}$/.test(m.fechaNac.trim())){
+        schemaWarns.push('#'+(idx+1)+' '+m.nombre+': fechaNac "'+m.fechaNac+'" no es DD/MM/AAAA');
+      }
+    });
+    if(schemaWarns.length) addLog('parse-lines','⚠ Schema: '+schemaWarns.join(' | '),'warn');
+    // — Fin validación schema —
+
     if(parsed.ship && parsed.ship.nombre){
       PARSED_SHIP = parsed.ship;
       var rawName = parsed.ship.nombre.trim().toUpperCase();
@@ -1330,10 +1349,16 @@ async function generate(){
       fmtReqs.push({repeatCell:{range:{sheetId:sheetId,startRowIndex:0,endRowIndex:60,startColumnIndex:0,endColumnIndex:10},
         cell:{userEnteredFormat:{backgroundColor:{red:1,green:1,blue:1,alpha:1}}},fields:'userEnteredFormat.backgroundColor'}});
       if(fmtReqs.length){
-        await fetch('https://sheets.googleapis.com/v4/spreadsheets/'+newRol.id+':batchUpdate',{
+        var fmtRes = await fetch('https://sheets.googleapis.com/v4/spreadsheets/'+newRol.id+':batchUpdate',{
           method:'POST',headers:{'Authorization':'Bearer '+TOKEN,'Content-Type':'application/json'},
           body:JSON.stringify({requests:fmtReqs})
         });
+        if(!fmtRes.ok){
+          var fmtErr = await fmtRes.text().catch(function(){return fmtRes.status;});
+          addLog('gen-lines','Advertencia formato rol: '+fmtErr,'warn');
+        } else {
+          addLog('gen-lines','Formato del rol limpiado','ok');
+        }
       }
 
       var sortedCrew = CREW.slice().sort(function(a,b){return cargoRank(a.cargo)-cargoRank(b.cargo);});
@@ -1372,9 +1397,60 @@ async function generate(){
         method:'POST',headers:{'Authorization':'Bearer '+TOKEN,'Content-Type':'application/json'},
         body:JSON.stringify(batchBody)
       });
-      if(sr.ok) addLog('gen-lines',crewCount+' tripulantes volcados al rol','ok');
-      else addLog('gen-lines','Advertencia al volcar datos','warn');
-    }catch(e){ addLog('gen-lines','Advertencia rol: '+e.message,'warn'); }
+
+      // — Validación estricta de batchUpdate —
+      var srData;
+      try { srData = await sr.json(); } catch(je) { srData = {}; }
+
+      if(!sr.ok){
+        var apiErr = (srData&&srData.error&&srData.error.message)||sr.status;
+        throw new Error('batchUpdate rechazado por Sheets API: '+apiErr);
+      }
+
+      // Verificar que se escribieron celdas en total
+      var totalCells = srData.totalUpdatedCells||0;
+      if(totalCells===0){
+        throw new Error('batchUpdate respondio 200 pero totalUpdatedCells=0 — el ROL quedo vacio');
+      }
+
+      // Cross-check del range de tripulantes: debe tener crewCount*7 celdas exactas
+      var crewRangeLabel = 'Rol!B'+CREW_START+':H'+lastRow;
+      var crewExpected   = crewCount * 7;
+      var crewResp = (srData.responses||[]).find(function(r){
+        return r.updatedRange && r.updatedRange.replace(/^.*!/,'') === crewRangeLabel.replace(/^.*!/,'');
+      });
+      var crewActual = crewResp ? (crewResp.updatedCells||0) : null;
+
+      if(crewActual !== null && crewActual < crewExpected){
+        // Algunos tripulantes no se escribieron
+        var missing = Math.floor((crewExpected - crewActual) / 7);
+        throw new Error(
+          'ROL INCOMPLETO: se esperaban '+crewExpected+' celdas de tripulantes, '
+          +'se escribieron '+crewActual+' (~'+missing+' fila(s) perdida(s)). '
+          +'Revisá los datos antes de continuar.'
+        );
+      }
+
+      // Rangos de cabecera — advertir si faltan, pero no bloquear
+      var headerRanges = ['Rol!B8','Rol!D8','Rol!F8','Rol!B11','Rol!D11'];
+      var missingHeaders = headerRanges.filter(function(hr){
+        return !(srData.responses||[]).some(function(r){
+          return r.updatedRange && r.updatedRange.indexOf(hr.split('!')[1])!==-1 && r.updatedCells>0;
+        });
+      });
+      if(missingHeaders.length){
+        addLog('gen-lines','Advertencia: rangos de cabecera sin datos: '+missingHeaders.join(', '),'warn');
+      }
+
+      addLog('gen-lines',crewCount+' tripulantes volcados \u2014 '+totalCells+' celdas escritas en total','ok');
+
+    }catch(e){
+      // Si es un error de validación del ROL lo re-lanzamos para cortar el flujo
+      if(e.message.indexOf('ROL INCOMPLETO')!==-1 || e.message.indexOf('batchUpdate')!==-1 || e.message.indexOf('vacio')!==-1){
+        throw e;
+      }
+      addLog('gen-lines','Advertencia rol: '+e.message,'warn');
+    }
 
     setBar('gen-bar','gen-pct',20);
 
@@ -1515,6 +1591,7 @@ async function procesarPendientes(){
 
     // La IA lee el nombre del archivo para extraer el nombre del tripulante
     var nombreTrip = '';
+    var iaBajaConfianza = false;
     try{
       var aiRes = await fetch(CONFIG.proxy,{
         method:'POST', headers:{'Content-Type':'application/json'},
@@ -1530,20 +1607,35 @@ async function procesarPendientes(){
       var aiData = await aiRes.json();
       if(aiData.content){
         var aiText = aiData.content.map(function(c){return c.text||'';}).join('');
-        var aiMatch = aiText.match(/\{[\s\S]*\}/);
+        var aiMatch = aiText.match(/\{[\s\S]*?\}/);
         if(aiMatch){
-          var aiParsed = JSON.parse(aiMatch[0]);
-          if(aiParsed.confianza==='alta'&&aiParsed.nombre) nombreTrip = aiParsed.nombre;
+          var aiParsed = JSON.parse(aiMatch[0].replace(/,(\s*[}\]])/g,'$1'));
+          if(typeof aiParsed.nombre === 'string' && aiParsed.nombre.trim()){
+            if(aiParsed.confianza === 'alta'){
+              nombreTrip = aiParsed.nombre.trim().toUpperCase();
+            } else {
+              // Confianza baja: IA tiene sugerencia pero no está segura → manual con pre-llenado
+              iaBajaConfianza = true;
+              nombreTrip = aiParsed.nombre.trim().toUpperCase();
+              addLog('org-lines','  IA confianza baja en "'+f.name+'" → asignación manual','warn');
+            }
+          } else {
+            iaBajaConfianza = true;
+            addLog('org-lines','  IA no pudo extraer nombre de "'+f.name+'" → asignación manual','warn');
+          }
         }
       }
-    }catch(e){ addLog('org-lines','  Aviso IA: '+e.message,'warn'); }
+    }catch(e){ addLog('org-lines','  Error IA: '+e.message,'warn'); iaBajaConfianza=true; }
 
-    if(!nombreTrip){
-      nombreTrip = f.name.replace(/\.[^.]+$/,'').replace(/[_\-]+/g,' ').trim();
-      addLog('org-lines','  Nombre del archivo: '+nombreTrip,'warn');
-    } else {
-      addLog('org-lines','  Nombre identificado: '+nombreTrip,'ok');
+    // Si baja confianza → manual (con sugerencia de IA pre-llenada si existe)
+    if(iaBajaConfianza || !nombreTrip){
+      var sugerencia = nombreTrip || f.name.replace(/\.[^.]+$/,'').replace(/[_\-]+/g,' ').trim().toUpperCase();
+      manualItems.push({file:f, nombre:sugerencia});
+      addLog('org-lines','  → Agregado a asignación manual','warn');
+      continue;
     }
+
+    addLog('org-lines','  Nombre identificado: '+nombreTrip,'ok');
 
     var safeName = nombreTrip.replace(/[^A-Z0-9 ]/gi,'_').replace(/\s+/g,'_').toUpperCase()+'.pdf';
     try{
