@@ -622,13 +622,26 @@ async function copyDriveFile(fileId, name, parentId){
 }
 
 // ============================================================
-// MATCH DB: nombre + fecha nacimiento para evitar homonimos
+// MATCH DB: libreta > apellido+fecha > nombre completo > 2 apellidos
 // ============================================================
-function findInDB(pdfNombre, pdfFechaNac){
-  var pdfN    = norm(pdfNombre);
-  var pdfAp   = pdfN.split(',')[0].trim();
+function findInDB(pdfNombre, pdfFechaNac, pdfLibreta){
+  var pdfN     = norm(pdfNombre);
+  var pdfAp    = pdfN.split(',')[0].trim();
   var pdfWords = pdfAp.split(' ').filter(function(w){return w.length>2;});
   var pdfFecha = norm(pdfFechaNac||'');
+  // Normalizar libreta: solo dígitos+letras, sin espacios/puntos/guiones
+  var pdfLib   = (pdfLibreta||'').replace(/[\s\.\-]/g,'').toUpperCase();
+
+  function ret(d, method){ return Object.assign({}, d, {_matchMethod: method}); }
+
+  // Prioridad 0: LIBRETA exacta — número único, máxima confianza
+  if(pdfLib){
+    for(var k=0;k<DB_DATA.length;k++){
+      var dk = DB_DATA[k];
+      var dbLib = (dk.libreta||'').replace(/[\s\.\-]/g,'').toUpperCase();
+      if(dbLib && dbLib===pdfLib) return ret(dk, 'libreta');
+    }
+  }
 
   // Prioridad 1: apellido + fecha de nacimiento exacta
   if(pdfFecha){
@@ -637,20 +650,21 @@ function findInDB(pdfNombre, pdfFechaNac){
       var dbN  = norm(d.nombre.replace(/^\d+[\.\-]\s*/,''));
       var dbAp = dbN.split(',')[0].trim();
       var dbF  = norm(d.fechaNac||'');
-      if(dbAp===pdfAp && dbF===pdfFecha) return d;
+      if(dbAp===pdfAp && dbF===pdfFecha) return ret(d, 'nombre+fecha');
     }
   }
 
-  // Prioridad 2: nombre completo
+  // Prioridad 2: nombre completo exacto
   for(var j=0;j<DB_DATA.length;j++){
     var d2 = DB_DATA[j];
     var dbN2  = norm(d2.nombre.replace(/^\d+[\.\-]\s*/,''));
     var dbAp2 = dbN2.split(',')[0].trim();
-    if(dbN2===pdfN) return d2;
-    if(dbAp2===pdfAp) return d2;
+    if(dbN2===pdfN) return ret(d2, 'nombre completo');
+    // 2 palabras del apellido coinciden en ambas direcciones
+    // (eliminado: "solo apellido" — demasiado permisivo, causaba datos cruzados)
     var dbWords = dbAp2.split(' ').filter(function(w){return w.length>2;});
-    if(pdfWords.length>=2 && pdfWords.slice(0,2).every(function(w){return dbAp2.indexOf(w)!==-1;})) return d2;
-    if(dbWords.length>=2 && dbWords.slice(0,2).every(function(w){return pdfAp.indexOf(w)!==-1;})) return d2;
+    if(pdfWords.length>=2 && pdfWords.slice(0,2).every(function(w){return dbAp2.indexOf(w)!==-1;})) return ret(d2, '2 apellidos');
+    if(dbWords.length>=2 && dbWords.slice(0,2).every(function(w){return pdfAp.indexOf(w)!==-1;})) return ret(d2, '2 apellidos');
   }
   return null;
 }
@@ -862,9 +876,8 @@ async function parseRol(){
     addLog('parse-lines','--- Cotejando con base de datos ---');
 
     CREW = (parsed.crew||[]).map(function(m){
-      var dbMatch = findInDB(m.nombre, m.fechaNac);
+      var dbMatch = findInDB(m.nombre, m.fechaNac, m.libreta);
       if(dbMatch){
-        var method = (dbMatch.fechaNac && norm(dbMatch.fechaNac)===norm(m.fechaNac)) ? 'nombre+fecha' : 'solo nombre';
         return Object.assign({}, m, {
           nombre:   m.nombre,                              // PDF siempre gana
           cargo:    m.cargo    || dbMatch.cargo    || '',  // PDF primero
@@ -874,7 +887,7 @@ async function parseRol(){
           libreta:  dbMatch.libreta  || m.libreta  || '',
           armador:  dbMatch.armador  || '',
           inDB:     true,
-          matchMethod: method
+          matchMethod: dbMatch._matchMethod || 'desconocido'
         });
       }
       return Object.assign({}, m, {inDB:false, matchMethod:'no encontrado'});
@@ -960,8 +973,14 @@ function _reviewRowHtml(m, i){
   var dbBadge   = m.inDB
     ? '<span style="font-size:8px;color:var(--green)">&#10003; DB</span>'
     : '<span style="font-size:8px;color:var(--accent)">NUEVO</span>';
-  var matchWarn = (m.inDB && m.matchMethod==='solo nombre')
-    ? '<div style="font-size:8px;color:var(--orange)">solo nombre</div>' : '';
+  var matchWarn = '';
+  if(m.inDB){
+    if(m.matchMethod==='libreta')           matchWarn = '<div style="font-size:8px;color:var(--green)">&#128210; libreta</div>';
+    else if(m.matchMethod==='nombre+fecha') matchWarn = '<div style="font-size:8px;color:var(--green)">fecha &#10003;</div>';
+    else if(m.matchMethod==='2 apellidos')  matchWarn = '<div style="font-size:8px;color:var(--orange)">2 apellidos</div>';
+    else if(m.matchMethod==='nombre completo') matchWarn = '<div style="font-size:8px;color:var(--fg)">nombre</div>';
+    else if(m.matchMethod)                  matchWarn = '<div style="font-size:8px;color:var(--muted)">'+m.matchMethod+'</div>';
+  }
   return '<tr data-rid="'+i+'" style="border-left:3px solid '+leftColor+'">'
     +'<td style="color:var(--muted);font-size:10px;width:28px">'+(i+1)+'</td>'
     +'<td><input type="text" id="rv-nombre-'+i+'" value="'+(m.nombre||'').replace(/"/g,'&quot;').replace(/'/g,'&#39;')+'" style="min-width:180px;font-weight:500"/></td>'
@@ -1374,7 +1393,7 @@ async function generate(){
         var lib2    = m.libreta  || '';
         // Enriquecimiento DB solo para campos vacíos (nunca nombre, nunca fechaNac)
         if(!ci2b || !lib2 || !vencCI2 || !cargo || !nac2 || nac2==='Paraguaya'){
-          var dbEnrich = findInDB(m.nombre, m.fechaNac);
+          var dbEnrich = findInDB(m.nombre, m.fechaNac, m.libreta);
           if(dbEnrich){
             if(!ci2b)                        ci2b    = dbEnrich.ci      || '';
             if(!lib2)                        lib2    = dbEnrich.libreta || '';
