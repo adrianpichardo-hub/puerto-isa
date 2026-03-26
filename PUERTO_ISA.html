@@ -866,9 +866,9 @@ async function parseRol(){
       if(dbMatch){
         var method = (dbMatch.fechaNac && norm(dbMatch.fechaNac)===norm(m.fechaNac)) ? 'nombre+fecha' : 'solo nombre';
         return Object.assign({}, m, {
-          nombre:   dbMatch.nombre.replace(/^\d+[\.\-]\s*/,'').trim() || m.nombre,
-          cargo:    dbMatch.cargo    || m.cargo    || '',
-          fechaNac: dbMatch.fechaNac || m.fechaNac || '',
+          nombre:   m.nombre,                              // PDF siempre gana
+          cargo:    m.cargo    || dbMatch.cargo    || '',  // PDF primero
+          fechaNac: m.fechaNac || dbMatch.fechaNac || '',  // PDF primero
           ci:       dbMatch.ci       || m.ci       || '',
           vencCI:   dbMatch.vencCI   || m.vencCI   || '',
           libreta:  dbMatch.libreta  || m.libreta  || '',
@@ -1363,14 +1363,26 @@ async function generate(){
 
       var sortedCrew = CREW.slice().sort(function(a,b){return cargoRank(a.cargo)-cargoRank(b.cargo);});
       var crewValues = sortedCrew.map(function(m,i){
-        var db  = findInDB(m.nombre, m.fechaNac);
-        var nom = ((db&&db.nombre)||m.nombre).replace(/^\d+[\.\-]\s*/,'').trim();
-        var cargo   = (db&&db.cargo)    || m.cargo    || '';
-        var nac2    = (db&&db.nac)      || m.nac      || 'Paraguaya';
-        var fNac    = (db&&db.fechaNac) || m.fechaNac || '';
-        var ci2b    = (db&&db.ci)       || m.ci       || '';
-        var vencCI2 = (db&&db.vencCI)   || m.vencCI   || '';
-        var lib2    = (db&&db.libreta)  || m.libreta  || '';
+        // CREW fue confirmado por el usuario — es la fuente de verdad final.
+        // nombre y fechaNac: CREW siempre gana. DB solo rellena campos vacíos.
+        var nom     = m.nombre.replace(/^\d+[\.\-]\s*/,'').trim();
+        var cargo   = m.cargo    || '';
+        var nac2    = m.nac      || 'Paraguaya';
+        var fNac    = m.fechaNac || '';
+        var ci2b    = m.ci       || '';
+        var vencCI2 = m.vencCI   || '';
+        var lib2    = m.libreta  || '';
+        // Enriquecimiento DB solo para campos vacíos (nunca nombre, nunca fechaNac)
+        if(!ci2b || !lib2 || !vencCI2 || !cargo || !nac2 || nac2==='Paraguaya'){
+          var dbEnrich = findInDB(m.nombre, m.fechaNac);
+          if(dbEnrich){
+            if(!ci2b)                        ci2b    = dbEnrich.ci      || '';
+            if(!lib2)                        lib2    = dbEnrich.libreta || '';
+            if(!vencCI2)                     vencCI2 = dbEnrich.vencCI  || '';
+            if(!nac2 || nac2==='Paraguaya')  nac2    = dbEnrich.nac     || 'Paraguaya';
+            if(!cargo)                       cargo   = dbEnrich.cargo   || '';
+          }
+        }
         return [(i+1)+'.- '+nom.toUpperCase(), cargo, nac2, fNac, ci2b, vencCI2, lib2?(lib2+' (s.v.)') :''];
       });
 
