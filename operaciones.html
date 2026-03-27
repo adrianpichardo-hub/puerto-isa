@@ -53,6 +53,8 @@ body{font-family:'Barlow',sans-serif;background:var(--navy);color:var(--white);d
 .search-input{font-size:12px;font-family:'Barlow',sans-serif;padding:6px 13px;background:rgba(255,255,255,.06);border:1px solid var(--border2);border-radius:8px;color:var(--white);outline:none;width:200px;transition:all .15s;}
 .search-input::placeholder{color:var(--muted);}
 .search-input:focus{border-color:var(--accent);background:rgba(255,255,255,.09);}
+.hide-btn{font-size:11px;font-weight:600;color:#ef4444;text-transform:uppercase;letter-spacing:.08em;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:6px;padding:6px 12px;cursor:pointer;font-family:'Barlow',sans-serif;transition:all .15s;display:flex;align-items:center;gap:2px;}
+.hide-btn:hover{background:rgba(239,68,68,.2);border-color:rgba(239,68,68,.4);}
 
 /* TABS */
 .tabs-bar{position:relative;z-index:10;display:flex;align-items:center;padding:0 2rem;border-bottom:1px solid var(--border);flex-shrink:0;}
@@ -166,7 +168,13 @@ tbody tr.finalizado:hover{opacity:0.75;background:rgba(0,180,216,.1);}
     <div class="page-title">Nueva Palmira - Proximas Operaciones</div>
     <div class="page-sub">Datos en tiempo real - Google Sheets</div>
   </div>
-  <input class="search-input" type="text" id="search" placeholder="Buscar buque o remolcador..." oninput="applySearch()">
+  <div style="display:flex;gap:8px;align-items:center;">
+    <button class="hide-btn" onclick="hideAllFinalized()" id="hide-btn" style="display:none;">
+      <span style="font-size:11px;">Ocultar finalizados</span>
+      <span id="finalizado-count" style="font-size:10px;margin-left:6px;padding:2px 6px;border-radius:8px;background:rgba(239,68,68,.2);color:#ef4444;">0</span>
+    </button>
+    <input class="search-input" type="text" id="search" placeholder="Buscar buque o remolcador..." oninput="applySearch()">
+  </div>
 </div>
 
 <!-- TABS -->
@@ -328,6 +336,91 @@ function toggleFinalized(registroId, tipo) {
   loadAll();
 }
 
+// Ocultar TODOS los finalizados de una vez
+function hideAllFinalized() {
+  const storageKeyBuques = STORAGE_KEY_BUQUES;
+  const storageKeyFluvial = STORAGE_KEY_FLUVIAL;
+  let finalizadosBuques = {}, finalizadosFluvial = {};
+  
+  try {
+    const storedB = localStorage.getItem(storageKeyBuques);
+    const storedF = localStorage.getItem(storageKeyFluvial);
+    if (storedB) finalizadosBuques = JSON.parse(storedB);
+    if (storedF) finalizadosFluvial = JSON.parse(storedF);
+  } catch (e) {
+    console.warn('Error:', e);
+  }
+  
+  const ahora = Date.now();
+  
+  // Marcar todos los buques con fecha final como finalizados
+  rawBuques.forEach(sec => {
+    sec.rows.forEach(r => {
+      const fechaFin = (r[11] || '').trim();
+      if (fechaFin) {
+        const registroId = getRegistroId(r, 'buques');
+        if (registroId && !finalizadosBuques[registroId]) {
+          finalizadosBuques[registroId] = ahora;
+        }
+      }
+    });
+  });
+  
+  // Marcar todos los fluviales con fecha final como finalizados
+  rawFluvial.forEach(sec => {
+    sec.rows.forEach(r => {
+      const fechaFin = (r[11] || '').trim();
+      if (fechaFin) {
+        const registroId = getRegistroId(r, 'fluvial');
+        if (registroId && !finalizadosFluvial[registroId]) {
+          finalizadosFluvial[registroId] = ahora;
+        }
+      }
+    });
+  });
+  
+  try {
+    localStorage.setItem(storageKeyBuques, JSON.stringify(finalizadosBuques));
+    localStorage.setItem(storageKeyFluvial, JSON.stringify(finalizadosFluvial));
+  } catch (e) {
+    console.warn('Error:', e);
+  }
+  
+  loadAll();
+}
+
+// Contar finalizados y actualizar UI
+function updateFinalizadoCount() {
+  let totalFinalizados = 0;
+  
+  rawBuques.forEach(sec => {
+    sec.rows.forEach(r => {
+      const fechaFin = (r[11] || '').trim();
+      if (fechaFin) {
+        totalFinalizados++;
+      }
+    });
+  });
+  
+  rawFluvial.forEach(sec => {
+    sec.rows.forEach(r => {
+      const fechaFin = (r[11] || '').trim();
+      if (fechaFin) {
+        totalFinalizados++;
+      }
+    });
+  });
+  
+  const hideBtn = document.getElementById('hide-btn');
+  const contador = document.getElementById('finalizado-count');
+  if (totalFinalizados > 0) {
+    hideBtn.style.display = 'flex';
+    contador.textContent = totalFinalizados;
+  } else {
+    hideBtn.style.display = 'none';
+  }
+}
+
 function muelleClass(name){
   const n=(name||'').toUpperCase();
   if(n.includes('ANP')||n.includes('TGU')) return 'anp';
@@ -471,6 +564,7 @@ function renderBuques(sections, search=''){
   document.getElementById('cnt-buques').textContent=totalBuques;
   const updB=document.getElementById('upd-b');
   if(updB) updB.textContent=new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
+  updateFinalizadoCount();
 }
 
 function renderFluvial(sections, search=''){
@@ -551,6 +645,7 @@ function renderFluvial(sections, search=''){
   document.getElementById('cnt-fluvial').textContent=totalRems;
   const updF=document.getElementById('upd-f');
   if(updF) updF.textContent=new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
+  updateFinalizadoCount();
 }
 
 async function loadAll(){
