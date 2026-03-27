@@ -97,6 +97,9 @@ tbody td{padding:8px 12px;vertical-align:middle;}
 .cell-num{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;color:var(--accent);}
 .cell-comment{font-size:11px;color:rgba(255,255,255,.45);max-width:260px;line-height:1.4;}
 
+tbody tr.finalizado{cursor:pointer;opacity:0.65;}
+tbody tr.finalizado:hover{opacity:0.75;background:rgba(0,180,216,.1);}
+
 /* STATUS BADGES */
 .badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:20px;border:1px solid;white-space:nowrap;}
 .bdot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
@@ -290,7 +293,7 @@ function shouldHideRecord(registroId, tipo) {
   if (!timestamp) return false;
   const ahora = Date.now();
   const horasTranscurridas = (ahora - timestamp) / (1000 * 60 * 60);
-  return horasTranscurridas > 24;
+  return horasTranscurridas > 2;
 }
 
 function cleanUpOldRecords(tipo) {
@@ -308,7 +311,7 @@ function cleanUpOldRecords(tipo) {
   const cleaned = {};
   for (const [key, timestamp] of Object.entries(finalizados)) {
     const horasTranscurridas = (ahora - timestamp) / (1000 * 60 * 60);
-    if (horasTranscurridas <= 24) {
+    if (horasTranscurridas <= 2) {
       cleaned[key] = timestamp;
     }
   }
@@ -317,6 +320,12 @@ function cleanUpOldRecords(tipo) {
   } catch (e) {
     console.warn('Error:', e);
   }
+}
+
+// Funcion global para marcar como finalizado
+function toggleFinalized(registroId, tipo) {
+  markAsFinalized(registroId, tipo);
+  loadAll();
 }
 
 function muelleClass(name){
@@ -434,10 +443,11 @@ function renderBuques(sections, search=''){
         const destino=r[7]||'';const persona=r[8]||'';const comment=r[9]||'';
         const fechaFin=r[11]||'';
         if(!buque) return;
-        const onclick = fechaFin ? `onclick="markAsFinalized(getRegistroId(['${buque}',null,null,null,null,null,null,null,null,null,null,'${fechaFin}'], 'buques'), 'buques'); loadAll();"` : '';
-        const style = fechaFin ? 'cursor:pointer;opacity:0.7;' : '';
-        const title = fechaFin ? 'Haz clic para ocultarlo' : '';
-        html+=`<tr style="${style}" title="${title}" ${onclick}>
+        const registroId = getRegistroId(r, 'buques');
+        const rowClass = fechaFin ? 'finalizado' : '';
+        const onclick = fechaFin ? `onclick="toggleFinalized('${registroId}', 'buques')"` : '';
+        const title = fechaFin ? 'Haz clic para ocultarlo (2 horas de finalizado)' : '';
+        html+=`<tr class="${rowClass}" title="${title}" ${onclick}>
           <td class="cell-main">${buque}</td>
           <td class="cell-sec">${eta}</td>
           <td class="cell-sec">${etb}</td>
@@ -512,10 +522,11 @@ function renderFluvial(sections, search=''){
         const cli=r[8]||'';const pers=r[9]||'';const comm=r[10]||'';
         const fechaFin=r[11]||'';
         if(!rem) return;
-        const onclick = fechaFin ? `onclick="markAsFinalized(getRegistroId(['${rem}',null,null,null,null,null,null,null,null,null,null,'${fechaFin}'], 'fluvial'), 'fluvial'); loadAll();"` : '';
-        const style = fechaFin ? 'cursor:pointer;opacity:0.7;' : '';
-        const title = fechaFin ? 'Haz clic para ocultarlo' : '';
-        html+=`<tr style="${style}" title="${title}" ${onclick}>
+        const registroId = getRegistroId(r, 'fluvial');
+        const rowClass = fechaFin ? 'finalizado' : '';
+        const onclick = fechaFin ? `onclick="toggleFinalized('${registroId}', 'fluvial')"` : '';
+        const title = fechaFin ? 'Haz clic para ocultarlo (2 horas de finalizado)' : '';
+        html+=`<tr class="${rowClass}" title="${title}" ${onclick}>
           <td class="cell-main">${rem}</td>
           <td class="cell-num">${bczs}</td>
           <td>${statusBadge(estado)}</td>
