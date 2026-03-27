@@ -169,7 +169,7 @@ tbody tr.finalizado:hover{opacity:0.75;background:rgba(0,180,216,.1);}
     <div class="page-sub">Datos en tiempo real - Google Sheets</div>
   </div>
   <div style="display:flex;gap:8px;align-items:center;">
-    <button class="hide-btn" onclick="hideAllFinalized()" id="hide-btn" style="display:none;">
+    <button class="hide-btn" onclick="hideAllFinalized()" id="hide-btn">
       <span style="font-size:11px;">Ocultar finalizados</span>
       <span id="finalizado-count" style="font-size:10px;margin-left:6px;padding:2px 6px;border-radius:8px;background:rgba(239,68,68,.2);color:#ef4444;">0</span>
     </button>
@@ -258,9 +258,10 @@ function parseDate(dateStr) {
 }
 
 function getRegistroId(row, tipo) {
-  if (!row || row.length < 12) return null;
+  if (!row || row.length < 1) return null;
   const nombre = (row[0] || '').trim();
-  const fecha = (row[11] || '').trim();
+  const fechaIdx = tipo === 'buques' ? 3 : 5;
+  const fecha = (row[fechaIdx] || '').trim();
   if (!nombre) return null;
   if (!fecha) return null;
   return `${tipo}_${nombre}_${fecha}`.replace(/\s+/g, '_');
@@ -356,7 +357,7 @@ function hideAllFinalized() {
   // Marcar todos los buques con fecha final como finalizados
   rawBuques.forEach(sec => {
     sec.rows.forEach(r => {
-      const fechaFin = (r[11] || '').trim();
+      const fechaFin = (r[3] || '').trim();
       if (fechaFin) {
         const registroId = getRegistroId(r, 'buques');
         if (registroId && !finalizadosBuques[registroId]) {
@@ -369,7 +370,7 @@ function hideAllFinalized() {
   // Marcar todos los fluviales con fecha final como finalizados
   rawFluvial.forEach(sec => {
     sec.rows.forEach(r => {
-      const fechaFin = (r[11] || '').trim();
+      const fechaFin = (r[3] || '').trim();
       if (fechaFin) {
         const registroId = getRegistroId(r, 'fluvial');
         if (registroId && !finalizadosFluvial[registroId]) {
@@ -395,7 +396,7 @@ function updateFinalizadoCount() {
   
   rawBuques.forEach(sec => {
     sec.rows.forEach(r => {
-      const fechaFin = (r[11] || '').trim();
+      const fechaFin = (r[3] || '').trim();
       if (fechaFin) {
         totalFinalizados++;
       }
@@ -404,20 +405,26 @@ function updateFinalizadoCount() {
   
   rawFluvial.forEach(sec => {
     sec.rows.forEach(r => {
-      const fechaFin = (r[11] || '').trim();
+      const fechaFin = (r[3] || '').trim();
       if (fechaFin) {
         totalFinalizados++;
       }
     });
   });
   
+  console.log('Total finalizados encontrados:', totalFinalizados);
+  
   const hideBtn = document.getElementById('hide-btn');
   const contador = document.getElementById('finalizado-count');
+  
+  contador.textContent = totalFinalizados;
+  
   if (totalFinalizados > 0) {
-    hideBtn.style.display = 'flex';
-    contador.textContent = totalFinalizados;
+    hideBtn.style.opacity = '1';
+    hideBtn.style.pointerEvents = 'auto';
   } else {
-    hideBtn.style.display = 'none';
+    hideBtn.style.opacity = '0.5';
+    hideBtn.style.pointerEvents = 'none';
   }
 }
 
@@ -534,7 +541,7 @@ function renderBuques(sections, search=''){
         const buque=r[0]||'';const eta=r[1]||'';const etb=r[2]||'';const etc=r[3]||'';
         const carga=r[4]||'';const vol=r[5]||'';const cliente=r[6]||'';
         const destino=r[7]||'';const persona=r[8]||'';const comment=r[9]||'';
-        const fechaFin=r[11]||'';
+        const fechaFin=r[3]||'';
         if(!buque) return;
         const registroId = getRegistroId(r, 'buques');
         const rowClass = fechaFin ? 'finalizado' : '';
@@ -614,7 +621,7 @@ function renderFluvial(sections, search=''){
         const rem=r[0]||'';const bczs=r[1]||'';const estado=r[2]||'';const eta=r[3]||'';
         const etb=r[4]||'';const fin=r[5]||'';const desc=r[6]||'';const vol=r[7]||'';
         const cli=r[8]||'';const pers=r[9]||'';const comm=r[10]||'';
-        const fechaFin=r[11]||'';
+        const fechaFin=r[5]||'';
         if(!rem) return;
         const registroId = getRegistroId(r, 'fluvial');
         const rowClass = fechaFin ? 'finalizado' : '';
