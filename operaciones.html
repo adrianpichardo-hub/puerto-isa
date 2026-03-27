@@ -169,9 +169,8 @@ tbody tr.finalizado:hover{opacity:0.75;background:rgba(0,180,216,.1);}
     <div class="page-sub">Datos en tiempo real - Google Sheets</div>
   </div>
   <div style="display:flex;gap:8px;align-items:center;">
-    <button class="hide-btn" onclick="hideAllFinalized()" id="hide-btn">
-      <span style="font-size:11px;">Ocultar finalizados</span>
-      <span id="finalizado-count" style="font-size:10px;margin-left:6px;padding:2px 6px;border-radius:8px;background:rgba(239,68,68,.2);color:#ef4444;">0</span>
+    <button class="hide-btn" onclick="toggleHideFinalizados()" id="hide-btn">
+      <span style="font-size:11px;">OCULTAR FINALIZADOS</span>
     </button>
     <input class="search-input" type="text" id="search" placeholder="Buscar buque o remolcador..." oninput="applySearch()">
   </div>
@@ -338,96 +337,84 @@ function toggleFinalized(registroId, tipo) {
 }
 
 // Ocultar TODOS los finalizados de una vez
-function hideAllFinalized() {
-  const storageKeyBuques = STORAGE_KEY_BUQUES;
-  const storageKeyFluvial = STORAGE_KEY_FLUVIAL;
-  let finalizadosBuques = {}, finalizadosFluvial = {};
+// TOGGLE - Ocultar o mostrar finalizados
+function toggleHideFinalizados() {
+  const storageKey = 'isa_hide_finalizados_state';
+  let state = {
+    hidden: false,
+    timestamp: Date.now()
+  };
   
   try {
-    const storedB = localStorage.getItem(storageKeyBuques);
-    const storedF = localStorage.getItem(storageKeyFluvial);
-    if (storedB) finalizadosBuques = JSON.parse(storedB);
-    if (storedF) finalizadosFluvial = JSON.parse(storedF);
+    const stored = localStorage.getItem(storageKey);
+    if (stored) {
+      state = JSON.parse(stored);
+    }
   } catch (e) {
     console.warn('Error:', e);
   }
   
-  const ahora = Date.now();
-  
-  // Marcar todos los buques con fecha final como finalizados
-  rawBuques.forEach(sec => {
-    sec.rows.forEach(r => {
-      const fechaFin = (r[3] || '').trim();
-      if (fechaFin) {
-        const registroId = getRegistroId(r, 'buques');
-        if (registroId && !finalizadosBuques[registroId]) {
-          finalizadosBuques[registroId] = ahora;
-        }
-      }
-    });
-  });
-  
-  // Marcar todos los fluviales con fecha final como finalizados
-  rawFluvial.forEach(sec => {
-    sec.rows.forEach(r => {
-      const fechaFin = (r[3] || '').trim();
-      if (fechaFin) {
-        const registroId = getRegistroId(r, 'fluvial');
-        if (registroId && !finalizadosFluvial[registroId]) {
-          finalizadosFluvial[registroId] = ahora;
-        }
-      }
-    });
-  });
+  // Toggle el estado
+  state.hidden = !state.hidden;
+  state.timestamp = Date.now();
   
   try {
-    localStorage.setItem(storageKeyBuques, JSON.stringify(finalizadosBuques));
-    localStorage.setItem(storageKeyFluvial, JSON.stringify(finalizadosFluvial));
+    localStorage.setItem(storageKey, JSON.stringify(state));
   } catch (e) {
     console.warn('Error:', e);
   }
   
-  loadAll();
+  // Actualizar UI del botÃ³n
+  updateHideBtn();
+  
+  // Re-renderizar
+  renderBuques(rawBuques);
+  renderFluvial(rawFluvial);
+}
+
+// Ver si finalizados estÃ¡n ocultados por toggle
+function areFinalizadosHidden() {
+  const storageKey = 'isa_hide_finalizados_state';
+  try {
+    const stored = localStorage.getItem(storageKey);
+    if (stored) {
+      const state = JSON.parse(stored);
+      const ahora = Date.now();
+      const horasTranscurridas = (ahora - state.timestamp) / (1000 * 60 * 60);
+      
+      // Si pasaron 2 horas, limpiar y resetear
+      if (horasTranscurridas > 2) {
+        localStorage.removeItem(storageKey);
+        return false;
+      }
+      
+      return state.hidden;
+    }
+  } catch (e) {
+    return false;
+  }
+  return false;
+}
+
+// Actualizar UI del botÃ³n
+function updateHideBtn() {
+  const hideBtn = document.getElementById('hide-btn');
+  const isHidden = areFinalizadosHidden();
+  
+  if (isHidden) {
+    hideBtn.textContent = 'VER FINALIZADOS';
+    hideBtn.style.color = '#22c55e';
+    hideBtn.style.background = 'rgba(34,197,94,.1)';
+    hideBtn.style.borderColor = 'rgba(34,197,94,.25)';
+  } else {
+    hideBtn.textContent = 'OCULTAR FINALIZADOS';
+    hideBtn.style.color = '#ef4444';
+    hideBtn.style.background = 'rgba(239,68,68,.1)';
+    hideBtn.style.borderColor = 'rgba(239,68,68,.25)';
+  }
 }
 
 // Contar finalizados y actualizar UI
-function updateFinalizadoCount() {
-  let totalFinalizados = 0;
-  
-  rawBuques.forEach(sec => {
-    sec.rows.forEach(r => {
-      const fechaFin = (r[3] || '').trim();
-      if (fechaFin) {
-        totalFinalizados++;
-      }
-    });
-  });
-  
-  rawFluvial.forEach(sec => {
-    sec.rows.forEach(r => {
-      const fechaFin = (r[3] || '').trim();
-      if (fechaFin) {
-        totalFinalizados++;
-      }
-    });
-  });
-  
-  console.log('Total finalizados encontrados:', totalFinalizados);
-  
-  const hideBtn = document.getElementById('hide-btn');
-  const contador = document.getElementById('finalizado-count');
-  
-  contador.textContent = totalFinalizados;
-  
-  if (totalFinalizados > 0) {
-    hideBtn.style.opacity = '1';
-    hideBtn.style.pointerEvents = 'auto';
-  } else {
-    hideBtn.style.opacity = '0.5';
-    hideBtn.style.pointerEvents = 'none';
-  }
-}
-
 function muelleClass(name){
   const n=(name||'').toUpperCase();
   if(n.includes('ANP')||n.includes('TGU')) return 'anp';
@@ -519,6 +506,11 @@ function renderBuques(sections, search=''){
       const registroId = getRegistroId(r, 'buques');
       const isHidden = shouldHideRecord(registroId, 'buques');
       if(isHidden) return false;
+      
+      // Si toggle estÃ¡ activado y tiene fechaFin, ocultar
+      const fechaFin = (r[3] || '').trim();
+      if (areFinalizadosHidden() && fechaFin) return false;
+      
       if(!s) return true;
       return r.some(c=>c.toLowerCase().includes(s));
     });
@@ -571,7 +563,7 @@ function renderBuques(sections, search=''){
   document.getElementById('cnt-buques').textContent=totalBuques;
   const updB=document.getElementById('upd-b');
   if(updB) updB.textContent=new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
-  updateFinalizadoCount();
+  updateHideBtn();
 }
 
 function renderFluvial(sections, search=''){
@@ -599,6 +591,11 @@ function renderFluvial(sections, search=''){
       const registroId = getRegistroId(r, 'fluvial');
       const isHidden = shouldHideRecord(registroId, 'fluvial');
       if(isHidden) return false;
+      
+      // Si toggle estÃ¡ activado y tiene fechaFin, ocultar
+      const fechaFin = (r[5] || '').trim();
+      if (areFinalizadosHidden() && fechaFin) return false;
+      
       if(!s) return true;
       return r.some(c=>c.toLowerCase().includes(s));
     });
@@ -652,7 +649,7 @@ function renderFluvial(sections, search=''){
   document.getElementById('cnt-fluvial').textContent=totalRems;
   const updF=document.getElementById('upd-f');
   if(updF) updF.textContent=new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
-  updateFinalizadoCount();
+  updateHideBtn();
 }
 
 async function loadAll(){
