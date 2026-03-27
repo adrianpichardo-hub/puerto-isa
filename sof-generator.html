@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ISA PUERTO — Generador SOF</title>
+<title>ISA PUERTO â€” Generador SOF</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Syne:wght@500;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -76,15 +76,15 @@ table.preview tr.row-cambio td{background:#f0fff4;}
 <body>
 
 <nav>
-  <div class="nav-brand"><a href="index.html">← Portal</a> ISA PUERTO</div>
+  <div class="nav-brand"><a href="index.html">â† Portal</a> ISA PUERTO</div>
   <div class="nav-tag">SOF DESCARGA MINERAL - NAVIOS</div>
 </nav>
 
 <div class="steps">
-  <div class="step active" id="step1" onclick="goStep(1)">① Datos Operacionales</div>
-  <div class="step" id="step2" onclick="goStep(2)">② Logs de Grúas</div>
-  <div class="step" id="step3" onclick="goStep(3)">③ Cantidades</div>
-  <div class="step" id="step4" onclick="goStep(4)">④ Previsualizar y Editar</div>
+  <div class="step active" id="step1" onclick="goStep(1)">â‘  Datos Operacionales</div>
+  <div class="step" id="step2" onclick="goStep(2)">â‘¡ Logs de GrÃºas</div>
+  <div class="step" id="step3" onclick="goStep(3)">â‘¢ Cantidades</div>
+  <div class="step" id="step4" onclick="goStep(4)">â‘£ Previsualizar y Editar</div>
 </div>
 
 <!-- PASO 1 -->
@@ -92,10 +92,10 @@ table.preview tr.row-cambio td{background:#f0fff4;}
 <div class="wrap">
   <div id="alert1" class="alert"></div>
   <div class="card">
-    <div class="card-head"><span class="dot"></span>Información Operacional</div>
+    <div class="card-head"><span class="dot"></span>Informacion Operacional</div>
     <div class="card-body">
       <div class="grid2">
-        <div class="fg"><label class="req">Fecha de Operación</label><input type="date" id="opDate"/></div>
+        <div class="fg"><label class="req">Fecha de Operacion</label><input type="date" id="opDate"/></div>
         <div class="fg"><label class="req">Convoy / Buque</label><input type="text" id="convoy" placeholder="Ej: CONVOY LHG 88"/></div>
         <div class="fg"><label class="req">Remolcador</label><input type="text" id="tugboat" placeholder="Ej: EL BANCO"/></div>
         <div class="fg"><label class="req">Armador</label>
@@ -105,7 +105,7 @@ table.preview tr.row-cambio td{background:#f0fff4;}
         <div class="fg"><label class="req">Carga</label>
           <select id="cargo"><option value="">Selecciona...</option><option>MINERAL DE HIERRO (LOHT)</option><option>MINERAL DE HIERRO (LOHS)</option><option>SINTER FEED (SFHG)</option></select></div>
         <div class="fg"><label class="req">Puerto de Descarga</label>
-          <select id="dischargePort"><option value="">Selecciona...</option><option>Corporación Navios - Nueva Palmira</option><option>Potiguar - Punta del Arenal</option></select></div>
+          <select id="dischargePort"><option value="">Selecciona...</option><option>Corporacion Navios - Nueva Palmira</option><option>Potiguar - Punta del Arenal</option></select></div>
         <div class="fg"><label class="req">Lugar de Amarre</label>
           <select id="moorageLocation"><option value="">Selecciona...</option><option>TERMINAL NAVIOS</option><option>MORRO AZUL</option><option>AMARRADERO SAUCE</option></select></div>
       </div>
@@ -114,11 +114,11 @@ table.preview tr.row-cambio td{background:#f0fff4;}
         <div class="fg"><label class="req">Amarre (DD/MM/AAAA HH:MM)</label><input type="text" id="arrivalTime" placeholder="18/03/2026 06:30" maxlength="16" oninput="autoFmtDT(this)"/></div>
         <div class="fg"><label class="req">Carta de Alistamiento / NOR (DD/MM/AAAA HH:MM)</label><input type="text" id="norTime" placeholder="18/03/2026 06:45" maxlength="16" oninput="autoFmtDT(this)"/></div>
         <div class="fg"><label class="req">Autoridades (DD/MM/AAAA HH:MM)</label><input type="text" id="authoritiesTime" placeholder="18/03/2026 07:00" maxlength="16" oninput="autoFmtDT(this)"/></div>
-        <div class="fg"><label class="req">Libre Plática (DD/MM/AAAA HH:MM)</label><input type="text" id="freePracticaTime" placeholder="18/03/2026 07:15" maxlength="16" oninput="autoFmtDT(this)"/></div>
+        <div class="fg"><label class="req">Libre Platica (DD/MM/AAAA HH:MM)</label><input type="text" id="freePracticaTime" placeholder="18/03/2026 07:15" maxlength="16" oninput="autoFmtDT(this)"/></div>
       </div>
     </div>
   </div>
-  <div class="btns"><button class="btn btn-primary" onclick="validateStep1()">Siguiente → Logs de Grúas</button></div>
+  <div class="btns"><button class="btn btn-primary" onclick="validateStep1()">Siguiente - Logs de Gruas</button></div>
 </div>
 </div>
 
@@ -127,22 +127,22 @@ table.preview tr.row-cambio td{background:#f0fff4;}
 <div class="wrap">
   <div id="alert2" class="alert"></div>
   <div class="card">
-    <div class="card-head"><span class="dot"></span>Logs de Grúas</div>
+    <div class="card-head"><span class="dot"></span>Logs de Gruas</div>
     <div class="card-body">
       <div style="font-size:11px;color:var(--text3);margin-bottom:14px;line-height:1.8;background:var(--surface2);padding:10px 14px;border-radius:4px;border-left:3px solid var(--amber);">
-        Formato por columna (TAB separado): <strong>Fecha · Barcaza · Inicio · Fin · Tiempo · Evento</strong><br>
+        Formato por columna (TAB separado): <strong>Fecha - Barcaza - Inicio - Fin - Tiempo - Evento</strong><br>
         Ej: <code>18-mar&nbsp;&nbsp;TBN 102&nbsp;&nbsp;12:20&nbsp;&nbsp;12:26&nbsp;&nbsp;00:06&nbsp;&nbsp;Draft Inicial AHK</code>
       </div>
       <div class="grid3">
-        <div class="fg"><label>Grúa Norte — <span style="color:var(--amber)">posición norte</span></label><textarea id="logsNorte" rows="12"></textarea></div>
-        <div class="fg"><label>Grúa Sur — <span style="color:var(--amber)">posición sur</span></label><textarea id="logsSur" rows="12"></textarea></div>
-        <div class="fg"><label>Grúa Muelle 5 — <span style="color:var(--amber)">muelle 5</span></label><textarea id="logsMuelle5" rows="12"></textarea></div>
+        <div class="fg"><label>Grua Norte â€” <span style="color:var(--amber)">posicion norte</span></label><textarea id="logsNorte" rows="12"></textarea></div>
+        <div class="fg"><label>Grua Sur â€” <span style="color:var(--amber)">posicion sur</span></label><textarea id="logsSur" rows="12"></textarea></div>
+        <div class="fg"><label>Grua Muelle 5 â€” <span style="color:var(--amber)">muelle 5</span></label><textarea id="logsMuelle5" rows="12"></textarea></div>
       </div>
     </div>
   </div>
   <div class="btns">
-    <button class="btn btn-secondary" onclick="goStep(1)">← Atrás</button>
-    <button class="btn btn-primary" onclick="validateStep2()">Siguiente → Cantidades</button>
+    <button class="btn btn-secondary" onclick="goStep(1)">- Atras</button>
+    <button class="btn btn-primary" onclick="validateStep2()">Siguiente - Cantidades</button>
   </div>
 </div>
 </div>
@@ -155,8 +155,8 @@ table.preview tr.row-cambio td{background:#f0fff4;}
     <div class="card-head"><span class="dot"></span>Programa de Cantidades</div>
     <div class="card-body">
       <div style="font-size:11px;color:var(--text3);margin-bottom:14px;line-height:1.8;background:var(--surface2);padding:10px 14px;border-radius:4px;border-left:3px solid var(--amber);">
-        Formato (TAB separado): <strong># · Barcaza · Cantidad · Producto · Viaje</strong><br>
-        Última línea: <strong>TOTAL · [valor]</strong>
+        Formato (TAB separado): <strong># - Barcaza - Cantidad - Producto - Viaje</strong><br>
+        Ultima linea: <strong>TOTAL - [valor]</strong>
       </div>
       <div style="display:grid;grid-template-columns:1fr 220px;gap:18px;align-items:start;">
         <div class="fg">
@@ -165,15 +165,15 @@ table.preview tr.row-cambio td{background:#f0fff4;}
         </div>
         <div style="display:flex;flex-direction:column;gap:12px;padding-top:22px;">
           <div class="fg"><label>Total Calculado</label><div class="readonly" id="totalCalc">0.000</div></div>
-          <div class="fg"><label>Total Declarado (BL)</label><div class="readonly" id="totalDeclared">—</div></div>
-          <div class="fg"><label>Validación</label><div class="readonly" id="totalValidation" style="font-size:11px;">—</div></div>
+          <div class="fg"><label>Total Declarado (BL)</label><div class="readonly" id="totalDeclared">-</div></div>
+          <div class="fg"><label>Validacion</label><div class="readonly" id="totalValidation" style="font-size:11px;">-</div></div>
         </div>
       </div>
     </div>
   </div>
   <div class="btns">
-    <button class="btn btn-secondary" onclick="goStep(2)">← Atrás</button>
-    <button class="btn btn-primary" onclick="validateStep3()">Siguiente → Previsualizar</button>
+    <button class="btn btn-secondary" onclick="goStep(2)">- Atras</button>
+    <button class="btn btn-primary" onclick="validateStep3()">Siguiente - Previsualizar</button>
   </div>
 </div>
 </div>
@@ -183,13 +183,13 @@ table.preview tr.row-cambio td{background:#f0fff4;}
 <div class="wrap">
   <div id="alert4" class="alert"></div>
   <div class="card">
-    <div class="card-head"><span class="dot"></span>Previsualización SOF — Editá antes de generar</div>
+    <div class="card-head"><span class="dot"></span>Previsu alizacion SOF - Edita antes de generar</div>
     <div class="card-body">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
-        <div style="font-size:11px;color:var(--text3);">Editá cualquier celda · Eliminá filas innecesarias · Agregá filas manuales</div>
+        <div style="font-size:11px;color:var(--text3);">Edita cualquier celda - Elimina filas innecesarias - Agrega filas manuales</div>
         <div class="btns">
           <button class="btn btn-secondary btn-sm" onclick="addRowManual()">+ Agregar fila</button>
-          <button class="btn btn-secondary btn-sm" onclick="rebuildPreview()">↺ Reconstruir desde logs</button>
+          <button class="btn btn-secondary btn-sm" onclick="rebuildPreview()">â†º Reconstruir desde logs</button>
         </div>
       </div>
       <div class="preview-wrap">
@@ -197,7 +197,7 @@ table.preview tr.row-cambio td{background:#f0fff4;}
           <thead>
             <tr>
               <th style="width:88px;">Fecha</th>
-              <th style="width:82px;">Día</th>
+              <th style="width:82px;">Dia</th>
               <th style="width:100px;">Barcaza</th>
               <th style="width:90px;">Viaje</th>
               <th style="width:62px;">Desde</th>
@@ -212,15 +212,15 @@ table.preview tr.row-cambio td{background:#f0fff4;}
     </div>
   </div>
   <div class="btns">
-    <button class="btn btn-secondary" onclick="goStep(3)">← Atrás</button>
-    <button class="btn btn-success" onclick="generateAll()">▶ GENERAR SOF + CANTIDADES</button>
+    <button class="btn btn-secondary" onclick="goStep(3)">- Atras</button>
+    <button class="btn btn-success" onclick="generateAll()">GENERAR SOF + CANTIDADES</button>
   </div>
 </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
-/* ══ NAVIGATION ══ */
+/* NAVIGATION */
 function goStep(n){
   for(let i=1;i<=4;i++){
     document.getElementById('page'+i).classList.toggle('active',i===n);
@@ -232,9 +232,8 @@ function goStep(n){
   window.scrollTo(0,0);
 }
 
-/* ══ DATE/TIME HELPERS ══ */
+/* DATE/TIME HELPERS */
 
-// Auto-format as user types: inserts / and space automatically
 function autoFmtDT(el){
   let v=el.value.replace(/[^0-9]/g,'');
   let out='';
@@ -246,12 +245,10 @@ function autoFmtDT(el){
   el.value=out;
 }
 
-// Get value from text field: already in DD/MM/YYYY HH:MM
 function dtVal(id){
   return document.getElementById(id).value.trim();
 }
 
-// Convert DD/MM/YYYY HH:MM → YYYY-MM-DD (ISO date only)
 function dtToISO(v){
   if(!v) return '';
   const m=v.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
@@ -259,14 +256,12 @@ function dtToISO(v){
   return `${m[3]}-${m[2]}-${m[1]}`;
 }
 
-// Get HH:MM from DD/MM/YYYY HH:MM
 function dtToTime(v){
   if(!v) return '';
   const m=v.match(/(\d{2}:\d{2})$/);
   return m?m[1]:'';
 }
 
-// Format already-formatted value (passthrough — value is already DD/MM/YYYY HH:MM)
 function fmtDT(v){ return v||''; }
 
 function fmtDateOnly(iso){
@@ -277,7 +272,7 @@ function fmtDateOnly(iso){
 }
 function dayName(iso){
   const d=iso.includes('T')?iso.split('T')[0]:iso;
-  return['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'][new Date(d+'T12:00:00').getDay()];
+  return['Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado'][new Date(d+'T12:00:00').getDay()];
 }
 function addDays(iso,n){
   const d=new Date((iso.includes('T')?iso.split('T')[0]:iso)+'T12:00:00');
@@ -290,7 +285,6 @@ function t2m(t){
   return parseInt(p[0]||0)*60+parseInt(p[1]||0);
 }
 function diffMins(t1,t2){
-  // handles midnight crossing
   if(!t1||!t2) return 0;
   let d=t2m(t2)-t2m(t1);
   if(d<0) d+=1440;
@@ -302,13 +296,12 @@ function minsToHHMM(mins){
   return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
 }
 
-/* Parse log date "18-mar" → YYYY-MM-DD */
 function parseLogDate(raw){
   if(!raw) return '';
   const year=document.getElementById('opDate').value.split('-')[0]||new Date().getFullYear();
   const months={ene:1,feb:2,mar:3,abr:4,may:5,jun:6,jul:7,ago:8,sep:9,oct:10,nov:11,dic:12,
                 jan:1,apr:4,aug:8,sep:9,oct:10,nov:11,dec:12};
-  const m=String(raw).toLowerCase().match(/^(\d{1,2})[-\/]([a-záéíóú]{3})/);
+  const m=String(raw).toLowerCase().match(/^(\d{1,2})[-\/]([a-z]{3})/);
   if(m){
     const day=String(m[1]).padStart(2,'0');
     const mon=String(months[m[2]]||1).padStart(2,'0');
@@ -336,19 +329,17 @@ function showAlert(id,msg,type){
   setTimeout(()=>el.classList.remove('show'),5000);
 }
 function cranePos(crane){
-  if(crane==='norte') return 'posición norte';
-  if(crane==='sur') return 'posición sur';
+  if(crane==='norte') return 'posicion norte';
+  if(crane==='sur') return 'posicion sur';
   return 'muelle 5';
 }
 
-// Convert HH:MM + baseISO (YYYY-MM-DD) → DD/MM/YYYY HH:MM
 function timeToFullDT(hhmm, baseISO){
   if(!hhmm||!baseISO) return hhmm||'';
   const[y,mo,d]=baseISO.split('-');
   return `${d}/${mo}/${y} ${hhmm}`;
 }
 
-// Resolve inicio/fin as full timestamps, handling midnight crossing
 function resolveIniFin(inicioHH, finHH, baseISO){
   if(!inicioHH) return {ini:'', fin:''};
   const ini = timeToFullDT(inicioHH, baseISO);
@@ -359,7 +350,7 @@ function resolveIniFin(inicioHH, finHH, baseISO){
   return {ini, fin};
 }
 
-/* ══ PARSE LOGS ══ */
+/* PARSE LOGS */
 function parseLogs(text,crane){
   return text.split('\n').map(l=>l.trim()).filter(Boolean).map(l=>{
     const c=l.split('\t').map(x=>x.trim());
@@ -375,28 +366,33 @@ function getAllLogs(){
   ];
 }
 
-/* ══ 3-LAYER EVENT FILTER ══ */
-// Returns: 'skip' | 'always' | 'if15'
+/* 3-LAYER EVENT FILTER - FIXED VERSION */
 function eventLayer(ev){
   const e=ev.toLowerCase();
 
-  // CAPA 1 — Ignorar siempre
+  // CAPA 1 - Ignorar siempre
   if(e.includes('tapas')) return 'skip';
   if(e.includes('cambio de bodega')) return 'skip';
 
-  // CAPA 2 — Pasar siempre
+  // CAPA 2 - Pasar siempre (eventos principales + interrupciones)
   if(e.includes('draft inicial')) return 'always';
   if(e.includes('draft final')) return 'always';
   if(e.includes('cambio de barcaza')) return 'always';
-  if(e.includes('descarga a pila')||e.includes('trasbordo a buque')) return 'always'; // handled separately
+  if(e.includes('descarga a pila')||e.includes('trasbordo a buque')) return 'always';
   if(e.includes('inicia descarga')) return 'always';
   if(e.includes('finaliza descarga')) return 'always';
-
-  // CAPA 3 — Solo si duración > 15 min
+  
+  // CAPA 2.5 - Eventos de corta/interrupcion (SIEMPRE, sin filtro de duracion)
+  if(e.includes('tractor')) return 'always';
+  if(e.includes('cambio de circuito')) return 'always';
+  if(e.includes('preparando circuito')) return 'always';
+  if(e.includes('lluvia')||e.includes('viento')||e.includes('tormenta')||e.includes('niebla')||e.includes('clima')) return 'always';
+  
+  // CAPA 3 - Otros eventos, solo si > 15 min
   return 'if15';
 }
 
-/* ══ CANTIDADES ══ */
+/* CANTIDADES */
 function parseCantidades(){
   const lines=document.getElementById('cantidadesData').value.split('\n').map(l=>l.trim()).filter(Boolean);
   const items=[];let declared=null;
@@ -429,19 +425,18 @@ function calcTotal(){
     document.getElementById('totalDeclared').textContent=fmtNum(declared)+' mtons';
     const diff=Math.abs(calc-declared);
     document.getElementById('totalValidation').innerHTML=diff<0.01
-      ?'<span class="badge badge-ok">✓ COINCIDEN</span>'
-      :`<span class="badge badge-err">✗ DIF: ${fmtNum(diff)}</span>`;
+      ?'<span class="badge badge-ok">OK COINCIDEN</span>'
+      :`<span class="badge badge-err">DIF: ${fmtNum(diff)}</span>`;
   } else {
-    document.getElementById('totalDeclared').textContent='—';
-    document.getElementById('totalValidation').textContent='—';
+    document.getElementById('totalDeclared').textContent='-';
+    document.getElementById('totalValidation').textContent='-';
   }
 }
 
-/* ══ BUILD SOF ROWS ══ */
+/* BUILD SOF ROWS */
 function buildSOFRows(){
   const allLogs=getAllLogs();
 
-  // Sort by date then start time
   allLogs.sort((a,b)=>{
     const da=parseLogDate(a.fecha),db=parseLogDate(b.fecha);
     if(da!==db) return da.localeCompare(db);
@@ -468,15 +463,11 @@ function buildSOFRows(){
   const authH=dtToTime(authoritiesTime);
   const freeH=dtToTime(freePracticaTime);
 
-  // Build a viaje lookup from cantidades (barcaza → viaje)
   const{items:cantItems}=parseCantidades();
   const viajeMap={};
   cantItems.forEach(c=>{ if(c.barcaza&&c.viaje) viajeMap[c.barcaza]=c.viaje; });
 
-  // Helper: get fecha/dia for an event, showing date only on FIRST event of each calendar day
-  // seenDates tracks which ISO dates have already had a fecha/dia shown
   const seenDates=new Set();
-  // Initial events are all on opDate — mark it as seen right away
   seenDates.add(opDate);
 
   function getDateCells(isoDate){
@@ -486,13 +477,11 @@ function buildSOFRows(){
     return {f:fmtDateOnly(isoDate), d:dayName(isoDate)};
   }
 
-  // Initial events (all on opDate — already in seenDates)
   push(opDateF,opDay,'','',arrH,'',`${convoy} amarrado en ${moorage}.`,'section');
   push('','','','',norH,'','Carta de Alistamiento extendida.','section');
   push('','','','',authH,'','Autoridades y agencia a bordo.','section');
-  push('','','','',freeH,'','Libre plática otorgada.','section');
+  push('','','','',freeH,'','Libre platica otorgada.','section');
 
-  // "Terminal realizando otras operaciones" — desde NOR hasta primer Draft Inicial
   const firstDraftLog=allLogs.find(e=>e.evento.toLowerCase().includes('draft inicial'));
   if(firstDraftLog){
     const firstDraftISO=parseLogDate(firstDraftLog.fecha);
@@ -519,7 +508,6 @@ function buildSOFRows(){
     }
   }
 
-  // Track per-barcaza state
   const barcazaState={};
   const globalEventsSeen=new Set();
 
@@ -538,7 +526,6 @@ function buildSOFRows(){
     barcazaState[b].crane=e.crane;
 
     const fechaISO=parseLogDate(e.fecha);
-    // Show fecha/dia on first real event of each new day
     const dc=getDateCells(fechaISO);
     const viaje=viajeMap[b]||'';
 
@@ -579,27 +566,19 @@ function buildSOFRows(){
       return;
     }
 
-    // CALADOS BUQUE — dedup
-    if(ev.includes('calados buque')){
-      const key=`calados_${e.desde}_${e.hasta}`;
-      if(!globalEventsSeen.has(key)){
-        globalEventsSeen.add(key);
-        push(dc.f,dc.d,'','',e.desde,e.hasta,'Corta descarga por lectura de calados en buque.','general');
-      }
-      return;
-    }
-
-    // CAMBIO DE CIRCUITO — dedup
+    // CAMBIO CIRCUITO
     if(ev.includes('cambio de circuito')){
-      const key=`circuito_${e.desde}_${e.hasta}`;
-      if(!globalEventsSeen.has(key)){
-        globalEventsSeen.add(key);
-        push(dc.f,dc.d,'','',e.desde,e.hasta,'Corta descarga por cambio de circuito.','general');
-      }
+      push(dc.f,dc.d,b,viaje,e.desde,e.hasta,`Corta descarga barcaza ${b} por cambio de circuito.`,'normal');
       return;
     }
 
-    // CLIMÁTICOS
+    // PREPARANDO CIRCUITO
+    if(ev.includes('preparando circuito')){
+      push(dc.f,dc.d,b,viaje,e.desde,e.hasta,`${e.evento.charAt(0).toUpperCase()+e.evento.slice(1).trim()}.`,'normal');
+      return;
+    }
+
+    // CLIMATICOS
     if(ev.includes('lluvia')||ev.includes('viento')||ev.includes('tormenta')||ev.includes('niebla')||ev.includes('clima')){
       const label=e.evento.charAt(0).toUpperCase()+e.evento.slice(1).trim();
       push(dc.f,dc.d,'','',e.desde,e.hasta,`Corta descarga. ${label}.`,'clima');
@@ -610,7 +589,7 @@ function buildSOFRows(){
     push(dc.f,dc.d,b,viaje,e.desde,e.hasta,e.evento,'normal');
   });
 
-  // Post-process: resolve __REANUDA__ → Reanuda / Finaliza
+  // Post-process: resolver __REANUDA__
   const barcazasWithReanuda=[...new Set(rows.filter(r=>r.obs&&r.obs.startsWith('__REANUDA__')).map(r=>r.barcaza))];
   barcazasWithReanuda.forEach(b=>{
     const idxs=rows.map((r,i)=>({r,i})).filter(({r})=>r.barcaza===b&&r.obs&&r.obs.startsWith('__REANUDA__'));
@@ -630,7 +609,7 @@ function buildSOFRows(){
   return rows;
 }
 
-/* ══ PREVIEW ══ */
+/* PREVIEW */
 let previewRows=[];
 
 function rebuildPreview(){
@@ -654,7 +633,7 @@ function renderPreview(){
       <td><input value="${row.desde}" style="width:56px;" oninput="previewRows[${i}].desde=this.value"/></td>
       <td><input value="${row.hasta}" style="width:56px;" oninput="previewRows[${i}].hasta=this.value"/></td>
       <td><input value="${obs}" class="wide" oninput="previewRows[${i}].obs=this.value"/></td>
-      <td><button class="del-btn" onclick="deleteRow(${i})" title="Eliminar">×</button></td>`;
+      <td><button class="del-btn" onclick="deleteRow(${i})" title="Eliminar">x</button></td>`;
     tbody.appendChild(tr);
   });
 }
@@ -665,34 +644,33 @@ function addRowManual(){
   document.getElementById('previewBody').lastElementChild?.scrollIntoView({behavior:'smooth'});
 }
 
-/* ══ VALIDATION ══ */
+/* VALIDATION */
 function validateStep1(){
   const f=['opDate','convoy','tugboat','shipowner','charterers','cargo','dischargePort','moorageLocation','arrivalTime','norTime','authoritiesTime','freePracticaTime'];
-  if(f.some(id=>!document.getElementById(id).value)){showAlert('alert1','Completá todos los campos obligatorios (*)','err');return;}
+  if(f.some(id=>!document.getElementById(id).value)){showAlert('alert1','Completa todos los campos obligatorios (*)','err');return;}
   goStep(2);
 }
 function validateStep2(){
-  if(!getAllLogs().length){showAlert('alert2','Pegá los logs de al menos una grúa','warn');return;}
+  if(!getAllLogs().length){showAlert('alert2','Pega los logs de al menos una grua','warn');return;}
   goStep(3);
 }
 function validateStep3(){
   const{items,declared}=parseCantidades();
   const calc=items.reduce((s,i)=>s+i.cantidad,0);
-  if(!items.length){showAlert('alert3','Pegá los datos de cantidades','warn');return;}
+  if(!items.length){showAlert('alert3','Pega los datos de cantidades','warn');return;}
   if(declared!==null&&Math.abs(calc-declared)>=0.01){
-    showAlert('alert3',`Total calculado (${fmtNum(calc)}) ≠ declarado (${fmtNum(declared)}). Revisá los datos.`,'err');return;
+    showAlert('alert3',`Total calculado (${fmtNum(calc)}) != declarado (${fmtNum(declared)}). Revisa los datos.`,'err');return;
   }
   rebuildPreview();
   goStep(4);
 }
 
-/* ══ GENERATE ══ */
+/* GENERATE */
 function generateAll(){
   const{items:cantidades}=parseCantidades();
   const totalQty=cantidades.reduce((s,i)=>s+i.cantidad,0);
   const allLogs=getAllLogs();
 
-  // Per-barcaza: Inicio = inicio del primer "descarga a pila", Fin = hasta del último "descarga a pila"
   const barcazaTimes={};
   allLogs.forEach(e=>{
     const ev=e.evento.toLowerCase();
@@ -701,7 +679,6 @@ function generateAll(){
     barcazaTimes[b].crane=e.crane;
     if(ev.includes('descarga a pila')||ev.includes('trasbordo a buque')){
       if(!barcazaTimes[b].inicio) barcazaTimes[b].inicio=e.desde;
-      // Always update fin to hasta of this event (last one wins)
       barcazaTimes[b].fin=e.hasta||e.desde;
     }
   });
@@ -726,7 +703,7 @@ function generateAll(){
 
   generateSOF(data);
   generateCantidades(data);
-  showAlert('alert4','✓ SOF y Programa de Cantidades generados correctamente','ok');
+  showAlert('alert4','OK SOF y Programa de Cantidades generados correctamente','ok');
 }
 
 function generateSOF(d){
@@ -750,9 +727,7 @@ function generateSOF(d){
   rows.push(["","","","","","",fmtNum(d.totalQty)+" mtons",fmtNum(d.totalQty)+" mtons"]);
   rows.push(["","","","","","","",""]);
   rows.push(["","","","","","","",""]);
-  // TABLE HEADER — once only
-  rows.push(["Fecha","Día","Barcaza","Viaje","Desde","Hasta","Observaciones","Remarks",""]);
-  // Events from preview
+  rows.push(["Fecha","Dia","Barcaza","Viaje","Desde","Hasta","Observaciones","Remarks",""]);
   d.previewRows.forEach(r=>{
     rows.push([r.fecha,r.dia,r.barcaza,r.viaje||'',r.desde,r.hasta,r.obs,'','']);
   });
@@ -770,9 +745,8 @@ function generateCantidades(d){
   rows.push(["","","","","","","","","","","","","",""]);
   rows.push(["","","","","","","","","","","","","",""]);
   rows.push(["","","",fmtNum(total),0,-total,"","","","","","","",""]);
-  rows.push(["","#","Barcaza","Cantidad Origen","Descargado por draft","Dif","NOR","Amarre","Inicio","Fin","Tiempo","Viaje","Remolcador","Posición"]);
+  rows.push(["","#","Barcaza","Cantidad Origen","Descargado por draft","Dif","NOR","Amarre","Inicio","Fin","Tiempo","Viaje","Remolcador","Posicion"]);
 
-  // Sort chronologically by inicio (earliest discharge first)
   const cantOrdenadas=[...d.cantidades].sort((a,b)=>{
     const ia=d.barcazaTimes[a.barcaza]?.inicio||'';
     const ib=d.barcazaTimes[b.barcaza]?.inicio||'';
@@ -813,7 +787,7 @@ function generateCantidades(d){
   XLSX.writeFile(wb,`CANTIDADES_${d.opDate}_${safe}.xlsx`);
 }
 
-/* ══ INIT ══ */
+/* INIT */
 document.getElementById('opDate').valueAsDate=new Date();
 </script>
 </body>
