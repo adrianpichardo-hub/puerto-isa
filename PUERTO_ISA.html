@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>PUERTO â€” ISA Nueva Palmira</title>
+<title>PUERTO MSA Nueva Palmira</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,800&family=Barlow:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -230,8 +230,8 @@ td{padding:7px 12px;vertical-align:middle;}
     </div>
     <div class="info-box-yellow">
       <strong>CÃ³mo funciona:</strong><br>
-      1. HacÃ© clic en "Abrir _PENDIENTES" y pegÃ¡ los PDFs ahÃ­<br>
-      2. HacÃ© clic en Procesar â€” la IA los identifica y organiza automÃ¡ticamente
+      1. Hace clic en "Abrir _PENDIENTES" y pegá¡ los PDFs ahÃ­<br>
+      2. Hacé clic en Procesar la IA los identifica y organiza automáticamente
     </div>
     <div style="margin-bottom:14px">
       <button class="btn btn-gh btn-sm" onclick="openPendientes()" style="display:inline-flex;align-items:center;gap:6px;border-color:rgba(234,179,8,.3);color:var(--yellow)">
@@ -241,7 +241,7 @@ td{padding:7px 12px;vertical-align:middle;}
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
       <div>
         <div class="field-label">Tipo de documento</div>
-        <select id="org-tipo"><option value="auto">Detectar automÃ¡ticamente</option><option value="libreta">Libretas</option><option value="cedula">CÃ©dulas</option></select>
+        <select id="org-tipo"><option value="auto">Detectar automáticamente</option><option value="libreta">Libretas</option><option value="cedula">CÃ©dulas</option></select>
       </div>
       <div>
         <div class="field-label">Armador</div>
@@ -255,7 +255,7 @@ td{padding:7px 12px;vertical-align:middle;}
       <div class="logbox-lines" id="org-lines"></div>
     </div>
     <div id="org-manual" style="display:none">
-      <div style="font-size:9px;color:var(--yellow);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;padding-top:10px;border-top:1px solid var(--border)">AsignaciÃ³n manual</div>
+      <div style="font-size:9px;color:var(--yellow);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;padding-top:10px;border-top:1px solid var(--border)">Asignación manual</div>
       <div id="org-manual-list"></div>
     </div>
   </div>
@@ -263,9 +263,9 @@ td{padding:7px 12px;vertical-align:middle;}
   <!-- DB PANEL -->
   <div class="db-panel" id="db-panel">
     <div class="db-header">
-      <div><div class="db-title">Base de Datos Â· Tripulantes</div><div class="db-sub" id="db-sub">Google Sheets Â· cargando...</div></div>
+      <div><div class="db-title">Base de Datos Â· Tripulantes</div><div class="db-sub" id="db-sub">Google Sheets cargando...</div></div>
       <div class="btn-row">
-        <button class="btn btn-bl btn-sm" onclick="loadDB()">â†º Actualizar</button>
+        <button class="btn btn-bl btn-sm" onclick="loadDB()">Actualizar</button>
         <button class="btn btn-gh btn-sm" onclick="toggleDB()">âœ•</button>
       </div>
     </div>
@@ -291,22 +291,22 @@ td{padding:7px 12px;vertical-align:middle;}
     <div class="field-grid">
       <div><div class="field-label">Prefijo del buque *</div>
         <select id="ship-prefix" onchange="updateFolder()">
-          <option value="R/E">R/E â€” Remolcador Empujador</option><option value="R/P">R/P â€” Remolcador de Puerto</option>
-          <option value="M/N">M/N â€” Motonave</option><option value="B/T">B/T â€” Buque Tanque</option><option value="C/B">C/B â€” Convoy de Barcazas</option>
+          <option value="R/E">R/E Remolcador Empujador</option><option value="R/P">R/P â€” Remolcador de Puerto</option>
+          <option value="M/N">M/N Motonave</option><option value="B/T">B/T Buque Tanque</option><option value="C/B">C/B Convoy de Barcazas</option>
         </select></div>
       <div><div class="field-label">Nombre del remolcador *</div><input type="text" id="ship" placeholder="HB SCORPIUS" oninput="updateFolder()"/></div>
-      <div><div class="field-label">CÃ³digo de viaje *</div><input type="text" id="voyageCode" placeholder="HB16" oninput="updateFolder()"/></div>
+      <div><div class="field-label">Código de viaje *</div><input type="text" id="voyageCode" placeholder="HB16" oninput="updateFolder()"/></div>
       <div><div class="field-label">ETA *</div><input type="text" id="eta" placeholder="SÃ¡b 15/03 â€“ 22:00 hs"/></div>
       <div><div class="field-label">Muelle</div><input type="text" id="dock" placeholder="NAVIOS" value="NAVIOS"/></div>
       <div><div class="field-label">Armador</div>
         <select id="armador" onchange="updateFolder()">
-          <option value="">â€” SeleccionÃ¡ â€”</option><option>HIDROVIAS</option><option>LHG</option><option>P&O</option>
+          <option value=""> Seleccionar â€”</option><option>HIDROVIAS</option><option>LHG</option><option>P&O</option>
           <option>INTERBARGE</option><option>CARGO LINE</option><option>BAQUEANOS ARG</option>
         </select></div>
     </div>
     <div class="folder-preview">
-      <div class="field-label">ðŸ“ Carpeta que se crearÃ¡ en Drive</div>
-      <div class="folder-name" id="folder-preview">CompletÃ¡ nombre y cÃ³digo...</div>
+      <div class="field-label">Carpeta que se creará en Drive</div>
+      <div class="folder-name" id="folder-preview">Completar nombre y código...</div>
       <div class="folder-path" id="folder-path"></div>
     </div>
     <div class="btn-row"><button class="btn btn-pri" onclick="step1Next()">Continuar â†’ Subir Rol PDF</button></div>
@@ -314,13 +314,13 @@ td{padding:7px 12px;vertical-align:middle;}
 
   <!-- PANEL 2 -->
   <div class="panel" id="panel-2">
-    <div class="panel-title">Rol de TripulaciÃ³n</div>
+    <div class="panel-title">Rol de Tripulación</div>
     <div class="panel-sub">SubÃ­ el PDF del rol. La IA extrae los nombres y los cruza con la base de datos para completar todos los campos.</div>
-    <div class="info-box-yellow">ðŸ“ <span id="folder-remind"></span></div>
+    <div class="info-box-yellow"> <span id="folder-remind"></span></div>
     <div class="dropzone" id="rol-dropzone">
       <input type="file" accept=".pdf" id="rol-file" onchange="onRolFileChange(this)"/>
-      <div class="dropzone-icon">ðŸ“‹</div>
-      <div class="dropzone-text" id="rol-dropzone-text">HacÃ© clic para subir el Rol PDF</div>
+      <div class="dropzone-icon"></div>
+      <div class="dropzone-text" id="rol-dropzone-text">Hacé clic para subir el Rol PDF</div>
       <div class="dropzone-sub">Formato Prefectura Naval</div>
     </div>
     <div id="parse-btn-wrap" style="display:none;margin-bottom:12px">
@@ -346,11 +346,11 @@ td{padding:7px 12px;vertical-align:middle;}
     <div class="drive-struct">
       <div class="drive-struct-title">Estructura Drive a buscar</div>
       <div style="font-size:11px;line-height:2;color:var(--fg);display:grid;grid-template-columns:1fr 1fr;gap:0 20px">
-        <div>ðŸ“ <span style="color:var(--white)">LIBRETAS/</span><br>&nbsp;&nbsp;ðŸ“ LIBRETAS LHG/<br>&nbsp;&nbsp;ðŸ“ LIBRETAS P&amp;O/<br>&nbsp;&nbsp;ðŸ“ LIBRETAS HIDROVIAS/<br>&nbsp;&nbsp;ðŸ“ LIBRETAS IB/</div>
-        <div>ðŸ“ <span style="color:var(--white)">CEDULAS/</span><br>&nbsp;&nbsp;ðŸ“ CEDULAS LHG/<br>&nbsp;&nbsp;ðŸ“ CEDULAS P&amp;O/<br>&nbsp;&nbsp;ðŸ“ CEDULAS HIDROVIAS/<br>&nbsp;&nbsp;ðŸ“ CEDULAS IB/</div>
+        <div>ðŸ“ <span style="color:var(--white)">LIBRETAS/</span><br>&nbsp;&nbsp; LIBRETAS LHG/<br>&nbsp;&nbsp; LIBRETAS P&amp;O/<br>&nbsp;&nbsp; LIBRETAS HIDROVIAS/<br>&nbsp;&nbsp; LIBRETAS IB/</div>
+        <div>ðŸ“ <span style="color:var(--white)">CEDULAS/</span><br>&nbsp;&nbsp; CEDULAS LHG/<br>&nbsp;&nbsp; CEDULAS P&amp;O/<br>&nbsp;&nbsp; CEDULAS HIDROVIAS/<br>&nbsp;&nbsp; CEDULAS IB/</div>
       </div>
     </div>
-    <button class="btn btn-bl" id="search-btn" onclick="searchDrive()" style="margin-bottom:12px">ðŸ” Buscar documentos en Drive</button>
+    <button class="btn btn-bl" id="search-btn" onclick="searchDrive()" style="margin-bottom:12px"> Buscar documentos en Drive</button>
     <div class="logbox" id="search-log" style="display:none">
       <div class="logbox-header"><span class="logbox-title">BÃºsqueda en Drive</span><span class="logbox-pct" id="search-pct">0%</span></div>
       <div class="progress-bar-wrap"><div class="progress-bar" id="search-bar" style="width:0%"></div></div>
@@ -359,29 +359,29 @@ td{padding:7px 12px;vertical-align:middle;}
     <div id="search-stats" style="display:none"></div>
     <div id="doc-list-wrap" style="display:none"></div>
     <div class="btn-row" style="margin-top:12px">
-      <button class="btn btn-pri" id="step3-next" style="display:none" onclick="goStep(4)">Continuar â†’ Generar</button>
-      <button class="btn btn-gh" onclick="goStep(2)">â† AtrÃ¡s</button>
+      <button class="btn btn-pri" id="step3-next" style="display:none" onclick="goStep(4)">Continuar / Generar</button>
+      <button class="btn btn-gh" onclick="goStep(2)"> Atrás</button>
     </div>
   </div>
 
   <!-- PANEL 4 -->
   <div class="panel" id="panel-4">
     <div class="panel-title">Generar y Enviar</div>
-    <div class="panel-sub">CreÃ¡ la carpeta del viaje en Drive y preparÃ¡ el mail para Migraciones.</div>
+    <div class="panel-sub">Crear la carpeta del viaje en Drive y preparar el mail para Migraciones.</div>
     <div id="p4-blockers"></div>
     <div id="p4-folder" class="folder-preview">
-      <div class="field-label">ðŸ“ Carpeta a crear en Drive</div>
+      <div class="field-label"> Carpeta a crear en Drive</div>
       <div class="folder-name" id="p4-folder-name"></div>
       <div class="folder-path" id="p4-folder-path"></div>
     </div>
     <div class="summary-box">
-      <div class="summary-title">ðŸ“¦ Resumen del viaje</div>
+      <div class="summary-title"> Resumen del viaje</div>
       <div id="summary-rows"></div>
     </div>
     <div class="email-box">
       <div class="email-header">
-        <span class="email-title">ðŸ“§ Mail para Migraciones</span>
-        <button class="btn-copy" onclick="copyEmail()">ðŸ“‹ Copiar</button>
+        <span class="email-title"> Mail para Migraciones</span>
+        <button class="btn-copy" onclick="copyEmail()"> Copiar</button>
       </div>
       <pre class="email-body" id="email-body"></pre>
     </div>
@@ -393,8 +393,8 @@ td{padding:7px 12px;vertical-align:middle;}
     <div id="gen-success" style="display:none"></div>
     <div class="btn-row">
       <button class="btn btn-pri" id="gen-btn" onclick="generate()">âš¡ Generar y subir a Drive</button>
-      <button class="btn btn-gn" id="gmail-btn" style="display:none" onclick="openGmail()">âœ‰ï¸ Abrir en Gmail</button>
-      <button class="btn btn-gh" onclick="goStep(3)">â† AtrÃ¡s</button>
+      <button class="btn btn-gn" id="gmail-btn" style="display:none" onclick="openGmail()"> Abrir en Gmail</button>
+      <button class="btn btn-gh" onclick="goStep(3)">Atrás</button>
     </div>
   </div>
 
@@ -418,7 +418,7 @@ const TODAY = new Date();
 let TOKEN=null, DB_DATA=[], CREW=[], ALERTS=[], CREW_DOCS={};
 let CURRENT_STEP=1, STEP_DONE=[false,false,false,false], PARSED_SHIP={};
 
-// â”€â”€ NORMALIZAR nombres para matching robusto â”€â”€
+// â”€â”€ NORMALIZAR nombres para matching robusto:
 function norm(s){
   return (s||'').toUpperCase()
     .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
