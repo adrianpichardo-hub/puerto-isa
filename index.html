@@ -130,7 +130,7 @@
         }
         
         header {
-            padding: 20px 40px;
+            padding: 16px 40px;
             border-bottom: 1px solid rgba(0, 200, 232, 0.2);
             display: flex;
             align-items: center;
@@ -147,7 +147,7 @@
         
         .logo-text {
             font-family: 'Barlow Condensed', sans-serif;
-            font-size: 36px;
+            font-size: 32px;
             font-weight: 800;
             color: #fff;
             letter-spacing: 2px;
@@ -156,23 +156,66 @@
         .logo-sub {
             display: flex;
             flex-direction: column;
-            gap: 2px;
+            gap: 1px;
             border-left: 1px solid rgba(255, 255, 255, 0.2);
-            padding-left: 16px;
+            padding-left: 14px;
         }
         
         .logo-sub-name {
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.15em;
+            letter-spacing: 0.12em;
             color: rgba(255, 255, 255, 0.8);
         }
         
         .logo-sub-tag {
+            font-size: 8px;
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 0.08em;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+        
+        .weather-widget {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(0, 200, 232, 0.08);
+            border: 1px solid rgba(0, 200, 232, 0.2);
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 11px;
+        }
+        
+        .weather-temp {
+            font-weight: 700;
+            color: #00c8e8;
+        }
+        
+        .weather-desc {
             font-size: 9px;
             color: rgba(255, 255, 255, 0.5);
-            letter-spacing: 0.1em;
+        }
+        
+        .system-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 9px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 8px #22c55e;
         }
         
         .hero {
@@ -250,19 +293,19 @@
         }
         
         .card-icon {
-            font-size: 28px;
+            font-size: 24px;
         }
         
         .card-title {
             font-family: 'Barlow Condensed', sans-serif;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.05em;
         }
         
         .card-desc {
-            font-size: 13px;
+            font-size: 12px;
             color: rgba(255, 255, 255, 0.6);
             line-height: 1.6;
         }
@@ -271,34 +314,35 @@
             display: flex;
             gap: 8px;
             flex-wrap: wrap;
-            margin-top: 12px;
+            margin-top: 8px;
         }
         
         .tag {
-            font-size: 10px;
+            font-size: 9px;
             background: rgba(0, 200, 232, 0.2);
             color: #00c8e8;
-            padding: 4px 10px;
+            padding: 3px 8px;
             border-radius: 4px;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.04em;
         }
         
         footer {
             text-align: center;
-            padding: 30px 20px;
+            padding: 24px 20px;
             border-top: 1px solid rgba(0, 200, 232, 0.1);
             color: rgba(255, 255, 255, 0.4);
-            font-size: 11px;
+            font-size: 10px;
             letter-spacing: 0.05em;
             margin-top: auto;
         }
         
         @media (max-width: 768px) {
             .hero-title { font-size: 36px; }
-            header { padding: 16px 20px; }
+            header { flex-direction: column; gap: 12px; }
             .grid { grid-template-columns: 1fr; }
             .login-box { padding: 32px 24px; }
+            .header-right { gap: 12px; }
         }
     </style>
 </head>
@@ -330,7 +374,20 @@
             <div class="logo-text">MSA</div>
             <div class="logo-sub">
                 <div class="logo-sub-name">Agentes Maritimos</div>
-                <div class="logo-sub-tag">Nueva Palmira - Uruguay</div>
+                <div class="logo-sub-tag">Nueva Palmira - UY</div>
+            </div>
+        </div>
+        
+        <div class="header-right">
+            <div class="weather-widget">
+                <span>NUEVA PALMIRA</span>
+                <span class="weather-temp" id="tempDisplay">30 C</span>
+                <span class="weather-desc">Nublado 58%</span>
+            </div>
+            
+            <div class="system-status">
+                <div class="status-dot"></div>
+                <span>SISTEMA OPERATIVO</span>
             </div>
         </div>
     </header>
@@ -346,7 +403,7 @@
         <div class="grid">
             <a href="PUERTO_ISA.html" class="card">
                 <div class="card-header">
-                    <div class="card-icon">ðŸ‘¤</div>
+                    <div class="card-icon">A</div>
                     <div class="card-title">Tripulacion - ROL</div>
                 </div>
                 <div class="card-desc">Gestion de tripulantes, roles a bordo y libretas de puerto.</div>
@@ -359,7 +416,7 @@
             
             <a href="operaciones.html" class="card">
                 <div class="card-header">
-                    <div class="card-icon">ðŸ“‹</div>
+                    <div class="card-icon">@</div>
                     <div class="card-title">Proximas Operaciones</div>
                 </div>
                 <div class="card-desc">Buques y Fluvial. ETAs, cargos, clientes y muelles en tiempo real.</div>
@@ -372,7 +429,7 @@
             
             <a href="gastos-fluviales.html" class="card">
                 <div class="card-header">
-                    <div class="card-icon">ðŸ’°</div>
+                    <div class="card-icon">$</div>
                     <div class="card-title">Mensaje de Gastos</div>
                 </div>
                 <div class="card-desc">Generador de mensaje de gastos. Remolcadores, barcazas y lancheros.</div>
@@ -385,7 +442,7 @@
             
             <a href="barcazas.html" class="card">
                 <div class="card-header">
-                    <div class="card-icon">â›µ</div>
+                    <div class="card-icon">W</div>
                     <div class="card-title">Seguimiento Barcazas</div>
                 </div>
                 <div class="card-desc">LHG-HB Lastre y cargadas. Posiciones en tiempo real.</div>
@@ -398,7 +455,7 @@
             
             <a href="sof-generator.html" class="card">
                 <div class="card-header">
-                    <div class="card-icon">ðŸ“Š</div>
+                    <div class="card-icon">=</div>
                     <div class="card-title">Generador SOF</div>
                 </div>
                 <div class="card-desc">Statement of Facts + Programa de Cantidades automatico.</div>
@@ -411,7 +468,7 @@
             
             <a href="PROCESADOR_ISA.html" class="card">
                 <div class="card-header">
-                    <div class="card-icon">âš™ï¸</div>
+                    <div class="card-icon">G</div>
                     <div class="card-title">Procesador</div>
                 </div>
                 <div class="card-desc">Procesamiento y generacion de reportes de operaciones.</div>
@@ -425,7 +482,7 @@
     </div>
     
     <footer>
-        <p>Â© 2025 MSA AGENTES MARITIMOS â€” TODOS LOS DERECHOS RESERVADOS</p>
+        <p>2025 MSA AGENTES MARITIMOS TODOS LOS DERECHOS RESERVADOS</p>
     </footer>
 
     <script>
