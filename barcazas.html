@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,34 +18,29 @@
   --blue-mid:    #2d5cb8;
   --blue-light:  #4a8de0;
 
-  /* Accent principal cian electrico */
   --accent:      #00c8e8;
   --accent2:     #0099b8;
 
-  /* PDA verde esmeralda */
   --pda:         #22d46a;
-  --pda-dim:     rgba(34, 212, 106, .14);
-  --pda-border:  rgba(34, 212, 106, .28);
+  --pda-dim:     rgba(34,212,106,.14);
+  --pda-border:  rgba(34,212,106,.28);
 
-  /* NPA naranja Ambar */
   --npa:         #f97316;
-  --npa-dim:     rgba(249, 115, 22, .13);
-  --npa-border:  rgba(249, 115, 22, .28);
+  --npa-dim:     rgba(249,115,22,.13);
+  --npa-border:  rgba(249,115,22,.28);
 
-  /* Alerta / error */
   --red:         #f05050;
-  --red-dim:     rgba(240, 80, 80, .12);
+  --red-dim:     rgba(240,80,80,.12);
 
-  /* Salida confirmada */
   --teal:        #14b8a6;
-  --teal-dim:    rgba(20, 184, 166, .12);
-  --teal-border: rgba(20, 184, 166, .28);
+  --teal-dim:    rgba(20,184,166,.12);
+  --teal-border: rgba(20,184,166,.28);
 
   --white:       #ffffff;
   --off-white:   #dde6f4;
-  --muted:       rgba(255, 255, 255, .42);
-  --border:      rgba(255, 255, 255, .07);
-  --border2:     rgba(255, 255, 255, .12);
+  --muted:       rgba(255,255,255,.42);
+  --border:      rgba(255,255,255,.07);
+  --border2:     rgba(255,255,255,.12);
 
   --radius-sm: 6px;
   --radius-md: 10px;
@@ -96,20 +90,9 @@ body {
 }
 .logo-wrap { display: flex; align-items: center; gap: 12px; }
 .logo-msa {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 36px; font-weight: 800; font-style: italic;
-  color: var(--white); letter-spacing: 2px; line-height: 1;
-  position: relative;
-  display: none;
-}
-.logo-msa {
-  height: 50px;
+  height: 38px;
+  width: auto;
   opacity: 0.95;
-}
-.logo-msa::after {
-  content: '';
-  position: absolute; bottom: -3px; left: 0; width: 100%; height: 2px;
-  background: linear-gradient(90deg, var(--accent), var(--blue-light));
 }
 .logo-divider {
   width: 1px; height: 30px;
@@ -150,7 +133,7 @@ body {
 
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* â”€â”€â”€â”€ Barra de tÃ­tulo â”€â”€â”€â”€ */
+/* â”€â”€â”€â”€ Barra de titulo â”€â”€â”€â”€ */
 .title-bar {
   position: relative; z-index: 10;
   padding: .85rem 2rem;
@@ -203,6 +186,7 @@ body {
   overflow-y: auto; padding: 1.2rem 1.1rem;
   scrollbar-width: thin;
   scrollbar-color: rgba(255,255,255,.1) transparent;
+  display: flex; flex-direction: column; gap: 0;
 }
 .sidebar-heading {
   font-family: 'Barlow Condensed', sans-serif;
@@ -243,7 +227,7 @@ body {
 .stat-card.npa .sc-num { color: var(--npa); }
 .sc-sub { font-size: 10px; color: var(--muted); margin-top: 2px; }
 
-/* Separador de secciÃ³n */
+/* Separador de seccion */
 .section-sep {
   display: flex; align-items: center; gap: 7px;
   font-family: 'Barlow Condensed', sans-serif;
@@ -254,7 +238,7 @@ body {
 }
 .section-sep::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-/* Stat cards pequeÃ±as */
+/* Stat cards pequenas */
 .scs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .45rem; margin-bottom: .6rem; }
 .stat-card-sm {
   border-radius: var(--radius-sm);
@@ -295,6 +279,97 @@ body {
 .leg { display: flex; align-items: center; gap: 5px; font-size: 9.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .leg-dot { width: 7px; height: 7px; border-radius: 50%; }
 
+/* â”€â”€â”€â”€ Panel Clima Recalada â”€â”€â”€â”€ */
+.weather-panel {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+.weather-card {
+  border-radius: var(--radius-md);
+  padding: .85rem 1rem;
+  border: 1px solid rgba(0,200,232,.18);
+  background: rgba(0,200,232,.06);
+  position: relative;
+  overflow: hidden;
+}
+.weather-card::before {
+  content: '';
+  position: absolute; top: 0; right: 0; bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--accent), transparent);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+.wc-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: .6rem;
+}
+.wc-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 9.5px; font-weight: 700;
+  letter-spacing: .16em; text-transform: uppercase;
+  color: var(--accent);
+}
+.wc-location {
+  font-size: 8.5px; color: var(--muted); letter-spacing: .05em;
+}
+.wc-body {
+  display: flex; align-items: center; gap: 10px;
+}
+.wc-icon {
+  font-size: 26px; line-height: 1; flex-shrink: 0;
+}
+.wc-main {
+  flex: 1;
+}
+.wc-temp {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 28px; font-weight: 800; line-height: 1;
+  color: var(--white);
+}
+.wc-desc {
+  font-size: 9.5px; color: var(--muted);
+  margin-top: 2px; letter-spacing: .04em;
+  text-transform: capitalize;
+}
+.wc-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: .3rem .6rem;
+  margin-top: .65rem;
+  padding-top: .6rem;
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+.wc-stat {
+  display: flex; flex-direction: column; gap: 1px;
+}
+.wc-stat-label {
+  font-size: 7.5px; font-weight: 700;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--muted);
+}
+.wc-stat-val {
+  font-size: 12px; font-weight: 600;
+  color: var(--off-white);
+}
+.wc-loading {
+  font-size: 10px; color: var(--muted);
+  text-align: center; padding: .5rem 0;
+  letter-spacing: .04em;
+}
+.wc-error {
+  font-size: 10px; color: var(--red);
+  text-align: center; padding: .5rem 0;
+}
+.wc-refresh {
+  font-size: 8px; color: var(--accent);
+  cursor: pointer; background: none; border: none;
+  font-family: 'Barlow', sans-serif; letter-spacing: .06em;
+  text-transform: uppercase; padding: 0; margin-top: .4rem;
+  opacity: .7; display: block; width: 100%; text-align: right;
+  transition: opacity .15s;
+}
+.wc-refresh:hover { opacity: 1; }
+
 /* â”€â”€â”€â”€ Tabla â”€â”€â”€â”€ */
 .table-area {
   flex: 1; overflow-y: auto;
@@ -307,7 +382,7 @@ table { width: 100%; border-collapse: collapse; }
 
 thead { position: sticky; top: 0; z-index: 5; }
 thead tr {
-  background: rgba(13, 26, 55, .92);
+  background: rgba(13,26,55,.92);
   backdrop-filter: blur(12px);
 }
 thead th {
@@ -334,12 +409,11 @@ tbody td { padding: 9px 14px; font-size: 12px; vertical-align: middle; }
 .cell-est   { font-size: 11.5px; color: rgba(255,255,255,.55); letter-spacing: .03em; }
 .cell-fecha { font-size: 11.5px; color: rgba(255,255,255,.5); white-space: nowrap; }
 
-/* Salida */
 .cell-salida { font-size: 12px; font-weight: 600; white-space: nowrap; }
-.cell-salida.sin     { color: var(--muted); font-weight: 400; font-style: italic; }
-.cell-salida.con     { color: var(--teal); }
+.cell-salida.sin { color: var(--muted); font-weight: 400; font-style: italic; }
+.cell-salida.con { color: var(--teal); }
 
-/* Badge posiciÃ³n */
+/* Badge posicion */
 .badge {
   display: inline-flex; align-items: center; gap: 4px;
   font-size: 9.5px; font-weight: 700;
@@ -390,7 +464,7 @@ tbody td { padding: 9px 14px; font-size: 12px; vertical-align: middle; }
 <div class="bg"><div class="bg-grad"></div><div class="bg-grid"></div></div>
 <div class="side-accent"></div>
 
-<!-- â•”â• HEADER â•â•— -->
+<!-- HEADER -->
 <div class="msa-header">
   <div class="logo-wrap">
     <img src="MSA_Group_white.png" alt="MSA" class="logo-msa">
@@ -403,13 +477,13 @@ tbody td { padding: 9px 14px; font-size: 12px; vertical-align: middle; }
   <div class="header-right">
     <span class="last-upd" id="last-upd"></span>
     <button class="refresh-btn" onclick="loadData()" id="refresh-btn">
-      <span class="icon">â†»</span> Actualizar
+      <span class="icon">&#8635;</span> Actualizar
     </button>
-    <a href="index.html" class="back-link">â† Portal</a>
+    <a href="index.html" class="back-link">&#8592; Portal</a>
   </div>
 </div>
 
-<!-- â•”â• BARRA TITULO + FILTROS â•â•— -->
+<!-- BARRA TITULO + FILTROS -->
 <div class="title-bar">
   <div>
     <div class="page-title">Seguimiento Barcazas Punta del Arenal Lastre / Cargadas</div>
@@ -417,7 +491,7 @@ tbody td { padding: 9px 14px; font-size: 12px; vertical-align: middle; }
   </div>
   <div class="search-wrap">
     <input class="search-input" type="text" id="search"
-           placeholder="Buscar barcaza o remolcadorâ€¦" oninput="applyFilters()">
+           placeholder="Buscar barcaza o remolcador..." oninput="applyFilters()">
     <select class="filter-sel" id="filter-salida" onchange="applyFilters()">
       <option value="">Todas las barcazas</option>
       <option value="sin">Sin salida (en puerto)</option>
@@ -439,12 +513,12 @@ tbody td { padding: 9px 14px; font-size: 12px; vertical-align: middle; }
   </div>
 </div>
 
-<!-- â•”â• LAYOUT â•â•— -->
+<!-- LAYOUT -->
 <div class="main-layout">
 
-  <!-- â”€â”€â”€â”€ Sidebar â”€â”€â”€â”€ -->
+  <!-- Sidebar -->
   <div class="sidebar">
-    <div class="sidebar-heading">En Puerto Â· Sin Salida</div>
+    <div class="sidebar-heading">En Puerto &middot; Sin Salida</div>
 
     <div class="stat-card pda">
       <div class="sc-top"><span class="sc-label">Lastre PDA</span><span class="sc-dot"></span></div>
@@ -467,8 +541,8 @@ tbody td { padding: 9px 14px; font-size: 12px; vertical-align: middle; }
       <div class="sc-sub">Actualmente en puerto</div>
     </div>
 
-    <!-- HistÃ³rico con salida asignada -->
-    <div class="section-sep">HistÃ³rico</div>
+    <!-- Historico con salida asignada -->
+    <div class="section-sep">Historico</div>
 
     <div class="scs-grid">
       <div class="stat-card-sm pda">
@@ -504,7 +578,7 @@ tbody td { padding: 9px 14px; font-size: 12px; vertical-align: middle; }
       <span class="info-val accent" id="cnt-total-sal">0</span>
     </div>
     <div class="info-row">
-      <span class="info-label">Ãšltima actualizaciÃ³n</span>
+      <span class="info-label">Ultima actualizacion</span>
       <span class="info-val" id="upd-time">--:--</span>
     </div>
 
@@ -515,13 +589,28 @@ tbody td { padding: 9px 14px; font-size: 12px; vertical-align: middle; }
       <div class="leg"><div class="leg-dot" style="background:var(--npa)"></div>NPA</div>
       <div class="leg"><div class="leg-dot" style="background:var(--teal)"></div>Salida</div>
     </div>
+
+    <!-- Panel Clima Recalada -->
+    <div class="weather-panel">
+      <div class="section-sep">Clima Recalada</div>
+      <div class="weather-card">
+        <div class="wc-header">
+          <span class="wc-title">&#9650; Recalada</span>
+          <span class="wc-location">Punta del Indio, ARG</span>
+        </div>
+        <div id="wc-content">
+          <div class="wc-loading">Cargando clima...</div>
+        </div>
+        <button class="wc-refresh" onclick="loadWeather()">&#8635; actualizar</button>
+      </div>
+    </div>
   </div>
 
-  <!--  Tabla -->
+  <!-- Tabla -->
   <div class="table-area" id="table-area">
     <div class="loading-wrap" id="loading">
       <div class="spinner"></div>
-      <div class="loading-txt">Cargando datos desde Google Sheetsâ€¦</div>
+      <div class="loading-txt">Cargando datos desde Google Sheets...</div>
     </div>
     <table id="data-table" style="display:none">
       <thead>
@@ -548,6 +637,10 @@ tbody td { padding: 9px 14px; font-size: 12px; vertical-align: middle; }
 <script>
 const SHEET_ID = '1LHrw4Oih9h510UsoB_HsMm83U-g8zlXHgPqm8_7QPjM';
 const CSV_URL  = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`;
+
+// Coordenadas Punta del Indio (Recalada, Rio de la Plata, Argentina)
+const WEATHER_LAT = -35.27;
+const WEATHER_LON = -57.23;
 
 let allRows = [];
 
@@ -581,7 +674,7 @@ async function loadData() {
     document.getElementById('loading').style.display   = 'none';
     const errEl = document.getElementById('error-state');
     errEl.style.display = 'block';
-    errEl.textContent   = 'Error al cargar los datos. Verifique la conexiÃ³n o los permisos del Sheet.';
+    errEl.textContent   = 'Error al cargar los datos. Verifique la conexion o los permisos del Sheet.';
     console.error('loadData:', err);
   }
 
@@ -616,9 +709,9 @@ function splitCSVLine(line) {
   const result = [];
   let cur = '', inQ = false;
   for (const ch of line) {
-    if (ch === '"')            { inQ = !inQ; }
+    if (ch === '"')              { inQ = !inQ; }
     else if (ch === ',' && !inQ) { result.push(cur); cur = ''; }
-    else                       { cur += ch; }
+    else                         { cur += ch; }
   }
   result.push(cur);
   return result;
@@ -682,7 +775,7 @@ function renderTable(rows) {
 
   body.innerHTML = rows.map((r, i) => {
     const bc  = getBadgeClass(r.posicion);
-    const hasSalida = r.salida !== '';
+    const hasSalida  = r.salida !== '';
     const salidaClass = hasSalida ? 'con' : 'sin';
     const salidaTxt   = hasSalida ? r.salida : 'Sin';
 
@@ -700,7 +793,7 @@ function renderTable(rows) {
 
 /* â”€â”€â”€â”€ Sidebar stats â”€â”€â”€â”€ */
 function updateSidebar(rows) {
-  const count = (predFn) => rows.filter(predFn).length;
+  const count = (fn) => rows.filter(fn).length;
 
   const isCargada = r => r.estado.includes('CARGAD');
   const isLastre  = r => r.estado.includes('LASTRE');
@@ -709,13 +802,11 @@ function updateSidebar(rows) {
   const esPDA     = r => r.posicion.includes('PDA');
   const esNPA     = r => r.posicion.includes('NPA');
 
-  // Sin salida
   set('lastrePDA-sin',  count(r => isLastre(r)  && esPDA(r) && sinSalida(r)));
   set('lastreNPA-sin',  count(r => isLastre(r)  && esNPA(r) && sinSalida(r)));
   set('cargadaPDA-sin', count(r => isCargada(r) && esPDA(r) && sinSalida(r)));
   set('cargadaNPA-sin', count(r => isCargada(r) && esNPA(r) && sinSalida(r)));
 
-  // Con salida
   set('lastrePDA-sal',  count(r => isLastre(r)  && esPDA(r) && conSalida(r)));
   set('lastreNPA-sal',  count(r => isLastre(r)  && esNPA(r) && conSalida(r)));
   set('cargadaPDA-sal', count(r => isCargada(r) && esPDA(r) && conSalida(r)));
@@ -730,12 +821,92 @@ function set(id, val) {
   if (el) el.textContent = val;
 }
 
+/* â”€â”€â”€â”€ Clima Recalada (Open-Meteo, gratis, sin API key) â”€â”€â”€â”€ */
+const WMO_ICONS = {
+  0:'â˜€ï¸', 1:'ðŸŒ¤ï¸', 2:'â›…', 3:'â˜ï¸',
+  45:'ðŸŒ«ï¸', 48:'ðŸŒ«ï¸',
+  51:'ðŸŒ¦ï¸', 53:'ðŸŒ¦ï¸', 55:'ðŸŒ§ï¸',
+  61:'ðŸŒ§ï¸', 63:'ðŸŒ§ï¸', 65:'ðŸŒ§ï¸',
+  71:'ðŸŒ¨ï¸', 73:'ðŸŒ¨ï¸', 75:'â„ï¸',
+  80:'ðŸŒ¦ï¸', 81:'ðŸŒ§ï¸', 82:'â›ˆï¸',
+  95:'â›ˆï¸', 96:'â›ˆï¸', 99:'â›ˆï¸'
+};
+const WMO_DESC = {
+  0:'Despejado', 1:'Mayormente despejado', 2:'Parcialmente nublado', 3:'Nublado',
+  45:'Niebla', 48:'Niebla con escarcha',
+  51:'Llovizna leve', 53:'Llovizna moderada', 55:'Llovizna intensa',
+  61:'Lluvia leve', 63:'Lluvia moderada', 65:'Lluvia fuerte',
+  71:'Nieve leve', 73:'Nieve moderada', 75:'Nieve fuerte',
+  80:'Chubascos leves', 81:'Chubascos moderados', 82:'Chubascos fuertes',
+  95:'Tormenta', 96:'Tormenta con granizo', 99:'Tormenta fuerte'
+};
+
+function degToCompass(deg) {
+  const dirs = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSO','SO','OSO','O','ONO','NO','NNO'];
+  return dirs[Math.round(deg / 22.5) % 16];
+}
+
+async function loadWeather() {
+  const el = document.getElementById('wc-content');
+  el.innerHTML = '<div class="wc-loading">Cargando clima...</div>';
+
+  try {
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${WEATHER_LAT}&longitude=${WEATHER_LON}` +
+      `&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m` +
+      `&wind_speed_unit=kn&timezone=America%2FSao_Paulo`;
+
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    const c = data.current;
+
+    const code  = c.weather_code;
+    const icon  = WMO_ICONS[code]  || 'ðŸŒ¡ï¸';
+    const desc  = WMO_DESC[code]   || 'Condicion ' + code;
+    const temp  = Math.round(c.temperature_2m);
+    const hum   = c.relative_humidity_2m;
+    const wspd  = Math.round(c.wind_speed_10m);
+    const wgust = Math.round(c.wind_gusts_10m);
+    const wdir  = degToCompass(c.wind_direction_10m);
+
+    el.innerHTML = `
+      <div class="wc-body">
+        <div class="wc-icon">${icon}</div>
+        <div class="wc-main">
+          <div class="wc-temp">${temp}&deg;C</div>
+          <div class="wc-desc">${desc}</div>
+        </div>
+      </div>
+      <div class="wc-grid">
+        <div class="wc-stat">
+          <span class="wc-stat-label">Viento</span>
+          <span class="wc-stat-val">${wspd} kt ${wdir}</span>
+        </div>
+        <div class="wc-stat">
+          <span class="wc-stat-label">Rafagas</span>
+          <span class="wc-stat-val">${wgust} kt</span>
+        </div>
+        <div class="wc-stat">
+          <span class="wc-stat-label">Humedad</span>
+          <span class="wc-stat-val">${hum}%</span>
+        </div>
+        <div class="wc-stat">
+          <span class="wc-stat-label">Dir. viento</span>
+          <span class="wc-stat-val">${c.wind_direction_10m}&deg;</span>
+        </div>
+      </div>`;
+  } catch (err) {
+    el.innerHTML = '<div class="wc-error">No se pudo cargar el clima.</div>';
+    console.error('loadWeather:', err);
+  }
+}
+
 /* â”€â”€â”€â”€ Inicio â”€â”€â”€â”€ */
 loadData();
-setInterval(loadData, 5 * 60 * 1000); // auto-refresh cada 5 min
+loadWeather();
+setInterval(loadData, 5 * 60 * 1000);
+setInterval(loadWeather, 10 * 60 * 1000);
 </script>
-
-
 
 </body>
 </html>
