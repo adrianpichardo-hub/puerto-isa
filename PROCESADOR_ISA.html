@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generador SOF - ISA PUERTO</title>
+    <title>Generador SOF - MSA AGENTES MARITIMOS</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -47,6 +47,11 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-top: 2px;
+        }
+
+        .navbar-logo {
+            height: 50px;
+            opacity: 0.95;
         }
 
         .container {
@@ -268,9 +273,12 @@
 <body>
     <div class="navbar">
         <div class="navbar-content">
-            <div>
-                <div class="navbar-brand">ISA PUERTO</div>
-                <div class="navbar-subtitle">Generador SOF — Nueva Palmira</div>
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <img src="MSA_Group_white.png" alt="MSA" class="navbar-logo">
+                <div>
+                    <div class="navbar-brand">MSA AGENTES MARITIMOS</div>
+                    <div class="navbar-subtitle">Generador SOF â€” Nueva Palmira</div>
+                </div>
             </div>
         </div>
     </div>
@@ -278,18 +286,18 @@
     <div class="container">
         <div class="page-header">
             <div class="page-title">Generador SOF</div>
-            <div class="page-subtitle">Statement of Facts — Descarga de Operaciones</div>
+            <div class="page-subtitle">Statement of Facts â€” Descarga de Operaciones</div>
         </div>
 
         <div id="alertMessage" class="alert"></div>
 
-        <!-- SECCIÓN 1: INFO OPERACIONAL -->
+        <!-- SECCIÃ“N 1: INFO OPERACIONAL -->
         <div class="card">
-            <div class="card-title">Información Operacional</div>
+            <div class="card-title">InformaciÃ³n Operacional</div>
             
             <div class="form-grid">
                 <div class="form-group">
-                    <label>Fecha de Operación *</label>
+                    <label>Fecha de OperaciÃ³n *</label>
                     <input type="date" id="opDate" required />
                 </div>
                 <div class="form-group">
@@ -323,7 +331,7 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Descripción de Carga *</label>
+                    <label>DescripciÃ³n de Carga *</label>
                     <select id="cargo" required>
                         <option value="">Selecciona...</option>
                         <option value="MINERAL DE HIERRO (LOHT)">MINERAL DE HIERRO (LOHT)</option>
@@ -343,12 +351,12 @@
                     <label>Puerto y Lugar de Descarga *</label>
                     <select id="dischargePort" required>
                         <option value="">Selecciona...</option>
-                        <option value="Corporación Navios - Nueva Palmira">Corporación Navios - Nueva Palmira</option>
+                        <option value="CorporaciÃ³n Navios - Nueva Palmira">CorporaciÃ³n Navios - Nueva Palmira</option>
                         <option value="Potiguar - Punta del Arenal">Potiguar - Punta del Arenal</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Cantidad Total (MT) - Calculada Automáticamente</label>
+                    <label>Cantidad Total (MT) - Calculada AutomÃ¡ticamente</label>
                     <div class="readonly-field" id="totalQtyDisplay">0.00 mtons</div>
                     <input type="hidden" id="totalQty" value="0" />
                     <div class="form-hint auto">Se calcula al pegar el programa de descarga</div>
@@ -385,43 +393,43 @@
                     <div class="form-hint auto">Del primer evento "Inicia descarga"</div>
                 </div>
                 <div class="form-group">
-                    <label>Finaliza Carga - Se calcula del último evento</label>
+                    <label>Finaliza Carga - Se calcula del Ãºltimo evento</label>
                     <div class="readonly-field" id="dischargeEndDisplay">Se calcula al pegar logs</div>
                     <input type="hidden" id="dischargeEnd" />
-                    <div class="form-hint auto">Del último evento "Finaliza descarga"</div>
+                    <div class="form-hint auto">Del Ãºltimo evento "Finaliza descarga"</div>
                 </div>
                 <div class="form-group">
-                    <label>Fecha/Hora Libre Plática Otorgada *</label>
+                    <label>Fecha/Hora Libre PlÃ¡tica Otorgada *</label>
                     <input type="datetime-local" id="freePracticaTime" required />
                 </div>
             </div>
         </div>
 
-        <!-- SECCIÓN 2: LOGS DE GRÚAS -->
+        <!-- SECCIÃ“N 2: LOGS DE GRÃšAS -->
         <div class="card">
-            <div class="card-title">Logs de Grúas (Operativa de Descarga)</div>
+            <div class="card-title">Logs de GrÃºas (Operativa de Descarga)</div>
             
             <div class="form-group">
-                <label>Pega aquí los logs de las grúas (tab-separated)</label>
+                <label>Pega aquÃ­ los logs de las grÃºas (tab-separated)</label>
                 <textarea id="gruasData" placeholder="Fecha&#9;Barcaza&#9;Inicio&#9;Fin&#9;Tiempo&#9;Evento&#10;18-mar&#9;TBN 102&#9;12:20&#9;12:26&#9;00:06&#9;Draft Inicial AHK&#10;..." onchange="extractDischargeTimings()" oninput="extractDischargeTimings()"></textarea>
-                <div class="form-hint">Copia desde Excel tal cual (Ctrl+C, Ctrl+V) - Se extraen automáticamente las fechas</div>
+                <div class="form-hint">Copia desde Excel tal cual (Ctrl+C, Ctrl+V) - Se extraen automÃ¡ticamente las fechas</div>
             </div>
         </div>
 
-        <!-- SECCIÓN 3: PROGRAMA DE DESCARGA -->
+        <!-- SECCIÃ“N 3: PROGRAMA DE DESCARGA -->
         <div class="card">
             <div class="card-title">Programa de Descarga (Cantidades)</div>
             
             <div class="form-group">
-                <label>Pega aquí el programa de descarga (barcaza + cantidad)</label>
+                <label>Pega aquÃ­ el programa de descarga (barcaza + cantidad)</label>
                 <textarea id="programData" placeholder="HERKULES XVII - HB17&#10;#&#9;Barcaza&#9;Cantidad Origen&#9;Producto&#9;Viaje&#10;1&#9;HB044091&#9;1.838.583&#9;LOHT&#9;HB17&#10;2&#9;HB044048&#9;1.940.314&#9;LOHT&#9;HB17&#10;..." onchange="calculateTotalQty()" oninput="calculateTotalQty()"></textarea>
-                <div class="form-hint">Formato: # | Barcaza | Cantidad (con puntos de miles) | Producto | Viaje - Se suma automáticamente</div>
+                <div class="form-hint">Formato: # | Barcaza | Cantidad (con puntos de miles) | Producto | Viaje - Se suma automÃ¡ticamente</div>
             </div>
         </div>
 
         <!-- BOTONES -->
         <div class="btn-group">
-            <button class="primary" onclick="generateSOF()">✓ Generar SOF Excel</button>
+            <button class="primary" onclick="generateSOF()">âœ“ Generar SOF Excel</button>
             <button class="secondary" onclick="clearForm()">Limpiar</button>
         </div>
 
@@ -429,7 +437,7 @@
     </div>
 
     <div class="footer">
-        <p>ISA PUERTO © 2026 | Generador SOF v3.1 | Sistema de Generación de Reportes de Descarga</p>
+        <p>MSA AGENTES MARITIMOS Â© 2026 | Generador SOF v3.1 | Sistema de GeneraciÃ³n de Reportes de Descarga</p>
     </div>
 
     <script>
@@ -445,13 +453,13 @@
         }
 
         function getDayName(dateStr) {
-            const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+            const days = ['Domingo', 'Lunes', 'Martes', 'MiÃ©rcoles', 'Jueves', 'Viernes', 'SÃ¡bado'];
             const date = new Date(dateStr + 'T00:00:00');
             return days[date.getDay()];
         }
 
         // ===========================
-        // EXTRACCIÓN DE FECHAS
+        // EXTRACCIÃ“N DE FECHAS
         // ===========================
         function extractDischargeTimings() {
             const gruasRaw = document.getElementById('gruasData').value;
@@ -464,7 +472,7 @@
             lines.forEach(line => {
                 const cols = line.split('\t').map(c => c.trim());
                 
-                // Procesar GRÚA NORTE (cols 0-5)
+                // Procesar GRÃšA NORTE (cols 0-5)
                 if (cols[0] && cols[5] && cols[5].toLowerCase().includes('inicia')) {
                     if (!firstInitiaEvent) {
                         firstInitiaEvent = { fecha: cols[0], hora: cols[2] };
@@ -474,7 +482,7 @@
                     lastFinalEvent = { fecha: cols[0], hora: cols[3] };
                 }
                 
-                // Procesar GRÚA SUR (cols 6-11)
+                // Procesar GRÃšA SUR (cols 6-11)
                 if (cols[6] && cols[11] && cols[11].toLowerCase().includes('inicia')) {
                     if (!firstInitiaEvent) {
                         firstInitiaEvent = { fecha: cols[6], hora: cols[8] };
@@ -484,7 +492,7 @@
                     lastFinalEvent = { fecha: cols[6], hora: cols[9] };
                 }
                 
-                // Procesar GRÚA MUELLE 5 (cols 12-17)
+                // Procesar GRÃšA MUELLE 5 (cols 12-17)
                 if (cols[12] && cols[17] && cols[17].toLowerCase().includes('inicia')) {
                     if (!firstInitiaEvent) {
                         firstInitiaEvent = { fecha: cols[12], hora: cols[14] };
@@ -510,7 +518,7 @@
         }
 
         // ===========================
-        // CÁLCULO DE CANTIDAD
+        // CÃLCULO DE CANTIDAD
         // ===========================
         function calculateTotalQty() {
             const programRaw = document.getElementById('programData').value;
@@ -526,13 +534,13 @@
                 
                 let qtyCol = -1;
                 
-                // Detectar posición de la cantidad
+                // Detectar posiciÃ³n de la cantidad
                 if (cols.length >= 2) {
-                    // Si primer col es número (# de fila), cantidad está en índice 2
+                    // Si primer col es nÃºmero (# de fila), cantidad estÃ¡ en Ã­ndice 2
                     if (!isNaN(cols[0]) && cols[0] !== 'TTL' && cols[0] !== '#') {
                         qtyCol = 2;
                     } else if (cols[0] !== '#' && cols[0].toLowerCase() !== 'barcaza' && cols[0].toLowerCase() !== 'ttl') {
-                        // Sino, es formato simple, cantidad en índice 1
+                        // Sino, es formato simple, cantidad en Ã­ndice 1
                         qtyCol = 1;
                     }
                 }
@@ -571,10 +579,10 @@
                 // Dividir por tabs
                 const cols = line.split('\t').map(c => c.trim());
                 
-                // Procesar cada grúa (columnas: 0-5 Grúa Norte, 6-11 Grúa Sur, 12-17 Grúa Muelle 5)
+                // Procesar cada grÃºa (columnas: 0-5 GrÃºa Norte, 6-11 GrÃºa Sur, 12-17 GrÃºa Muelle 5)
                 // Estructura esperada: Fecha, Barcaza, Inicio, [Fin], Tiempo, Evento
                 
-                // GRÚA NORTE (cols 0-5)
+                // GRÃšA NORTE (cols 0-5)
                 if (cols[0] && cols[5]) {
                     // Si hay fecha y evento
                     events.push({
@@ -588,7 +596,7 @@
                     });
                 }
                 
-                // GRÚA SUR (cols 6-11)
+                // GRÃšA SUR (cols 6-11)
                 if (cols[6] && cols[11]) {
                     events.push({
                         grua: 'SUR',
@@ -601,7 +609,7 @@
                     });
                 }
                 
-                // GRÚA MUELLE 5 (cols 12-17)
+                // GRÃšA MUELLE 5 (cols 12-17)
                 if (cols[12] && cols[17]) {
                     events.push({
                         grua: 'M5',
@@ -633,7 +641,7 @@
         }
 
         // ===========================
-        // GENERACIÓN EXCEL
+        // GENERACIÃ“N EXCEL
         // ===========================
         function generateSOF() {
             // Validar
@@ -642,30 +650,30 @@
             for (let field of required) {
                 const val = document.getElementById(field).value;
                 if (!val) {
-                    showAlert(`⚠ Campo obligatorio: ${field}`, 'warning');
+                    showAlert(`âš  Campo obligatorio: ${field}`, 'warning');
                     return;
                 }
             }
 
             if (!document.getElementById('dischargeStart').value) {
-                showAlert('⚠ No se pudo extraer "Comienza Carga" de los logs. Verifica que haya evento "Inicia descarga"', 'warning');
+                showAlert('âš  No se pudo extraer "Comienza Carga" de los logs. Verifica que haya evento "Inicia descarga"', 'warning');
                 return;
             }
 
             if (!document.getElementById('dischargeEnd').value) {
-                showAlert('⚠ No se pudo extraer "Finaliza Carga" de los logs. Verifica que haya evento "Finaliza descarga"', 'warning');
+                showAlert('âš  No se pudo extraer "Finaliza Carga" de los logs. Verifica que haya evento "Finaliza descarga"', 'warning');
                 return;
             }
 
             const gruasRaw = document.getElementById('gruasData').value.trim();
             if (!gruasRaw) {
-                showAlert('⚠ Debes pegar los logs de grúas', 'warning');
+                showAlert('âš  Debes pegar los logs de grÃºas', 'warning');
                 return;
             }
 
             const programRaw = document.getElementById('programData').value.trim();
             if (!programRaw) {
-                showAlert('⚠ Debes pegar el programa de descarga', 'warning');
+                showAlert('âš  Debes pegar el programa de descarga', 'warning');
                 return;
             }
 
@@ -696,7 +704,7 @@
             };
 
             createSOFExcel(data);
-            showAlert('✓ SOF generado. Descargando...', 'success');
+            showAlert('âœ“ SOF generado. Descargando...', 'success');
         }
 
         function createSOFExcel(data) {
@@ -709,7 +717,7 @@
             matrix.push(["Felipe Fontana 818", "", "", "", "", "", "", ""]);
             matrix.push(["Nueva Palmira - Uruguay", "", "", "", "", "", "", "Standard Statement on Fact"]);
             matrix.push(["Phone (598) 4544-9529", "", "", "", "", "", "", "Recommended by BIMCO (amended)"]);
-            matrix.push(["E-mail: npa@isa-agents.com.ar", "", "", "", "", "", "", ""]);
+            matrix.push(["E-mail: npa@msa-agents.com.ar", "", "", "", "", "", "", ""]);
             matrix.push(["", "", "", "", "", "", "", ""]);
 
             // INFO OPERACIONAL
@@ -726,7 +734,7 @@
             matrix.push(["", "", "", "", "", "", "", ""]);
 
             // TABLA OPERATIVA - ENCABEZADO
-            matrix.push(["Fecha", "Día", "Barcaza", "Desde", "Hasta", "Observaciones", "Remarks", ""]);
+            matrix.push(["Fecha", "DÃ­a", "Barcaza", "Desde", "Hasta", "Observaciones", "Remarks", ""]);
 
             // Evento de Amarre
             const opDateFormatted = data.opDate.split('-').reverse().join('/');
@@ -739,8 +747,8 @@
             // Autoridades y agencia a bordo
             matrix.push(["", "", "", data.authoritiesTime.split(' ')[1], "", "Autoridades y agencia a bordo.", "", ""]);
 
-            // Libre plática otorgada
-            matrix.push(["", "", "", data.freePracticaTime.split(' ')[1], "", "Libre plática otorgada.", "", ""]);
+            // Libre plÃ¡tica otorgada
+            matrix.push(["", "", "", data.freePracticaTime.split(' ')[1], "", "Libre plÃ¡tica otorgada.", "", ""]);
 
             // Agregar eventos de operativa - ORDENADOS POR TIEMPO
             const sortedEvents = data.events.sort((a, b) => {
@@ -750,7 +758,7 @@
             });
 
             sortedEvents.forEach((e) => {
-                if (!e.evento || !e.evento.trim()) return; // Saltar líneas vacías
+                if (!e.evento || !e.evento.trim()) return; // Saltar lÃ­neas vacÃ­as
                 
                 let obsText = e.evento;
                 
@@ -814,7 +822,7 @@
         // ===========================
         function showAlert(msg, type) {
             const elem = document.getElementById('alertMessage');
-            const icons = { success: '✓', error: '✗', warning: '⚠' };
+            const icons = { success: 'âœ“', error: 'âœ—', warning: 'âš ' };
             elem.innerHTML = `<span>${icons[type]}</span><span>${msg}</span>`;
             elem.className = `alert show alert-${type}`;
             setTimeout(() => elem.classList.remove('show'), 4000);
@@ -831,7 +839,7 @@
             document.getElementById('totalQty').value = '0';
             document.getElementById('dischargeStart').value = '';
             document.getElementById('dischargeEnd').value = '';
-            showAlert('✓ Formulario limpiado', 'success');
+            showAlert('âœ“ Formulario limpiado', 'success');
         }
 
         // Init
