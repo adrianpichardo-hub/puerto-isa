@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ISA - Proximas Operaciones Nueva Palmira</title>
+<title>MSA - Proximas Operaciones Nueva Palmira</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -26,10 +26,11 @@ body{font-family:'Barlow',sans-serif;background:var(--navy);color:var(--white);d
 .side-accent{position:fixed;left:0;top:0;bottom:0;width:3px;z-index:20;background:linear-gradient(180deg,transparent 0%,var(--accent) 40%,var(--blue-light) 70%,transparent 100%);opacity:.6;}
 
 /* HEADER */
-.isa-header{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:56px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.msa-header{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:56px;border-bottom:1px solid var(--border);flex-shrink:0;}
 .logo-wrap{display:flex;align-items:center;}
-.logo-isa{font-family:'Barlow Condensed',sans-serif;font-size:38px;font-weight:800;font-style:italic;color:var(--white);letter-spacing:2px;line-height:1;position:relative;}
-.logo-isa::after{content:'';position:absolute;bottom:-3px;left:0;width:100%;height:2px;background:linear-gradient(90deg,var(--accent),var(--blue-light));}
+.logo-msa{font-family:'Barlow Condensed',sans-serif;font-size:38px;font-weight:800;font-style:italic;color:var(--white);letter-spacing:2px;line-height:1;position:relative;display:none;}
+.logo-msa-img{height:50px;opacity:0.95;}
+.logo-msa::after{content:'';position:absolute;bottom:-3px;left:0;width:100%;height:2px;background:linear-gradient(90deg,var(--accent),var(--blue-light));}
 .logo-sub{margin-left:12px;padding-left:12px;border-left:1px solid rgba(255,255,255,.2);display:flex;flex-direction:column;gap:1px;}
 .logo-name{font-size:11px;font-weight:600;color:var(--off-white);letter-spacing:.14em;text-transform:uppercase}
 .logo-tag{font-size:9px;font-weight:300;color:var(--muted);letter-spacing:.16em;text-transform:uppercase}
@@ -146,12 +147,12 @@ tbody tr.finalizado:hover{opacity:0.75;background:rgba(0,180,216,.1);}
 <div class="side-accent"></div>
 
 <!-- HEADER -->
-<div class="isa-header">
+<div class="msa-header">
   <div class="logo-wrap">
-    <div class="logo-isa">ISA</div>
+    <img src="MSA_Group_white.png" alt="MSA" class="logo-msa-img">
     <div class="logo-sub">
       <span class="logo-name">Agentes Maritimos</span>
-      <span class="logo-tag">Exceeding expectations</span>
+      <span class="logo-tag">Proximas Operaciones</span>
     </div>
   </div>
   <div class="header-right">
@@ -214,8 +215,8 @@ const SHEET_ID = '1qiVGOMETa9z0mDuJAVR-cl0vlL-CV7gUxz1WJ7coG5M';
 const GID_BUQUES  = '1062912056';
 const GID_FLUVIAL = '793637404';
 
-const STORAGE_KEY_BUQUES = 'isa_finalizados_buques';
-const STORAGE_KEY_FLUVIAL = 'isa_finalizados_fluvial';
+const STORAGE_KEY_BUQUES = 'msa_finalizados_buques';
+const STORAGE_KEY_FLUVIAL = 'msa_finalizados_fluvial';
 
 let rawBuques = [], rawFluvial = [];
 
@@ -339,7 +340,7 @@ function toggleFinalized(registroId, tipo) {
 // Ocultar TODOS los finalizados de una vez
 // TOGGLE - Ocultar o mostrar finalizados
 function toggleHideFinalizados() {
-  const storageKey = 'isa_hide_finalizados_state';
+  const storageKey = 'msa_hide_finalizados_state';
   let state = {
     hidden: false,
     timestamp: Date.now()
@@ -364,7 +365,7 @@ function toggleHideFinalizados() {
     console.warn('Error:', e);
   }
   
-  // Actualizar UI del botÃ³n
+  // Actualizar UI del botÃƒÂ³n
   updateHideBtn();
   
   // Re-renderizar
@@ -372,9 +373,9 @@ function toggleHideFinalizados() {
   renderFluvial(rawFluvial);
 }
 
-// Ver si finalizados estÃ¡n ocultados por toggle
+// Ver si finalizados estÃƒÂ¡n ocultados por toggle
 function areFinalizadosHidden() {
-  const storageKey = 'isa_hide_finalizados_state';
+  const storageKey = 'msa_hide_finalizados_state';
   try {
     const stored = localStorage.getItem(storageKey);
     if (stored) {
@@ -396,7 +397,7 @@ function areFinalizadosHidden() {
   return false;
 }
 
-// Actualizar UI del botÃ³n
+// Actualizar UI del botÃƒÂ³n
 function updateHideBtn() {
   const hideBtn = document.getElementById('hide-btn');
   const isHidden = areFinalizadosHidden();
@@ -507,7 +508,7 @@ function renderBuques(sections, search=''){
       const isHidden = shouldHideRecord(registroId, 'buques');
       if(isHidden) return false;
       
-      // Si toggle estÃ¡ activado y tiene fechaFin, ocultar
+      // Si toggle estÃƒÂ¡ activado y tiene fechaFin, ocultar
       const fechaFin = (r[3] || '').trim();
       if (areFinalizadosHidden() && fechaFin) return false;
       
@@ -592,7 +593,7 @@ function renderFluvial(sections, search=''){
       const isHidden = shouldHideRecord(registroId, 'fluvial');
       if(isHidden) return false;
       
-      // Si toggle estÃ¡ activado y tiene fechaFin, ocultar
+      // Si toggle estÃƒÂ¡ activado y tiene fechaFin, ocultar
       const fechaFin = (r[5] || '').trim();
       if (areFinalizadosHidden() && fechaFin) return false;
       
