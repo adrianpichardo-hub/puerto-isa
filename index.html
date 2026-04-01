@@ -4,68 +4,161 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MSA Portal de Operaciones</title>
-    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Barlow:wght@400;600&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;1,800&family=Barlow:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        /* Ocultamos todo por defecto */
+        /* LÓGICA DE BLOQUEO */
         #main-content { display: none; }
-        body { background: #0a1628; color: white; font-family: 'Barlow', sans-serif; margin: 0; }
-        .lock-screen { 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            height: 100vh; text-align: center; background: #0a1628;
+        .access-overlay {
+            position: fixed; inset: 0; z-index: 9999;
+            background: #0a1628; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; text-align: center;
         }
-        .btn-retry { 
-            margin-top: 20px; padding: 10px 20px; background: #1a3a8c; color: white; 
-            border: none; border-radius: 5px; cursor: pointer; text-transform: uppercase;
+
+        /* TU DISEÑO ORIGINAL COMPLETO */
+        *{box-sizing:border-box;margin:0;padding:0}
+        :root{
+          --navy:#0a1628;--navy2:#0d1f3c;
+          --blue:#1a3a8c;--blue-mid:#2d5cb8;--blue-light:#3a7bd5;--accent:#00b4d8;
+          --green:#22c55e;--red:#ef4444;--white:#fff;--off-white:#e8eef8;
+          --muted:rgba(255,255,255,.45);--border:rgba(255,255,255,.08);
         }
-        /* Estilos de tus cards y layout */
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-        .hero-title { font-family: 'Barlow Condensed', sans-serif; font-size: 3rem; text-transform: uppercase; }
-        .t2 { color: #00b4d8; }
-        .card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin-top: 20px; }
-        .btn-pri { background: #00b4d8; color: #0a1628; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: 600; display: inline-block; }
+        body{font-family:'Barlow',sans-serif;background:var(--navy);color:var(--off-white);min-height:100vh;overflow-x:hidden}
+        body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:60px 60px}
+        body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 70% 50% at 15% 50%,rgba(26,58,140,.45) 0%,transparent 70%)}
+        .container{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 20px}
+        header{border-bottom:1px solid var(--border);padding:15px 0;display:flex;align-items:center;justify-content:space-between;gap:20px;position:sticky;top:0;z-index:50;background:rgba(10,22,40,.92);backdrop-filter:blur(12px)}
+        .logo{display:flex;align-items:center;gap:15px}
+        .logo-hex{width:40px;height:40px;background:linear-gradient(135deg,var(--blue),var(--accent));display:flex;align-items:center;justify-content:center;font-size:20px;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%)}
+        .logo-title{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:32px;font-weight:800;letter-spacing:3px;color:var(--white);line-height:1;position:relative}
+        .logo-title::after{content:'';position:absolute;bottom:-4px;left:0;width:100%;height:2px;background:linear-gradient(90deg,var(--accent),var(--blue-light))}
+        .status-txt{font-size:10px;color:var(--green);text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+        .hero{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;text-align:center}
+        .hero-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(32px,5vw,64px);font-weight:800;text-transform:uppercase;line-height:1.1;letter-spacing:.03em;margin-bottom:10px}
+        .t2{background:linear-gradient(110deg,var(--accent) 0%,#80d8f8 50%,var(--blue-light) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px;padding:40px 0}
+        .card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:24px;transition:all .3s;position:relative;overflow:hidden}
+        .card:hover{border-color:var(--accent);background:rgba(0,180,216,.06);transform:translateY(-4px)}
+        .btn-pri{background:linear-gradient(135deg,var(--blue),var(--accent));color:var(--white);padding:10px 24px;border-radius:6px;text-decoration:none;font-weight:600;font-size:12px;display:inline-block;transition:0.2s}
+        .btn-pri:hover{filter:brightness(1.2)}
+        .tag{padding:4px 10px;background:rgba(0,180,216,.1);border:1px solid rgba(0,180,216,.25);border-radius:6px;font-size:9px;color:var(--accent);text-transform:uppercase}
+        footer{border-top:1px solid var(--border);padding:30px 0;margin-top:60px;text-align:center;color:var(--muted);font-size:10px}
     </style>
 </head>
 <body>
 
-    <div id="access-screen" class="lock-screen">
-        <h1 id="status-msg" style="color:#00b4d8">VALIDANDO ACCESO...</h1>
-        <button id="retry-btn" class="btn-retry" style="display:none;" onclick="location.reload()">Reintentar</button>
+    <div id="access-screen" class="access-overlay">
+        <h1 id="status-msg" style="color:var(--accent); font-family:'Barlow Condensed'; letter-spacing:2px;">VALIDANDO SISTEMA MSA...</h1>
+        <button id="retry-btn" onclick="location.reload()" style="display:none; margin-top:20px; padding:10px 20px; background:var(--blue); color:white; border:none; border-radius:5px; cursor:pointer;">REINTENTAR</button>
     </div>
 
-    <div id="main-content" class="container">
-        <h1 class="hero-title">OPERACIONES <span class="t2">MSA</span></h1>
-        <div class="card">
-            <h2>Próximas Operaciones</h2>
-            <p>Control de ETAs y Muelles.</p><br>
-            <a href="operaciones.html" class="btn-pri">ENTRAR</a>
+    <div id="main-content">
+        <div class="container">
+            <header>
+                <div class="logo">
+                    <div class="logo-hex">A</div>
+                    <div>
+                        <div class="logo-title">MSA</div>
+                        <div style="font-size:11px; color:var(--muted); text-transform:uppercase; font-weight:600;">Agentes Marítimos</div>
+                    </div>
+                </div>
+                <div class="status-item"><span class="status-txt">● Sistema Operativo</span></div>
+            </header>
+
+            <div class="hero">
+                <div class="hero-title">
+                    <div style="color:white">OPERACIONES</div>
+                    <div class="t2">FLUVIALES MSA</div>
+                </div>
+                <div style="color:var(--muted); font-size:10px; letter-spacing:4px; text-transform:uppercase; margin-top:10px;">Nueva Palmira, Uruguay</div>
+            </div>
+
+            <div class="cards">
+                <div class="card">
+                    <div style="font-size:32px; margin-bottom:12px;">👤</div>
+                    <div style="font-family:'Barlow Condensed'; font-size:18px; font-weight:700; color:white; text-transform:uppercase; margin-bottom:8px;">Tripulación y ROL</div>
+                    <p style="font-size:12px; color:var(--muted); line-height:1.6; margin-bottom:16px;">Gestión de tripulantes, roles a bordo y libretas de puerto.</p>
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <a href="PUERTO_ISA.html" class="btn btn-pri">Abrir</a>
+                        <span class="tag">ROLES</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div style="font-size:32px; margin-bottom:12px;">📊</div>
+                    <div style="font-family:'Barlow Condensed'; font-size:18px; font-weight:700; color:white; text-transform:uppercase; margin-bottom:8px;">Próximas Operaciones</div>
+                    <p style="font-size:12px; color:var(--muted); line-height:1.6; margin-bottom:16px;">Buques y Fluvial. ETAs, cargos y muelles en tiempo real.</p>
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <a href="operaciones.html" class="btn btn-pri">Abrir</a>
+                        <span class="tag">ETA</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div style="font-size:32px; margin-bottom:12px;">📧</div>
+                    <div style="font-family:'Barlow Condensed'; font-size:18px; font-weight:700; color:white; text-transform:uppercase; margin-bottom:8px;">Mensaje de Gastos</div>
+                    <p style="font-size:12px; color:var(--muted); line-height:1.6; margin-bottom:16px;">Generador de mensajes. Remolcadores, barcazas y lanchas.</p>
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <a href="gastos-fluviales.html" class="btn btn-pri">Abrir</a>
+                        <span class="tag">GASTOS</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div style="font-size:32px; margin-bottom:12px;">🛳️</div>
+                    <div style="font-family:'Barlow Condensed'; font-size:18px; font-weight:700; color:white; text-transform:uppercase; margin-bottom:8px;">Seguimiento Barcazas</div>
+                    <p style="font-size:12px; color:var(--muted); line-height:1.6; margin-bottom:16px;">LHG-HB Lastre y cargadas. Posiciones en tiempo real.</p>
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <a href="barcazas.html" class="btn btn-pri">Abrir</a>
+                        <span class="tag">BARCAZAS</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div style="font-size:32px; margin-bottom:12px;">📋</div>
+                    <div style="font-family:'Barlow Condensed'; font-size:18px; font-weight:700; color:white; text-transform:uppercase; margin-bottom:8px;">Generador SOF</div>
+                    <p style="font-size:12px; color:var(--muted); line-height:1.6; margin-bottom:16px;">Statement of Facts + Programa de Cantidades automático.</p>
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <a href="sof-generator.html" class="btn btn-pri">Abrir</a>
+                        <span class="tag">SOF</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div style="font-size:32px; margin-bottom:12px;">⚙️</div>
+                    <div style="font-family:'Barlow Condensed'; font-size:18px; font-weight:700; color:white; text-transform:uppercase; margin-bottom:8px;">Procesador de Datos</div>
+                    <p style="font-size:12px; color:var(--muted); line-height:1.6; margin-bottom:16px;">Herramienta interna para procesamiento de manifiestos.</p>
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <a href="PROCESADOR_ISA.html" class="btn btn-pri">Abrir</a>
+                        <span class="tag">ADMIN</span>
+                    </div>
+                </div>
+            </div>
+
+            <footer>
+                &copy; 2026 MSA AGENTES MARÍTIMOS | Nueva Palmira, Uruguay | Todos los derechos reservados
+            </footer>
         </div>
-        </div>
+    </div>
 
     <script>
-        // Función de validación simple (Sin hashes complejos para asegurar compatibilidad total)
         function validar() {
             const USER_OK = "ISA";
             const PASS_OK = "Palmira8025";
 
-            const user = prompt("Usuario:");
-            const pass = prompt("Clave:");
+            const user = prompt("Ingrese Usuario:");
+            const pass = prompt("Ingrese Clave:");
 
             if (user === USER_OK && pass === PASS_OK) {
-                // Éxito: Ocultamos el bloqueo y mostramos el contenido
                 document.getElementById('access-screen').style.display = 'none';
                 document.getElementById('main-content').style.display = 'block';
             } else {
-                // Fallo
                 document.getElementById('status-msg').innerText = "ACCESO DENEGADO";
                 document.getElementById('status-msg').style.color = "#ef4444";
                 document.getElementById('retry-btn').style.display = "block";
             }
         }
-
-        // Ejecutamos la validación apenas carga la ventana
+        // Iniciamos la validación
         window.onload = validar;
     </script>
-
 </body>
 </html>
