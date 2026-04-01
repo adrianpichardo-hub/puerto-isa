@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MSA â€” Seguimiento Barcazas LHG-HB</title>
+<title>MSA - Seguimiento Barcazas en Punta del Arenal</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -18,16 +18,16 @@
   --blue-mid:    #2d5cb8;
   --blue-light:  #4a8de0;
 
-  /* Accent principal â€” cian elÃ©ctrico */
+  /* Accent principal cian electrico */
   --accent:      #00c8e8;
   --accent2:     #0099b8;
 
-  /* PDA â€” verde esmeralda */
+  /* PDA verde esmeralda */
   --pda:         #22d46a;
   --pda-dim:     rgba(34, 212, 106, .14);
   --pda-border:  rgba(34, 212, 106, .28);
 
-  /* NPA â€” naranja Ã¡mbar */
+  /* NPA naranja Ambar */
   --npa:         #f97316;
   --npa-dim:     rgba(249, 115, 22, .13);
   --npa-border:  rgba(249, 115, 22, .28);
@@ -411,8 +411,8 @@ tbody td { padding: 9px 14px; font-size: 12px; vertical-align: middle; }
 <!-- â•â• BARRA TÃTULO + FILTROS â•â• -->
 <div class="title-bar">
   <div>
-    <div class="page-title">Seguimiento Barcazas LHG-HB â€” Lastre / Cargadas</div>
-    <div class="page-sub">Datos en tiempo real Â· Google Sheets</div>
+    <div class="page-title">Seguimiento Barcazas Punta del Arenal Lastre / Cargadas</div>
+    <div class="page-sub">Datos en tiempo real Google Sheets</div>
   </div>
   <div class="search-wrap">
     <input class="search-input" type="text" id="search"
@@ -447,22 +447,22 @@ tbody td { padding: 9px 14px; font-size: 12px; vertical-align: middle; }
 
     <div class="stat-card pda">
       <div class="sc-top"><span class="sc-label">Lastre PDA</span><span class="sc-dot"></span></div>
-      <div class="sc-num" id="lastrePDA-sin">â€”</div>
+      <div class="sc-num" id="lastrePDA-sin">Salida</div>
       <div class="sc-sub">Actualmente en puerto</div>
     </div>
     <div class="stat-card npa">
       <div class="sc-top"><span class="sc-label">Lastre NPA</span><span class="sc-dot"></span></div>
-      <div class="sc-num" id="lastreNPA-sin">â€”</div>
+      <div class="sc-num" id="lastreNPA-sin">Salida</div>
       <div class="sc-sub">Actualmente en puerto</div>
     </div>
     <div class="stat-card pda">
       <div class="sc-top"><span class="sc-label">Cargada PDA</span><span class="sc-dot"></span></div>
-      <div class="sc-num" id="cargadaPDA-sin">â€”</div>
+      <div class="sc-num" id="cargadaPDA-sin">Salida</div>
       <div class="sc-sub">Actualmente en puerto</div>
     </div>
     <div class="stat-card npa">
       <div class="sc-top"><span class="sc-label">Cargada NPA</span><span class="sc-dot"></span></div>
-      <div class="sc-num" id="cargadaNPA-sin">â€”</div>
+      <div class="sc-num" id="cargadaNPA-sin">Salida</div>
       <div class="sc-sub">Actualmente en puerto</div>
     </div>
 
@@ -472,22 +472,22 @@ tbody td { padding: 9px 14px; font-size: 12px; vertical-align: middle; }
     <div class="scs-grid">
       <div class="stat-card-sm pda">
         <div class="scs-top"><span class="scs-label">Lastre PDA</span><span class="scs-dot"></span></div>
-        <div class="scs-num" id="lastrePDA-sal">â€”</div>
+        <div class="scs-num" id="lastrePDA-sal"Salida</div>
         <div class="scs-sub">Con salida</div>
       </div>
       <div class="stat-card-sm npa">
         <div class="scs-top"><span class="scs-label">Lastre NPA</span><span class="scs-dot"></span></div>
-        <div class="scs-num" id="lastreNPA-sal">â€”</div>
+        <div class="scs-num" id="lastreNPA-sal"></div>
         <div class="scs-sub">Con salida</div>
       </div>
       <div class="stat-card-sm pda">
         <div class="scs-top"><span class="scs-label">Cargada PDA</span><span class="scs-dot"></span></div>
-        <div class="scs-num" id="cargadaPDA-sal">â€”</div>
+        <div class="scs-num" id="cargadaPDA-sal"></div>
         <div class="scs-sub">Con salida</div>
       </div>
       <div class="stat-card-sm npa">
         <div class="scs-top"><span class="scs-label">Cargada NPA</span><span class="scs-dot"></span></div>
-        <div class="scs-num" id="cargadaNPA-sal">â€”</div>
+        <div class="scs-num" id="cargadaNPA-sal"></div>
         <div class="scs-sub">Con salida</div>
       </div>
     </div>
@@ -496,15 +496,15 @@ tbody td { padding: 9px 14px; font-size: 12px; vertical-align: middle; }
     <div class="section-sep">General</div>
     <div class="info-row">
       <span class="info-label">Total en puerto</span>
-      <span class="info-val accent" id="cnt-total-sin">â€”</span>
+      <span class="info-val accent" id="cnt-total-sin"></span>
     </div>
     <div class="info-row">
       <span class="info-label">Con salida asignada</span>
-      <span class="info-val accent" id="cnt-total-sal">â€”</span>
+      <span class="info-val accent" id="cnt-total-sal"></span>
     </div>
     <div class="info-row">
       <span class="info-label">Ãšltima actualizaciÃ³n</span>
-      <span class="info-val" id="upd-time">â€”</span>
+      <span class="info-val" id="upd-time"></span>
     </div>
 
     <!-- Leyenda -->
@@ -516,7 +516,7 @@ tbody td { padding: 9px 14px; font-size: 12px; vertical-align: middle; }
     </div>
   </div>
 
-  <!-- â”€â”€ Tabla â”€â”€ -->
+  <!--  Tabla -->
   <div class="table-area" id="table-area">
     <div class="loading-wrap" id="loading">
       <div class="spinner"></div>
@@ -529,7 +529,7 @@ tbody td { padding: 9px 14px; font-size: 12px; vertical-align: middle; }
           <th>Barcaza</th>
           <th>Remolcador</th>
           <th>Estado</th>
-          <th>PosiciÃ³n</th>
+          <th>Posicion</th>
           <th>Ingreso</th>
           <th>Salida</th>
         </tr>
@@ -683,15 +683,15 @@ function renderTable(rows) {
     const bc  = getBadgeClass(r.posicion);
     const hasSalida = r.salida !== '';
     const salidaClass = hasSalida ? 'con' : 'sin';
-    const salidaTxt   = hasSalida ? r.salida : 'â€”';
+    const salidaTxt   = hasSalida ? r.salida : 'Sin';
 
     return `<tr>
       <td class="cell-num">${i + 1}</td>
       <td class="cell-barc">${r.barcaza}</td>
-      <td class="cell-rem">${r.remolcador || 'â€”'}</td>
-      <td class="cell-est">${r.estado || 'â€”'}</td>
-      <td><span class="badge ${bc}"><span class="bdot"></span>${r.posicion || 'â€”'}</span></td>
-      <td class="cell-fecha">${r.ingreso || 'â€”'}</td>
+      <td class="cell-rem">${r.remolcador || '}</td>
+      <td class="cell-est">${r.estado || ''}</td>
+      <td><span class="badge ${bc}"><span class="bdot"></span>${r.posicion || ''}</span></td>
+      <td class="cell-fecha">${r.ingreso || ''}</td>
       <td class="cell-salida ${salidaClass}">${salidaTxt}</td>
     </tr>`;
   }).join('');
