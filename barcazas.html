@@ -1,5 +1,46 @@
 <!DOCTYPE html>
 <html lang="es">
+  <script>
+(async function() {
+    // Configuración de acceso
+    const USER_OK = "ISA";
+    // Hash de "Palmira8025"
+    const HASH_OK = "7db3929497e7939103c814777d9f7831f4762c943806f36402377b0b6e990924";
+
+    async function hash(string) {
+        const utf8 = new TextEncoder().encode(string);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', utf8);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    // Ejecución inmediata del prompt
+    const user = prompt("Ingrese Usuario:");
+    const pass = prompt("Ingrese Clave:");
+
+    if (!user || !pass) {
+        bloquear();
+    } else {
+        const passHash = await hash(pass);
+        if (user !== USER_OK || passHash !== HASH_OK) {
+            alert("Acceso denegado.");
+            bloquear();
+        }
+        // Si es correcto, el script termina y permite cargar el resto del HTML
+    }
+
+    function bloquear() {
+        document.documentElement.innerHTML = `
+            <body style="background:#0a1628;color:white;text-align:center;padding-top:20%;font-family:sans-serif">
+                <h1 style="color:#00b4d8">ACCESO RESTRINGIDO</h1>
+                <p>Credenciales inválidas o sesión cancelada.</p>
+                <button onclick="location.reload()" style="margin-top:20px;padding:10px 20px;background:#1a3a8c;color:white;border:none;border-radius:5px;cursor:pointer">Reintentar</button>
+            </body>`;
+        window.stop();
+        throw new Error("Acceso no autorizado");
+    }
+})();
+</script>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
