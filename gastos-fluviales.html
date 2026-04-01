@@ -3,29 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ISA — Generador de Mensaje de Gastos</title>
+<title>MSA â€” Generador de Mensaje de Gastos</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
 <style>
-:root{--isa-blue:#1a3a8c;--isa-blue-dark:#0f2460;--isa-blue-light:#e8eef8;--isa-green:#00a878;--isa-red:#c0392b;--isa-text:#1a1a2e;--isa-muted:#6b7a99;--isa-border:#d0daea;--isa-bg:#f4f7fb;--isa-white:#fff;--r:8px;}
+:root{--msa-blue:#1a3a8c;--msa-blue-dark:#0f2460;--msa-blue-light:#e8eef8;--msa-green:#00a878;--msa-red:#c0392b;--msa-text:#1a1a2e;--msa-muted:#6b7a99;--msa-border:#d0daea;--msa-bg:#f4f7fb;--msa-white:#fff;--r:8px;}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Barlow',sans-serif;background:var(--isa-bg);color:var(--isa-text)}
-.isa-header{background:var(--isa-blue-dark);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100}
-.isa-logo{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;color:white;letter-spacing:2px}
-.isa-tagline{font-size:11px;color:rgba(255,255,255,.5);letter-spacing:.1em;text-transform:uppercase;margin-left:12px;padding-left:12px;border-left:1px solid rgba(255,255,255,.2)}
+body{font-family:'Barlow',sans-serif;background:var(--msa-bg);color:var(--msa-text)}
+.msa-header{background:var(--msa-blue-dark);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100}
+.msa-logo{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;color:white;letter-spacing:2px;display:none}
+.msa-logo-img{height:50px;opacity:0.95}
+.msa-tagline{font-size:11px;color:rgba(255,255,255,.5);letter-spacing:.1em;text-transform:uppercase;margin-left:12px;padding-left:12px;border-left:1px solid rgba(255,255,255,.2)}
 .app{max-width:900px;margin:0 auto;padding:1.5rem 1rem 4rem}
 .page-title{margin-bottom:1.5rem}
-.page-title h2{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--isa-blue);letter-spacing:.04em;text-transform:uppercase}
-.tabs{display:flex;border-bottom:2px solid var(--isa-border);margin-bottom:1.5rem}
-.tab{padding:9px 18px;font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;border:none;background:none;cursor:pointer;color:var(--isa-muted);border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:color .15s}
-.tab:hover{color:var(--isa-blue)}.tab.active{color:var(--isa-blue);border-bottom-color:var(--isa-blue)}
+.page-title h2{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--msa-blue);letter-spacing:.04em;text-transform:uppercase}
+.tabs{display:flex;border-bottom:2px solid var(--msa-border);margin-bottom:1.5rem}
+.tab{padding:9px 18px;font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;border:none;background:none;cursor:pointer;color:var(--msa-muted);border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:color .15s}
+.tab:hover{color:var(--msa-blue)}.tab.active{color:var(--msa-blue);border-bottom-color:var(--msa-blue)}
 .pane{display:none}.pane.active{display:block}
-.card{background:var(--isa-white);border:1px solid var(--isa-border);border-radius:var(--r);padding:1.25rem;margin-bottom:1rem;box-shadow:0 1px 3px rgba(26,58,140,.06)}
-.card-header{display:flex;align-items:center;gap:8px;margin-bottom:1rem;padding-bottom:10px;border-bottom:1px solid var(--isa-blue-light)}
-.card-title{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.1em;color:var(--isa-blue);text-transform:uppercase}
-label{display:block;font-size:11px;font-weight:600;color:var(--isa-muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
-input,select,textarea{width:100%;font-size:13px;font-family:'Barlow',sans-serif;padding:8px 11px;border:1px solid var(--isa-border);border-radius:6px;background:var(--isa-white);color:var(--isa-text);outline:none}
-input:focus,select:focus,textarea:focus{border-color:var(--isa-blue);box-shadow:0 0 0 3px rgba(26,58,140,.1)}
+.card{background:var(--msa-white);border:1px solid var(--msa-border);border-radius:var(--r);padding:1.25rem;margin-bottom:1rem;box-shadow:0 1px 3px rgba(26,58,140,.06)}
+.card-header{display:flex;align-items:center;gap:8px;margin-bottom:1rem;padding-bottom:10px;border-bottom:1px solid var(--msa-blue-light)}
+.card-title{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.1em;color:var(--msa-blue);text-transform:uppercase}
+label{display:block;font-size:11px;font-weight:600;color:var(--msa-muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
+input,select,textarea{width:100%;font-size:13px;font-family:'Barlow',sans-serif;padding:8px 11px;border:1px solid var(--msa-border);border-radius:6px;background:var(--msa-white);color:var(--msa-text);outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--msa-blue);box-shadow:0 0 0 3px rgba(26,58,140,.1)}
 textarea{resize:vertical;min-height:120px;font-family:'Courier New',monospace}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px}
@@ -35,42 +36,45 @@ textarea{resize:vertical;min-height:120px;font-family:'Courier New',monospace}
 .tog input{opacity:0;width:0;height:0}
 .sl{position:absolute;inset:0;background:#c8d4e8;border-radius:20px;cursor:pointer;transition:.2s}
 .sl:before{content:'';position:absolute;width:14px;height:14px;left:3px;top:3px;background:white;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
-.tog input:checked+.sl{background:var(--isa-blue)}.tog input:checked+.sl:before{transform:translateX(16px)}
-.tog-lbl{font-size:13px;color:var(--isa-text);font-weight:500}
-.collapsible{cursor:pointer;padding:10px;background:var(--isa-blue-light);border-radius:6px;margin:10px 0;border:none;font-size:12px;font-weight:600;color:var(--isa-blue);transition:all .15s}
+.tog input:checked+.sl{background:var(--msa-blue)}.tog input:checked+.sl:before{transform:translateX(16px)}
+.tog-lbl{font-size:13px;color:var(--msa-text);font-weight:500}
+.collapsible{cursor:pointer;padding:10px;background:var(--msa-blue-light);border-radius:6px;margin:10px 0;border:none;font-size:12px;font-weight:600;color:var(--msa-blue);transition:all .15s}
 .collapsible:hover{background:#dae3f0}
-.collapsible.open::before{content:'▼'}
-.collapsible::before{content:'▶';margin-right:4px;display:inline-block;transition:transform .15s}
+.collapsible.open::before{content:'â–¼'}
+.collapsible::before{content:'â–¶';margin-right:4px;display:inline-block;transition:transform .15s}
 .collapsible-content{display:none;margin-top:10px}
 .collapsible-content.active{display:block}
-.sub-item{background:var(--isa-blue-light);border:1px solid #c8d4e8;border-radius:6px;padding:1rem;margin-bottom:10px}
+.sub-item{background:var(--msa-blue-light);border:1px solid #c8d4e8;border-radius:6px;padding:1rem;margin-bottom:10px}
 .item-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-.item-label{font-size:11px;font-weight:700;color:var(--isa-blue);text-transform:uppercase}
-.add-btn{display:inline-flex;gap:6px;font-size:12px;font-weight:600;padding:6px 14px;border:1.5px dashed var(--isa-blue);border-radius:6px;background:transparent;color:var(--isa-blue);cursor:pointer;margin-top:6px;text-transform:uppercase;transition:all .15s}
-.add-btn:hover{background:var(--isa-blue-light)}
-.rm{font-size:11px;color:var(--isa-red);background:none;border:1px solid transparent;cursor:pointer;padding:3px 8px;font-weight:600}
-.rm:hover{background:#fdecea;border-color:var(--isa-red)}
-.footer{display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--isa-border)}
+.item-label{font-size:11px;font-weight:700;color:var(--msa-blue);text-transform:uppercase}
+.add-btn{display:inline-flex;gap:6px;font-size:12px;font-weight:600;padding:6px 14px;border:1.5px dashed var(--msa-blue);border-radius:6px;background:transparent;color:var(--msa-blue);cursor:pointer;margin-top:6px;text-transform:uppercase;transition:all .15s}
+.add-btn:hover{background:var(--msa-blue-light)}
+.rm{font-size:11px;color:var(--msa-red);background:none;border:1px solid transparent;cursor:pointer;padding:3px 8px;font-weight:600}
+.rm:hover{background:#fdecea;border-color:var(--msa-red)}
+.footer{display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--msa-border)}
 .btn{padding:9px 22px;border-radius:6px;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border:none;transition:all .15s}
-.btn-primary{background:var(--isa-green);color:white}.btn-primary:hover{background:#008c65}
-.btn-copy{border:1.5px solid var(--isa-blue);background:white;color:var(--isa-blue);padding:7px 18px}.btn-copy:hover{background:var(--isa-blue-light)}
-.note{font-size:12px;color:var(--isa-blue);background:var(--isa-blue-light);border-left:3px solid var(--isa-blue);padding:8px 12px;border-radius:0 6px 6px 0;margin:8px 0}
-.output-wrap{background:#f8faff;border:1px solid var(--isa-border);border-radius:var(--r);padding:1.25rem;font-family:'Courier New',monospace;font-size:12px;line-height:1.9;color:var(--isa-text);white-space:pre-wrap;word-wrap:break-word;overflow-x:auto;min-height:200px;max-height:500px;overflow-y:auto}
-.subj-box{font-size:14px;font-weight:600;padding:10px 14px;background:var(--isa-blue-light);border:1px solid var(--isa-border);border-radius:6px;color:var(--isa-blue);margin-bottom:10px}
+.btn-primary{background:var(--msa-green);color:white}.btn-primary:hover{background:#008c65}
+.btn-copy{border:1.5px solid var(--msa-blue);background:white;color:var(--msa-blue);padding:7px 18px}.btn-copy:hover{background:var(--msa-blue-light)}
+.note{font-size:12px;color:var(--msa-blue);background:var(--msa-blue-light);border-left:3px solid var(--msa-blue);padding:8px 12px;border-radius:0 6px 6px 0;margin:8px 0}
+.output-wrap{background:#f8faff;border:1px solid var(--msa-border);border-radius:var(--r);padding:1.25rem;font-family:'Courier New',monospace;font-size:12px;line-height:1.9;color:var(--msa-text);white-space:pre-wrap;word-wrap:break-word;overflow-x:auto;min-height:200px;max-height:500px;overflow-y:auto}
+.subj-box{font-size:14px;font-weight:600;padding:10px 14px;background:var(--msa-blue-light);border:1px solid var(--msa-border);border-radius:6px;color:var(--msa-blue);margin-bottom:10px}
 .table-bcz{width:100%;border-collapse:collapse;font-size:11px;margin:10px 0}
-.table-bcz th{background:var(--isa-blue);color:white;padding:6px 10px;text-align:left;font-weight:600;font-size:10px;text-transform:uppercase}
-.table-bcz td{padding:6px 10px;border-bottom:1px solid var(--isa-border)}
-.table-bcz tr:last-child{font-weight:700;background:var(--isa-blue-light)}
+.table-bcz th{background:var(--msa-blue);color:white;padding:6px 10px;text-align:left;font-weight:600;font-size:10px;text-transform:uppercase}
+.table-bcz td{padding:6px 10px;border-bottom:1px solid var(--msa-border)}
+.table-bcz tr:last-child{font-weight:700;background:var(--msa-blue-light)}
 </style>
 </head>
 <body>
 
-<div class="isa-header">
-  <div style="display:flex;align-items:baseline">
-    <span class="isa-logo">ISA<span style="font-size:14px;font-weight:400;color:rgba(255,255,255,.6);margin-left:8px">AGENTES</span></span>
-    <span class="isa-tagline">Exceeding expectations</span>
+<div class="msa-header">
+  <div style="display:flex;align-items:center;gap:16px">
+    <img src="MSA_Group_white.png" alt="MSA" class="msa-logo-img">
+    <div style="display:flex;align-items:baseline">
+      <span style="font-size:14px;font-weight:400;color:rgba(255,255,255,.9)">AGENTES MARITIMOS</span>
+    </div>
+    <span class="msa-tagline">Nueva Palmira</span>
   </div>
-  <a href="index.html" style="font-size:11px;color:rgba(255,255,255,.6);text-decoration:none;letter-spacing:.06em;text-transform:uppercase;display:flex;align-items:center;gap:6px" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,.6)'">← Portal</a>
+  <a href="index.html" style="font-size:11px;color:rgba(255,255,255,.6);text-decoration:none;letter-spacing:.06em;text-transform:uppercase;display:flex;align-items:center;gap:6px" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,.6)'">â† Portal</a>
 </div>
 
 <div class="app">
@@ -86,9 +90,9 @@ textarea{resize:vertical;min-height:120px;font-family:'Courier New',monospace}
   <!-- TAB 0: ENTRADA -->
   <div class="pane active" id="tab-0">
     <div class="card">
-      <div class="card-header"><div class="card-title">Remolcador y Operación</div></div>
+      <div class="card-header"><div class="card-title">Remolcador y OperaciÃ³n</div></div>
       <div class="g2"><div><label>Remolcador</label><input type="text" id="rem" placeholder="HERACLITO FILHO"></div><div><label>Armador</label><select id="armador"><option>Seleccionar</option><option>LHG NAVEGACION</option><option>HIDROVIAS DO BRASIL</option><option>INTERBARGE</option><option>P&O</option></select></div></div>
-      <div class="g3"><div><label>Referencia</label><input type="text" id="ref" placeholder="LHGA 06-09-13-14"></div><div><label>Mercadería</label><select id="merc"><option>Seleccionar</option><option>LOHS</option><option>SFHG</option><option>SINTER</option><option>FERTILIZANTE</option><option>SINTER + LOHS</option></select></div><div><label>Muelle(s)</label><input type="text" id="muelles" placeholder="NAVIOS + POTIGUAR"></div></div>
+      <div class="g3"><div><label>Referencia</label><input type="text" id="ref" placeholder="LHGA 06-09-13-14"></div><div><label>MercaderÃ­a</label><select id="merc"><option>Seleccionar</option><option>LOHS</option><option>SFHG</option><option>SINTER</option><option>FERTILIZANTE</option><option>SINTER + LOHS</option></select></div><div><label>Muelle(s)</label><input type="text" id="muelles" placeholder="NAVIOS + POTIGUAR"></div></div>
     </div>
 
     <div class="card">
@@ -102,9 +106,9 @@ textarea{resize:vertical;min-height:120px;font-family:'Courier New',monospace}
     </div>
 
     <div class="card">
-      <div class="card-header"><div class="card-title">Nómina de Barcazas</div></div>
-      <div class="note">Pegá la tabla Excel tal cual: # BARCAZA CANTIDAD PRODUCTO VIAJE</div>
-      <textarea id="barcazas-paste" placeholder="Pegá aquí..." oninput="procesarBarcazas()"></textarea>
+      <div class="card-header"><div class="card-title">NÃ³mina de Barcazas</div></div>
+      <div class="note">PegÃ¡ la tabla Excel tal cual: # BARCAZA CANTIDAD PRODUCTO VIAJE</div>
+      <textarea id="barcazas-paste" placeholder="PegÃ¡ aquÃ­..." oninput="procesarBarcazas()"></textarea>
       <div id="bcz-status" style="margin:10px 0;font-size:12px"></div>
       <div id="bcz-preview" style="overflow-x:auto"></div>
     </div>
@@ -117,23 +121,23 @@ textarea{resize:vertical;min-height:120px;font-family:'Courier New',monospace}
       <button class="collapsible" onclick="toggleCollapse(this)">LANCHAS</button>
       <div class="collapsible-content"><div id="lanchas-list"></div><button class="add-btn" onclick="addLancha()">+ Agregar lancha</button></div>
 
-      <button class="collapsible" onclick="toggleCollapse(this)">PETROVÍAS</button>
+      <button class="collapsible" onclick="toggleCollapse(this)">PETROVÃAS</button>
       <div class="collapsible-content"><div class="g2"><div><label>Fecha</label><input type="text" id="pt-fecha" placeholder="DD/MM/YYYY" maxlength="10" oninput="maskDate(this)"></div><div><label>Hora</label><input type="time" id="pt-hora"></div></div><div class="g2"><div><label>Proveedor</label><input type="text" id="pt-prov" placeholder="GOMISTAR"></div><div><label>Fecha lancha</label><input type="text" id="pt-lf" placeholder="DD/MM/YYYY" maxlength="10" oninput="maskDate(this)"></div></div></div>
 
       <button class="collapsible" onclick="toggleCollapse(this)">SAUCE</button>
       <div class="collapsible-content"><div class="g2"><div><label>Fecha</label><input type="text" id="sc-fecha" placeholder="DD/MM/YYYY" maxlength="10" oninput="maskDate(this)"></div><div><label>Proveedor</label><input type="text" id="sc-prov"></div></div></div>
 
-      <button class="collapsible" onclick="toggleCollapse(this)">ATENCIÓN MÉDICA</button>
-      <div class="collapsible-content"><div class="g2"><div><label>Tripulante</label><input type="text" id="med-trip"></div><div><label>Clínica</label><input type="text" id="med-cli"></div></div><div class="g3"><div><label>Consultas</label><input type="number" id="med-cons" value="1"></div><div><label>USD</label><input type="number" id="med-usd"></div><div><label>Lanchas</label><input type="number" id="med-lanch"></div></div><div style="display:flex;gap:20px"><div class="tog-row"><label class="tog"><input type="checkbox" id="chk-meds"><span class="sl"></span></label><span class="tog-lbl">Medicamentos</span></div><div class="tog-row"><label class="tog"><input type="checkbox" id="chk-tras"><span class="sl"></span></label><span class="tog-lbl">Traslados</span></div></div></div>
+      <button class="collapsible" onclick="toggleCollapse(this)">ATENCIÃ“N MÃ‰DICA</button>
+      <div class="collapsible-content"><div class="g2"><div><label>Tripulante</label><input type="text" id="med-trip"></div><div><label>ClÃ­nica</label><input type="text" id="med-cli"></div></div><div class="g3"><div><label>Consultas</label><input type="number" id="med-cons" value="1"></div><div><label>USD</label><input type="number" id="med-usd"></div><div><label>Lanchas</label><input type="number" id="med-lanch"></div></div><div style="display:flex;gap:20px"><div class="tog-row"><label class="tog"><input type="checkbox" id="chk-meds"><span class="sl"></span></label><span class="tog-lbl">Medicamentos</span></div><div class="tog-row"><label class="tog"><input type="checkbox" id="chk-tras"><span class="sl"></span></label><span class="tog-lbl">Traslados</span></div></div></div>
 
       <button class="collapsible" onclick="toggleCollapse(this)">EXTRAS / COSTOS</button>
       <div class="collapsible-content"><div id="extras-list"></div><button class="add-btn" onclick="addExtra()">+ Agregar extra</button></div>
 
-      <button class="collapsible" onclick="toggleCollapse(this)">CAMBIO DE TRIPULACIÓN</button>
-      <div class="collapsible-content"><div id="draw-list"></div><button class="add-btn" onclick="addDraw()">+ Agregar trámite</button></div>
+      <button class="collapsible" onclick="toggleCollapse(this)">CAMBIO DE TRIPULACIÃ“N</button>
+      <div class="collapsible-content"><div id="draw-list"></div><button class="add-btn" onclick="addDraw()">+ Agregar trÃ¡mite</button></div>
     </div>
 
-    <div class="footer"><span></span><button class="btn btn-primary" onclick="generate(); goTab(1)">Ver Vista Previa →</button></div>
+    <div class="footer"><span></span><button class="btn btn-primary" onclick="generate(); goTab(1)">Ver Vista Previa â†’</button></div>
   </div>
 
   <!-- TAB 1: PREVIEW -->
@@ -146,14 +150,14 @@ textarea{resize:vertical;min-height:120px;font-family:'Courier New',monospace}
 
     <div class="card">
       <div class="card-header" style="justify-content:space-between"><div class="card-title">Mensaje</div><button class="btn btn-copy" onclick="copyEl('body-out')">Copiar Mensaje</button></div>
-      <div class="output-wrap" id="body-out">Genera el mensaje para verlo aquí</div>
+      <div class="output-wrap" id="body-out">Genera el mensaje para verlo aquÃ­</div>
     </div>
 
     <div class="footer">
-      <button class="btn btn-primary" style="border:1.5px solid var(--isa-blue);background:white;color:var(--isa-blue)" onclick="goTab(0)">← Editar</button>
+      <button class="btn btn-primary" style="border:1.5px solid var(--msa-blue);background:white;color:var(--msa-blue)" onclick="goTab(0)">â† Editar</button>
       <div style="display:flex;gap:12px">
-        <button class="btn btn-copy" onclick="copyEl('body-out')">📋 Copiar</button>
-        <button class="btn btn-primary" onclick="sendMail()">✉️ Enviar Mail</button>
+        <button class="btn btn-copy" onclick="copyEl('body-out')">ðŸ“‹ Copiar</button>
+        <button class="btn btn-primary" onclick="sendMail()">âœ‰ï¸ Enviar Mail</button>
       </div>
     </div>
   </div>
@@ -191,7 +195,7 @@ function procesarBarcazas(){
   }
   
   if(startIdx===-1){
-    status.innerHTML='<span style="color:var(--isa-red)">⚠ No encuentro estructura correcta</span>';
+    status.innerHTML='<span style="color:var(--msa-red)">âš  No encuentro estructura correcta</span>';
     barcazasData=[];
     return
   }
@@ -223,13 +227,13 @@ function procesarBarcazas(){
   }
   
   if(!data.length){
-    status.innerHTML='<span style="color:var(--isa-red)">⚠ No se detectaron barcazas</span>';
+    status.innerHTML='<span style="color:var(--msa-red)">âš  No se detectaron barcazas</span>';
     preview.innerHTML='';
     barcazasData=[];
     return
   }
   
-  status.innerHTML=`<span style="color:var(--isa-green)">✓ ${data.length} barcazas detectadas</span>`;
+  status.innerHTML=`<span style="color:var(--msa-green)">âœ“ ${data.length} barcazas detectadas</span>`;
   
   let html='<table class="table-bcz"><tr><th>#</th><th>Barcaza</th><th>Cantidad</th><th>Producto</th><th>Viaje</th></tr>';
   let total=0;
@@ -249,7 +253,7 @@ function addLancha(){
   const div=document.createElement('div');
   div.className='sub-item';
   div.id='lc-'+id;
-  div.innerHTML=`<div class="item-header"><span class="item-label">Lancha ${id+1}</span><button class="rm" onclick="document.getElementById('lc-${id}').remove()">X</button></div><div class="g3"><div><label>Tipo</label><input type="text" id="lct-${id}" placeholder="Entrada"></div><div><label>Fecha</label><input type="text" id="lcf-${id}" placeholder="DD/MM/YYYY" maxlength="10" oninput="maskDate(this)"></div><div><label>Hora</label><input type="time" id="lch-${id}"></div></div><div class="g2"><div><label>Proveedor</label><select id="lcp-${id}"><option>GOMISTAR</option><option>CG TRÁFICO</option><option>CORUMBA</option><option>Otro</option></select></div><div><label>Lugar</label><input type="text" id="lcn-${id}"></div></div>`;
+  div.innerHTML=`<div class="item-header"><span class="item-label">Lancha ${id+1}</span><button class="rm" onclick="document.getElementById('lc-${id}').remove()">X</button></div><div class="g3"><div><label>Tipo</label><input type="text" id="lct-${id}" placeholder="Entrada"></div><div><label>Fecha</label><input type="text" id="lcf-${id}" placeholder="DD/MM/YYYY" maxlength="10" oninput="maskDate(this)"></div><div><label>Hora</label><input type="time" id="lch-${id}"></div></div><div class="g2"><div><label>Proveedor</label><select id="lcp-${id}"><option>GOMISTAR</option><option>CG TRÃFICO</option><option>CORUMBA</option><option>Otro</option></select></div><div><label>Lugar</label><input type="text" id="lcn-${id}"></div></div>`;
   document.getElementById('lanchas-list').appendChild(div)
 }
 
@@ -258,7 +262,7 @@ function addExtra(){
   const div=document.createElement('div');
   div.className='sub-item';
   div.id='ex-'+id;
-  div.innerHTML=`<div class="item-header"><span class="item-label">Extra ${id+1}</span><button class="rm" onclick="document.getElementById('ex-${id}').remove()">X</button></div><div class="g2"><div style="grid-column:1/3"><label>Descripción</label><input type="text" id="exd-${id}"></div></div><div><label>USD</label><input type="number" id="exm-${id}"></div>`;
+  div.innerHTML=`<div class="item-header"><span class="item-label">Extra ${id+1}</span><button class="rm" onclick="document.getElementById('ex-${id}').remove()">X</button></div><div class="g2"><div style="grid-column:1/3"><label>DescripciÃ³n</label><input type="text" id="exd-${id}"></div></div><div><label>USD</label><input type="number" id="exm-${id}"></div>`;
   document.getElementById('extras-list').appendChild(div)
 }
 
@@ -267,7 +271,7 @@ function addDraw(){
   const div=document.createElement('div');
   div.className='sub-item';
   div.id='dr-'+id;
-  div.innerHTML=`<div class="item-header"><span class="item-label">Trámite ${id+1}</span><button class="rm" onclick="document.getElementById('dr-${id}').remove()">X</button></div><div class="g2"><div><label>Trámite</label><input type="text" id="drt-${id}"></div><div><label>Detalle</label><input type="text" id="drd-${id}"></div></div><div><label>Proveedor</label><input type="text" id="drp-${id}"></div>`;
+  div.innerHTML=`<div class="item-header"><span class="item-label">TrÃ¡mite ${id+1}</span><button class="rm" onclick="document.getElementById('dr-${id}').remove()">X</button></div><div class="g2"><div><label>TrÃ¡mite</label><input type="text" id="drt-${id}"></div><div><label>Detalle</label><input type="text" id="drd-${id}"></div></div><div><label>Proveedor</label><input type="text" id="drp-${id}"></div>`;
   document.getElementById('draw-list').appendChild(div)
 }
 
@@ -277,12 +281,12 @@ function generate(){
   const ban=v('bandera'),oce=v('oce'),migra=v('migra');
   const operativa=v('operativa');
   
-  let subj=`Gastos – ${rem}`;
+  let subj=`Gastos â€“ ${rem}`;
   if(ref)subj+=` (${ref})`;
-  if(merc)subj+=` – ${merc}`;
-  if(muelles)subj+=` – ${muelles.split('+')[0].trim()}`;
+  if(merc)subj+=` â€“ ${merc}`;
+  if(muelles)subj+=` â€“ ${muelles.split('+')[0].trim()}`;
   
-  let b='Estimados,\n\nDetallo mensaje de gastos correspondiente a la operación en asunto.\n\n';
+  let b='Estimados,\n\nDetallo mensaje de gastos correspondiente a la operaciÃ³n en asunto.\n\n';
   b+=rem;
   if(ref)b+=` (${ref})`;
   if(merc)b+=` - ${merc}`;
@@ -291,7 +295,7 @@ function generate(){
   
   if(arm)b+=`Armador: ${arm}\n`;
   if(ref)b+=`Referencia: ${ref}\n`;
-  if(merc)b+=`Mercadería: ${merc}\n`;
+  if(merc)b+=`MercaderÃ­a: ${merc}\n`;
   if(muelles)b+=`Muelle: ${muelles}\n`;
   
   const sanItems=[];
@@ -312,9 +316,9 @@ function generate(){
     lanchasContainer.querySelectorAll('[id^="lc-"]').forEach(el=>{
       const id=el.id.substr(3);
       const tipo=v('lct-'+id),fecha=v('lcf-'+id),hora=v('lch-'+id),prov=v('lcp-'+id),nota=v('lcn-'+id);
-      let ln=`LANCHA – ${tipo}`;
+      let ln=`LANCHA â€“ ${tipo}`;
       if(fecha)ln+=` ${fecha}`;
-      if(hora)ln+=` – ${hora} hrs`;
+      if(hora)ln+=` â€“ ${hora} hrs`;
       if(nota)ln+=` (${nota})`;
       if(prov)ln+=` - ${prov}`;
       b+=ln+'\n'
@@ -337,7 +341,7 @@ function generate(){
   if(v('med-trip')){
     b+=`\nATENCION MEDICA\n`;
     b+=`Tripulante: ${v('med-trip')}\n`;
-    if(v('med-cli'))b+=`Clínica: ${v('med-cli')}\n`;
+    if(v('med-cli'))b+=`ClÃ­nica: ${v('med-cli')}\n`;
     if(v('med-cons'))b+=`${v('med-cons')} ${v('med-cons')==='1'?'consulta':'consultas'}\n`;
     if(v('med-usd'))b+=`Total USD ${v('med-usd')}\n`;
     if(v('med-lanch'))b+=`${v('med-lanch')} lanchas desembarco\n`;
@@ -350,7 +354,7 @@ function generate(){
     b+='\nEXTRAS:\n';
     extrasContainer.querySelectorAll('[id^="ex-"]').forEach(el=>{
       const id=el.id.substr(3),desc=v('exd-'+id),monto=v('exm-'+id);
-      if(desc)b+=desc+(monto?` (USD ${monto})`:'')+'​\n'
+      if(desc)b+=desc+(monto?` (USD ${monto})`:'')+'â€‹\n'
     })
   }
   
@@ -359,7 +363,7 @@ function generate(){
     b+='\nDESENROLE\n';
     drawContainer.querySelectorAll('[id^="dr-"]').forEach(el=>{
       const id=el.id.substr(3),tram=v('drt-'+id),det=v('drd-'+id),prov=v('drp-'+id);
-      let ln=tram+(det?` – ${det}`:'')+(prov?` - Gestionado por ${prov}`:'');
+      let ln=tram+(det?` â€“ ${det}`:'')+(prov?` - Gestionado por ${prov}`:'');
       b+=ln+'\n'
     })
   }
@@ -391,19 +395,19 @@ function copyEl(id){
   navigator.clipboard.writeText(t).then(()=>{
     const btn=event.target;
     const o=btn.textContent;
-    btn.textContent='¡Copiado!';
+    btn.textContent='Â¡Copiado!';
     setTimeout(()=>btn.textContent=o,1500)
   })
 }
 
 function sendMail(){
   const text=document.getElementById('body-out').textContent;
-  if(!text||text==='Genera el mensaje para verlo aquí')return;
+  if(!text||text==='Genera el mensaje para verlo aquÃ­')return;
   const rem=v('rem')||'REMOLCADOR',ref=v('ref'),merc=v('merc'),muelles=v('muelles');
-  let asunto=`Gastos – ${rem}`;
+  let asunto=`Gastos â€“ ${rem}`;
   if(ref)asunto+=` (${ref})`;
-  if(merc)asunto+=` – ${merc}`;
-  if(muelles)asunto+=` – ${muelles.split('+')[0].trim()}`;
+  if(merc)asunto+=` â€“ ${merc}`;
+  if(muelles)asunto+=` â€“ ${muelles.split('+')[0].trim()}`;
   window.location.href=`mailto:?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(text)}`
 }
 </script>
