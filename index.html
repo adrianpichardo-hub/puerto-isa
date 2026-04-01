@@ -6,7 +6,6 @@
     <title>MSA Portal de Operaciones</title>
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;1,800&family=Barlow:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        /* LÓGICA DE BLOQUEO */
         #main-content { display: none; }
         .access-overlay {
             position: fixed; inset: 0; z-index: 9999;
@@ -14,151 +13,545 @@
             align-items: center; justify-content: center; text-align: center;
         }
 
-        /* TU DISEÑO ORIGINAL COMPLETO */
-        *{box-sizing:border-box;margin:0;padding:0}
-        :root{
-          --navy:#0a1628;--navy2:#0d1f3c;
-          --blue:#1a3a8c;--blue-mid:#2d5cb8;--blue-light:#3a7bd5;--accent:#00b4d8;
-          --green:#22c55e;--red:#ef4444;--white:#fff;--off-white:#e8eef8;
-          --muted:rgba(255,255,255,.45);--border:rgba(255,255,255,.08);
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --navy:       #0a1628;
+            --navy2:      #0d1f3c;
+            --blue:       #1a3a8c;
+            --blue-mid:   #2d5cb8;
+            --blue-light: #3a7bd5;
+            --accent:     #00b4d8;
+            --accent2:    #0099b8;
+            --green:      #22c55e;
+            --red:        #ef4444;
+            --white:      #fff;
+            --off-white:  #e8eef8;
+            --muted:      rgba(255,255,255,.45);
+            --border:     rgba(255,255,255,.08);
+            --border2:    rgba(255,255,255,.13);
         }
-        body{font-family:'Barlow',sans-serif;background:var(--navy);color:var(--off-white);min-height:100vh;overflow-x:hidden}
-        body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:60px 60px}
-        body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 70% 50% at 15% 50%,rgba(26,58,140,.45) 0%,transparent 70%)}
-        .container{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 20px}
-        header{border-bottom:1px solid var(--border);padding:15px 0;display:flex;align-items:center;justify-content:space-between;gap:20px;position:sticky;top:0;z-index:50;background:rgba(10,22,40,.92);backdrop-filter:blur(12px)}
-        .logo{display:flex;align-items:center;gap:15px}
-        .logo-hex{width:40px;height:40px;background:linear-gradient(135deg,var(--blue),var(--accent));display:flex;align-items:center;justify-content:center;font-size:20px;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%)}
-        .logo-title{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:32px;font-weight:800;letter-spacing:3px;color:var(--white);line-height:1;position:relative}
-        .logo-title::after{content:'';position:absolute;bottom:-4px;left:0;width:100%;height:2px;background:linear-gradient(90deg,var(--accent),var(--blue-light))}
-        .status-txt{font-size:10px;color:var(--green);text-transform:uppercase;letter-spacing:.08em;font-weight:600}
-        .hero{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;text-align:center}
-        .hero-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(32px,5vw,64px);font-weight:800;text-transform:uppercase;line-height:1.1;letter-spacing:.03em;margin-bottom:10px}
-        .t2{background:linear-gradient(110deg,var(--accent) 0%,#80d8f8 50%,var(--blue-light) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-        .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px;padding:40px 0}
-        .card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:24px;transition:all .3s;position:relative;overflow:hidden}
-        .card:hover{border-color:var(--accent);background:rgba(0,180,216,.06);transform:translateY(-4px)}
-        .btn-pri{background:linear-gradient(135deg,var(--blue),var(--accent));color:var(--white);padding:10px 24px;border-radius:6px;text-decoration:none;font-weight:600;font-size:12px;display:inline-block;transition:0.2s}
-        .btn-pri:hover{filter:brightness(1.2)}
-        .tag{padding:4px 10px;background:rgba(0,180,216,.1);border:1px solid rgba(0,180,216,.25);border-radius:6px;font-size:9px;color:var(--accent);text-transform:uppercase}
-        footer{border-top:1px solid var(--border);padding:30px 0;margin-top:60px;text-align:center;color:var(--muted);font-size:10px}
+
+        body {
+            font-family: 'Barlow', sans-serif;
+            background: var(--navy);
+            color: var(--off-white);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Fondo grid */
+        body::before {
+            content: '';
+            position: fixed; inset: 0; z-index: 0; pointer-events: none;
+            background-image:
+                linear-gradient(rgba(255,255,255,.022) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,.022) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+        body::after {
+            content: '';
+            position: fixed; inset: 0; z-index: 0; pointer-events: none;
+            background: radial-gradient(ellipse 70% 50% at 15% 50%, rgba(26,58,140,.45) 0%, transparent 70%);
+        }
+
+        /* Acento lateral */
+        .side-accent {
+            position: fixed; left: 0; top: 0; bottom: 0; width: 3px; z-index: 20;
+            background: linear-gradient(180deg, transparent 0%, var(--accent) 40%, var(--green) 75%, transparent 100%);
+            opacity: .5;
+        }
+
+        .container {
+            position: relative; z-index: 1;
+            max-width: 1280px; margin: 0 auto; padding: 0 28px;
+        }
+
+        /* Header */
+        header {
+            border-bottom: 1px solid var(--border);
+            padding: 0 28px; height: 60px;
+            display: flex; align-items: center; justify-content: space-between;
+            position: sticky; top: 0; z-index: 50;
+            background: rgba(10,22,40,.94);
+            backdrop-filter: blur(14px);
+        }
+        .logo { display: flex; align-items: center; gap: 14px; }
+        .logo-hex {
+            width: 38px; height: 38px;
+            background: linear-gradient(135deg, var(--blue), var(--accent));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; font-weight: 800;
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+        }
+        .logo-title {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-style: italic; font-size: 30px; font-weight: 800;
+            letter-spacing: 3px; color: var(--white); line-height: 1;
+            position: relative;
+        }
+        .logo-title::after {
+            content: '';
+            position: absolute; bottom: -3px; left: 0;
+            width: 100%; height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--blue-light));
+        }
+        .logo-sub {
+            font-size: 10px; color: var(--muted);
+            text-transform: uppercase; font-weight: 600;
+            letter-spacing: .12em; margin-top: 2px;
+        }
+        .status-dot {
+            display: flex; align-items: center; gap: 6px;
+            font-size: 10px; color: var(--green);
+            text-transform: uppercase; letter-spacing: .08em; font-weight: 600;
+        }
+        .status-dot::before {
+            content: '';
+            width: 7px; height: 7px; border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 8px var(--green);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .45; }
+        }
+
+        /* Hero */
+        .hero {
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 72px 20px 52px; text-align: center;
+        }
+        .hero-eyebrow {
+            font-size: 10px; font-weight: 700;
+            letter-spacing: .3em; text-transform: uppercase;
+            color: var(--accent); margin-bottom: 18px;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .hero-eyebrow::before, .hero-eyebrow::after {
+            content: '';
+            width: 40px; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent));
+        }
+        .hero-eyebrow::after { transform: scaleX(-1); }
+        .hero-title {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: clamp(36px, 5.5vw, 72px);
+            font-weight: 800; text-transform: uppercase;
+            line-height: 1; letter-spacing: .03em;
+            margin-bottom: 6px;
+        }
+        .t1 { color: var(--white); }
+        .t2 {
+            background: linear-gradient(110deg, var(--accent) 0%, #80d8f8 50%, var(--blue-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-location {
+            color: var(--muted); font-size: 10px;
+            letter-spacing: .35em; text-transform: uppercase;
+            margin-top: 14px;
+        }
+
+        /* Cards grid - 3 columnas para tener 5 + 1 clima */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            padding: 0 0 60px;
+        }
+
+        /* Tarjeta operativa */
+        .card {
+            background: rgba(255,255,255,.04);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 26px 24px;
+            transition: all .28s cubic-bezier(.4,0,.2,1);
+            position: relative; overflow: hidden;
+            display: flex; flex-direction: column; gap: 0;
+        }
+        .card::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            opacity: 0;
+            transition: opacity .28s;
+        }
+        .card:hover {
+            border-color: rgba(0,180,216,.35);
+            background: rgba(0,180,216,.06);
+            transform: translateY(-4px);
+            box-shadow: 0 16px 40px rgba(0,0,0,.3);
+        }
+        .card:hover::before { opacity: 1; }
+
+        .card-icon {
+            font-size: 28px; margin-bottom: 14px; line-height: 1;
+        }
+        .card-title {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 17px; font-weight: 700;
+            color: var(--white); text-transform: uppercase;
+            letter-spacing: .06em; margin-bottom: 8px;
+        }
+        .card-desc {
+            font-size: 12px; color: var(--muted);
+            line-height: 1.65; margin-bottom: 20px; flex: 1;
+        }
+        .card-footer {
+            display: flex; gap: 10px; align-items: center;
+            margin-top: auto;
+        }
+        .btn-pri {
+            background: linear-gradient(135deg, var(--blue), var(--accent));
+            color: var(--white); padding: 8px 22px;
+            border-radius: 6px; text-decoration: none;
+            font-weight: 600; font-size: 11.5px;
+            letter-spacing: .06em; text-transform: uppercase;
+            display: inline-block; transition: filter .2s;
+        }
+        .btn-pri:hover { filter: brightness(1.18); }
+        .tag {
+            padding: 4px 10px;
+            background: rgba(0,180,216,.1);
+            border: 1px solid rgba(0,180,216,.25);
+            border-radius: 5px;
+            font-size: 9px; color: var(--accent);
+            text-transform: uppercase; letter-spacing: .1em;
+            font-weight: 700;
+        }
+
+        /* â”€â”€â”€ Tarjeta Clima (6ta, misma linea de diseno) â”€â”€â”€ */
+        .card.weather-card-wrap {
+            background: rgba(0,180,216,.05);
+            border-color: rgba(0,180,216,.18);
+        }
+        .card.weather-card-wrap:hover {
+            border-color: rgba(0,180,216,.4);
+            background: rgba(0,180,216,.09);
+        }
+        .wc-header-row {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 14px;
+        }
+        .wc-badge {
+            font-size: 9px; font-weight: 700;
+            letter-spacing: .16em; text-transform: uppercase;
+            color: var(--accent);
+            display: flex; align-items: center; gap: 5px;
+        }
+        .wc-badge::before {
+            content: '';
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--accent);
+            animation: pulse 2.5s ease-in-out infinite;
+        }
+        .wc-loc {
+            font-size: 8.5px; color: var(--muted);
+            letter-spacing: .06em; text-align: right;
+        }
+        .wc-body-row {
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 14px;
+        }
+        .wc-emoji { font-size: 36px; line-height: 1; flex-shrink: 0; }
+        .wc-temp-block {}
+        .wc-temp {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 38px; font-weight: 800; line-height: 1;
+            color: var(--white);
+        }
+        .wc-desc {
+            font-size: 11px; color: var(--muted);
+            margin-top: 3px; letter-spacing: .03em;
+        }
+        .wc-stats {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: .35rem .7rem;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255,255,255,.06);
+        }
+        .wcs { display: flex; flex-direction: column; gap: 1px; }
+        .wcs-lbl {
+            font-size: 7.5px; font-weight: 700;
+            letter-spacing: .14em; text-transform: uppercase;
+            color: var(--muted);
+        }
+        .wcs-val {
+            font-size: 12.5px; font-weight: 600;
+            color: var(--off-white);
+        }
+        .wc-loading-txt {
+            font-size: 11px; color: var(--muted);
+            text-align: center; padding: 1.5rem 0;
+        }
+        .wc-error-txt {
+            font-size: 11px; color: var(--red);
+            text-align: center; padding: 1rem 0;
+        }
+        .wc-refresh-btn {
+            font-size: 8.5px; color: var(--accent);
+            cursor: pointer; background: none; border: none;
+            font-family: 'Barlow', sans-serif;
+            letter-spacing: .08em; text-transform: uppercase;
+            padding: 0; margin-top: 10px;
+            opacity: .65; display: block;
+            width: 100%; text-align: right;
+            transition: opacity .15s;
+        }
+        .wc-refresh-btn:hover { opacity: 1; }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 28px 0;
+            text-align: center;
+            color: var(--muted);
+            font-size: 10px;
+            letter-spacing: .08em;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 3px; }
     </style>
 </head>
 <body>
 
-    <div id="access-screen" class="access-overlay">
-        <h1 id="status-msg" style="color:var(--accent); font-family:'Barlow Condensed'; letter-spacing:2px;">VALIDANDO SISTEMA MSA...</h1>
-        <button id="retry-btn" onclick="location.reload()" style="display:none; margin-top:20px; padding:10px 20px; background:var(--blue); color:white; border:none; border-radius:5px; cursor:pointer;">REINTENTAR</button>
-    </div>
+<div class="side-accent"></div>
 
-    <div id="main-content">
-        <div class="container">
-            <header>
-                <div class="logo">
-                    <div class="logo-hex">A</div>
-                    <div>
-                        <div class="logo-title">MSA</div>
-                        <div style="font-size:11px; color:var(--muted); text-transform:uppercase; font-weight:600;">Agentes Marítimos</div>
-                    </div>
-                </div>
-                <div class="status-item"><span class="status-txt">● Sistema Operativo</span></div>
-            </header>
+<!-- PANTALLA DE ACCESO -->
+<div id="access-screen" class="access-overlay">
+    <h1 id="status-msg" style="color:var(--accent); font-family:'Barlow Condensed',sans-serif; font-size:22px; letter-spacing:3px; font-weight:700;">VALIDANDO SISTEMA MSA...</h1>
+    <button id="retry-btn" onclick="location.reload()"
+        style="display:none; margin-top:20px; padding:10px 24px;
+               background:var(--blue); color:white; border:none;
+               border-radius:6px; cursor:pointer; font-family:'Barlow',sans-serif;
+               font-weight:600; font-size:12px; letter-spacing:.08em; text-transform:uppercase;">
+        REINTENTAR
+    </button>
+</div>
 
-            <div class="hero">
-                <div class="hero-title">
-                    <div style="color:white">OPERACIONES</div>
-                    <div class="t2">FLUVIALES MSA</div>
-                </div>
-                <div style="color:var(--muted); font-size:10px; letter-spacing:4px; text-transform:uppercase; margin-top:10px;">Nueva Palmira, Uruguay</div>
+<!-- CONTENIDO PRINCIPAL -->
+<div id="main-content">
+
+    <header>
+        <div class="logo">
+            <div class="logo-hex">M</div>
+            <div>
+                <div class="logo-title">MSA</div>
+                <div class="logo-sub">Agentes Maritimos</div>
             </div>
-
-            <div class="cards">
-                <div class="card">
-                    <div style="font-size:32px; margin-bottom:12px;">👤</div>
-                    <div style="font-family:'Barlow Condensed'; font-size:18px; font-weight:700; color:white; text-transform:uppercase; margin-bottom:8px;">Tripulación y ROL</div>
-                    <p style="font-size:12px; color:var(--muted); line-height:1.6; margin-bottom:16px;">Gestión de tripulantes, roles a bordo y libretas de puerto.</p>
-                    <div style="display:flex; gap:10px; align-items:center;">
-                        <a href="PUERTO_ISA.html" class="btn btn-pri">Abrir</a>
-                        <span class="tag">ROLES</span>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div style="font-size:32px; margin-bottom:12px;">📊</div>
-                    <div style="font-family:'Barlow Condensed'; font-size:18px; font-weight:700; color:white; text-transform:uppercase; margin-bottom:8px;">Próximas Operaciones</div>
-                    <p style="font-size:12px; color:var(--muted); line-height:1.6; margin-bottom:16px;">Buques y Fluvial. ETAs, cargos y muelles en tiempo real.</p>
-                    <div style="display:flex; gap:10px; align-items:center;">
-                        <a href="operaciones.html" class="btn btn-pri">Abrir</a>
-                        <span class="tag">ETA</span>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div style="font-size:32px; margin-bottom:12px;">📧</div>
-                    <div style="font-family:'Barlow Condensed'; font-size:18px; font-weight:700; color:white; text-transform:uppercase; margin-bottom:8px;">Mensaje de Gastos</div>
-                    <p style="font-size:12px; color:var(--muted); line-height:1.6; margin-bottom:16px;">Generador de mensajes. Remolcadores, barcazas y lanchas.</p>
-                    <div style="display:flex; gap:10px; align-items:center;">
-                        <a href="gastos-fluviales.html" class="btn btn-pri">Abrir</a>
-                        <span class="tag">GASTOS</span>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div style="font-size:32px; margin-bottom:12px;">🛳️</div>
-                    <div style="font-family:'Barlow Condensed'; font-size:18px; font-weight:700; color:white; text-transform:uppercase; margin-bottom:8px;">Seguimiento Barcazas</div>
-                    <p style="font-size:12px; color:var(--muted); line-height:1.6; margin-bottom:16px;">LHG-HB Lastre y cargadas. Posiciones en tiempo real.</p>
-                    <div style="display:flex; gap:10px; align-items:center;">
-                        <a href="barcazas.html" class="btn btn-pri">Abrir</a>
-                        <span class="tag">BARCAZAS</span>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div style="font-size:32px; margin-bottom:12px;">📋</div>
-                    <div style="font-family:'Barlow Condensed'; font-size:18px; font-weight:700; color:white; text-transform:uppercase; margin-bottom:8px;">Generador SOF</div>
-                    <p style="font-size:12px; color:var(--muted); line-height:1.6; margin-bottom:16px;">Statement of Facts + Programa de Cantidades automático.</p>
-                    <div style="display:flex; gap:10px; align-items:center;">
-                        <a href="sof-generator.html" class="btn btn-pri">Abrir</a>
-                        <span class="tag">SOF</span>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div style="font-size:32px; margin-bottom:12px;">⚙️</div>
-                    <div style="font-family:'Barlow Condensed'; font-size:18px; font-weight:700; color:white; text-transform:uppercase; margin-bottom:8px;">Procesador de Datos</div>
-                    <p style="font-size:12px; color:var(--muted); line-height:1.6; margin-bottom:16px;">Herramienta interna para procesamiento de manifiestos.</p>
-                    <div style="display:flex; gap:10px; align-items:center;">
-                        <a href="PROCESADOR_ISA.html" class="btn btn-pri">Abrir</a>
-                        <span class="tag">ADMIN</span>
-                    </div>
-                </div>
-            </div>
-
-            <footer>
-                &copy; 2026 MSA AGENTES MARÍTIMOS | Nueva Palmira, Uruguay | Todos los derechos reservados
-            </footer>
         </div>
+        <div class="status-dot">Sistema Operativo</div>
+    </header>
+
+    <div class="container">
+
+        <div class="hero">
+            <div class="hero-eyebrow">Nueva Palmira &middot; Uruguay</div>
+            <div class="hero-title">
+                <div class="t1">OPERACIONES</div>
+                <div class="t2">FLUVIALES MSA</div>
+            </div>
+            <div class="hero-location">Rio de la Plata &mdash; Puerto Nueva Palmira</div>
+        </div>
+
+        <div class="cards">
+
+            <!-- 1. Tripulacion y ROL -->
+            <div class="card">
+                <div class="card-icon">&#128100;</div>
+                <div class="card-title">Tripulacion y ROL</div>
+                <p class="card-desc">Gestion de tripulantes, roles a bordo y libretas de puerto. Documentacion DNM.</p>
+                <div class="card-footer">
+                    <a href="PUERTO_ISA.html" class="btn-pri">Abrir</a>
+                    <span class="tag">ROLES</span>
+                </div>
+            </div>
+
+            <!-- 2. Proximas Operaciones -->
+            <div class="card">
+                <div class="card-icon">&#128202;</div>
+                <div class="card-title">Proximas Operaciones</div>
+                <p class="card-desc">Buques y Fluvial. ETAs, cargos y muelles en tiempo real desde Google Sheets.</p>
+                <div class="card-footer">
+                    <a href="operaciones.html" class="btn-pri">Abrir</a>
+                    <span class="tag">ETA</span>
+                </div>
+            </div>
+
+            <!-- 3. Mensaje de Gastos -->
+            <div class="card">
+                <div class="card-icon">&#128231;</div>
+                <div class="card-title">Mensaje de Gastos</div>
+                <p class="card-desc">Generador de mensajes de gastos. Remolcadores, barcazas y lanchas fluviales.</p>
+                <div class="card-footer">
+                    <a href="gastos-fluviales.html" class="btn-pri">Abrir</a>
+                    <span class="tag">GASTOS</span>
+                </div>
+            </div>
+
+            <!-- 4. Seguimiento Barcazas -->
+            <div class="card">
+                <div class="card-icon">&#128739;</div>
+                <div class="card-title">Seguimiento Barcazas</div>
+                <p class="card-desc">LHG-HB Lastre y cargadas. Posiciones PDA / NPA en tiempo real. Clima Recalada.</p>
+                <div class="card-footer">
+                    <a href="barcazas.html" class="btn-pri">Abrir</a>
+                    <span class="tag">BARCAZAS</span>
+                </div>
+            </div>
+
+            <!-- 5. Generador SOF -->
+            <div class="card">
+                <div class="card-icon">&#128203;</div>
+                <div class="card-title">Generador SOF</div>
+                <p class="card-desc">Statement of Facts + Programa de Cantidades automatico. Tres gruas, cruces de fecha.</p>
+                <div class="card-footer">
+                    <a href="sof-generator.html" class="btn-pri">Abrir</a>
+                    <span class="tag">SOF</span>
+                </div>
+            </div>
+
+            <!-- 6. Panel Clima Recalada -->
+            <div class="card weather-card-wrap">
+                <div class="card-icon">&#127749;</div>
+                <div class="card-title">Clima &mdash; Recalada</div>
+                <div id="wc-content" style="flex:1;">
+                    <div class="wc-loading-txt">Cargando datos meteorologicos...</div>
+                </div>
+                <button class="wc-refresh-btn" onclick="loadWeather()">&#8635; actualizar clima</button>
+            </div>
+
+        </div>
+
+        <footer>
+            &copy; 2026 MSA AGENTES MARITIMOS &nbsp;|&nbsp; Nueva Palmira, Uruguay &nbsp;|&nbsp; Todos los derechos reservados
+        </footer>
+
     </div>
+</div>
 
-    <script>
-        function validar() {
-            const USER_OK = "MSA";
-            const PASS_OK = "Palmira8025";
+<script>
+/* â”€â”€â”€ Acceso â”€â”€â”€ */
+function validar() {
+    const USER_OK = "MSA";
+    const PASS_OK = "Palmira8025";
+    const user = prompt("Ingrese Usuario:");
+    const pass = prompt("Ingrese Clave:");
+    if (user === USER_OK && pass === PASS_OK) {
+        document.getElementById('access-screen').style.display = 'none';
+        document.getElementById('main-content').style.display  = 'block';
+        loadWeather();
+    } else {
+        document.getElementById('status-msg').innerText       = "ACCESO DENEGADO";
+        document.getElementById('status-msg').style.color     = "#ef4444";
+        document.getElementById('retry-btn').style.display    = "block";
+    }
+}
+window.onload = validar;
 
-            const user = prompt("Ingrese Usuario:");
-            const pass = prompt("Ingrese Clave:");
+/* â”€â”€â”€ Clima Recalada - Open-Meteo (gratis, sin API key) â”€â”€â”€ */
+const LAT = -35.27;
+const LON = -57.23;
 
-            if (user === USER_OK && pass === PASS_OK) {
-                document.getElementById('access-screen').style.display = 'none';
-                document.getElementById('main-content').style.display = 'block';
-            } else {
-                document.getElementById('status-msg').innerText = "ACCESO DENEGADO";
-                document.getElementById('status-msg').style.color = "#ef4444";
-                document.getElementById('retry-btn').style.display = "block";
-            }
-        }
-        // Iniciamos la validación
-        window.onload = validar;
-    </script>
+const WMO_ICONS = {
+    0:'&#9728;&#65039;', 1:'&#127780;&#65039;', 2:'&#9925;', 3:'&#9729;',
+    45:'&#127787;&#65039;', 48:'&#127787;&#65039;',
+    51:'&#127746;', 53:'&#127746;', 55:'&#127783;&#65039;',
+    61:'&#127783;&#65039;', 63:'&#127783;&#65039;', 65:'&#127783;&#65039;',
+    71:'&#127784;&#65039;', 73:'&#127784;&#65039;', 75:'&#10052;&#65039;',
+    80:'&#127746;', 81:'&#127783;&#65039;', 82:'&#9928;&#65039;',
+    95:'&#9928;&#65039;', 96:'&#9928;&#65039;', 99:'&#9928;&#65039;'
+};
+const WMO_DESC = {
+    0:'Despejado', 1:'Mayormente despejado', 2:'Parcialmente nublado', 3:'Nublado',
+    45:'Niebla', 48:'Niebla con escarcha',
+    51:'Llovizna leve', 53:'Llovizna moderada', 55:'Llovizna intensa',
+    61:'Lluvia leve', 63:'Lluvia moderada', 65:'Lluvia fuerte',
+    71:'Nieve leve', 73:'Nieve moderada', 75:'Nieve fuerte',
+    80:'Chubascos leves', 81:'Chubascos moderados', 82:'Chubascos fuertes',
+    95:'Tormenta', 96:'Tormenta con granizo', 99:'Tormenta fuerte'
+};
+
+function degToCompass(d) {
+    const dirs = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSO','SO','OSO','O','ONO','NO','NNO'];
+    return dirs[Math.round(d / 22.5) % 16];
+}
+
+async function loadWeather() {
+    const el = document.getElementById('wc-content');
+    if (!el) return;
+    el.innerHTML = '<div class="wc-loading-txt">Actualizando...</div>';
+
+    try {
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}` +
+            `&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m` +
+            `&wind_speed_unit=kn&timezone=America%2FSao_Paulo`;
+
+        const res  = await fetch(url);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        const c    = data.current;
+
+        const code  = c.weather_code;
+        const icon  = WMO_ICONS[code] || '&#127777;&#65039;';
+        const desc  = WMO_DESC[code]  || 'Condicion ' + code;
+        const temp  = Math.round(c.temperature_2m);
+        const hum   = c.relative_humidity_2m;
+        const wspd  = Math.round(c.wind_speed_10m);
+        const wgust = Math.round(c.wind_gusts_10m);
+        const wdir  = degToCompass(c.wind_direction_10m);
+        const wdeg  = Math.round(c.wind_direction_10m);
+
+        el.innerHTML = `
+            <div class="wc-header-row">
+                <span class="wc-badge">Recalada en vivo</span>
+                <span class="wc-loc">Punta del Indio, ARG</span>
+            </div>
+            <div class="wc-body-row">
+                <span class="wc-emoji">${icon}</span>
+                <div class="wc-temp-block">
+                    <div class="wc-temp">${temp}&deg;C</div>
+                    <div class="wc-desc">${desc}</div>
+                </div>
+            </div>
+            <div class="wc-stats">
+                <div class="wcs">
+                    <span class="wcs-lbl">Viento</span>
+                    <span class="wcs-val">${wspd} kt ${wdir}</span>
+                </div>
+                <div class="wcs">
+                    <span class="wcs-lbl">Rafagas</span>
+                    <span class="wcs-val">${wgust} kt</span>
+                </div>
+                <div class="wcs">
+                    <span class="wcs-lbl">Humedad</span>
+                    <span class="wcs-val">${hum}%</span>
+                </div>
+                <div class="wcs">
+                    <span class="wcs-lbl">Dir. viento</span>
+                    <span class="wcs-val">${wdeg}&deg; (${wdir})</span>
+                </div>
+            </div>`;
+    } catch (err) {
+        el.innerHTML = '<div class="wc-error-txt">No se pudo cargar el clima.</div>';
+        console.error('loadWeather:', err);
+    }
+}
+
+/* Auto-refresh clima cada 10 min (solo si ya esta autenticado) */
+setInterval(() => {
+    if (document.getElementById('main-content').style.display !== 'none') {
+        loadWeather();
+    }
+}, 10 * 60 * 1000);
+</script>
+
 </body>
 </html>
