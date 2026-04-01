@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ISA — Seguimiento Barcazas LHG-HB</title>
+<title>MSA â€” Seguimiento Barcazas LHG-HB</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -18,16 +18,16 @@
   --blue-mid:    #2d5cb8;
   --blue-light:  #4a8de0;
 
-  /* Accent principal — cian eléctrico */
+  /* Accent principal â€” cian elÃ©ctrico */
   --accent:      #00c8e8;
   --accent2:     #0099b8;
 
-  /* PDA — verde esmeralda */
+  /* PDA â€” verde esmeralda */
   --pda:         #22d46a;
   --pda-dim:     rgba(34, 212, 106, .14);
   --pda-border:  rgba(34, 212, 106, .28);
 
-  /* NPA — naranja ámbar */
+  /* NPA â€” naranja Ã¡mbar */
   --npa:         #f97316;
   --npa-dim:     rgba(249, 115, 22, .13);
   --npa-border:  rgba(249, 115, 22, .28);
@@ -62,7 +62,7 @@ body {
   flex-direction: column;
 }
 
-/* ── Fondo ── */
+/* â”€â”€ Fondo â”€â”€ */
 .bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
 .bg-grad {
   position: absolute; inset: 0;
@@ -84,8 +84,8 @@ body {
   opacity: .55;
 }
 
-/* ── Header ── */
-.isa-header {
+/* â”€â”€ Header â”€â”€ */
+.msa-header {
   position: relative; z-index: 10;
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 2rem; height: 56px;
@@ -94,13 +94,18 @@ body {
   backdrop-filter: blur(12px);
 }
 .logo-wrap { display: flex; align-items: center; gap: 12px; }
-.logo-isa {
+.logo-msa {
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 36px; font-weight: 800; font-style: italic;
   color: var(--white); letter-spacing: 2px; line-height: 1;
   position: relative;
+  display: none;
 }
-.logo-isa::after {
+.logo-msa {
+  height: 50px;
+  opacity: 0.95;
+}
+.logo-msa::after {
   content: '';
   position: absolute; bottom: -3px; left: 0; width: 100%; height: 2px;
   background: linear-gradient(90deg, var(--accent), var(--blue-light));
@@ -144,7 +149,7 @@ body {
 
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ── Barra de título ── */
+/* â”€â”€ Barra de tÃ­tulo â”€â”€ */
 .title-bar {
   position: relative; z-index: 10;
   padding: .85rem 2rem;
@@ -187,10 +192,10 @@ body {
 .filter-sel option { background: var(--navy2); color: var(--white); }
 .filter-sel:focus { border-color: var(--accent); }
 
-/* ── Layout principal ── */
+/* â”€â”€ Layout principal â”€â”€ */
 .main-layout { position: relative; z-index: 10; display: flex; flex: 1; overflow: hidden; }
 
-/* ── Sidebar ── */
+/* â”€â”€ Sidebar â”€â”€ */
 .sidebar {
   width: 264px; flex-shrink: 0;
   border-right: 1px solid var(--border);
@@ -237,7 +242,7 @@ body {
 .stat-card.npa .sc-num { color: var(--npa); }
 .sc-sub { font-size: 10px; color: var(--muted); margin-top: 2px; }
 
-/* Separador de sección */
+/* Separador de secciÃ³n */
 .section-sep {
   display: flex; align-items: center; gap: 7px;
   font-family: 'Barlow Condensed', sans-serif;
@@ -248,7 +253,7 @@ body {
 }
 .section-sep::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-/* Stat cards pequeñas */
+/* Stat cards pequeÃ±as */
 .scs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .45rem; margin-bottom: .6rem; }
 .stat-card-sm {
   border-radius: var(--radius-sm);
@@ -289,7 +294,7 @@ body {
 .leg { display: flex; align-items: center; gap: 5px; font-size: 9.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .leg-dot { width: 7px; height: 7px; border-radius: 50%; }
 
-/* ── Tabla ── */
+/* â”€â”€ Tabla â”€â”€ */
 .table-area {
   flex: 1; overflow-y: auto;
   padding: 1.25rem 1.5rem;
@@ -333,7 +338,7 @@ tbody td { padding: 9px 14px; font-size: 12px; vertical-align: middle; }
 .cell-salida.sin     { color: var(--muted); font-weight: 400; font-style: italic; }
 .cell-salida.con     { color: var(--teal); }
 
-/* Badge posición */
+/* Badge posiciÃ³n */
 .badge {
   display: inline-flex; align-items: center; gap: 4px;
   font-size: 9.5px; font-weight: 700;
@@ -373,7 +378,7 @@ tbody td { padding: 9px 14px; font-size: 12px; vertical-align: middle; }
   color: var(--red); font-size: 13px;
 }
 
-/* ── Scrollbar webkit ── */
+/* â”€â”€ Scrollbar webkit â”€â”€ */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 3px; }
@@ -384,34 +389,34 @@ tbody td { padding: 9px 14px; font-size: 12px; vertical-align: middle; }
 <div class="bg"><div class="bg-grad"></div><div class="bg-grid"></div></div>
 <div class="side-accent"></div>
 
-<!-- ══ HEADER ══ -->
-<div class="isa-header">
+<!-- â•â• HEADER â•â• -->
+<div class="msa-header">
   <div class="logo-wrap">
-    <div class="logo-isa">ISA</div>
+    <img src="MSA_Group_white.png" alt="MSA" class="logo-msa">
     <div class="logo-divider"></div>
     <div class="logo-sub">
-      <span class="logo-name">Agentes Marítimos</span>
-      <span class="logo-tag">Exceeding expectations</span>
+      <span class="logo-name">Agentes Maritimos</span>
+      <span class="logo-tag">Seguimiento de Barcazas</span>
     </div>
   </div>
   <div class="header-right">
     <span class="last-upd" id="last-upd"></span>
     <button class="refresh-btn" onclick="loadData()" id="refresh-btn">
-      <span class="icon">↻</span> Actualizar
+      <span class="icon">â†»</span> Actualizar
     </button>
-    <a href="index.html" class="back-link">← Portal</a>
+    <a href="index.html" class="back-link">â† Portal</a>
   </div>
 </div>
 
-<!-- ══ BARRA TÍTULO + FILTROS ══ -->
+<!-- â•â• BARRA TÃTULO + FILTROS â•â• -->
 <div class="title-bar">
   <div>
-    <div class="page-title">Seguimiento Barcazas LHG-HB — Lastre / Cargadas</div>
-    <div class="page-sub">Datos en tiempo real · Google Sheets</div>
+    <div class="page-title">Seguimiento Barcazas LHG-HB â€” Lastre / Cargadas</div>
+    <div class="page-sub">Datos en tiempo real Â· Google Sheets</div>
   </div>
   <div class="search-wrap">
     <input class="search-input" type="text" id="search"
-           placeholder="Buscar barcaza o remolcador…" oninput="applyFilters()">
+           placeholder="Buscar barcaza o remolcadorâ€¦" oninput="applyFilters()">
     <select class="filter-sel" id="filter-salida" onchange="applyFilters()">
       <option value="">Todas las barcazas</option>
       <option value="sin">Sin salida (en puerto)</option>
@@ -433,56 +438,56 @@ tbody td { padding: 9px 14px; font-size: 12px; vertical-align: middle; }
   </div>
 </div>
 
-<!-- ══ LAYOUT ══ -->
+<!-- â•â• LAYOUT â•â• -->
 <div class="main-layout">
 
-  <!-- ── Sidebar ── -->
+  <!-- â”€â”€ Sidebar â”€â”€ -->
   <div class="sidebar">
-    <div class="sidebar-heading">En Puerto · Sin Salida</div>
+    <div class="sidebar-heading">En Puerto Â· Sin Salida</div>
 
     <div class="stat-card pda">
       <div class="sc-top"><span class="sc-label">Lastre PDA</span><span class="sc-dot"></span></div>
-      <div class="sc-num" id="lastrePDA-sin">—</div>
+      <div class="sc-num" id="lastrePDA-sin">â€”</div>
       <div class="sc-sub">Actualmente en puerto</div>
     </div>
     <div class="stat-card npa">
       <div class="sc-top"><span class="sc-label">Lastre NPA</span><span class="sc-dot"></span></div>
-      <div class="sc-num" id="lastreNPA-sin">—</div>
+      <div class="sc-num" id="lastreNPA-sin">â€”</div>
       <div class="sc-sub">Actualmente en puerto</div>
     </div>
     <div class="stat-card pda">
       <div class="sc-top"><span class="sc-label">Cargada PDA</span><span class="sc-dot"></span></div>
-      <div class="sc-num" id="cargadaPDA-sin">—</div>
+      <div class="sc-num" id="cargadaPDA-sin">â€”</div>
       <div class="sc-sub">Actualmente en puerto</div>
     </div>
     <div class="stat-card npa">
       <div class="sc-top"><span class="sc-label">Cargada NPA</span><span class="sc-dot"></span></div>
-      <div class="sc-num" id="cargadaNPA-sin">—</div>
+      <div class="sc-num" id="cargadaNPA-sin">â€”</div>
       <div class="sc-sub">Actualmente en puerto</div>
     </div>
 
-    <!-- Histórico con salida asignada -->
-    <div class="section-sep">Histórico</div>
+    <!-- HistÃ³rico con salida asignada -->
+    <div class="section-sep">HistÃ³rico</div>
 
     <div class="scs-grid">
       <div class="stat-card-sm pda">
         <div class="scs-top"><span class="scs-label">Lastre PDA</span><span class="scs-dot"></span></div>
-        <div class="scs-num" id="lastrePDA-sal">—</div>
+        <div class="scs-num" id="lastrePDA-sal">â€”</div>
         <div class="scs-sub">Con salida</div>
       </div>
       <div class="stat-card-sm npa">
         <div class="scs-top"><span class="scs-label">Lastre NPA</span><span class="scs-dot"></span></div>
-        <div class="scs-num" id="lastreNPA-sal">—</div>
+        <div class="scs-num" id="lastreNPA-sal">â€”</div>
         <div class="scs-sub">Con salida</div>
       </div>
       <div class="stat-card-sm pda">
         <div class="scs-top"><span class="scs-label">Cargada PDA</span><span class="scs-dot"></span></div>
-        <div class="scs-num" id="cargadaPDA-sal">—</div>
+        <div class="scs-num" id="cargadaPDA-sal">â€”</div>
         <div class="scs-sub">Con salida</div>
       </div>
       <div class="stat-card-sm npa">
         <div class="scs-top"><span class="scs-label">Cargada NPA</span><span class="scs-dot"></span></div>
-        <div class="scs-num" id="cargadaNPA-sal">—</div>
+        <div class="scs-num" id="cargadaNPA-sal">â€”</div>
         <div class="scs-sub">Con salida</div>
       </div>
     </div>
@@ -491,15 +496,15 @@ tbody td { padding: 9px 14px; font-size: 12px; vertical-align: middle; }
     <div class="section-sep">General</div>
     <div class="info-row">
       <span class="info-label">Total en puerto</span>
-      <span class="info-val accent" id="cnt-total-sin">—</span>
+      <span class="info-val accent" id="cnt-total-sin">â€”</span>
     </div>
     <div class="info-row">
       <span class="info-label">Con salida asignada</span>
-      <span class="info-val accent" id="cnt-total-sal">—</span>
+      <span class="info-val accent" id="cnt-total-sal">â€”</span>
     </div>
     <div class="info-row">
-      <span class="info-label">Última actualización</span>
-      <span class="info-val" id="upd-time">—</span>
+      <span class="info-label">Ãšltima actualizaciÃ³n</span>
+      <span class="info-val" id="upd-time">â€”</span>
     </div>
 
     <!-- Leyenda -->
@@ -511,11 +516,11 @@ tbody td { padding: 9px 14px; font-size: 12px; vertical-align: middle; }
     </div>
   </div>
 
-  <!-- ── Tabla ── -->
+  <!-- â”€â”€ Tabla â”€â”€ -->
   <div class="table-area" id="table-area">
     <div class="loading-wrap" id="loading">
       <div class="spinner"></div>
-      <div class="loading-txt">Cargando datos desde Google Sheets…</div>
+      <div class="loading-txt">Cargando datos desde Google Sheetsâ€¦</div>
     </div>
     <table id="data-table" style="display:none">
       <thead>
@@ -524,7 +529,7 @@ tbody td { padding: 9px 14px; font-size: 12px; vertical-align: middle; }
           <th>Barcaza</th>
           <th>Remolcador</th>
           <th>Estado</th>
-          <th>Posición</th>
+          <th>PosiciÃ³n</th>
           <th>Ingreso</th>
           <th>Salida</th>
         </tr>
@@ -545,7 +550,7 @@ const CSV_URL  = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?form
 
 let allRows = [];
 
-/* ── Carga principal ── */
+/* â”€â”€ Carga principal â”€â”€ */
 async function loadData() {
   const btn = document.getElementById('refresh-btn');
   btn.classList.add('spin');
@@ -575,14 +580,14 @@ async function loadData() {
     document.getElementById('loading').style.display   = 'none';
     const errEl = document.getElementById('error-state');
     errEl.style.display = 'block';
-    errEl.textContent   = 'Error al cargar los datos. Verifique la conexión o los permisos del Sheet.';
+    errEl.textContent   = 'Error al cargar los datos. Verifique la conexiÃ³n o los permisos del Sheet.';
     console.error('loadData:', err);
   }
 
   btn.classList.remove('spin');
 }
 
-/* ── Parseo CSV ── */
+/* â”€â”€ Parseo CSV â”€â”€ */
 function parseCSV(text) {
   const lines = text.split('\n').filter(l => l.trim());
   if (lines.length < 2) return [];
@@ -618,7 +623,7 @@ function splitCSVLine(line) {
   return result;
 }
 
-/* ── Filtros ── */
+/* â”€â”€ Filtros â”€â”€ */
 function populateRemFilter(rows) {
   const rems = [...new Set(rows.map(r => r.remolcador).filter(Boolean))].sort();
   const sel  = document.getElementById('filter-rem');
@@ -652,7 +657,7 @@ function applyFilters() {
   renderTable(filtered);
 }
 
-/* ── Render tabla ── */
+/* â”€â”€ Render tabla â”€â”€ */
 function getBadgeClass(pos) {
   if (pos.includes('PDA')) return 'pda';
   if (pos.includes('NPA')) return 'npa';
@@ -678,21 +683,21 @@ function renderTable(rows) {
     const bc  = getBadgeClass(r.posicion);
     const hasSalida = r.salida !== '';
     const salidaClass = hasSalida ? 'con' : 'sin';
-    const salidaTxt   = hasSalida ? r.salida : '—';
+    const salidaTxt   = hasSalida ? r.salida : 'â€”';
 
     return `<tr>
       <td class="cell-num">${i + 1}</td>
       <td class="cell-barc">${r.barcaza}</td>
-      <td class="cell-rem">${r.remolcador || '—'}</td>
-      <td class="cell-est">${r.estado || '—'}</td>
-      <td><span class="badge ${bc}"><span class="bdot"></span>${r.posicion || '—'}</span></td>
-      <td class="cell-fecha">${r.ingreso || '—'}</td>
+      <td class="cell-rem">${r.remolcador || 'â€”'}</td>
+      <td class="cell-est">${r.estado || 'â€”'}</td>
+      <td><span class="badge ${bc}"><span class="bdot"></span>${r.posicion || 'â€”'}</span></td>
+      <td class="cell-fecha">${r.ingreso || 'â€”'}</td>
       <td class="cell-salida ${salidaClass}">${salidaTxt}</td>
     </tr>`;
   }).join('');
 }
 
-/* ── Sidebar stats ── */
+/* â”€â”€ Sidebar stats â”€â”€ */
 function updateSidebar(rows) {
   const count = (predFn) => rows.filter(predFn).length;
 
@@ -724,7 +729,7 @@ function set(id, val) {
   if (el) el.textContent = val;
 }
 
-/* ── Inicio ── */
+/* â”€â”€ Inicio â”€â”€ */
 loadData();
 setInterval(loadData, 5 * 60 * 1000); // auto-refresh cada 5 min
 </script>
