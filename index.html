@@ -1,557 +1,388 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MSA Portal de Operaciones</title>
-    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;1,800&family=Barlow:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    <style>
-        #main-content { display: none; }
-        .access-overlay {
-            position: fixed; inset: 0; z-index: 9999;
-            background: #0a1628; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; text-align: center;
-        }
+<script>
+(function(_0x1a2b,_0x3c4d){const _0x5e6f=function(_0x7a8b){while(--_0x7a8b){_0x1a2b['push'](_0x1a2b['shift']());}};_0x5e6f(++_0x3c4d);}(['innerHTML','Acceso\x20Restringido','Ingrese\x20Clave:','Palmira8025','Acceso\x20denegado.','prompt','MSA','Ingrese\x20Usuario:'],0x1a4));const _0x9876=function(_0x5432,_0x1098){_0x5432=_0x5432-0x0;let _0x2143=['innerHTML','Acceso\x20Restringido','Ingrese\x20Clave:','Palmira8025','Acceso\x20denegado.','prompt','MSA','Ingrese\x20Usuario:'][_0x5432];return _0x2143;};(function(){const _0x1111=_0x9876('0x6'),_0x2222=_0x9876('0x3');let _0x3333=prompt(_0x9876('0x7')),_0x4444=prompt(_0x9876('0x2'));if(_0x3333!==_0x1111||_0x4444!==_0x2222){alert(_0x9876('0x4'));document['documentElement'][_0x9876('0x0')]='<body\x20style=\x22background:#1a1a1a;color:white;text-align:center;padding-top:20%;font-family:sans-serif\x22><h1>Acceso\x20Restringido</h1><p>Contacte\x20al\x20administrador.</p></body>';window['stop']();}})();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MSA — Portal de Operaciones</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;1,800&family=Barlow:wght@300;400;500;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --navy:#070e1f;--navy2:#0c1830;--blue:#1a3a8c;--blue2:#2d5cb8;
+  --accent:#00c8e8;--accent2:#3a7bd5;
+  --white:#fff;--muted:rgba(255,255,255,.42);--muted2:rgba(255,255,255,.18);
+  --glass:rgba(255,255,255,.04);--glass-b:rgba(255,255,255,.09);--glass-h:rgba(255,255,255,.08);
+  --mono:'Share Tech Mono',monospace;--cond:'Barlow Condensed',sans-serif;--body:'Barlow',sans-serif;
+}
+html,body{height:100%;overflow:hidden;background:var(--navy);}
+body{font-family:var(--body);color:var(--white);display:flex;flex-direction:column;}
 
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        :root {
-            --navy:       #0a1628;
-            --navy2:      #0d1f3c;
-            --blue:       #1a3a8c;
-            --blue-mid:   #2d5cb8;
-            --blue-light: #3a7bd5;
-            --accent:     #00b4d8;
-            --accent2:    #0099b8;
-            --green:      #22c55e;
-            --red:        #ef4444;
-            --white:      #fff;
-            --off-white:  #e8eef8;
-            --muted:      rgba(255,255,255,.45);
-            --border:     rgba(255,255,255,.08);
-            --border2:    rgba(255,255,255,.13);
-        }
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;}
+.bg-base{position:absolute;inset:0;background:
+  radial-gradient(ellipse 90% 70% at 50% 40%,rgba(13,30,80,.7) 0%,transparent 70%),
+  radial-gradient(ellipse 50% 50% at 80% 10%,rgba(0,180,220,.07) 0%,transparent 55%),
+  radial-gradient(ellipse 40% 60% at 10% 80%,rgba(26,58,140,.12) 0%,transparent 60%),
+  linear-gradient(175deg,#070e1f 0%,#0c1830 45%,#070e1f 100%);}
+.bg-grid{position:absolute;inset:0;
+  background-image:linear-gradient(rgba(0,200,232,.028) 1px,transparent 1px),linear-gradient(90deg,rgba(0,200,232,.028) 1px,transparent 1px);
+  background-size:52px 52px;}
+.bg-grid2{position:absolute;inset:0;
+  background-image:linear-gradient(rgba(0,200,232,.012) 1px,transparent 1px),linear-gradient(90deg,rgba(0,200,232,.012) 1px,transparent 1px);
+  background-size:13px 13px;}
+.bg-glow{position:absolute;top:20%;left:50%;transform:translateX(-50%);width:700px;height:500px;
+  background:radial-gradient(ellipse,rgba(0,180,220,.09) 0%,transparent 65%);
+  border-radius:50%;filter:blur(30px);animation:glowpulse 7s ease-in-out infinite;}
+@keyframes glowpulse{0%,100%{opacity:.7;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.08)}}
+.bg-scan{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.04) 3px,rgba(0,0,0,.04) 4px);}
+.deco-h{position:absolute;height:1px;width:100%;background:linear-gradient(90deg,transparent,rgba(0,200,232,.2),transparent);animation:scanh 10s linear infinite;}
+.deco-h:nth-child(1){top:28%}.deco-h:nth-child(2){top:68%;animation-delay:-4s;opacity:.4}
+@keyframes scanh{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.side-bar{position:fixed;left:0;top:0;bottom:0;width:2px;z-index:20;
+  background:linear-gradient(180deg,transparent,var(--accent) 35%,var(--accent2) 70%,transparent);opacity:.5;}
 
-        body {
-            font-family: 'Barlow', sans-serif;
-            background: var(--navy);
-            color: var(--off-white);
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
+.portal{position:relative;z-index:10;display:flex;flex-direction:column;height:100vh;}
 
-        /* Fondo grid */
-        body::before {
-            content: '';
-            position: fixed; inset: 0; z-index: 0; pointer-events: none;
-            background-image:
-                linear-gradient(rgba(255,255,255,.022) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,.022) 1px, transparent 1px);
-            background-size: 60px 60px;
-        }
-        body::after {
-            content: '';
-            position: fixed; inset: 0; z-index: 0; pointer-events: none;
-            background: radial-gradient(ellipse 70% 50% at 15% 50%, rgba(26,58,140,.45) 0%, transparent 70%);
-        }
+/* TOPBAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:.85rem 2.4rem;
+  border-bottom:1px solid rgba(0,200,232,.1);animation:fadedown .7s ease both;}
+@keyframes fadedown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
+.logo-wrap{display:flex;align-items:center;gap:14px;}
+.logo-MSA{font-family:var(--cond);font-size:44px;font-weight:800;font-style:italic;color:var(--white);
+  letter-spacing:3px;line-height:1;position:relative;}
+.logo-MSA::after{content:'';position:absolute;bottom:-3px;left:0;width:100%;height:2px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2),transparent);}
+.logo-sep{width:1px;height:30px;background:rgba(255,255,255,.15);}
+.logo-info{display:flex;flex-direction:column;gap:2px;}
+.logo-name{font-family:var(--cond);font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.75);}
+.logo-tag{font-family:var(--mono);font-size:8px;letter-spacing:.12em;color:var(--muted);}
+.topbar-right{display:flex;align-items:center;gap:18px;}
 
-        /* Acento lateral */
-        .side-accent {
-            position: fixed; left: 0; top: 0; bottom: 0; width: 3px; z-index: 20;
-            background: linear-gradient(180deg, transparent 0%, var(--accent) 40%, var(--green) 75%, transparent 100%);
-            opacity: .5;
-        }
+/* WEATHER TOPBAR */
+.wx-top{display:flex;align-items:center;gap:10px;padding:5px 13px;
+  background:rgba(0,200,232,.055);border:1px solid rgba(0,200,232,.13);
+  border-radius:8px;backdrop-filter:blur(10px);}
+.wx-loc{font-family:var(--mono);font-size:7.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);}
+.wx-temp{font-family:var(--cond);font-size:20px;font-weight:700;color:var(--white);line-height:1;}
+.wx-unit{font-size:10px;color:var(--muted);vertical-align:super;}
+.wx-icon{font-size:20px;filter:drop-shadow(0 0 5px rgba(0,200,232,.4));}
+.wx-cond{font-family:var(--mono);font-size:8px;color:rgba(255,255,255,.55);letter-spacing:.05em;max-width:80px;}
+.wx-sep{width:1px;height:28px;background:rgba(255,255,255,.1);}
+.wx-details{display:flex;flex-direction:column;gap:3px;}
+.wx-row{display:flex;align-items:center;gap:4px;font-family:var(--mono);font-size:8px;color:var(--muted);}
+.wx-row b{color:rgba(255,255,255,.8);font-weight:400;}
+.wx-loading{font-family:var(--mono);font-size:8px;color:var(--muted);letter-spacing:.1em;animation:blink 1.4s infinite;}
+@keyframes blink{0%,100%{opacity:.35}50%{opacity:1}}
 
-        .container {
-            position: relative; z-index: 1;
-            max-width: 1280px; margin: 0 auto; padding: 0 28px;
-        }
+.sys-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:3px;}
+.sys-status{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:8px;color:var(--muted);letter-spacing:.1em;}
+.sys-dot{width:6px;height:6px;border-radius:50%;background:#2ecc71;box-shadow:0 0 7px #2ecc71;animation:blink2 2.5s ease-in-out infinite;}
+@keyframes blink2{0%,100%{opacity:1}50%{opacity:.3}}
+.sys-date{font-family:var(--mono);font-size:8px;color:var(--muted);letter-spacing:.05em;}
 
-        /* Header */
-        header {
-            border-bottom: 1px solid var(--border);
-            padding: 0 28px; height: 60px;
-            display: flex; align-items: center; justify-content: space-between;
-            position: sticky; top: 0; z-index: 50;
-            background: rgba(10,22,40,.94);
-            backdrop-filter: blur(14px);
-        }
-        .logo { display: flex; align-items: center; gap: 14px; }
-        .logo-hex {
-            width: 38px; height: 38px;
-            background: linear-gradient(135deg, var(--blue), var(--accent));
-            display: flex; align-items: center; justify-content: center;
-            font-size: 18px; font-weight: 800;
-            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-        }
-        .logo-title {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-style: italic; font-size: 30px; font-weight: 800;
-            letter-spacing: 3px; color: var(--white); line-height: 1;
-            position: relative;
-        }
-        .logo-title::after {
-            content: '';
-            position: absolute; bottom: -3px; left: 0;
-            width: 100%; height: 2px;
-            background: linear-gradient(90deg, var(--accent), var(--blue-light));
-        }
-        .logo-sub {
-            font-size: 10px; color: var(--muted);
-            text-transform: uppercase; font-weight: 600;
-            letter-spacing: .12em; margin-top: 2px;
-        }
-        .status-dot {
-            display: flex; align-items: center; gap: 6px;
-            font-size: 10px; color: var(--green);
-            text-transform: uppercase; letter-spacing: .08em; font-weight: 600;
-        }
-        .status-dot::before {
-            content: '';
-            width: 7px; height: 7px; border-radius: 50%;
-            background: var(--green);
-            box-shadow: 0 0 8px var(--green);
-            animation: pulse 2s ease-in-out infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: .45; }
-        }
+/* HERO */
+.hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:0 1.5rem .8rem;text-align:center;animation:fadein .8s ease .1s both;}
+@keyframes fadein{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+.eyebrow{font-family:var(--mono);font-size:8.5px;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:.6rem;opacity:.8;display:flex;align-items:center;gap:10px;}
+.eyebrow::before,.eyebrow::after{content:'';display:block;width:28px;height:1px;
+  background:linear-gradient(90deg,transparent,var(--accent));}
+.eyebrow::after{background:linear-gradient(270deg,transparent,var(--accent));}
+.hero-title{font-family:var(--cond);font-size:clamp(28px,3.8vw,52px);font-weight:800;
+  text-transform:uppercase;line-height:1;letter-spacing:.03em;margin-bottom:.2rem;}
+.t1{color:var(--white);}
+.t2{background:linear-gradient(110deg,var(--accent) 0%,#80d8f8 50%,var(--accent2) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-sub{font-family:var(--mono);font-size:8.5px;letter-spacing:.16em;color:var(--muted);margin-bottom:1.6rem;}
 
-        /* Hero */
-        .hero {
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            padding: 72px 20px 52px; text-align: center;
-        }
-        .hero-eyebrow {
-            font-size: 10px; font-weight: 700;
-            letter-spacing: .3em; text-transform: uppercase;
-            color: var(--accent); margin-bottom: 18px;
-            display: flex; align-items: center; gap: 12px;
-        }
-        .hero-eyebrow::before, .hero-eyebrow::after {
-            content: '';
-            width: 40px; height: 1px;
-            background: linear-gradient(90deg, transparent, var(--accent));
-        }
-        .hero-eyebrow::after { transform: scaleX(-1); }
-        .hero-title {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: clamp(36px, 5.5vw, 72px);
-            font-weight: 800; text-transform: uppercase;
-            line-height: 1; letter-spacing: .03em;
-            margin-bottom: 6px;
-        }
-        .t1 { color: var(--white); }
-        .t2 {
-            background: linear-gradient(110deg, var(--accent) 0%, #80d8f8 50%, var(--blue-light) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .hero-location {
-            color: var(--muted); font-size: 10px;
-            letter-spacing: .35em; text-transform: uppercase;
-            margin-top: 14px;
-        }
+/* GRID 3×2 */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;width:100%;max-width:980px;
+  animation:fadein .8s ease .25s both;}
 
-        /* Cards grid - 3 columnas para tener 5 + 1 clima */
-        .cards {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 18px;
-            padding: 0 0 60px;
-        }
+/* CARD */
+.card{position:relative;background:var(--glass);border:1px solid var(--glass-b);border-radius:13px;
+  padding:1.1rem 1.2rem;text-decoration:none;color:var(--white);overflow:hidden;
+  backdrop-filter:blur(14px);transition:all .26s ease;display:flex;flex-direction:column;gap:.65rem;}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1.5px;
+  background:var(--ca,linear-gradient(90deg,var(--accent2),var(--accent)));opacity:0;transition:opacity .26s;}
+.card::after{content:'';position:absolute;inset:0;border-radius:13px;
+  background:radial-gradient(ellipse 60% 45% at 50% 0%,rgba(0,200,232,.05),transparent 70%);
+  opacity:0;transition:opacity .26s;pointer-events:none;}
+.card:hover{background:var(--glass-h);border-color:rgba(0,200,232,.2);transform:translateY(-3px);
+  box-shadow:0 14px 36px rgba(0,0,0,.5),0 0 0 1px rgba(0,200,232,.1);}
+.card:hover::before,.card:hover::after{opacity:1;}
+.c-cyan{--ca:linear-gradient(90deg,var(--accent2),var(--accent));}
+.c-green{--ca:linear-gradient(90deg,#00a878,#00e0a0);}
+.c-gold{--ca:linear-gradient(90deg,#b8892a,#e8c060);}
+.c-purple{--ca:linear-gradient(90deg,#6030c0,#9060f0);}
+.c-coral{--ca:linear-gradient(90deg,#c04820,#e87040);}
+.c-green:hover{border-color:rgba(0,168,120,.25)!important;box-shadow:0 14px 36px rgba(0,0,0,.5),0 0 0 1px rgba(0,168,120,.12)!important;}
+.c-gold:hover{border-color:rgba(184,137,42,.25)!important;box-shadow:0 14px 36px rgba(0,0,0,.5),0 0 0 1px rgba(184,137,42,.12)!important;}
+.c-purple:hover{border-color:rgba(96,48,192,.3)!important;box-shadow:0 14px 36px rgba(0,0,0,.5),0 0 0 1px rgba(96,48,192,.15)!important;}
+.c-coral:hover{border-color:rgba(192,72,32,.25)!important;box-shadow:0 14px 36px rgba(0,0,0,.5),0 0 0 1px rgba(192,72,32,.12)!important;}
 
-        /* Tarjeta operativa */
-        .card {
-            background: rgba(255,255,255,.04);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 26px 24px;
-            transition: all .28s cubic-bezier(.4,0,.2,1);
-            position: relative; overflow: hidden;
-            display: flex; flex-direction: column; gap: 0;
-        }
-        .card::before {
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0; height: 2px;
-            background: linear-gradient(90deg, transparent, var(--accent), transparent);
-            opacity: 0;
-            transition: opacity .28s;
-        }
-        .card:hover {
-            border-color: rgba(0,180,216,.35);
-            background: rgba(0,180,216,.06);
-            transform: translateY(-4px);
-            box-shadow: 0 16px 40px rgba(0,0,0,.3);
-        }
-        .card:hover::before { opacity: 1; }
+.card-top{display:flex;align-items:flex-start;justify-content:space-between;}
+.card-icon{width:36px;height:36px;border-radius:9px;background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;
+  font-size:16px;transition:transform .26s;}
+.card:hover .card-icon{transform:scale(1.08) rotate(-4deg);}
+.card-arrow{width:22px;height:22px;border-radius:50%;border:1px solid rgba(255,255,255,.12);
+  display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--muted);transition:all .26s;}
+.card:hover .card-arrow{color:var(--navy);transform:translate(2px,-2px);}
+.c-cyan:hover .card-arrow{background:var(--accent);border-color:var(--accent);}
+.c-green:hover .card-arrow{background:#00a878;border-color:#00a878;}
+.c-gold:hover .card-arrow{background:#b8892a;border-color:#b8892a;}
+.c-purple:hover .card-arrow{background:#6030c0;border-color:#6030c0;}
+.c-coral:hover .card-arrow{background:#c04820;border-color:#c04820;}
+.card-title{font-family:var(--cond);font-size:15.5px;font-weight:700;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--white);margin-bottom:3px;}
+.card-desc{font-size:11px;font-weight:300;color:var(--muted);line-height:1.5;}
+.card-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:1px;}
+.tag{font-family:var(--mono);font-size:7.5px;letter-spacing:.1em;text-transform:uppercase;
+  padding:2px 7px;border-radius:20px;background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.1);color:var(--muted);}
+.c-green .tag{background:rgba(0,168,120,.1);border-color:rgba(0,168,120,.2);color:rgba(0,220,160,.7);}
+.c-gold .tag{background:rgba(184,137,42,.1);border-color:rgba(184,137,42,.2);color:rgba(232,192,96,.8);}
+.c-purple .tag{background:rgba(96,48,192,.1);border-color:rgba(96,48,192,.2);color:rgba(144,96,240,.8);}
+.c-coral .tag{background:rgba(192,72,32,.1);border-color:rgba(192,72,32,.2);color:rgba(232,112,64,.85);}
 
-        .card-icon {
-            font-size: 28px; margin-bottom: 14px; line-height: 1;
-        }
-        .card-title {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 17px; font-weight: 700;
-            color: var(--white); text-transform: uppercase;
-            letter-spacing: .06em; margin-bottom: 8px;
-        }
-        .card-desc {
-            font-size: 12px; color: var(--muted);
-            line-height: 1.65; margin-bottom: 20px; flex: 1;
-        }
-        .card-footer {
-            display: flex; gap: 10px; align-items: center;
-            margin-top: auto;
-        }
-        .btn-pri {
-            background: linear-gradient(135deg, var(--blue), var(--accent));
-            color: var(--white); padding: 8px 22px;
-            border-radius: 6px; text-decoration: none;
-            font-weight: 600; font-size: 11.5px;
-            letter-spacing: .06em; text-transform: uppercase;
-            display: inline-block; transition: filter .2s;
-        }
-        .btn-pri:hover { filter: brightness(1.18); }
-        .tag {
-            padding: 4px 10px;
-            background: rgba(0,180,216,.1);
-            border: 1px solid rgba(0,180,216,.25);
-            border-radius: 5px;
-            font-size: 9px; color: var(--accent);
-            text-transform: uppercase; letter-spacing: .1em;
-            font-weight: 700;
-        }
+/* WEATHER CARD (slot 6) */
+.wx-card{cursor:default;pointer-events:none;}
+.wx-card-loc{font-family:var(--mono);font-size:7.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);}
+.wx-card-sub{font-family:var(--mono);font-size:7px;color:var(--muted);letter-spacing:.07em;margin-top:1px;}
+.wx-card-bigtemp{font-family:var(--cond);font-size:38px;font-weight:700;line-height:1;color:var(--white);}
+.wx-card-unit{font-size:14px;color:var(--muted);}
+.wx-card-cond{font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.55);margin-left:8px;letter-spacing:.05em;}
+.wx-card-icon{font-size:28px;filter:drop-shadow(0 0 8px rgba(0,200,232,.35));}
+.wx-divider{border:none;border-top:1px solid rgba(255,255,255,.07);margin:6px 0;}
+.wx-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.wx-stat-label{font-family:var(--mono);font-size:7px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:2px;}
+.wx-stat-val{font-family:var(--cond);font-size:17px;font-weight:600;color:var(--white);}
+.wx-stat-unit{font-size:9px;color:var(--muted);}
+.wx-stat-dir{font-family:var(--mono);font-size:8px;color:rgba(0,200,232,.75);margin-top:1px;}
 
-        /* â”€â”€â”€ Tarjeta Clima (6ta, misma linea de diseno) â”€â”€â”€ */
-        .card.weather-card-wrap {
-            background: rgba(0,180,216,.05);
-            border-color: rgba(0,180,216,.18);
-        }
-        .card.weather-card-wrap:hover {
-            border-color: rgba(0,180,216,.4);
-            background: rgba(0,180,216,.09);
-        }
-        .wc-header-row {
-            display: flex; align-items: center; justify-content: space-between;
-            margin-bottom: 14px;
-        }
-        .wc-badge {
-            font-size: 9px; font-weight: 700;
-            letter-spacing: .16em; text-transform: uppercase;
-            color: var(--accent);
-            display: flex; align-items: center; gap: 5px;
-        }
-        .wc-badge::before {
-            content: '';
-            width: 6px; height: 6px; border-radius: 50%;
-            background: var(--accent);
-            animation: pulse 2.5s ease-in-out infinite;
-        }
-        .wc-loc {
-            font-size: 8.5px; color: var(--muted);
-            letter-spacing: .06em; text-align: right;
-        }
-        .wc-body-row {
-            display: flex; align-items: center; gap: 12px;
-            margin-bottom: 14px;
-        }
-        .wc-emoji { font-size: 36px; line-height: 1; flex-shrink: 0; }
-        .wc-temp-block {}
-        .wc-temp {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 38px; font-weight: 800; line-height: 1;
-            color: var(--white);
-        }
-        .wc-desc {
-            font-size: 11px; color: var(--muted);
-            margin-top: 3px; letter-spacing: .03em;
-        }
-        .wc-stats {
-            display: grid; grid-template-columns: 1fr 1fr;
-            gap: .35rem .7rem;
-            padding-top: 12px;
-            border-top: 1px solid rgba(255,255,255,.06);
-        }
-        .wcs { display: flex; flex-direction: column; gap: 1px; }
-        .wcs-lbl {
-            font-size: 7.5px; font-weight: 700;
-            letter-spacing: .14em; text-transform: uppercase;
-            color: var(--muted);
-        }
-        .wcs-val {
-            font-size: 12.5px; font-weight: 600;
-            color: var(--off-white);
-        }
-        .wc-loading-txt {
-            font-size: 11px; color: var(--muted);
-            text-align: center; padding: 1.5rem 0;
-        }
-        .wc-error-txt {
-            font-size: 11px; color: var(--red);
-            text-align: center; padding: 1rem 0;
-        }
-        .wc-refresh-btn {
-            font-size: 8.5px; color: var(--accent);
-            cursor: pointer; background: none; border: none;
-            font-family: 'Barlow', sans-serif;
-            letter-spacing: .08em; text-transform: uppercase;
-            padding: 0; margin-top: 10px;
-            opacity: .65; display: block;
-            width: 100%; text-align: right;
-            transition: opacity .15s;
-        }
-        .wc-refresh-btn:hover { opacity: 1; }
+/* FOOTER */
+.footer{display:flex;align-items:center;justify-content:space-between;padding:.6rem 2.4rem;
+  border-top:1px solid rgba(255,255,255,.05);animation:fadeup .7s ease .5s both;}
+@keyframes fadeup{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.copy{font-family:var(--mono);font-size:7.5px;color:rgba(255,255,255,.18);letter-spacing:.1em;}
+.offices{display:flex;gap:12px;}
+.office{font-family:var(--mono);font-size:7.5px;color:rgba(255,255,255,.18);letter-spacing:.08em;text-transform:uppercase;}
+.office.active{color:rgba(0,200,232,.55);}
 
-        /* Footer */
-        footer {
-            border-top: 1px solid var(--border);
-            padding: 28px 0;
-            text-align: center;
-            color: var(--muted);
-            font-size: 10px;
-            letter-spacing: .08em;
-        }
+.corner-deco{position:fixed;bottom:1.8rem;right:1.8rem;opacity:.05;pointer-events:none;z-index:1;}
 
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 3px; }
-    </style>
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr);}html,body{overflow:auto;}}
+@media(max-width:580px){.grid{grid-template-columns:1fr;}.wx-details,.wx-sep{display:none;}.footer{flex-direction:column;gap:5px;padding:.7rem 1.2rem;}}
+</style>
 </head>
 <body>
-
-<div class="side-accent"></div>
-
-<!-- PANTALLA DE ACCESO -->
-<div id="access-screen" class="access-overlay">
-    <h1 id="status-msg" style="color:var(--accent); font-family:'Barlow Condensed',sans-serif; font-size:22px; letter-spacing:3px; font-weight:700;">VALIDANDO SISTEMA MSA...</h1>
-    <button id="retry-btn" onclick="location.reload()"
-        style="display:none; margin-top:20px; padding:10px 24px;
-               background:var(--blue); color:white; border:none;
-               border-radius:6px; cursor:pointer; font-family:'Barlow',sans-serif;
-               font-weight:600; font-size:12px; letter-spacing:.08em; text-transform:uppercase;">
-        REINTENTAR
-    </button>
+<div class="bg">
+  <div class="bg-base"></div><div class="bg-grid"></div><div class="bg-grid2"></div>
+  <div class="bg-glow"></div><div class="bg-scan"></div>
+  <div class="deco-h"></div><div class="deco-h"></div>
 </div>
+<div class="side-bar"></div>
+<div class="portal">
 
-<!-- CONTENIDO PRINCIPAL -->
-<div id="main-content">
-
-    <header>
-        <div class="logo">
-            <div class="logo-hex">M</div>
-            <div>
-                <div class="logo-title">MSA</div>
-                <div class="logo-sub">Agentes Maritimos</div>
+  <div class="topbar">
+    <div class="logo-wrap">
+      <div class="logo-MSA">MSA</div>
+      <div class="logo-sep"></div>
+      <div class="logo-info">
+        <span class="logo-name">Agentes Marítimos</span>
+        <span class="logo-tag">Nueva Palmira · UY</span>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="wx-top">
+        <span class="wx-loading" id="wxLoad">CARGANDO CLIMA...</span>
+        <div id="wxTopData" style="display:none;align-items:center;gap:9px;">
+          <div>
+            <div class="wx-loc">Nueva Palmira</div>
+            <div style="display:flex;align-items:baseline;gap:1px;">
+              <span class="wx-temp" id="wxT">--</span><span class="wx-unit">°C</span>
             </div>
+          </div>
+          <span class="wx-icon" id="wxI">☁</span>
+          <div><div class="wx-cond" id="wxC">--</div><div style="font-family:var(--mono);font-size:7px;color:rgba(255,255,255,.3);margin-top:1px;" id="wxUpd">--</div></div>
+          <div class="wx-sep"></div>
+          <div class="wx-details">
+            <div class="wx-row">
+              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" id="wxArrowSvg" style="transition:transform .5s;"><path d="M12 2v20M12 2L6 9M12 2L18 9"/></svg>
+              <span id="wxW">-- kt</span> <b id="wxWD">--</b>
+            </div>
+            <div class="wx-row">🌧 <span>LLUVIA</span><b id="wxR">--%</b></div>
+            <div class="wx-row">💧 <span>HUM.</span><b id="wxH">--%</b></div>
+          </div>
         </div>
-        <div class="status-dot">Sistema Operativo</div>
-    </header>
+      </div>
+      <div class="sys-wrap">
+        <div class="sys-status"><div class="sys-dot"></div>SISTEMA OPERATIVO</div>
+        <div class="sys-date" id="dateDisp">--</div>
+      </div>
+    </div>
+  </div>
 
-    <div class="container">
+  <div class="hero">
+    <div class="eyebrow">Portal de Operaciones</div>
+    <h1 class="hero-title"><div class="t1">Operaciones</div><div class="t2">Fluviales MSA</div></h1>
+    <p class="hero-sub">Seleccioná la aplicación que necesitás</p>
 
-        <div class="hero">
-            <div class="hero-eyebrow">Nueva Palmira &middot; Uruguay</div>
-            <div class="hero-title">
-                <div class="t1">OPERACIONES</div>
-                <div class="t2">FLUVIALES MSA</div>
-            </div>
-            <div class="hero-location">Rio de la Plata &mdash; Puerto Nueva Palmira</div>
+    <div class="grid">
+
+      <a href="PUERTO_ISA.html" class="card c-green" style="animation:fadein .7s ease .32s both;">
+        <div class="card-top"><div class="card-icon">👤</div><div class="card-arrow">↗</div></div>
+        <div><div class="card-title">Tripulación — Rol</div><div class="card-desc">Gestión de tripulantes, roles a bordo y libretas de puerto. Control de escalas.</div></div>
+        <div class="card-tags"><span class="tag">Tripulantes</span><span class="tag">Roles</span><span class="tag">Libretas</span></div>
+      </a>
+
+      <a href="operaciones.html" class="card c-cyan" style="animation:fadein .7s ease .39s both;">
+        <div class="card-top"><div class="card-icon">📊</div><div class="card-arrow">↗</div></div>
+        <div><div class="card-title">Próximas Operaciones</div><div class="card-desc">Buques y Fluvial — Nueva Palmira. ETAs, cargas, clientes y muelles en tiempo real.</div></div>
+        <div class="card-tags"><span class="tag">Buques</span><span class="tag">Fluvial</span><span class="tag">ETA</span><span class="tag">Muelles</span></div>
+      </a>
+
+      <a href="gastos-fluviales.html" class="card c-gold" style="animation:fadein .7s ease .46s both;">
+        <div class="card-top"><div class="card-icon">📧</div><div class="card-arrow">↗</div></div>
+        <div><div class="card-title">Mensaje de Gastos</div><div class="card-desc">Generador de mensajes de gastos. Remolcadores, barcazas, lanchas y servicios.</div></div>
+        <div class="card-tags"><span class="tag">Remolcadores</span><span class="tag">Barcazas</span><span class="tag">Lanchas</span></div>
+      </a>
+
+      <a href="barcazas.html" class="card c-purple" style="animation:fadein .7s ease .53s both;">
+        <div class="card-top"><div class="card-icon">🛳️</div><div class="card-arrow">↗</div></div>
+        <div><div class="card-title">Seguimiento Barcazas</div><div class="card-desc">LHG-HB Lastre y cargadas. Posiciones, ingresos y salidas en tiempo real.</div></div>
+        <div class="card-tags"><span class="tag">LHG</span><span class="tag">HB</span><span class="tag">Lastre</span><span class="tag">Cargadas</span></div>
+      </a>
+
+      <a href="sof-generator.html" class="card c-coral" style="animation:fadein .7s ease .60s both;">
+        <div class="card-top"><div class="card-icon">📋</div><div class="card-arrow">↗</div></div>
+        <div><div class="card-title">Generador SOF</div><div class="card-desc">Statement of Facts + Programa de Cantidades. Genera Excel desde logs de grúas automáticamente.</div></div>
+        <div class="card-tags"><span class="tag">SOF</span><span class="tag">Cantidades</span><span class="tag">Grúas</span><span class="tag">Excel</span></div>
+      </a>
+
+      <!-- SLOT 6: RECALADA WEATHER CARD -->
+      <div class="card wx-card" style="animation:fadein .7s ease .67s both;">
+        <div class="card-top">
+          <div>
+            <div class="wx-card-loc">Recalada · UY</div>
+            <div class="wx-card-sub" id="rcUpd">CARGANDO...</div>
+          </div>
+          <div class="wx-card-icon" id="rcI">☁</div>
         </div>
-
-        <div class="cards">
-
-            <!-- 1. Tripulacion y ROL -->
-            <div class="card">
-                <div class="card-icon">&#128100;</div>
-                <div class="card-title">Tripulacion y ROL</div>
-                <p class="card-desc">Gestion de tripulantes, roles a bordo y libretas de puerto. Documentacion DNM.</p>
-                <div class="card-footer">
-                    <a href="PUERTO_ISA.html" class="btn-pri">Abrir</a>
-                    <span class="tag">ROLES</span>
-                </div>
-            </div>
-
-            <!-- 2. Proximas Operaciones -->
-            <div class="card">
-                <div class="card-icon">&#128202;</div>
-                <div class="card-title">Proximas Operaciones</div>
-                <p class="card-desc">Buques y Fluvial. ETAs, cargos y muelles en tiempo real desde Google Sheets.</p>
-                <div class="card-footer">
-                    <a href="operaciones.html" class="btn-pri">Abrir</a>
-                    <span class="tag">ETA</span>
-                </div>
-            </div>
-
-            <!-- 3. Mensaje de Gastos -->
-            <div class="card">
-                <div class="card-icon">&#128231;</div>
-                <div class="card-title">Mensaje de Gastos</div>
-                <p class="card-desc">Generador de mensajes de gastos. Remolcadores, barcazas y lanchas fluviales.</p>
-                <div class="card-footer">
-                    <a href="gastos-fluviales.html" class="btn-pri">Abrir</a>
-                    <span class="tag">GASTOS</span>
-                </div>
-            </div>
-
-            <!-- 4. Seguimiento Barcazas -->
-            <div class="card">
-                <div class="card-icon">&#128739;</div>
-                <div class="card-title">Seguimiento Barcazas</div>
-                <p class="card-desc">LHG-HB Lastre y cargadas. Posiciones PDA / NPA en tiempo real. Clima Recalada.</p>
-                <div class="card-footer">
-                    <a href="barcazas.html" class="btn-pri">Abrir</a>
-                    <span class="tag">BARCAZAS</span>
-                </div>
-            </div>
-
-            <!-- 5. Generador SOF -->
-            <div class="card">
-                <div class="card-icon">&#128203;</div>
-                <div class="card-title">Generador SOF</div>
-                <p class="card-desc">Statement of Facts + Programa de Cantidades automatico. Tres gruas, cruces de fecha.</p>
-                <div class="card-footer">
-                    <a href="sof-generator.html" class="btn-pri">Abrir</a>
-                    <span class="tag">SOF</span>
-                </div>
-            </div>
-
-            <!-- 6. Panel Clima Recalada -->
-            <div class="card weather-card-wrap">
-                <div class="card-icon">&#127749;</div>
-                <div class="card-title">Clima &mdash; Recalada</div>
-                <div id="wc-content" style="flex:1;">
-                    <div class="wc-loading-txt">Cargando datos meteorologicos...</div>
-                </div>
-                <button class="wc-refresh-btn" onclick="loadWeather()">&#8635; actualizar clima</button>
-            </div>
-
+        <div style="display:flex;align-items:baseline;gap:4px;margin:-2px 0 2px;">
+          <span class="wx-card-bigtemp" id="rcT">--</span>
+          <span class="wx-card-unit">°C</span>
+          <span class="wx-card-cond" id="rcC">--</span>
         </div>
-
-        <footer>
-            &copy; 2026 MSA AGENTES MARITIMOS &nbsp;|&nbsp; Nueva Palmira, Uruguay &nbsp;|&nbsp; Todos los derechos reservados
-        </footer>
+        <hr class="wx-divider">
+        <div class="wx-grid">
+          <div>
+            <div class="wx-stat-label">Viento</div>
+            <div><span class="wx-stat-val" id="rcW">--</span><span class="wx-stat-unit"> kt</span></div>
+            <div class="wx-stat-dir" id="rcWD">--</div>
+          </div>
+          <div>
+            <div class="wx-stat-label">Lluvia</div>
+            <div><span class="wx-stat-val" id="rcR">--</span><span class="wx-stat-unit">%</span></div>
+            <div style="margin-top:6px;">
+              <div class="wx-stat-label">Humedad</div>
+              <div><span class="wx-stat-val" id="rcH">--</span><span class="wx-stat-unit">%</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
 
     </div>
+  </div>
+
+  <div class="footer">
+    <div class="copy">© 2025 MSA AGENTES MARÍTIMOS — TODOS LOS DERECHOS RESERVADOS</div>
+    <div class="offices">
+      <span class="office active">Nueva Palmira</span>
+      <span class="office">Montevideo</span>
+      <span class="office">Buenos Aires</span>
+      <span class="office">Asunción</span>
+      <span class="office">Corumbá</span>
+      <span class="office">Quijarro</span>
+    </div>
+  </div>
 </div>
 
+<svg class="corner-deco" width="100" height="100" viewBox="0 0 100 100">
+  <polygon points="50,8 92,78 8,78" fill="none" stroke="white" stroke-width="1"/>
+  <polygon points="50,22 78,72 22,72" fill="none" stroke="white" stroke-width=".5"/>
+  <circle cx="50" cy="50" r="26" fill="none" stroke="white" stroke-width=".5"/>
+  <line x1="50" y1="0" x2="50" y2="100" stroke="white" stroke-width=".3"/>
+  <line x1="0" y1="50" x2="100" y2="50" stroke="white" stroke-width=".3"/>
+</svg>
+
 <script>
-/* â”€â”€â”€ Acceso â”€â”€â”€ */
-function validar() {
-    const USER_OK = "MSA";
-    const PASS_OK = "Palmira8025";
-    const user = prompt("Ingrese Usuario:");
-    const pass = prompt("Ingrese Clave:");
-    if (user === USER_OK && pass === PASS_OK) {
-        document.getElementById('access-screen').style.display = 'none';
-        document.getElementById('main-content').style.display  = 'block';
-        loadWeather();
-    } else {
-        document.getElementById('status-msg').innerText       = "ACCESO DENEGADO";
-        document.getElementById('status-msg').style.color     = "#ef4444";
-        document.getElementById('retry-btn').style.display    = "block";
-    }
+/* DATE */
+function updDate(){
+  const d=new Date();
+  document.getElementById('dateDisp').textContent=
+    d.toLocaleDateString('es-UY',{weekday:'short',day:'2-digit',month:'short',year:'numeric'}).toUpperCase()
+    +' — '+d.toLocaleTimeString('es-UY',{hour:'2-digit',minute:'2-digit'});
 }
-window.onload = validar;
+updDate();setInterval(updDate,30000);
 
-/* â”€â”€â”€ Clima Recalada - Open-Meteo (gratis, sin API key) â”€â”€â”€ */
-const LAT = -35.27;
-const LON = -57.23;
-
-const WMO_ICONS = {
-    0:'&#9728;&#65039;', 1:'&#127780;&#65039;', 2:'&#9925;', 3:'&#9729;',
-    45:'&#127787;&#65039;', 48:'&#127787;&#65039;',
-    51:'&#127746;', 53:'&#127746;', 55:'&#127783;&#65039;',
-    61:'&#127783;&#65039;', 63:'&#127783;&#65039;', 65:'&#127783;&#65039;',
-    71:'&#127784;&#65039;', 73:'&#127784;&#65039;', 75:'&#10052;&#65039;',
-    80:'&#127746;', 81:'&#127783;&#65039;', 82:'&#9928;&#65039;',
-    95:'&#9928;&#65039;', 96:'&#9928;&#65039;', 99:'&#9928;&#65039;'
-};
-const WMO_DESC = {
-    0:'Despejado', 1:'Mayormente despejado', 2:'Parcialmente nublado', 3:'Nublado',
-    45:'Niebla', 48:'Niebla con escarcha',
-    51:'Llovizna leve', 53:'Llovizna moderada', 55:'Llovizna intensa',
-    61:'Lluvia leve', 63:'Lluvia moderada', 65:'Lluvia fuerte',
-    71:'Nieve leve', 73:'Nieve moderada', 75:'Nieve fuerte',
-    80:'Chubascos leves', 81:'Chubascos moderados', 82:'Chubascos fuertes',
-    95:'Tormenta', 96:'Tormenta con granizo', 99:'Tormenta fuerte'
-};
-
-function degToCompass(d) {
-    const dirs = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSO','SO','OSO','O','ONO','NO','NNO'];
-    return dirs[Math.round(d / 22.5) % 16];
+/* WMO CODE MAPS */
+const IC={0:'☀',1:'🌤',2:'⛅',3:'☁',45:'🌫',48:'🌫',51:'🌦',53:'🌦',55:'🌧',61:'🌧',63:'🌧',65:'🌧',71:'❄',73:'❄',75:'❄',80:'🌦',81:'🌧',82:'⛈',95:'⛈',96:'⛈',99:'⛈'};
+const DC={0:'Despejado',1:'Mayorm. despejado',2:'Parcialm. nublado',3:'Nublado',45:'Niebla',48:'Niebla',51:'Llovizna leve',53:'Llovizna',55:'Llovizna intensa',61:'Lluvia leve',63:'Lluvia moderada',65:'Lluvia intensa',80:'Chubascos',81:'Chubascos mod.',82:'Chubascos fuertes',95:'Tormenta',96:'Tormenta+granizo',99:'Tormenta intensa'};
+const WD=['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSO','SO','OSO','O','ONO','NO','NNO'];
+const d2dir=d=>WD[Math.round(d/22.5)%16];
+const ms2kt=ms=>Math.round(ms*1.94384);
+function getHourlyIdx(data){
+  const h=new Date().toISOString().substring(0,13)+':00';
+  return data.hourly.time.indexOf(h);
 }
 
-async function loadWeather() {
-    const el = document.getElementById('wc-content');
-    if (!el) return;
-    el.innerHTML = '<div class="wc-loading-txt">Actualizando...</div>';
+async function loadWx(){
+  const base='https://api.open-meteo.com/v1/forecast?hourly=precipitation_probability,relativehumidity_2m&current_weather=true&windspeed_unit=ms&timezone=America%2FMontevideo';
+  try{
+    const[r1,r2]=await Promise.all([
+      fetch(base+'&latitude=-33.879&longitude=-58.409'), // Nueva Palmira
+      fetch(base+'&latitude=-35.217&longitude=-57.100')  // Recalada
+    ]);
+    const[d1,d2]=await Promise.all([r1.json(),r2.json()]);
 
-    try {
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}` +
-            `&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m` +
-            `&wind_speed_unit=kn&timezone=America%2FSao_Paulo`;
+    /* TOPBAR — Nueva Palmira */
+    const cw=d1.current_weather;
+    const hi=getHourlyIdx(d1);
+    document.getElementById('wxT').textContent=Math.round(cw.temperature);
+    document.getElementById('wxI').textContent=IC[cw.weathercode]||'☁';
+    document.getElementById('wxC').textContent=DC[cw.weathercode]||'--';
+    document.getElementById('wxW').textContent=ms2kt(cw.windspeed)+' kt';
+    document.getElementById('wxWD').textContent=d2dir(cw.winddirection);
+    document.getElementById('wxR').textContent=(hi>=0?d1.hourly.precipitation_probability[hi]:'--')+'%';
+    document.getElementById('wxH').textContent=(hi>=0?d1.hourly.relativehumidity_2m[hi]:'--')+'%';
+    document.getElementById('wxUpd').textContent='ACT. '+new Date(cw.time).toLocaleTimeString('es-UY',{hour:'2-digit',minute:'2-digit'});
+    document.getElementById('wxArrowSvg').style.transform=`rotate(${cw.winddirection}deg)`;
+    document.getElementById('wxLoad').style.display='none';
+    document.getElementById('wxTopData').style.display='flex';
 
-        const res  = await fetch(url);
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        const data = await res.json();
-        const c    = data.current;
+    /* CARD — Recalada */
+    const cw2=d2.current_weather;
+    const hi2=getHourlyIdx(d2);
+    document.getElementById('rcT').textContent=Math.round(cw2.temperature);
+    document.getElementById('rcI').textContent=IC[cw2.weathercode]||'☁';
+    document.getElementById('rcC').textContent=DC[cw2.weathercode]||'--';
+    document.getElementById('rcW').textContent=ms2kt(cw2.windspeed);
+    document.getElementById('rcWD').textContent=d2dir(cw2.winddirection);
+    document.getElementById('rcR').textContent=hi2>=0?d2.hourly.precipitation_probability[hi2]:'--';
+    document.getElementById('rcH').textContent=hi2>=0?d2.hourly.relativehumidity_2m[hi2]:'--';
+    document.getElementById('rcUpd').textContent='ACT. '+new Date(cw2.time).toLocaleTimeString('es-UY',{hour:'2-digit',minute:'2-digit'});
 
-        const code  = c.weather_code;
-        const icon  = WMO_ICONS[code] || '&#127777;&#65039;';
-        const desc  = WMO_DESC[code]  || 'Condicion ' + code;
-        const temp  = Math.round(c.temperature_2m);
-        const hum   = c.relative_humidity_2m;
-        const wspd  = Math.round(c.wind_speed_10m);
-        const wgust = Math.round(c.wind_gusts_10m);
-        const wdir  = degToCompass(c.wind_direction_10m);
-        const wdeg  = Math.round(c.wind_direction_10m);
-
-        el.innerHTML = `
-            <div class="wc-header-row">
-                <span class="wc-badge">Recalada en vivo</span>
-                <span class="wc-loc">Punta del Indio, ARG</span>
-            </div>
-            <div class="wc-body-row">
-                <span class="wc-emoji">${icon}</span>
-                <div class="wc-temp-block">
-                    <div class="wc-temp">${temp}&deg;C</div>
-                    <div class="wc-desc">${desc}</div>
-                </div>
-            </div>
-            <div class="wc-stats">
-                <div class="wcs">
-                    <span class="wcs-lbl">Viento</span>
-                    <span class="wcs-val">${wspd} kt ${wdir}</span>
-                </div>
-                <div class="wcs">
-                    <span class="wcs-lbl">Rafagas</span>
-                    <span class="wcs-val">${wgust} kt</span>
-                </div>
-                <div class="wcs">
-                    <span class="wcs-lbl">Humedad</span>
-                    <span class="wcs-val">${hum}%</span>
-                </div>
-                <div class="wcs">
-                    <span class="wcs-lbl">Dir. viento</span>
-                    <span class="wcs-val">${wdeg}&deg; (${wdir})</span>
-                </div>
-            </div>`;
-    } catch (err) {
-        el.innerHTML = '<div class="wc-error-txt">No se pudo cargar el clima.</div>';
-        console.error('loadWeather:', err);
-    }
+  }catch(e){
+    document.getElementById('wxLoad').textContent='CLIMA NO DISPONIBLE';
+  }
 }
-
-/* Auto-refresh clima cada 10 min (solo si ya esta autenticado) */
-setInterval(() => {
-    if (document.getElementById('main-content').style.display !== 'none') {
-        loadWeather();
-    }
-}, 10 * 60 * 1000);
+loadWx();setInterval(loadWx,600000);
 </script>
-
 </body>
 </html>
