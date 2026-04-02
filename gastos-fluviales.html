@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MSA â€” Generador de Mensaje de Gastos</title>
+<title>MSA Generador de Mensaje de Gastos</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
 <style>
@@ -106,9 +106,9 @@ textarea{resize:vertical;min-height:120px;font-family:'Courier New',monospace}
     </div>
 
     <div class="card">
-      <div class="card-header"><div class="card-title">NÃ³mina de Barcazas</div></div>
-      <div class="note">PegÃ¡ la tabla Excel tal cual: # BARCAZA CANTIDAD PRODUCTO VIAJE</div>
-      <textarea id="barcazas-paste" placeholder="PegÃ¡ aquÃ­..." oninput="procesarBarcazas()"></textarea>
+      <div class="card-header"><div class="card-title">Nómina de Barcazas</div></div>
+      <div class="note">Pegá la tabla Excel tal cual: # BARCAZA CANTIDAD PRODUCTO VIAJE</div>
+      <textarea id="barcazas-paste" placeholder="Pegá aquí..." oninput="procesarBarcazas()"></textarea>
       <div id="bcz-status" style="margin:10px 0;font-size:12px"></div>
       <div id="bcz-preview" style="overflow-x:auto"></div>
     </div>
@@ -121,19 +121,19 @@ textarea{resize:vertical;min-height:120px;font-family:'Courier New',monospace}
       <button class="collapsible" onclick="toggleCollapse(this)">LANCHAS</button>
       <div class="collapsible-content"><div id="lanchas-list"></div><button class="add-btn" onclick="addLancha()">+ Agregar lancha</button></div>
 
-      <button class="collapsible" onclick="toggleCollapse(this)">PETROVÃAS</button>
+      <button class="collapsible" onclick="toggleCollapse(this)">PETROVÍAS</button>
       <div class="collapsible-content"><div class="g2"><div><label>Fecha</label><input type="text" id="pt-fecha" placeholder="DD/MM/YYYY" maxlength="10" oninput="maskDate(this)"></div><div><label>Hora</label><input type="time" id="pt-hora"></div></div><div class="g2"><div><label>Proveedor</label><input type="text" id="pt-prov" placeholder="GOMISTAR"></div><div><label>Fecha lancha</label><input type="text" id="pt-lf" placeholder="DD/MM/YYYY" maxlength="10" oninput="maskDate(this)"></div></div></div>
 
       <button class="collapsible" onclick="toggleCollapse(this)">SAUCE</button>
       <div class="collapsible-content"><div class="g2"><div><label>Fecha</label><input type="text" id="sc-fecha" placeholder="DD/MM/YYYY" maxlength="10" oninput="maskDate(this)"></div><div><label>Proveedor</label><input type="text" id="sc-prov"></div></div></div>
 
-      <button class="collapsible" onclick="toggleCollapse(this)">ATENCIÃ“N MÃ‰DICA</button>
-      <div class="collapsible-content"><div class="g2"><div><label>Tripulante</label><input type="text" id="med-trip"></div><div><label>ClÃ­nica</label><input type="text" id="med-cli"></div></div><div class="g3"><div><label>Consultas</label><input type="number" id="med-cons" value="1"></div><div><label>USD</label><input type="number" id="med-usd"></div><div><label>Lanchas</label><input type="number" id="med-lanch"></div></div><div style="display:flex;gap:20px"><div class="tog-row"><label class="tog"><input type="checkbox" id="chk-meds"><span class="sl"></span></label><span class="tog-lbl">Medicamentos</span></div><div class="tog-row"><label class="tog"><input type="checkbox" id="chk-tras"><span class="sl"></span></label><span class="tog-lbl">Traslados</span></div></div></div>
+      <button class="collapsible" onclick="toggleCollapse(this)">ATENCIÓN MÉDICA</button>
+      <div class="collapsible-content"><div class="g2"><div><label>Tripulante</label><input type="text" id="med-trip"></div><div><label>Clínica</label><input type="text" id="med-cli"></div></div><div class="g3"><div><label>Consultas</label><input type="number" id="med-cons" value="1"></div><div><label>USD</label><input type="number" id="med-usd"></div><div><label>Lanchas</label><input type="number" id="med-lanch"></div></div><div style="display:flex;gap:20px"><div class="tog-row"><label class="tog"><input type="checkbox" id="chk-meds"><span class="sl"></span></label><span class="tog-lbl">Medicamentos</span></div><div class="tog-row"><label class="tog"><input type="checkbox" id="chk-tras"><span class="sl"></span></label><span class="tog-lbl">Traslados</span></div></div></div>
 
       <button class="collapsible" onclick="toggleCollapse(this)">EXTRAS / COSTOS</button>
       <div class="collapsible-content"><div id="extras-list"></div><button class="add-btn" onclick="addExtra()">+ Agregar extra</button></div>
 
-      <button class="collapsible" onclick="toggleCollapse(this)">CAMBIO DE TRIPULACIÃ“N</button>
+      <button class="collapsible" onclick="toggleCollapse(this)">CAMBIO DE TRIPULACIÓN</button>
       <div class="collapsible-content"><div id="draw-list"></div><button class="add-btn" onclick="addDraw()">+ Agregar trÃ¡mite</button></div>
     </div>
 
@@ -150,14 +150,14 @@ textarea{resize:vertical;min-height:120px;font-family:'Courier New',monospace}
 
     <div class="card">
       <div class="card-header" style="justify-content:space-between"><div class="card-title">Mensaje</div><button class="btn btn-copy" onclick="copyEl('body-out')">Copiar Mensaje</button></div>
-      <div class="output-wrap" id="body-out">Genera el mensaje para verlo aquÃ­</div>
+      <div class="output-wrap" id="body-out">Genera el mensaje para verlo aquí</div>
     </div>
 
     <div class="footer">
       <button class="btn btn-primary" style="border:1.5px solid var(--msa-blue);background:white;color:var(--msa-blue)" onclick="goTab(0)">â† Editar</button>
       <div style="display:flex;gap:12px">
-        <button class="btn btn-copy" onclick="copyEl('body-out')">ðŸ“‹ Copiar</button>
-        <button class="btn btn-primary" onclick="sendMail()">âœ‰ï¸ Enviar Mail</button>
+        <button class="btn btn-copy" onclick="copyEl('body-out')">Copiar</button>
+        <button class="btn btn-primary" onclick="sendMail()">Enviar Mail</button>
       </div>
     </div>
   </div>
