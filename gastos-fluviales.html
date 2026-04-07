@@ -92,7 +92,7 @@ textarea{resize:vertical;min-height:120px;font-family:'Courier New',monospace}
     <div class="card">
       <div class="card-header"><div class="card-title">Remolcador y OperaciÃ³n</div></div>
       <div class="g2"><div><label>Remolcador</label><input type="text" id="rem" placeholder="HERACLITO FILHO"></div><div><label>Armador</label><select id="armador"><option>Seleccionar</option><option>LHG NAVEGACION</option><option>HIDROVIAS DO BRASIL</option><option>INTERBARGE</option><option>P&O</option></select></div></div>
-      <div class="g3"><div><label>Referencia</label><input type="text" id="ref" placeholder="LHGA 06-09-13-14"></div><div><label>MercaderÃ­a</label><select id="merc"><option>Seleccionar</option><option>LOHS</option><option>SFHG</option><option>SINTER</option><option>FERTILIZANTE</option><option>SINTER + LOHS</option></select></div><div><label>Muelle(s)</label><input type="text" id="muelles" placeholder="NAVIOS + POTIGUAR"></div></div>
+      <div class="g3"><div><label>Referencia</label><input type="text" id="ref" placeholder="LHGA 06-09-13-14"></div><div><label>Mercadería</label><select id="merc"><option>Seleccionar</option><option>LOHS</option><option>SFHG</option><option>SINTER</option><option>FERTILIZANTE</option><option>SINTER + LOHS</option></select></div><div><label>Muelle(s)</label><input type="text" id="muelles" placeholder="NAVIOS + POTIGUAR"></div></div>
     </div>
 
     <div class="card">
@@ -227,7 +227,7 @@ function procesarBarcazas(){
   }
   
   if(!data.length){
-    status.innerHTML='<span style="color:var(--msa-red)">âš  No se detectaron barcazas</span>';
+    status.innerHTML='<span style="color:var(--msa-red)">No se detectaron barcazas</span>';
     preview.innerHTML='';
     barcazasData=[];
     return
@@ -286,7 +286,7 @@ function generate(){
   if(merc)subj+=` â€“ ${merc}`;
   if(muelles)subj+=` â€“ ${muelles.split('+')[0].trim()}`;
   
-  let b='Estimados,\n\nDetallo mensaje de gastos correspondiente a la operaciÃ³n en asunto.\n\n';
+  let b='Estimados,\n\nDetallo mensaje de gastos correspondiente a la operación en asunto.\n\n';
   b+=rem;
   if(ref)b+=` (${ref})`;
   if(merc)b+=` - ${merc}`;
