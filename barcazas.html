@@ -498,8 +498,9 @@ tbody td { padding: 9px 14px; font-size: 12px; vertical-align: middle; }
       <div class="leg"><div class="leg-dot" style="background:var(--npa)"></div>NPA</div>
       <div class="leg"><div class="leg-dot" style="background:var(--teal)"></div>Salida</div>
     </div>
+  </div>
 
-   <!-- Tabla -->
+  <!-- Tabla -->
   <div class="table-area" id="table-area">
     <div class="loading-wrap" id="loading">
       <div class="spinner"></div>
@@ -530,10 +531,6 @@ tbody td { padding: 9px 14px; font-size: 12px; vertical-align: middle; }
 <script>
 const SHEET_ID = '1LHrw4Oih9h510UsoB_HsMm83U-g8zlXHgPqm8_7QPjM';
 const CSV_URL  = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`;
-
-// Coordenadas Punta del Indio (Recalada, Rio de la Plata, Argentina)
-const WEATHER_LAT = -35.27;
-const WEATHER_LON = -57.23;
 
 let allRows = [];
 
@@ -714,91 +711,9 @@ function set(id, val) {
   if (el) el.textContent = val;
 }
 
-/* â”€â”€â”€â”€ Clima Recalada (Open-Meteo, gratis, sin API key) â”€â”€â”€â”€ */
-const WMO_ICONS = {
-  0:'â˜€ï¸', 1:'ðŸŒ¤ï¸', 2:'â›…', 3:'â˜ï¸',
-  45:'ðŸŒ«ï¸', 48:'ðŸŒ«ï¸',
-  51:'ðŸŒ¦ï¸', 53:'ðŸŒ¦ï¸', 55:'ðŸŒ§ï¸',
-  61:'ðŸŒ§ï¸', 63:'ðŸŒ§ï¸', 65:'ðŸŒ§ï¸',
-  71:'ðŸŒ¨ï¸', 73:'ðŸŒ¨ï¸', 75:'â„ï¸',
-  80:'ðŸŒ¦ï¸', 81:'ðŸŒ§ï¸', 82:'â›ˆï¸',
-  95:'â›ˆï¸', 96:'â›ˆï¸', 99:'â›ˆï¸'
-};
-const WMO_DESC = {
-  0:'Despejado', 1:'Mayormente despejado', 2:'Parcialmente nublado', 3:'Nublado',
-  45:'Niebla', 48:'Niebla con escarcha',
-  51:'Llovizna leve', 53:'Llovizna moderada', 55:'Llovizna intensa',
-  61:'Lluvia leve', 63:'Lluvia moderada', 65:'Lluvia fuerte',
-  71:'Nieve leve', 73:'Nieve moderada', 75:'Nieve fuerte',
-  80:'Chubascos leves', 81:'Chubascos moderados', 82:'Chubascos fuertes',
-  95:'Tormenta', 96:'Tormenta con granizo', 99:'Tormenta fuerte'
-};
-
-function degToCompass(deg) {
-  const dirs = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSO','SO','OSO','O','ONO','NO','NNO'];
-  return dirs[Math.round(deg / 22.5) % 16];
-}
-
-async function loadWeather() {
-  const el = document.getElementById('wc-content');
-  el.innerHTML = '<div class="wc-loading">Cargando clima...</div>';
-
-  try {
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${WEATHER_LAT}&longitude=${WEATHER_LON}` +
-      `&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m` +
-      `&wind_speed_unit=kn&timezone=America%2FSao_Paulo`;
-
-    const res = await fetch(url);
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const data = await res.json();
-    const c = data.current;
-
-    const code  = c.weather_code;
-    const icon  = WMO_ICONS[code]  || 'ðŸŒ¡ï¸';
-    const desc  = WMO_DESC[code]   || 'Condicion ' + code;
-    const temp  = Math.round(c.temperature_2m);
-    const hum   = c.relative_humidity_2m;
-    const wspd  = Math.round(c.wind_speed_10m);
-    const wgust = Math.round(c.wind_gusts_10m);
-    const wdir  = degToCompass(c.wind_direction_10m);
-
-    el.innerHTML = `
-      <div class="wc-body">
-        <div class="wc-icon">${icon}</div>
-        <div class="wc-main">
-          <div class="wc-temp">${temp}&deg;C</div>
-          <div class="wc-desc">${desc}</div>
-        </div>
-      </div>
-      <div class="wc-grid">
-        <div class="wc-stat">
-          <span class="wc-stat-label">Viento</span>
-          <span class="wc-stat-val">${wspd} kt ${wdir}</span>
-        </div>
-        <div class="wc-stat">
-          <span class="wc-stat-label">Rafagas</span>
-          <span class="wc-stat-val">${wgust} kt</span>
-        </div>
-        <div class="wc-stat">
-          <span class="wc-stat-label">Humedad</span>
-          <span class="wc-stat-val">${hum}%</span>
-        </div>
-        <div class="wc-stat">
-          <span class="wc-stat-label">Dir. viento</span>
-          <span class="wc-stat-val">${c.wind_direction_10m}&deg;</span>
-        </div>
-      </div>`;
-  } catch (err) {
-    el.innerHTML = '<div class="wc-error">No se pudo cargar el clima.</div>';
-    console.error('loadWeather:', err);
-  }
-}
-
 /* â”€â”€â”€â”€ Inicio â”€â”€â”€â”€ */
 loadData();
-loadWeather();
 setInterval(loadData, 5 * 60 * 1000);
-setInterval(loadWeather, 10 * 60 * 1000);
 </script>
 
 </body>
