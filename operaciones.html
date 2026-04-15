@@ -7,6 +7,7 @@
 <title>MSA - Proximas Operaciones Nueva Palmira</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -224,41 +225,23 @@ function csvUrl(gid){
   return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${gid}&t=${Date.now()}`; 
 }
 
-// ==================== PARSER CSV ROBUSTO ====================
-function parseCSVLine(line) {
-  const result = [];
-  let current = '';
-  let inQuotes = false;
-  
-  for (let i = 0; i < line.length; i++) {
-    const char = line[i];
-    const nextChar = line[i + 1];
-    
-    if (char === '"') {
-      if (inQuotes && nextChar === '"') {
-        // Escaped quote
-        current += '"';
-        i++; // Skip next quote
-      } else {
-        // Toggle quote state
-        inQuotes = !inQuotes;
-      }
-    } else if (char === ',' && !inQuotes) {
-      // End of field
-      result.push(current.trim());
-      current = '';
-    } else {
-      current += char;
-    }
-  }
-  
-  result.push(current.trim());
-  return result;
-}
-
+// ==================== PARSER CSV CON PAPAPARSE ====================
 function parseSheet(csvText) {
-  const lines = csvText.split('\n');
-  return lines.map(line => parseCSVLine(line)).filter(row => row.length > 0);
+  // PapaParse maneja quoted fields, comas internas, y UTF-8 perfectamente
+  const result = Papa.parse(csvText, {
+    header: false,
+    skipEmptyLines: false,
+    dynamicTyping: false,
+    trimHeaders: false,
+    transformHeader: undefined,
+  });
+  
+  // Retornar array de arrays, trimmed
+  return result.data.map(row => 
+    Array.isArray(row) 
+      ? row.map(cell => String(cell || '').trim())
+      : []
+  ).filter(row => row.some(cell => cell.length > 0)); // Solo filas con algo
 }
 
 function parseDate(dateStr) {
@@ -729,17 +712,34 @@ async function loadAll() {
   const btn = document.getElementById('refresh-btn');
   btn.classList.add('spin');
   
+  console.clear();
+  console.log('ðŸš€ INICIANDO LOAD - GID_BUQUES:', GID_BUQUES, 'GID_FLUVIAL:', GID_FLUVIAL);
+  
   try {
     const [rb, rf] = await Promise.all([
       fetch(csvUrl(GID_BUQUES)).then(r => r.text()),
       fetch(csvUrl(GID_FLUVIAL)).then(r => r.text())
     ]);
     
+    console.log('ðŸ“¥ CSV BUQUES descargado, primeros 300 chars:', rb.substring(0, 300));
+    console.log('ðŸ“¥ CSV FLUVIAL descargado, primeros 300 chars:', rf.substring(0, 300));
+    
     const buquesRows = parseSheet(rb);
     const fluvialRows = parseSheet(rf);
     
+    console.log('ðŸ“Š BUQUES filas parseadas:', buquesRows.length);
+    console.log('   Primeras 5 filas:', buquesRows.slice(0, 5));
+    console.log('ðŸ“Š FLUVIAL filas parseadas:', fluvialRows.length);
+    console.log('   Primeras 5 filas:', fluvialRows.slice(0, 5));
+    
     rawBuques = parseBuques(buquesRows);
     rawFluvial = parseFluvial(fluvialRows);
+    
+    console.log('âœ… BUQUES sections:', rawBuques.length, 'secciones');
+    rawBuques.forEach((sec, i) => console.log(`   [${i}] ${sec.name}: ${sec.rows.length} filas`));
+    
+    console.log('âœ… FLUVIAL sections:', rawFluvial.length, 'secciones');
+    rawFluvial.forEach((sec, i) => console.log(`   [${i}] ${sec.name}: ${sec.rows.length} filas`));
     
     renderBuques(rawBuques);
     renderFluvial(rawFluvial);
@@ -747,11 +747,11 @@ async function loadAll() {
     const t = new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
     document.getElementById('last-upd').textContent = 'Actualizado ' + t;
   } catch (e) {
-    console.error('Error cargando datos:', e);
+    console.error('âŒ Error cargando datos:', e);
     ['buques', 'fluvial'].forEach(tab => {
       document.getElementById('loading-' + tab).style.display = 'none';
       document.getElementById('content-' + tab).style.display = 'block';
-      document.getElementById('content-' + tab).innerHTML = `<div class="error-state">Error al cargar los datos. Verifica los permisos del Sheet.</div>`;
+      document.getElementById('content-' + tab).innerHTML = `<div class="error-state">Error al cargar los datos. Verifica los permisos del Sheet.<br>${e.message}</div>`;
     });
   }
   
