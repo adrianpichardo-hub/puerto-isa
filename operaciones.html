@@ -220,22 +220,45 @@ const STORAGE_KEY_FLUVIAL = 'msa_finalizados_fluvial';
 
 let rawBuques = [], rawFluvial = [];
 
-function csvUrl(gid){ return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${gid}&t=${Date.now()}`; }
-
-function splitLine(line){
-  const r=[];let c='',q=false;
-  for(let i=0;i<line.length;i++){
-    const ch=line[i];
-    if(ch==='"'){q=!q;}
-    else if(ch===','&&!q){r.push(c.trim());c='';}
-    else{c+=ch;}
-  }
-  r.push(c.trim());
-  return r;
+function csvUrl(gid){ 
+  return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${gid}&t=${Date.now()}`; 
 }
 
-function parseSheet(text){
-  return text.split('\n').map(l=>splitLine(l));
+// ==================== PARSER CSV ROBUSTO ====================
+function parseCSVLine(line) {
+  const result = [];
+  let current = '';
+  let inQuotes = false;
+  
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i];
+    const nextChar = line[i + 1];
+    
+    if (char === '"') {
+      if (inQuotes && nextChar === '"') {
+        // Escaped quote
+        current += '"';
+        i++; // Skip next quote
+      } else {
+        // Toggle quote state
+        inQuotes = !inQuotes;
+      }
+    } else if (char === ',' && !inQuotes) {
+      // End of field
+      result.push(current.trim());
+      current = '';
+    } else {
+      current += char;
+    }
+  }
+  
+  result.push(current.trim());
+  return result;
+}
+
+function parseSheet(csvText) {
+  const lines = csvText.split('\n');
+  return lines.map(line => parseCSVLine(line)).filter(row => row.length > 0);
 }
 
 function parseDate(dateStr) {
@@ -276,13 +299,13 @@ function markAsFinalized(registroId, tipo) {
       finalizados = JSON.parse(stored);
     }
   } catch (e) {
-    console.warn('Error:', e);
+    console.warn('Error localStorage:', e);
   }
   finalizados[registroId] = Date.now();
   try {
     localStorage.setItem(storageKey, JSON.stringify(finalizados));
   } catch (e) {
-    console.warn('Error:', e);
+    console.warn('Error localStorage:', e);
   }
 }
 
@@ -327,18 +350,15 @@ function cleanUpOldRecords(tipo) {
   try {
     localStorage.setItem(storageKey, JSON.stringify(cleaned));
   } catch (e) {
-    console.warn('Error:', e);
+    console.warn('Error localStorage:', e);
   }
 }
 
-// Funcion global para marcar como finalizado
 function toggleFinalized(registroId, tipo) {
   markAsFinalized(registroId, tipo);
   loadAll();
 }
 
-// Ocultar TODOS los finalizados de una vez
-// TOGGLE - Ocultar o mostrar finalizados
 function toggleHideFinalizados() {
   const storageKey = 'msa_hide_finalizados_state';
   let state = {
@@ -355,7 +375,6 @@ function toggleHideFinalizados() {
     console.warn('Error:', e);
   }
   
-  // Toggle el estado
   state.hidden = !state.hidden;
   state.timestamp = Date.now();
   
@@ -365,15 +384,11 @@ function toggleHideFinalizados() {
     console.warn('Error:', e);
   }
   
-  // Actualizar UI del botÃƒÂ³n
   updateHideBtn();
-  
-  // Re-renderizar
   renderBuques(rawBuques);
   renderFluvial(rawFluvial);
 }
 
-// Ver si finalizados estÃƒÂ¡n ocultados por toggle
 function areFinalizadosHidden() {
   const storageKey = 'msa_hide_finalizados_state';
   try {
@@ -383,7 +398,6 @@ function areFinalizadosHidden() {
       const ahora = Date.now();
       const horasTranscurridas = (ahora - state.timestamp) / (1000 * 60 * 60);
       
-      // Si pasaron 2 horas, limpiar y resetear
       if (horasTranscurridas > 2) {
         localStorage.removeItem(storageKey);
         return false;
@@ -397,150 +411,183 @@ function areFinalizadosHidden() {
   return false;
 }
 
-// Actualizar UI del botÃƒÂ³n
 function updateHideBtn() {
   const hideBtn = document.getElementById('hide-btn');
   const isHidden = areFinalizadosHidden();
   
   if (isHidden) {
-    hideBtn.textContent = 'VER FINALIZADOS';
+    hideBtn.innerHTML = '<span style="font-size:11px;">VER FINALIZADOS</span>';
     hideBtn.style.color = '#22c55e';
     hideBtn.style.background = 'rgba(34,197,94,.1)';
     hideBtn.style.borderColor = 'rgba(34,197,94,.25)';
   } else {
-    hideBtn.textContent = 'OCULTAR FINALIZADOS';
+    hideBtn.innerHTML = '<span style="font-size:11px;">OCULTAR FINALIZADOS</span>';
     hideBtn.style.color = '#ef4444';
     hideBtn.style.background = 'rgba(239,68,68,.1)';
     hideBtn.style.borderColor = 'rgba(239,68,68,.25)';
   }
 }
 
-// Contar finalizados y actualizar UI
-function muelleClass(name){
-  const n=(name||'').toUpperCase();
-  if(n.includes('ANP')||n.includes('TGU')) return 'anp';
-  if(n.includes('ARENAL')) return 'arenal';
-  if(n.includes('ONTUR')) return 'ontur';
-  if(n.includes('DESIGNAR')) return 'designar';
+function muelleClass(name) {
+  const n = (name || '').toUpperCase();
+  if (n.includes('ANP') || n.includes('TGU')) return 'anp';
+  if (n.includes('ARENAL')) return 'arenal';
+  if (n.includes('ONTUR')) return 'ontur';
+  if (n.includes('DESIGNAR')) return 'designar';
   return 'navios';
 }
 
-function statusBadge(val){
-  const v=(val||'').toUpperCase();
-  if(v.includes('PUERTO')) return `<span class="badge puerto"><span class="bdot"></span>En Puerto</span>`;
-  if(v.includes('NAVEG')) return `<span class="badge navegando"><span class="bdot"></span>Navegando</span>`;
-  if(v.trim()==='') return '';
+function statusBadge(val) {
+  const v = (val || '').toUpperCase();
+  if (v.includes('PUERTO')) return `<span class="badge puerto"><span class="bdot"></span>En Puerto</span>`;
+  if (v.includes('NAVEG')) return `<span class="badge navegando"><span class="bdot"></span>Navegando</span>`;
+  if (v.trim() === '') return '';
   return `<span class="badge tbc"><span class="bdot"></span>${val}</span>`;
 }
 
-function parseBuques(rows){
-  const sections=[];
-  let current=null;
-  const MUELLE_KEYWORDS=['NAVIOS','ANP','PUNTA','ONTUR','MUELLE','TGU'];
-  const HEADER_KEYWORDS=['BUQUE','REMOLCADOR','ETA','ETB','ETC','CARGA','VOLUMEN'];
-  for(let i=0;i<rows.length;i++){
-    const row=rows[i];
-    const a=(row[0]||'').trim();
-    const b=(row[1]||'').trim();
-    if(!a) continue;
-    const isMuelle=MUELLE_KEYWORDS.some(k=>a.toUpperCase().includes(k));
-    const isHeader=HEADER_KEYWORDS.some(k=>a.toUpperCase().includes(k)||b.toUpperCase().includes(k));
-    if(isMuelle&&!isHeader){
-      current={name:a, rows:[]};
+// ==================== PARSERS DE SECCIONES ====================
+function parseBuques(rows) {
+  const sections = [];
+  let current = null;
+  const MUELLE_KEYWORDS = ['NAVIOS', 'ANP', 'PUNTA', 'ONTUR', 'MUELLE', 'TGU', 'ARENAL', 'DESIGNAR'];
+  const HEADER_KEYWORDS = ['BUQUE', 'REMOLCADOR', 'ETA', 'ETB', 'ETC', 'CARGA', 'VOLUMEN', 'CLIENTE', 'DESTINO', 'PERSONA', 'COMENTARIOS', 'OPERADOR'];
+  
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i];
+    const a = (row[0] || '').trim().toUpperCase();
+    const b = (row[1] || '').trim().toUpperCase();
+    
+    if (!a) continue;
+    
+    const isMuelle = MUELLE_KEYWORDS.some(k => a.includes(k));
+    const isHeader = HEADER_KEYWORDS.some(k => a.includes(k) || b.includes(k));
+    
+    if (isMuelle && !isHeader) {
+      current = { name: row[0].trim(), rows: [] };
       sections.push(current);
       continue;
     }
-    if(isHeader) continue;
-    if(current && a && !isMuelle){
+    
+    if (isHeader) continue;
+    
+    if (current && a && !isMuelle) {
       current.rows.push(row);
     }
   }
+  
   return sections;
 }
 
-function parseFluvial(rows){
-  const sections=[];
-  let current=null;
-  const MUELLE_KEYWORDS=['NAVIOS','ANP','PUNTA','ONTUR','MUELLE'];
-  const HEADER_KEYWORDS=['REMOLCADOR','BARCAZA','ESTADO','ETA','DESCARGA'];
-  for(let i=0;i<rows.length;i++){
-    const row=rows[i];
-    const a=(row[0]||'').trim();
-    if(!a) continue;
-    const isMuelle=MUELLE_KEYWORDS.some(k=>a.toUpperCase().includes(k));
-    const isHeader=HEADER_KEYWORDS.some(k=>a.toUpperCase().includes(k));
-    if(isMuelle&&!isHeader){
-      current={name:a, rows:[]};
+function parseFluvial(rows) {
+  const sections = [];
+  let current = null;
+  const MUELLE_KEYWORDS = ['NAVIOS', 'ANP', 'PUNTA', 'ONTUR', 'MUELLE', 'TGU', 'ARENAL', 'DESIGNAR'];
+  const HEADER_KEYWORDS = ['REMOLCADOR', 'BARCAZA', 'ESTADO', 'ETA', 'DESCARGA', 'ETB', 'VOLUMEN', 'CLIENTE', 'PERSONA', 'COMENTARIOS'];
+  
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i];
+    const a = (row[0] || '').trim().toUpperCase();
+    
+    if (!a) continue;
+    
+    const isMuelle = MUELLE_KEYWORDS.some(k => a.includes(k));
+    const isHeader = HEADER_KEYWORDS.some(k => a.toUpperCase().includes(k));
+    
+    if (isMuelle && !isHeader) {
+      current = { name: row[0].trim(), rows: [] };
       sections.push(current);
       continue;
     }
-    if(isHeader) continue;
-    if(current && a && !isMuelle){
+    
+    if (isHeader) continue;
+    
+    if (current && a && !isMuelle) {
       current.rows.push(row);
     }
   }
+  
   return sections;
 }
 
-function renderBuques(sections, search=''){
+// ==================== RENDER FUNCTIONS ====================
+function renderBuques(sections, search = '') {
   cleanUpOldRecords('buques');
-  const s=search.toLowerCase();
-  let totalBuques=0;
-  let html='';
-  sections.forEach(sec=>{
-    sec.rows.forEach(r=>{
-      if(r[0]){
+  const s = search.toLowerCase();
+  let totalBuques = 0;
+  let html = '';
+  
+  sections.forEach(sec => {
+    sec.rows.forEach(r => {
+      if (r[0]) {
         const registroId = getRegistroId(r, 'buques');
-        if(!shouldHideRecord(registroId, 'buques')){
+        if (!shouldHideRecord(registroId, 'buques')) {
           totalBuques++;
         }
       }
     });
   });
-  html+=`<div class="summary-row">
+  
+  html += `<div class="summary-row">
     <div class="sum-card accent"><div class="sum-label">Total Buques</div><div class="sum-num">${totalBuques}</div><div class="sum-sub">En planilla</div></div>
-    <div class="sum-card green"><div class="sum-label">Muelles activos</div><div class="sum-num">${sections.filter(s=>s.rows.some(r=>{const id=getRegistroId(r,'buques');return !shouldHideRecord(id,'buques');})).length}</div><div class="sum-sub">Con operaciones</div></div>
+    <div class="sum-card green"><div class="sum-label">Muelles activos</div><div class="sum-num">${sections.filter(s => s.rows.some(r => {
+      const id = getRegistroId(r, 'buques');
+      return !shouldHideRecord(id, 'buques');
+    })).length}</div><div class="sum-sub">Con operaciones</div></div>
     <div class="sum-card orange"><div class="sum-label">Actualizacion</div><div class="sum-num" style="font-size:16px;padding-top:4px" id="upd-b">-</div><div class="sum-sub">Tiempo real</div></div>
   </div>`;
-  sections.forEach(sec=>{
-    const filtered=sec.rows.filter(r=>{
+  
+  sections.forEach(sec => {
+    const filtered = sec.rows.filter(r => {
       const registroId = getRegistroId(r, 'buques');
       const isHidden = shouldHideRecord(registroId, 'buques');
-      if(isHidden) return false;
+      if (isHidden) return false;
       
-      // Si toggle estÃƒÂ¡ activado y tiene fechaFin, ocultar
       const fechaFin = (r[3] || '').trim();
       if (areFinalizadosHidden() && fechaFin) return false;
       
-      if(!s) return true;
-      return r.some(c=>c.toLowerCase().includes(s));
+      if (!s) return true;
+      return r.some(c => (c || '').toLowerCase().includes(s));
     });
-    if(s && filtered.length===0) return;
-    const mc=muelleClass(sec.name);
-    html+=`<div class="muelle-section">
+    
+    if (s && filtered.length === 0) return;
+    
+    const mc = muelleClass(sec.name);
+    html += `<div class="muelle-section">
       <div class="muelle-header ${mc}">
         <span class="muelle-name">${sec.name}</span>
-        <span class="muelle-badge">${filtered.length} buque${filtered.length!==1?'s':''}</span>
+        <span class="muelle-badge">${filtered.length} buque${filtered.length !== 1 ? 's' : ''}</span>
       </div>`;
-    if(filtered.length===0){
-      html+=`<div class="empty-muelle">Sin operaciones programadas</div>`;
+    
+    if (filtered.length === 0) {
+      html += `<div class="empty-muelle">Sin operaciones programadas</div>`;
     } else {
-      html+=`<table><thead><tr>
+      html += `<table><thead><tr>
         <th>Buque</th><th>ETA Roads</th><th>ETB</th><th>ETC</th>
         <th>Carga</th><th>Volumen</th><th>Cliente / Shipper</th>
         <th>Destino</th><th>Persona</th><th>Comentarios</th>
       </tr></thead><tbody>`;
-      filtered.forEach(r=>{
-        const buque=r[0]||'';const eta=r[1]||'';const etb=r[2]||'';const etc=r[3]||'';
-        const carga=r[4]||'';const vol=r[5]||'';const cliente=r[6]||'';
-        const destino=r[7]||'';const persona=r[8]||'';const comment=r[9]||'';
-        const fechaFin=r[3]||'';
-        if(!buque) return;
+      
+      filtered.forEach(r => {
+        const buque = r[0] || '';
+        const eta = r[1] || '';
+        const etb = r[2] || '';
+        const etc = r[3] || '';
+        const carga = r[4] || '';
+        const vol = r[5] || '';
+        const cliente = r[6] || '';
+        const destino = r[7] || '';
+        const persona = r[8] || '';
+        const comment = r[9] || '';
+        const fechaFin = r[3] || '';
+        
+        if (!buque) return;
+        
         const registroId = getRegistroId(r, 'buques');
         const rowClass = fechaFin ? 'finalizado' : '';
         const onclick = fechaFin ? `onclick="toggleFinalized('${registroId}', 'buques')"` : '';
         const title = fechaFin ? 'Haz clic para ocultarlo (2 horas de finalizado)' : '';
-        html+=`<tr class="${rowClass}" title="${title}" ${onclick}>
+        
+        html += `<tr class="${rowClass}" title="${title}" ${onclick}>
           <td class="cell-main">${buque}</td>
           <td class="cell-sec">${eta}</td>
           <td class="cell-sec">${etb}</td>
@@ -553,79 +600,101 @@ function renderBuques(sections, search=''){
           <td class="cell-comment">${comment}</td>
         </tr>`;
       });
-      html+=`</tbody></table>`;
+      
+      html += `</tbody></table>`;
     }
-    html+=`</div>`;
+    html += `</div>`;
   });
-  document.getElementById('loading-buques').style.display='none';
-  const cont=document.getElementById('content-buques');
-  cont.style.display='block';
-  cont.innerHTML=html;
-  document.getElementById('cnt-buques').textContent=totalBuques;
-  const updB=document.getElementById('upd-b');
-  if(updB) updB.textContent=new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
+  
+  document.getElementById('loading-buques').style.display = 'none';
+  const cont = document.getElementById('content-buques');
+  cont.style.display = 'block';
+  cont.innerHTML = html;
+  document.getElementById('cnt-buques').textContent = totalBuques;
+  const updB = document.getElementById('upd-b');
+  if (updB) updB.textContent = new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
   updateHideBtn();
 }
 
-function renderFluvial(sections, search=''){
+function renderFluvial(sections, search = '') {
   cleanUpOldRecords('fluvial');
-  const s=search.toLowerCase();
-  let totalRems=0;
-  let html='';
-  sections.forEach(sec=>{
-    sec.rows.forEach(r=>{
-      if(r[0]){
+  const s = search.toLowerCase();
+  let totalRems = 0;
+  let html = '';
+  
+  sections.forEach(sec => {
+    sec.rows.forEach(r => {
+      if (r[0]) {
         const registroId = getRegistroId(r, 'fluvial');
-        if(!shouldHideRecord(registroId, 'fluvial')){
+        if (!shouldHideRecord(registroId, 'fluvial')) {
           totalRems++;
         }
       }
     });
   });
-  html+=`<div class="summary-row">
+  
+  html += `<div class="summary-row">
     <div class="sum-card accent"><div class="sum-label">Remolcadores</div><div class="sum-num">${totalRems}</div><div class="sum-sub">En planilla</div></div>
-    <div class="sum-card green"><div class="sum-label">Muelles activos</div><div class="sum-num">${sections.filter(s=>s.rows.some(r=>{const id=getRegistroId(r,'fluvial');return !shouldHideRecord(id,'fluvial');})).length}</div><div class="sum-sub">Con operaciones</div></div>
+    <div class="sum-card green"><div class="sum-label">Muelles activos</div><div class="sum-num">${sections.filter(s => s.rows.some(r => {
+      const id = getRegistroId(r, 'fluvial');
+      return !shouldHideRecord(id, 'fluvial');
+    })).length}</div><div class="sum-sub">Con operaciones</div></div>
     <div class="sum-card orange"><div class="sum-label">Actualizacion</div><div class="sum-num" style="font-size:16px;padding-top:4px" id="upd-f">-</div><div class="sum-sub">Tiempo real</div></div>
   </div>`;
-  sections.forEach(sec=>{
-    const filtered=sec.rows.filter(r=>{
+  
+  sections.forEach(sec => {
+    const filtered = sec.rows.filter(r => {
       const registroId = getRegistroId(r, 'fluvial');
       const isHidden = shouldHideRecord(registroId, 'fluvial');
-      if(isHidden) return false;
+      if (isHidden) return false;
       
-      // Si toggle estÃƒÂ¡ activado y tiene fechaFin, ocultar
       const fechaFin = (r[5] || '').trim();
       if (areFinalizadosHidden() && fechaFin) return false;
       
-      if(!s) return true;
-      return r.some(c=>c.toLowerCase().includes(s));
+      if (!s) return true;
+      return r.some(c => (c || '').toLowerCase().includes(s));
     });
-    if(s && filtered.length===0) return;
-    const mc=muelleClass(sec.name);
-    html+=`<div class="muelle-section">
+    
+    if (s && filtered.length === 0) return;
+    
+    const mc = muelleClass(sec.name);
+    html += `<div class="muelle-section">
       <div class="muelle-header ${mc}">
         <span class="muelle-name">${sec.name}</span>
-        <span class="muelle-badge">${filtered.length} remolcador${filtered.length!==1?'es':''}</span>
+        <span class="muelle-badge">${filtered.length} remolcador${filtered.length !== 1 ? 'es' : ''}</span>
       </div>`;
-    if(filtered.length===0){
-      html+=`<div class="empty-muelle">Sin operaciones programadas</div>`;
+    
+    if (filtered.length === 0) {
+      html += `<div class="empty-muelle">Sin operaciones programadas</div>`;
     } else {
-      html+=`<table><thead><tr>
+      html += `<table><thead><tr>
         <th>Remolcador</th><th>Barcazas</th><th>Estado</th><th>ETA Roads</th>
         <th>ETB</th><th>Final</th><th>Descarga</th><th>Volumen</th>
         <th>Cliente</th><th>Persona</th><th>Comentarios</th>
       </tr></thead><tbody>`;
-      filtered.forEach(r=>{
-        const rem=r[0]||'';const bczs=r[1]||'';const estado=r[2]||'';const eta=r[3]||'';
-        const etb=r[4]||'';const fin=r[5]||'';const desc=r[6]||'';const vol=r[7]||'';
-        const cli=r[8]||'';const pers=r[9]||'';const comm=r[10]||'';
-        const fechaFin=r[5]||'';
-        if(!rem) return;
+      
+      filtered.forEach(r => {
+        const rem = r[0] || '';
+        const bczs = r[1] || '';
+        const estado = r[2] || '';
+        const eta = r[3] || '';
+        const etb = r[4] || '';
+        const fin = r[5] || '';
+        const desc = r[6] || '';
+        const vol = r[7] || '';
+        const cli = r[8] || '';
+        const pers = r[9] || '';
+        const comm = r[10] || '';
+        const fechaFin = r[5] || '';
+        
+        if (!rem) return;
+        
         const registroId = getRegistroId(r, 'fluvial');
         const rowClass = fechaFin ? 'finalizado' : '';
         const onclick = fechaFin ? `onclick="toggleFinalized('${registroId}', 'fluvial')"` : '';
         const title = fechaFin ? 'Haz clic para ocultarlo (2 horas de finalizado)' : '';
-        html+=`<tr class="${rowClass}" title="${title}" ${onclick}>
+        
+        html += `<tr class="${rowClass}" title="${title}" ${onclick}>
           <td class="cell-main">${rem}</td>
           <td class="cell-num">${bczs}</td>
           <td>${statusBadge(estado)}</td>
@@ -633,70 +702,82 @@ function renderFluvial(sections, search=''){
           <td class="cell-sec">${etb}</td>
           <td class="cell-sec">${fin}</td>
           <td><span style="font-size:11px;font-weight:600;color:var(--accent)">${desc}</span></td>
-          <td class="cell-num">${vol?Number(vol.replace(/[^0-9.]/g,'')).toLocaleString('es-AR'):''}</td>
+          <td class="cell-num">${vol ? Number(vol.replace(/[^0-9.]/g, '')).toLocaleString('es-AR') : ''}</td>
           <td class="cell-sec">${cli}</td>
           <td class="cell-muted">${pers}</td>
           <td class="cell-comment">${comm}</td>
         </tr>`;
       });
-      html+=`</tbody></table>`;
+      
+      html += `</tbody></table>`;
     }
-    html+=`</div>`;
+    html += `</div>`;
   });
-  document.getElementById('loading-fluvial').style.display='none';
-  const cont=document.getElementById('content-fluvial');
-  cont.style.display='block';
-  cont.innerHTML=html;
-  document.getElementById('cnt-fluvial').textContent=totalRems;
-  const updF=document.getElementById('upd-f');
-  if(updF) updF.textContent=new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
+  
+  document.getElementById('loading-fluvial').style.display = 'none';
+  const cont = document.getElementById('content-fluvial');
+  cont.style.display = 'block';
+  cont.innerHTML = html;
+  document.getElementById('cnt-fluvial').textContent = totalRems;
+  const updF = document.getElementById('upd-f');
+  if (updF) updF.textContent = new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
   updateHideBtn();
 }
 
-async function loadAll(){
-  const btn=document.getElementById('refresh-btn');
+// ==================== MAIN LOAD ====================
+async function loadAll() {
+  const btn = document.getElementById('refresh-btn');
   btn.classList.add('spin');
+  
   try {
     const [rb, rf] = await Promise.all([
-      fetch(csvUrl(GID_BUQUES)).then(r=>r.text()),
-      fetch(csvUrl(GID_FLUVIAL)).then(r=>r.text())
+      fetch(csvUrl(GID_BUQUES)).then(r => r.text()),
+      fetch(csvUrl(GID_FLUVIAL)).then(r => r.text())
     ]);
-    rawBuques  = parseBuques(parseSheet(rb));
-    rawFluvial = parseFluvial(parseSheet(rf));
+    
+    const buquesRows = parseSheet(rb);
+    const fluvialRows = parseSheet(rf);
+    
+    rawBuques = parseBuques(buquesRows);
+    rawFluvial = parseFluvial(fluvialRows);
+    
     renderBuques(rawBuques);
     renderFluvial(rawFluvial);
-    const t=new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
-    document.getElementById('last-upd').textContent='Actualizado '+t;
-  } catch(e) {
-    console.error('Error:', e);
-    ['buques','fluvial'].forEach(tab=>{
-      document.getElementById('loading-'+tab).style.display='none';
-      document.getElementById('content-'+tab).style.display='block';
-      document.getElementById('content-'+tab).innerHTML=`<div class="error-state">Error al cargar los datos. Verifica los permisos del Sheet.</div>`;
+    
+    const t = new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+    document.getElementById('last-upd').textContent = 'Actualizado ' + t;
+  } catch (e) {
+    console.error('Error cargando datos:', e);
+    ['buques', 'fluvial'].forEach(tab => {
+      document.getElementById('loading-' + tab).style.display = 'none';
+      document.getElementById('content-' + tab).style.display = 'block';
+      document.getElementById('content-' + tab).innerHTML = `<div class="error-state">Error al cargar los datos. Verifica los permisos del Sheet.</div>`;
     });
   }
+  
   btn.classList.remove('spin');
 }
 
-function switchTab(tab){
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
-  document.getElementById('tab-'+tab).classList.add('active');
-  document.getElementById('pane-'+tab).classList.add('active');
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.getElementById('pane-' + tab).classList.add('active');
 }
 
-function applySearch(){
-  const s=document.getElementById('search').value;
+function applySearch() {
+  const s = document.getElementById('search').value;
   renderBuques(rawBuques, s);
   renderFluvial(rawFluvial, s);
 }
 
+// Inicializar
 loadAll();
-setInterval(loadAll, 5*60*1000);
+setInterval(loadAll, 5 * 60 * 1000);
 setInterval(() => {
   renderBuques(rawBuques);
   renderFluvial(rawFluvial);
-}, 60*1000);
+}, 60 * 1000);
 </script>
 </body>
 </html>
