@@ -432,26 +432,34 @@ function statusBadge(val) {
 function parseBuques(rows) {
   const sections = [];
   let current = null;
+  let skippedHeaderNextRow = false;
   const MUELLE_KEYWORDS = ['NAVIOS', 'ANP', 'PUNTA', 'ONTUR', 'MUELLE', 'TGU', 'ARENAL', 'DESIGNAR'];
-  const HEADER_KEYWORDS = ['BUQUE', 'REMOLCADOR', 'ETA', 'ETB', 'ETC', 'CARGA', 'VOLUMEN', 'CLIENTE', 'DESTINO', 'PERSONA', 'COMENTARIOS', 'OPERADOR'];
+  
+  // Headers de BUQUES exactos
+  const HEADER_EXACT = ['BUQUE', 'ETA ROADS', 'ETB', 'ETC', 'CARGA', 'VOLUMEN', 'CLIENTE', 'DESTINO', 'PERSONA', 'COMENTARIOS', 'OPERADOR'];
   
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i];
     const a = (row[0] || '').trim().toUpperCase();
-    const b = (row[1] || '').trim().toUpperCase();
     
     if (!a) continue;
     
     const isMuelle = MUELLE_KEYWORDS.some(k => a.includes(k));
-    const isHeader = HEADER_KEYWORDS.some(k => a.includes(k) || b.includes(k));
+    
+    // Detectar header: si row[0] contiene exactamente "BUQUE" o row[1] contiene exactamente "ETA ROADS"
+    const isHeader = a === 'BUQUE' || (row[1] && row[1].trim().toUpperCase() === 'ETA ROADS');
     
     if (isMuelle && !isHeader) {
       current = { name: row[0].trim(), rows: [] };
       sections.push(current);
+      skippedHeaderNextRow = false;
       continue;
     }
     
-    if (isHeader) continue;
+    if (isHeader) {
+      skippedHeaderNextRow = true;
+      continue;
+    }
     
     if (current && a && !isMuelle) {
       current.rows.push(row);
@@ -465,7 +473,9 @@ function parseFluvial(rows) {
   const sections = [];
   let current = null;
   const MUELLE_KEYWORDS = ['NAVIOS', 'ANP', 'PUNTA', 'ONTUR', 'MUELLE', 'TGU', 'ARENAL', 'DESIGNAR'];
-  const HEADER_KEYWORDS = ['REMOLCADOR', 'BARCAZA', 'ESTADO', 'ETA', 'DESCARGA', 'ETB', 'VOLUMEN', 'CLIENTE', 'PERSONA', 'COMENTARIOS'];
+  
+  // Headers de FLUVIAL exactos
+  const HEADER_EXACT = ['REMOLCADOR', 'BARCAZAS', 'ESTADO', 'ETA ROADS'];
   
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i];
@@ -474,7 +484,9 @@ function parseFluvial(rows) {
     if (!a) continue;
     
     const isMuelle = MUELLE_KEYWORDS.some(k => a.includes(k));
-    const isHeader = HEADER_KEYWORDS.some(k => a.toUpperCase().includes(k));
+    
+    // Detectar header: si row[0] es exactamente "REMOLCADOR" o row[1] es exactamente "BARCAZAS"
+    const isHeader = a === 'REMOLCADOR' || (row[1] && row[1].trim().toUpperCase() === 'BARCAZAS');
     
     if (isMuelle && !isHeader) {
       current = { name: row[0].trim(), rows: [] };
