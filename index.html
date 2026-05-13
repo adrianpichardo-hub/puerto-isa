@@ -20,51 +20,34 @@
 }
 html,body{height:100%;overflow:hidden;background:var(--navy);}
 body{font-family:var(--body);color:var(--white);display:flex;flex-direction:column;}
-
 .bg{position:fixed;inset:0;z-index:0;pointer-events:none;}
 .bg-base{position:absolute;inset:0;background:
   radial-gradient(ellipse 90% 70% at 50% 40%,rgba(13,30,80,.7) 0%,transparent 70%),
   radial-gradient(ellipse 50% 50% at 80% 10%,rgba(0,180,220,.07) 0%,transparent 55%),
   radial-gradient(ellipse 40% 60% at 10% 80%,rgba(26,58,140,.12) 0%,transparent 60%),
   linear-gradient(175deg,#070e1f 0%,#0c1830 45%,#070e1f 100%);}
-.bg-grid{position:absolute;inset:0;
-  background-image:linear-gradient(rgba(0,200,232,.028) 1px,transparent 1px),linear-gradient(90deg,rgba(0,200,232,.028) 1px,transparent 1px);
-  background-size:52px 52px;}
-.bg-grid2{position:absolute;inset:0;
-  background-image:linear-gradient(rgba(0,200,232,.012) 1px,transparent 1px),linear-gradient(90deg,rgba(0,200,232,.012) 1px,transparent 1px);
-  background-size:13px 13px;}
-.bg-glow{position:absolute;top:20%;left:50%;transform:translateX(-50%);width:700px;height:500px;
-  background:radial-gradient(ellipse,rgba(0,180,220,.09) 0%,transparent 65%);
-  border-radius:50%;filter:blur(30px);animation:glowpulse 7s ease-in-out infinite;}
+.bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(0,200,232,.028) 1px,transparent 1px),linear-gradient(90deg,rgba(0,200,232,.028) 1px,transparent 1px);background-size:52px 52px;}
+.bg-grid2{position:absolute;inset:0;background-image:linear-gradient(rgba(0,200,232,.012) 1px,transparent 1px),linear-gradient(90deg,rgba(0,200,232,.012) 1px,transparent 1px);background-size:13px 13px;}
+.bg-glow{position:absolute;top:20%;left:50%;transform:translateX(-50%);width:700px;height:500px;background:radial-gradient(ellipse,rgba(0,180,220,.09) 0%,transparent 65%);border-radius:50%;filter:blur(30px);animation:glowpulse 7s ease-in-out infinite;}
 @keyframes glowpulse{0%,100%{opacity:.7;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.08)}}
 .bg-scan{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.04) 3px,rgba(0,0,0,.04) 4px);}
 .deco-h{position:absolute;height:1px;width:100%;background:linear-gradient(90deg,transparent,rgba(0,200,232,.2),transparent);animation:scanh 10s linear infinite;}
 .deco-h:nth-child(1){top:28%}.deco-h:nth-child(2){top:68%;animation-delay:-4s;opacity:.4}
 @keyframes scanh{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
-.side-bar{position:fixed;left:0;top:0;bottom:0;width:2px;z-index:20;
-  background:linear-gradient(180deg,transparent,var(--accent) 35%,var(--accent2) 70%,transparent);opacity:.5;}
-
+.side-bar{position:fixed;left:0;top:0;bottom:0;width:2px;z-index:20;background:linear-gradient(180deg,transparent,var(--accent) 35%,var(--accent2) 70%,transparent);opacity:.5;}
 .portal{position:relative;z-index:10;display:flex;flex-direction:column;height:100vh;}
-
 /* TOPBAR */
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:.85rem 2.4rem;
-  border-bottom:1px solid rgba(0,200,232,.1);animation:fadedown .7s ease both;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:.85rem 2.4rem;border-bottom:1px solid rgba(0,200,232,.1);animation:fadedown .7s ease both;}
 @keyframes fadedown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
 .logo-wrap{display:flex;align-items:center;gap:14px;}
-.logo-MSA{font-family:var(--cond);font-size:44px;font-weight:800;font-style:italic;color:var(--white);
-  letter-spacing:3px;line-height:1;position:relative;}
-.logo-MSA::after{content:'';position:absolute;bottom:-3px;left:0;width:100%;height:2px;
-  background:linear-gradient(90deg,var(--accent),var(--accent2),transparent);}
+.logo-MSA{font-family:var(--cond);font-size:44px;font-weight:800;font-style:italic;color:var(--white);letter-spacing:3px;line-height:1;position:relative;}
+.logo-MSA::after{content:'';position:absolute;bottom:-3px;left:0;width:100%;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2),transparent);}
 .logo-sep{width:1px;height:30px;background:rgba(255,255,255,.15);}
 .logo-info{display:flex;flex-direction:column;gap:2px;}
 .logo-name{font-family:var(--cond);font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.75);}
 .logo-tag{font-family:var(--mono);font-size:8px;letter-spacing:.12em;color:var(--muted);}
 .topbar-right{display:flex;align-items:center;gap:18px;}
-
-/* WEATHER TOPBAR */
-.wx-top{display:flex;align-items:center;gap:10px;padding:5px 13px;
-  background:rgba(0,200,232,.055);border:1px solid rgba(0,200,232,.13);
-  border-radius:8px;backdrop-filter:blur(10px);}
+.wx-top{display:flex;align-items:center;gap:10px;padding:5px 13px;background:rgba(0,200,232,.055);border:1px solid rgba(0,200,232,.13);border-radius:8px;backdrop-filter:blur(10px);}
 .wx-loc{font-family:var(--mono);font-size:7.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);}
 .wx-temp{font-family:var(--cond);font-size:20px;font-weight:700;color:var(--white);line-height:1;}
 .wx-unit{font-size:10px;color:var(--muted);vertical-align:super;}
@@ -76,81 +59,63 @@ body{font-family:var(--body);color:var(--white);display:flex;flex-direction:colu
 .wx-row b{color:rgba(255,255,255,.8);font-weight:400;}
 .wx-loading{font-family:var(--mono);font-size:8px;color:var(--muted);letter-spacing:.1em;animation:blink 1.4s infinite;}
 @keyframes blink{0%,100%{opacity:.35}50%{opacity:1}}
-
 .sys-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:3px;}
 .sys-status{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:8px;color:var(--muted);letter-spacing:.1em;}
 .sys-dot{width:6px;height:6px;border-radius:50%;background:#2ecc71;box-shadow:0 0 7px #2ecc71;animation:blink2 2.5s ease-in-out infinite;}
 @keyframes blink2{0%,100%{opacity:1}50%{opacity:.3}}
 .sys-date{font-family:var(--mono);font-size:8px;color:var(--muted);letter-spacing:.05em;}
-
 /* HERO */
-.hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:0 1.5rem .8rem;text-align:center;animation:fadein .8s ease .1s both;}
+.hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 1.5rem .8rem;text-align:center;animation:fadein .8s ease .1s both;}
 @keyframes fadein{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
-.eyebrow{font-family:var(--mono);font-size:8.5px;letter-spacing:.3em;text-transform:uppercase;
-  color:var(--accent);margin-bottom:.6rem;opacity:.8;display:flex;align-items:center;gap:10px;}
-.eyebrow::before,.eyebrow::after{content:'';display:block;width:28px;height:1px;
-  background:linear-gradient(90deg,transparent,var(--accent));}
+.eyebrow{font-family:var(--mono);font-size:8.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);margin-bottom:.6rem;opacity:.8;display:flex;align-items:center;gap:10px;}
+.eyebrow::before,.eyebrow::after{content:'';display:block;width:28px;height:1px;background:linear-gradient(90deg,transparent,var(--accent));}
 .eyebrow::after{background:linear-gradient(270deg,transparent,var(--accent));}
-.hero-title{font-family:var(--cond);font-size:clamp(28px,3.8vw,52px);font-weight:800;
-  text-transform:uppercase;line-height:1;letter-spacing:.03em;margin-bottom:.2rem;}
+.hero-title{font-family:var(--cond);font-size:clamp(28px,3.8vw,52px);font-weight:800;text-transform:uppercase;line-height:1;letter-spacing:.03em;margin-bottom:.2rem;}
 .t1{color:var(--white);}
-.t2{background:linear-gradient(110deg,var(--accent) 0%,#80d8f8 50%,var(--accent2) 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.t2{background:linear-gradient(110deg,var(--accent) 0%,#80d8f8 50%,var(--accent2) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .hero-sub{font-family:var(--mono);font-size:8.5px;letter-spacing:.16em;color:var(--muted);margin-bottom:1.6rem;}
-
-/* GRID 3×2 */
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;width:100%;max-width:980px;
-  animation:fadein .8s ease .25s both;}
-
+/* GRID */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;width:100%;max-width:980px;animation:fadein .8s ease .25s both;}
 /* CARD */
-.card{position:relative;background:var(--glass);border:1px solid var(--glass-b);border-radius:13px;
-  padding:1.1rem 1.2rem;text-decoration:none;color:var(--white);overflow:hidden;
-  backdrop-filter:blur(14px);transition:all .26s ease;display:flex;flex-direction:column;gap:.65rem;}
-.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1.5px;
-  background:var(--ca,linear-gradient(90deg,var(--accent2),var(--accent)));opacity:0;transition:opacity .26s;}
-.card::after{content:'';position:absolute;inset:0;border-radius:13px;
-  background:radial-gradient(ellipse 60% 45% at 50% 0%,rgba(0,200,232,.05),transparent 70%);
-  opacity:0;transition:opacity .26s;pointer-events:none;}
-.card:hover{background:var(--glass-h);border-color:rgba(0,200,232,.2);transform:translateY(-3px);
-  box-shadow:0 14px 36px rgba(0,0,0,.5),0 0 0 1px rgba(0,200,232,.1);}
+.card{position:relative;background:var(--glass);border:1px solid var(--glass-b);border-radius:13px;padding:1.1rem 1.2rem;text-decoration:none;color:var(--white);overflow:hidden;backdrop-filter:blur(14px);transition:all .26s ease;display:flex;flex-direction:column;gap:.65rem;}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1.5px;background:var(--ca,linear-gradient(90deg,var(--accent2),var(--accent)));opacity:0;transition:opacity .26s;}
+.card::after{content:'';position:absolute;inset:0;border-radius:13px;background:radial-gradient(ellipse 60% 45% at 50% 0%,rgba(0,200,232,.05),transparent 70%);opacity:0;transition:opacity .26s;pointer-events:none;}
+.card:hover{background:var(--glass-h);border-color:rgba(0,200,232,.2);transform:translateY(-3px);box-shadow:0 14px 36px rgba(0,0,0,.5),0 0 0 1px rgba(0,200,232,.1);}
 .card:hover::before,.card:hover::after{opacity:1;}
 .c-cyan{--ca:linear-gradient(90deg,var(--accent2),var(--accent));}
 .c-green{--ca:linear-gradient(90deg,#00a878,#00e0a0);}
 .c-gold{--ca:linear-gradient(90deg,#b8892a,#e8c060);}
 .c-purple{--ca:linear-gradient(90deg,#6030c0,#9060f0);}
 .c-coral{--ca:linear-gradient(90deg,#c04820,#e87040);}
+/* LINE UP card */
+.c-steel{--ca:linear-gradient(90deg,#1a5cb8,#00c8e8);}
+.c-steel:hover{border-color:rgba(0,200,232,.28)!important;box-shadow:0 14px 36px rgba(0,0,0,.5),0 0 0 1px rgba(0,200,232,.15)!important;}
+.c-steel:hover .card-arrow{background:#1a5cb8;border-color:#1a5cb8;}
+.c-steel .tag{background:rgba(0,150,220,.1);border-color:rgba(0,200,232,.22);color:rgba(100,200,255,.85);}
+/* ───────────── */
 .c-green:hover{border-color:rgba(0,168,120,.25)!important;box-shadow:0 14px 36px rgba(0,0,0,.5),0 0 0 1px rgba(0,168,120,.12)!important;}
 .c-gold:hover{border-color:rgba(184,137,42,.25)!important;box-shadow:0 14px 36px rgba(0,0,0,.5),0 0 0 1px rgba(184,137,42,.12)!important;}
 .c-purple:hover{border-color:rgba(96,48,192,.3)!important;box-shadow:0 14px 36px rgba(0,0,0,.5),0 0 0 1px rgba(96,48,192,.15)!important;}
 .c-coral:hover{border-color:rgba(192,72,32,.25)!important;box-shadow:0 14px 36px rgba(0,0,0,.5),0 0 0 1px rgba(192,72,32,.12)!important;}
-
 .card-top{display:flex;align-items:flex-start;justify-content:space-between;}
-.card-icon{width:36px;height:36px;border-radius:9px;background:rgba(255,255,255,.05);
-  border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;
-  font-size:16px;transition:transform .26s;}
+.card-icon{width:36px;height:36px;border-radius:9px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:16px;transition:transform .26s;}
 .card:hover .card-icon{transform:scale(1.08) rotate(-4deg);}
-.card-arrow{width:22px;height:22px;border-radius:50%;border:1px solid rgba(255,255,255,.12);
-  display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--muted);transition:all .26s;}
+.card-arrow{width:22px;height:22px;border-radius:50%;border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--muted);transition:all .26s;}
 .card:hover .card-arrow{color:var(--navy);transform:translate(2px,-2px);}
 .c-cyan:hover .card-arrow{background:var(--accent);border-color:var(--accent);}
 .c-green:hover .card-arrow{background:#00a878;border-color:#00a878;}
 .c-gold:hover .card-arrow{background:#b8892a;border-color:#b8892a;}
 .c-purple:hover .card-arrow{background:#6030c0;border-color:#6030c0;}
 .c-coral:hover .card-arrow{background:#c04820;border-color:#c04820;}
-.card-title{font-family:var(--cond);font-size:15.5px;font-weight:700;letter-spacing:.07em;
-  text-transform:uppercase;color:var(--white);margin-bottom:3px;}
+.card-title{font-family:var(--cond);font-size:15.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--white);margin-bottom:3px;}
 .card-desc{font-size:11px;font-weight:300;color:var(--muted);line-height:1.5;}
 .card-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:1px;}
-.tag{font-family:var(--mono);font-size:7.5px;letter-spacing:.1em;text-transform:uppercase;
-  padding:2px 7px;border-radius:20px;background:rgba(255,255,255,.06);
-  border:1px solid rgba(255,255,255,.1);color:var(--muted);}
+.tag{font-family:var(--mono);font-size:7.5px;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;border-radius:20px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--muted);}
 .c-green .tag{background:rgba(0,168,120,.1);border-color:rgba(0,168,120,.2);color:rgba(0,220,160,.7);}
 .c-gold .tag{background:rgba(184,137,42,.1);border-color:rgba(184,137,42,.2);color:rgba(232,192,96,.8);}
 .c-purple .tag{background:rgba(96,48,192,.1);border-color:rgba(96,48,192,.2);color:rgba(144,96,240,.8);}
 .c-coral .tag{background:rgba(192,72,32,.1);border-color:rgba(192,72,32,.2);color:rgba(232,112,64,.85);}
-
-/* WEATHER CARD (slot 6) */
+/* WEATHER CARD */
 .wx-card{cursor:default;pointer-events:none;}
 .wx-card-loc{font-family:var(--mono);font-size:7.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);}
 .wx-card-sub{font-family:var(--mono);font-size:7px;color:var(--muted);letter-spacing:.07em;margin-top:1px;}
@@ -164,18 +129,14 @@ body{font-family:var(--body);color:var(--white);display:flex;flex-direction:colu
 .wx-stat-val{font-family:var(--cond);font-size:17px;font-weight:600;color:var(--white);}
 .wx-stat-unit{font-size:9px;color:var(--muted);}
 .wx-stat-dir{font-family:var(--mono);font-size:8px;color:rgba(0,200,232,.75);margin-top:1px;}
-
 /* FOOTER */
-.footer{display:flex;align-items:center;justify-content:space-between;padding:.6rem 2.4rem;
-  border-top:1px solid rgba(255,255,255,.05);animation:fadeup .7s ease .5s both;}
+.footer{display:flex;align-items:center;justify-content:space-between;padding:.6rem 2.4rem;border-top:1px solid rgba(255,255,255,.05);animation:fadeup .7s ease .5s both;}
 @keyframes fadeup{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .copy{font-family:var(--mono);font-size:7.5px;color:rgba(255,255,255,.18);letter-spacing:.1em;}
 .offices{display:flex;gap:12px;}
 .office{font-family:var(--mono);font-size:7.5px;color:rgba(255,255,255,.18);letter-spacing:.08em;text-transform:uppercase;}
 .office.active{color:rgba(0,200,232,.55);}
-
 .corner-deco{position:fixed;bottom:1.8rem;right:1.8rem;opacity:.05;pointer-events:none;z-index:1;}
-
 @media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr);}html,body{overflow:auto;}}
 @media(max-width:580px){.grid{grid-template-columns:1fr;}.wx-details,.wx-sep{display:none;}.footer{flex-direction:column;gap:5px;padding:.7rem 1.2rem;}}
 </style>
@@ -265,8 +226,15 @@ body{font-family:var(--body);color:var(--white);display:flex;flex-direction:colu
         <div class="card-tags"><span class="tag">SOF</span><span class="tag">Cantidades</span><span class="tag">Grúas</span><span class="tag">Excel</span></div>
       </a>
 
-      <!-- SLOT 6: RECALADA WEATHER CARD -->
-      <div class="card wx-card" style="animation:fadein .7s ease .67s both;">
+      <!-- ── LINE UP ISA TERMINAL NAVIOS ── -->
+      <a href="LineUp_ISA_Firebase.html" class="card c-steel" style="animation:fadein .7s ease .67s both;">
+        <div class="card-top"><div class="card-icon">⚓</div><div class="card-arrow">↗</div></div>
+        <div><div class="card-title">Line Up — ISA Navios</div><div class="card-desc">Line up compartido en tiempo real. Berths 1 y 4, cascada de fechas automática, emails EN/ES y Excel Gravetal.</div></div>
+        <div class="card-tags"><span class="tag">Line Up</span><span class="tag">ETB / ETC</span><span class="tag">Tiempo Real</span><span class="tag">ISA</span></div>
+      </a>
+
+      <!-- CLIMA RECALADA — span 2 para completar la última fila -->
+      <div class="card wx-card" style="animation:fadein .7s ease .74s both;grid-column:span 2;">
         <div class="card-top">
           <div>
             <div class="wx-card-loc">Recalada · UY</div>
@@ -331,29 +299,22 @@ function updDate(){
 }
 updDate();setInterval(updDate,30000);
 
-/* WMO CODE MAPS */
 const IC={0:'☀',1:'🌤',2:'⛅',3:'☁',45:'🌫',48:'🌫',51:'🌦',53:'🌦',55:'🌧',61:'🌧',63:'🌧',65:'🌧',71:'❄',73:'❄',75:'❄',80:'🌦',81:'🌧',82:'⛈',95:'⛈',96:'⛈',99:'⛈'};
 const DC={0:'Despejado',1:'Mayorm. despejado',2:'Parcialm. nublado',3:'Nublado',45:'Niebla',48:'Niebla',51:'Llovizna leve',53:'Llovizna',55:'Llovizna intensa',61:'Lluvia leve',63:'Lluvia moderada',65:'Lluvia intensa',80:'Chubascos',81:'Chubascos mod.',82:'Chubascos fuertes',95:'Tormenta',96:'Tormenta+granizo',99:'Tormenta intensa'};
 const WD=['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSO','SO','OSO','O','ONO','NO','NNO'];
 const d2dir=d=>WD[Math.round(d/22.5)%16];
 const ms2kt=ms=>Math.round(ms*1.94384);
-function getHourlyIdx(data){
-  const h=new Date().toISOString().substring(0,13)+':00';
-  return data.hourly.time.indexOf(h);
-}
+function getHourlyIdx(data){const h=new Date().toISOString().substring(0,13)+':00';return data.hourly.time.indexOf(h);}
 
 async function loadWx(){
   const base='https://api.open-meteo.com/v1/forecast?hourly=precipitation_probability,relativehumidity_2m&current_weather=true&windspeed_unit=ms&timezone=America%2FMontevideo';
   try{
     const[r1,r2]=await Promise.all([
-      fetch(base+'&latitude=-33.879&longitude=-58.409'), // Nueva Palmira
-      fetch(base+'&latitude=-35.217&longitude=-57.100')  // Recalada
+      fetch(base+'&latitude=-33.879&longitude=-58.409'),
+      fetch(base+'&latitude=-35.217&longitude=-57.100')
     ]);
     const[d1,d2]=await Promise.all([r1.json(),r2.json()]);
-
-    /* TOPBAR — Nueva Palmira */
-    const cw=d1.current_weather;
-    const hi=getHourlyIdx(d1);
+    const cw=d1.current_weather,hi=getHourlyIdx(d1);
     document.getElementById('wxT').textContent=Math.round(cw.temperature);
     document.getElementById('wxI').textContent=IC[cw.weathercode]||'☁';
     document.getElementById('wxC').textContent=DC[cw.weathercode]||'--';
@@ -365,10 +326,7 @@ async function loadWx(){
     document.getElementById('wxArrowSvg').style.transform=`rotate(${cw.winddirection}deg)`;
     document.getElementById('wxLoad').style.display='none';
     document.getElementById('wxTopData').style.display='flex';
-
-    /* CARD — Recalada */
-    const cw2=d2.current_weather;
-    const hi2=getHourlyIdx(d2);
+    const cw2=d2.current_weather,hi2=getHourlyIdx(d2);
     document.getElementById('rcT').textContent=Math.round(cw2.temperature);
     document.getElementById('rcI').textContent=IC[cw2.weathercode]||'☁';
     document.getElementById('rcC').textContent=DC[cw2.weathercode]||'--';
@@ -377,10 +335,7 @@ async function loadWx(){
     document.getElementById('rcR').textContent=hi2>=0?d2.hourly.precipitation_probability[hi2]:'--';
     document.getElementById('rcH').textContent=hi2>=0?d2.hourly.relativehumidity_2m[hi2]:'--';
     document.getElementById('rcUpd').textContent='ACT. '+new Date(cw2.time).toLocaleTimeString('es-UY',{hour:'2-digit',minute:'2-digit'});
-
-  }catch(e){
-    document.getElementById('wxLoad').textContent='CLIMA NO DISPONIBLE';
-  }
+  }catch(e){document.getElementById('wxLoad').textContent='CLIMA NO DISPONIBLE';}
 }
 loadWx();setInterval(loadWx,600000);
 </script>
