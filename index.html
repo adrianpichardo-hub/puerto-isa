@@ -14,12 +14,14 @@
 :root{
   --navy:#070e1f;--navy2:#0c1830;--blue:#1a3a8c;--blue2:#2d5cb8;
   --accent:#00c8e8;--accent2:#3a7bd5;
-  --white:#fff;--muted:rgba(255,255,255,.42);--muted2:rgba(255,255,255,.18);
+  --white:#fff;--muted:rgba(255,255,255,.42);
   --glass:rgba(255,255,255,.04);--glass-b:rgba(255,255,255,.09);--glass-h:rgba(255,255,255,.08);
   --mono:'Share Tech Mono',monospace;--cond:'Barlow Condensed',sans-serif;--body:'Barlow',sans-serif;
 }
 html,body{height:100%;overflow:hidden;background:var(--navy);}
 body{font-family:var(--body);color:var(--white);display:flex;flex-direction:column;}
+
+/* BG */
 .bg{position:fixed;inset:0;z-index:0;pointer-events:none;}
 .bg-base{position:absolute;inset:0;background:
   radial-gradient(ellipse 90% 70% at 50% 40%,rgba(13,30,80,.7) 0%,transparent 70%),
@@ -36,35 +38,67 @@ body{font-family:var(--body);color:var(--white);display:flex;flex-direction:colu
 @keyframes scanh{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
 .side-bar{position:fixed;left:0;top:0;bottom:0;width:2px;z-index:20;background:linear-gradient(180deg,transparent,var(--accent) 35%,var(--accent2) 70%,transparent);opacity:.5;}
 .portal{position:relative;z-index:10;display:flex;flex-direction:column;height:100vh;}
-/* TOPBAR */
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:.85rem 2.4rem;border-bottom:1px solid rgba(0,200,232,.1);animation:fadedown .7s ease both;}
+
+/* ── TOPBAR ── */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:.7rem 2rem;border-bottom:1px solid rgba(0,200,232,.1);animation:fadedown .7s ease both;gap:12px;}
 @keyframes fadedown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
-.logo-wrap{display:flex;align-items:center;gap:14px;}
+.logo-wrap{display:flex;align-items:center;gap:14px;flex-shrink:0;}
 .logo-MSA{font-family:var(--cond);font-size:44px;font-weight:800;font-style:italic;color:var(--white);letter-spacing:3px;line-height:1;position:relative;}
 .logo-MSA::after{content:'';position:absolute;bottom:-3px;left:0;width:100%;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2),transparent);}
 .logo-sep{width:1px;height:30px;background:rgba(255,255,255,.15);}
 .logo-info{display:flex;flex-direction:column;gap:2px;}
 .logo-name{font-family:var(--cond);font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.75);}
 .logo-tag{font-family:var(--mono);font-size:8px;letter-spacing:.12em;color:var(--muted);}
-.topbar-right{display:flex;align-items:center;gap:18px;}
-.wx-top{display:flex;align-items:center;gap:10px;padding:5px 13px;background:rgba(0,200,232,.055);border:1px solid rgba(0,200,232,.13);border-radius:8px;backdrop-filter:blur(10px);}
-.wx-loc{font-family:var(--mono);font-size:7.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);}
+
+/* Weather widgets row */
+.wx-row-top{display:flex;align-items:center;gap:8px;flex:1;justify-content:flex-end;}
+
+/* Shared weather widget style */
+.wx-widget{display:flex;align-items:center;gap:8px;padding:5px 11px;background:rgba(0,200,232,.055);border:1px solid rgba(0,200,232,.13);border-radius:8px;backdrop-filter:blur(10px);}
+.wx-loc{font-family:var(--mono);font-size:7px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:1px;}
 .wx-temp{font-family:var(--cond);font-size:20px;font-weight:700;color:var(--white);line-height:1;}
-.wx-unit{font-size:10px;color:var(--muted);vertical-align:super;}
-.wx-icon{font-size:20px;filter:drop-shadow(0 0 5px rgba(0,200,232,.4));}
-.wx-cond{font-family:var(--mono);font-size:8px;color:rgba(255,255,255,.55);letter-spacing:.05em;max-width:80px;}
-.wx-sep{width:1px;height:28px;background:rgba(255,255,255,.1);}
-.wx-details{display:flex;flex-direction:column;gap:3px;}
-.wx-row{display:flex;align-items:center;gap:4px;font-family:var(--mono);font-size:8px;color:var(--muted);}
-.wx-row b{color:rgba(255,255,255,.8);font-weight:400;}
+.wx-unit{font-size:9px;color:var(--muted);vertical-align:super;}
+.wx-cond-sm{font-family:var(--mono);font-size:7px;color:rgba(255,255,255,.5);letter-spacing:.04em;}
+.wx-icon-sm{font-size:18px;filter:drop-shadow(0 0 5px rgba(0,200,232,.4));}
+.wx-vsep{width:1px;height:32px;background:rgba(255,255,255,.1);flex-shrink:0;}
+.wx-det{display:flex;flex-direction:column;gap:2px;}
+.wx-drow{display:flex;align-items:center;gap:4px;font-family:var(--mono);font-size:7.5px;color:var(--muted);}
+.wx-drow b{color:rgba(255,255,255,.8);font-weight:400;}
+
+/* ── MANGA DE VIENTO ── */
+.sock-wrap{position:relative;flex-shrink:0;}
+.sock-svg{overflow:visible;display:block;}
+/* El grupo de la manga rota con el viento — transform-origin se setea inline */
+#sockDir,#sockDir2{transition:transform 1.5s ease;}
+/* El interior ondea */
+.sock-flutter{
+  transform-origin:20px 14px;
+  animation:sockFlutter 2s ease-in-out infinite;
+}
+@keyframes sockFlutter{
+  0%,100%{transform:skewY(0deg) scaleY(1);}
+  30%{transform:skewY(-7deg) scaleY(.8);}
+  70%{transform:skewY(5deg) scaleY(1.15);}
+}
+
+/* Wind speed display (Recalada) */
+.wind-display{flex-shrink:0;text-align:center;}
+.wind-kt{font-family:var(--cond);font-size:30px;font-weight:800;color:#fff;line-height:1;text-shadow:0 0 20px rgba(0,200,232,.5);}
+.wind-unit{font-size:10px;color:var(--muted);}
+.wind-dir{font-family:var(--mono);font-size:9px;color:var(--accent);font-weight:700;letter-spacing:.06em;margin-top:1px;}
+.wind-label{font-family:var(--mono);font-size:6.5px;letter-spacing:.12em;text-transform:uppercase;color:rgba(0,200,232,.6);margin-bottom:1px;}
+
+/* loading blink */
 .wx-loading{font-family:var(--mono);font-size:8px;color:var(--muted);letter-spacing:.1em;animation:blink 1.4s infinite;}
 @keyframes blink{0%,100%{opacity:.35}50%{opacity:1}}
-.sys-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:3px;}
+
+.sys-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0;}
 .sys-status{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:8px;color:var(--muted);letter-spacing:.1em;}
 .sys-dot{width:6px;height:6px;border-radius:50%;background:#2ecc71;box-shadow:0 0 7px #2ecc71;animation:blink2 2.5s ease-in-out infinite;}
 @keyframes blink2{0%,100%{opacity:1}50%{opacity:.3}}
 .sys-date{font-family:var(--mono);font-size:8px;color:var(--muted);letter-spacing:.05em;}
-/* HERO */
+
+/* ── HERO ── */
 .hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 1.5rem .8rem;text-align:center;animation:fadein .8s ease .1s both;}
 @keyframes fadein{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
 .eyebrow{font-family:var(--mono);font-size:8.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);margin-bottom:.6rem;opacity:.8;display:flex;align-items:center;gap:10px;}
@@ -74,9 +108,11 @@ body{font-family:var(--body);color:var(--white);display:flex;flex-direction:colu
 .t1{color:var(--white);}
 .t2{background:linear-gradient(110deg,var(--accent) 0%,#80d8f8 50%,var(--accent2) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .hero-sub{font-family:var(--mono);font-size:8.5px;letter-spacing:.16em;color:var(--muted);margin-bottom:1.6rem;}
-/* GRID */
+
+/* ── GRID 3×2 ── */
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;width:100%;max-width:980px;animation:fadein .8s ease .25s both;}
-/* CARD */
+
+/* ── CARDS ── */
 .card{position:relative;background:var(--glass);border:1px solid var(--glass-b);border-radius:13px;padding:1.1rem 1.2rem;text-decoration:none;color:var(--white);overflow:hidden;backdrop-filter:blur(14px);transition:all .26s ease;display:flex;flex-direction:column;gap:.65rem;}
 .card::before{content:'';position:absolute;top:0;left:0;right:0;height:1.5px;background:var(--ca,linear-gradient(90deg,var(--accent2),var(--accent)));opacity:0;transition:opacity .26s;}
 .card::after{content:'';position:absolute;inset:0;border-radius:13px;background:radial-gradient(ellipse 60% 45% at 50% 0%,rgba(0,200,232,.05),transparent 70%);opacity:0;transition:opacity .26s;pointer-events:none;}
@@ -87,12 +123,10 @@ body{font-family:var(--body);color:var(--white);display:flex;flex-direction:colu
 .c-gold{--ca:linear-gradient(90deg,#b8892a,#e8c060);}
 .c-purple{--ca:linear-gradient(90deg,#6030c0,#9060f0);}
 .c-coral{--ca:linear-gradient(90deg,#c04820,#e87040);}
-/* LINE UP card */
 .c-steel{--ca:linear-gradient(90deg,#1a5cb8,#00c8e8);}
 .c-steel:hover{border-color:rgba(0,200,232,.28)!important;box-shadow:0 14px 36px rgba(0,0,0,.5),0 0 0 1px rgba(0,200,232,.15)!important;}
 .c-steel:hover .card-arrow{background:#1a5cb8;border-color:#1a5cb8;}
 .c-steel .tag{background:rgba(0,150,220,.1);border-color:rgba(0,200,232,.22);color:rgba(100,200,255,.85);}
-/* ───────────── */
 .c-green:hover{border-color:rgba(0,168,120,.25)!important;box-shadow:0 14px 36px rgba(0,0,0,.5),0 0 0 1px rgba(0,168,120,.12)!important;}
 .c-gold:hover{border-color:rgba(184,137,42,.25)!important;box-shadow:0 14px 36px rgba(0,0,0,.5),0 0 0 1px rgba(184,137,42,.12)!important;}
 .c-purple:hover{border-color:rgba(96,48,192,.3)!important;box-shadow:0 14px 36px rgba(0,0,0,.5),0 0 0 1px rgba(96,48,192,.15)!important;}
@@ -115,21 +149,8 @@ body{font-family:var(--body);color:var(--white);display:flex;flex-direction:colu
 .c-gold .tag{background:rgba(184,137,42,.1);border-color:rgba(184,137,42,.2);color:rgba(232,192,96,.8);}
 .c-purple .tag{background:rgba(96,48,192,.1);border-color:rgba(96,48,192,.2);color:rgba(144,96,240,.8);}
 .c-coral .tag{background:rgba(192,72,32,.1);border-color:rgba(192,72,32,.2);color:rgba(232,112,64,.85);}
-/* WEATHER CARD */
-.wx-card{cursor:default;pointer-events:none;}
-.wx-card-loc{font-family:var(--mono);font-size:7.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);}
-.wx-card-sub{font-family:var(--mono);font-size:7px;color:var(--muted);letter-spacing:.07em;margin-top:1px;}
-.wx-card-bigtemp{font-family:var(--cond);font-size:38px;font-weight:700;line-height:1;color:var(--white);}
-.wx-card-unit{font-size:14px;color:var(--muted);}
-.wx-card-cond{font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.55);margin-left:8px;letter-spacing:.05em;}
-.wx-card-icon{font-size:28px;filter:drop-shadow(0 0 8px rgba(0,200,232,.35));}
-.wx-divider{border:none;border-top:1px solid rgba(255,255,255,.07);margin:6px 0;}
-.wx-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.wx-stat-label{font-family:var(--mono);font-size:7px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:2px;}
-.wx-stat-val{font-family:var(--cond);font-size:17px;font-weight:600;color:var(--white);}
-.wx-stat-unit{font-size:9px;color:var(--muted);}
-.wx-stat-dir{font-family:var(--mono);font-size:8px;color:rgba(0,200,232,.75);margin-top:1px;}
-/* FOOTER */
+
+/* ── FOOTER ── */
 .footer{display:flex;align-items:center;justify-content:space-between;padding:.6rem 2.4rem;border-top:1px solid rgba(255,255,255,.05);animation:fadeup .7s ease .5s both;}
 @keyframes fadeup{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .copy{font-family:var(--mono);font-size:7.5px;color:rgba(255,255,255,.18);letter-spacing:.1em;}
@@ -137,8 +158,8 @@ body{font-family:var(--body);color:var(--white);display:flex;flex-direction:colu
 .office{font-family:var(--mono);font-size:7.5px;color:rgba(255,255,255,.18);letter-spacing:.08em;text-transform:uppercase;}
 .office.active{color:rgba(0,200,232,.55);}
 .corner-deco{position:fixed;bottom:1.8rem;right:1.8rem;opacity:.05;pointer-events:none;z-index:1;}
-@media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr);}html,body{overflow:auto;}}
-@media(max-width:580px){.grid{grid-template-columns:1fr;}.wx-details,.wx-sep{display:none;}.footer{flex-direction:column;gap:5px;padding:.7rem 1.2rem;}}
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr);}html,body{overflow:auto;}.wx-row-top{flex-wrap:wrap;}}
+@media(max-width:580px){.grid{grid-template-columns:1fr;}.footer{flex-direction:column;gap:5px;padding:.7rem 1.2rem;}}
 </style>
 </head>
 <body>
@@ -150,6 +171,7 @@ body{font-family:var(--body);color:var(--white);display:flex;flex-direction:colu
 <div class="side-bar"></div>
 <div class="portal">
 
+  <!-- ══ TOPBAR ══ -->
   <div class="topbar">
     <div class="logo-wrap">
       <div class="logo-MSA">MSA</div>
@@ -159,41 +181,126 @@ body{font-family:var(--body);color:var(--white);display:flex;flex-direction:colu
         <span class="logo-tag">Nueva Palmira · UY</span>
       </div>
     </div>
-    <div class="topbar-right">
-      <div class="wx-top">
-        <span class="wx-loading" id="wxLoad">CARGANDO CLIMA...</span>
-        <div id="wxTopData" style="display:none;align-items:center;gap:9px;">
+
+    <div class="wx-row-top">
+
+      <!-- ── Widget NUEVA PALMIRA ── -->
+      <div class="wx-widget" id="npWidget">
+        <span class="wx-loading" id="npLoad">CARGANDO...</span>
+        <div id="npData" style="display:none;align-items:center;gap:8px;display:none">
           <div>
             <div class="wx-loc">Nueva Palmira</div>
-            <div style="display:flex;align-items:baseline;gap:1px;">
-              <span class="wx-temp" id="wxT">--</span><span class="wx-unit">°C</span>
+            <div style="display:flex;align-items:baseline;gap:1px">
+              <span class="wx-temp" id="npT">--</span><span class="wx-unit">°C</span>
             </div>
+            <div class="wx-cond-sm" id="npC">--</div>
           </div>
-          <span class="wx-icon" id="wxI">☁</span>
-          <div><div class="wx-cond" id="wxC">--</div><div style="font-family:var(--mono);font-size:7px;color:rgba(255,255,255,.3);margin-top:1px;" id="wxUpd">--</div></div>
-          <div class="wx-sep"></div>
-          <div class="wx-details">
-            <div class="wx-row">
-              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" id="wxArrowSvg" style="transition:transform .5s;"><path d="M12 2v20M12 2L6 9M12 2L18 9"/></svg>
-              <span id="wxW">-- kt</span> <b id="wxWD">--</b>
+          <span id="npI" style="font-size:20px;filter:drop-shadow(0 0 5px rgba(0,200,232,.4))">☁</span>
+          <div class="wx-vsep"></div>
+          <div class="wx-det">
+            <div class="wx-drow">
+              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" id="npArrow" style="transition:transform .5s"><path d="M12 2v20M12 2L6 9M12 2L18 9"/></svg>
+              <span id="npW">-- kt</span><b id="npWD">--</b>
             </div>
-            <div class="wx-row">🌧 <span>LLUVIA</span><b id="wxR">--%</b></div>
-            <div class="wx-row">💧 <span>HUM.</span><b id="wxH">--%</b></div>
+            <div class="wx-drow">🌧 <span>LLUVIA</span><b id="npR">--%</b></div>
+            <div class="wx-drow">💧 <span>HUM.</span><b id="npH">--%</b></div>
           </div>
         </div>
       </div>
+
+      <div class="wx-vsep" style="height:40px"></div>
+
+      <!-- ── Widget RECALADA con MANGA DE VIENTO ── -->
+      <div class="wx-widget" style="border-color:rgba(100,180,255,.18);background:rgba(20,80,180,.07);" id="rcWidget">
+        <span class="wx-loading" id="rcLoad">CARGANDO...</span>
+        <div id="rcData" style="display:none;align-items:center;gap:8px">
+
+          <!-- Temp + condición -->
+          <div>
+            <div class="wx-loc" style="color:rgba(120,190,255,.9)">Recalada · UY</div>
+            <div style="display:flex;align-items:baseline;gap:1px">
+              <span class="wx-temp" id="rcT">--</span><span class="wx-unit">°C</span>
+            </div>
+            <div class="wx-cond-sm" id="rcC" style="color:rgba(120,190,255,.55)">--</div>
+          </div>
+
+          <div class="wx-vsep"></div>
+
+          <!-- MANGA DE VIENTO ANIMADA -->
+          <div class="sock-wrap" title="Manga de viento — Recalada">
+            <svg class="sock-svg" viewBox="0 0 88 58" width="88" height="58">
+              <defs>
+                <clipPath id="sClip">
+                  <path d="M20,9 C42,5 66,9 76,14 C66,21 42,25 20,21 Z"/>
+                </clipPath>
+              </defs>
+              <!-- Mástil -->
+              <line x1="20" y1="3" x2="20" y2="55" stroke="rgba(180,210,255,.45)" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="11" y1="55" x2="29" y2="55" stroke="rgba(180,210,255,.3)" stroke-width="2" stroke-linecap="round"/>
+              <!-- Pivote -->
+              <circle cx="20" cy="14" r="4" fill="none" stroke="rgba(0,200,232,.85)" stroke-width="1.8"/>
+              <circle cx="20" cy="14" r="1.5" fill="rgba(0,200,232,1)"/>
+              <!-- Grupo que rota con el viento -->
+              <g id="sockDir" style="transform-origin:20px 14px;transform:rotate(90deg)">
+                <!-- Grupo que ondea -->
+                <g class="sock-flutter" style="transform-origin:20px 14px">
+                  <!-- Cuerpo de la manga -->
+                  <path d="M20,9 C42,5 66,9 76,14 C66,21 42,25 20,21 Z"
+                        fill="rgba(0,200,232,.15)" stroke="rgba(0,200,232,.75)" stroke-width="1.4" stroke-linejoin="round"/>
+                  <!-- Franjas de color -->
+                  <g clip-path="url(#sClip)">
+                    <rect x="28" y="4" width="11" height="24" fill="rgba(255,55,55,.5)"/>
+                    <rect x="47" y="6" width="10" height="22" fill="rgba(255,55,55,.5)"/>
+                    <rect x="64" y="9" width="9" height="16" fill="rgba(255,55,55,.5)"/>
+                  </g>
+                  <!-- Contorno encima -->
+                  <path d="M20,9 C42,5 66,9 76,14 C66,21 42,25 20,21 Z"
+                        fill="none" stroke="rgba(0,200,232,.4)" stroke-width=".8"/>
+                </g>
+              </g>
+            </svg>
+          </div>
+
+          <!-- Velocidad prominente + dirección -->
+          <div class="wind-display">
+            <div class="wind-label">Viento</div>
+            <div style="display:flex;align-items:baseline;gap:2px">
+              <span class="wind-kt" id="rcW">--</span>
+              <span class="wind-unit">kt</span>
+            </div>
+            <div class="wind-dir" id="rcWD">--</div>
+          </div>
+
+          <div class="wx-vsep"></div>
+
+          <!-- Detalles lluvia / humedad -->
+          <div class="wx-det">
+            <div class="wx-drow">🌧 <span>LLUVIA</span><b id="rcR">--%</b></div>
+            <div class="wx-drow">💧 <span>HUM.</span><b id="rcH">--%</b></div>
+            <div class="wx-drow" style="margin-top:2px;font-size:6.5px;color:rgba(120,190,255,.45)" id="rcUpd">--</div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="wx-vsep" style="height:40px"></div>
+
+      <!-- Sistema status -->
       <div class="sys-wrap">
         <div class="sys-status"><div class="sys-dot"></div>SISTEMA OPERATIVO</div>
         <div class="sys-date" id="dateDisp">--</div>
       </div>
-    </div>
-  </div>
 
+    </div>
+  </div><!-- /topbar -->
+
+  <!-- ══ HERO + GRID ══ -->
   <div class="hero">
     <div class="eyebrow">Portal de Operaciones</div>
     <h1 class="hero-title"><div class="t1">Operaciones</div><div class="t2">Fluviales MSA</div></h1>
     <p class="hero-sub">Seleccioná la aplicación que necesitás</p>
 
+    <!-- Grid 3×2 — 6 cards, centradas -->
     <div class="grid">
 
       <a href="PUERTO_ISA.html" class="card c-green" style="animation:fadein .7s ease .32s both;">
@@ -226,44 +333,11 @@ body{font-family:var(--body);color:var(--white);display:flex;flex-direction:colu
         <div class="card-tags"><span class="tag">SOF</span><span class="tag">Cantidades</span><span class="tag">Grúas</span><span class="tag">Excel</span></div>
       </a>
 
-      <!-- ── LINE UP ISA TERMINAL NAVIOS ── -->
       <a href="LineUp_ISA_Firebase.html" class="card c-steel" style="animation:fadein .7s ease .67s both;">
         <div class="card-top"><div class="card-icon">⚓</div><div class="card-arrow">↗</div></div>
         <div><div class="card-title">Line Up — ISA Navios</div><div class="card-desc">Line up compartido en tiempo real. Berths 1 y 4, cascada de fechas automática, emails EN/ES y Excel Gravetal.</div></div>
         <div class="card-tags"><span class="tag">Line Up</span><span class="tag">ETB / ETC</span><span class="tag">Tiempo Real</span><span class="tag">ISA</span></div>
       </a>
-
-      <!-- CLIMA RECALADA — span 2 para completar la última fila -->
-      <div class="card wx-card" style="animation:fadein .7s ease .74s both;grid-column:span 2;">
-        <div class="card-top">
-          <div>
-            <div class="wx-card-loc">Recalada · UY</div>
-            <div class="wx-card-sub" id="rcUpd">CARGANDO...</div>
-          </div>
-          <div class="wx-card-icon" id="rcI">☁</div>
-        </div>
-        <div style="display:flex;align-items:baseline;gap:4px;margin:-2px 0 2px;">
-          <span class="wx-card-bigtemp" id="rcT">--</span>
-          <span class="wx-card-unit">°C</span>
-          <span class="wx-card-cond" id="rcC">--</span>
-        </div>
-        <hr class="wx-divider">
-        <div class="wx-grid">
-          <div>
-            <div class="wx-stat-label">Viento</div>
-            <div><span class="wx-stat-val" id="rcW">--</span><span class="wx-stat-unit"> kt</span></div>
-            <div class="wx-stat-dir" id="rcWD">--</div>
-          </div>
-          <div>
-            <div class="wx-stat-label">Lluvia</div>
-            <div><span class="wx-stat-val" id="rcR">--</span><span class="wx-stat-unit">%</span></div>
-            <div style="margin-top:6px;">
-              <div class="wx-stat-label">Humedad</div>
-              <div><span class="wx-stat-val" id="rcH">--</span><span class="wx-stat-unit">%</span></div>
-            </div>
-          </div>
-        </div>
-      </div>
 
     </div>
   </div>
@@ -290,7 +364,7 @@ body{font-family:var(--body);color:var(--white);display:flex;flex-direction:colu
 </svg>
 
 <script>
-/* DATE */
+/* ── FECHA ── */
 function updDate(){
   const d=new Date();
   document.getElementById('dateDisp').textContent=
@@ -299,43 +373,74 @@ function updDate(){
 }
 updDate();setInterval(updDate,30000);
 
+/* ── WMO MAPS ── */
 const IC={0:'☀',1:'🌤',2:'⛅',3:'☁',45:'🌫',48:'🌫',51:'🌦',53:'🌦',55:'🌧',61:'🌧',63:'🌧',65:'🌧',71:'❄',73:'❄',75:'❄',80:'🌦',81:'🌧',82:'⛈',95:'⛈',96:'⛈',99:'⛈'};
 const DC={0:'Despejado',1:'Mayorm. despejado',2:'Parcialm. nublado',3:'Nublado',45:'Niebla',48:'Niebla',51:'Llovizna leve',53:'Llovizna',55:'Llovizna intensa',61:'Lluvia leve',63:'Lluvia moderada',65:'Lluvia intensa',80:'Chubascos',81:'Chubascos mod.',82:'Chubascos fuertes',95:'Tormenta',96:'Tormenta+granizo',99:'Tormenta intensa'};
 const WD=['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSO','SO','OSO','O','ONO','NO','NNO'];
-const d2dir=d=>WD[Math.round(d/22.5)%16];
+const d2dir=deg=>WD[Math.round(deg/22.5)%16];
 const ms2kt=ms=>Math.round(ms*1.94384);
 function getHourlyIdx(data){const h=new Date().toISOString().substring(0,13)+':00';return data.hourly.time.indexOf(h);}
 
+/* ── MANGA DE VIENTO ── */
+function updateWindSock(windDeg, windKt){
+  // El SVG tiene la manga apuntando a la DERECHA (este)
+  // Viento viene FROM windDeg → manga apunta a windDeg + 180°
+  // Corrección SVG: rotación = windDeg + 90 (porque este = 0° en SVG = 90° en brújula)
+  const sockEl = document.getElementById('sockDir');
+  if(sockEl) sockEl.style.transform = `rotate(${windDeg + 90}deg)`;
+
+  // Velocidad de ondeo según kt
+  const flutterEl = document.querySelector('.sock-flutter');
+  if(flutterEl){
+    const dur = windKt < 3 ? 6 : windKt < 8 ? 3.5 : windKt < 15 ? 1.8 : windKt < 25 ? 0.9 : 0.4;
+    flutterEl.style.animationDuration = dur + 's';
+  }
+}
+
+/* ── CARGA DE CLIMA ── */
 async function loadWx(){
   const base='https://api.open-meteo.com/v1/forecast?hourly=precipitation_probability,relativehumidity_2m&current_weather=true&windspeed_unit=ms&timezone=America%2FMontevideo';
   try{
     const[r1,r2]=await Promise.all([
-      fetch(base+'&latitude=-33.879&longitude=-58.409'),
-      fetch(base+'&latitude=-35.217&longitude=-57.100')
+      fetch(base+'&latitude=-33.879&longitude=-58.409'), // Nueva Palmira
+      fetch(base+'&latitude=-35.217&longitude=-57.100')  // Recalada
     ]);
     const[d1,d2]=await Promise.all([r1.json(),r2.json()]);
-    const cw=d1.current_weather,hi=getHourlyIdx(d1);
-    document.getElementById('wxT').textContent=Math.round(cw.temperature);
-    document.getElementById('wxI').textContent=IC[cw.weathercode]||'☁';
-    document.getElementById('wxC').textContent=DC[cw.weathercode]||'--';
-    document.getElementById('wxW').textContent=ms2kt(cw.windspeed)+' kt';
-    document.getElementById('wxWD').textContent=d2dir(cw.winddirection);
-    document.getElementById('wxR').textContent=(hi>=0?d1.hourly.precipitation_probability[hi]:'--')+'%';
-    document.getElementById('wxH').textContent=(hi>=0?d1.hourly.relativehumidity_2m[hi]:'--')+'%';
-    document.getElementById('wxUpd').textContent='ACT. '+new Date(cw.time).toLocaleTimeString('es-UY',{hour:'2-digit',minute:'2-digit'});
-    document.getElementById('wxArrowSvg').style.transform=`rotate(${cw.winddirection}deg)`;
-    document.getElementById('wxLoad').style.display='none';
-    document.getElementById('wxTopData').style.display='flex';
-    const cw2=d2.current_weather,hi2=getHourlyIdx(d2);
-    document.getElementById('rcT').textContent=Math.round(cw2.temperature);
-    document.getElementById('rcI').textContent=IC[cw2.weathercode]||'☁';
-    document.getElementById('rcC').textContent=DC[cw2.weathercode]||'--';
-    document.getElementById('rcW').textContent=ms2kt(cw2.windspeed);
-    document.getElementById('rcWD').textContent=d2dir(cw2.winddirection);
-    document.getElementById('rcR').textContent=hi2>=0?d2.hourly.precipitation_probability[hi2]:'--';
-    document.getElementById('rcH').textContent=hi2>=0?d2.hourly.relativehumidity_2m[hi2]:'--';
-    document.getElementById('rcUpd').textContent='ACT. '+new Date(cw2.time).toLocaleTimeString('es-UY',{hour:'2-digit',minute:'2-digit'});
-  }catch(e){document.getElementById('wxLoad').textContent='CLIMA NO DISPONIBLE';}
+
+    /* ── NUEVA PALMIRA ── */
+    const cw=d1.current_weather, hi=getHourlyIdx(d1);
+    document.getElementById('npT').textContent  = Math.round(cw.temperature);
+    document.getElementById('npI').textContent  = IC[cw.weathercode]||'☁';
+    document.getElementById('npC').textContent  = DC[cw.weathercode]||'--';
+    document.getElementById('npW').textContent  = ms2kt(cw.windspeed)+' kt';
+    document.getElementById('npWD').textContent = d2dir(cw.winddirection);
+    document.getElementById('npR').textContent  = (hi>=0?d1.hourly.precipitation_probability[hi]:'--')+'%';
+    document.getElementById('npH').textContent  = (hi>=0?d1.hourly.relativehumidity_2m[hi]:'--')+'%';
+    document.getElementById('npArrow').style.transform = `rotate(${cw.winddirection}deg)`;
+    document.getElementById('npLoad').style.display='none';
+    const npD=document.getElementById('npData');
+    npD.style.display='flex';
+
+    /* ── RECALADA ── */
+    const cw2=d2.current_weather, hi2=getHourlyIdx(d2);
+    const windKt = ms2kt(cw2.windspeed);
+    document.getElementById('rcT').textContent   = Math.round(cw2.temperature);
+    document.getElementById('rcC').textContent   = DC[cw2.weathercode]||'--';
+    document.getElementById('rcW').textContent   = windKt;
+    document.getElementById('rcWD').textContent  = d2dir(cw2.winddirection);
+    document.getElementById('rcR').textContent   = (hi2>=0?d2.hourly.precipitation_probability[hi2]:'--')+'%';
+    document.getElementById('rcH').textContent   = (hi2>=0?d2.hourly.relativehumidity_2m[hi2]:'--')+'%';
+    document.getElementById('rcUpd').textContent = 'ACT. '+new Date(cw2.time).toLocaleTimeString('es-UY',{hour:'2-digit',minute:'2-digit'});
+    document.getElementById('rcLoad').style.display='none';
+    document.getElementById('rcData').style.display='flex';
+
+    // Manga de viento
+    updateWindSock(cw2.winddirection, windKt);
+
+  }catch(e){
+    document.getElementById('npLoad').textContent='SIN DATOS';
+    document.getElementById('rcLoad').textContent='SIN DATOS';
+  }
 }
 loadWx();setInterval(loadWx,600000);
 </script>
