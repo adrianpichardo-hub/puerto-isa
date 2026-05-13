@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Line Up — ISA Nueva Palmira Terminal Navios</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#fff;--bg2:#F8F9FA;--bg3:#EDEEF0;
+  --text:#111;--text2:#555;--text3:#999;
+  --border:#E4E4E7;--border2:#C4C4CC;
+  --blue:#2563EB;--blue-bg:#EFF6FF;--blue-mid:#BFDBFE;--blue-t:#1E40AF;
+  --green:#16A34A;--green-bg:#F0FDF4;--green-mid:#BBF7D0;--green-t:#166534;
+  --amber:#D97706;--amber-bg:#FFFBEB;--amber-mid:#FDE68A;--amber-t:#92400E;
+  --red:#DC2626;--red-bg:#FEF2F2;--red-mid:#FECACA;--red-t:#991B1B;
+  --purple:#7C3AED;--purple-bg:#EDE9FE;--purple-mid:#C4B5FD;
+  --slate-bg:#F1F5F9;--slate-mid:#CBD5E1;
+  --r:8px;--rlg:12px;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,sans-serif;background:#F2F3F5;color:var(--text);font-size:14px;min-height:100vh;}
+.app{max-width:1220px;margin:0 auto;padding:24px 20px;}
+.card{background:var(--bg);border:1px solid var(--border);border-radius:var(--rlg);overflow:hidden;}
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:8px 14px;font-size:13px;font-weight:500;border-radius:var(--r);cursor:pointer;font-family:inherit;border:none;transition:filter .15s;white-space:nowrap;}
+.btn:hover{filter:brightness(.92);}
+.btn-sm{padding:5px 11px;font-size:12px;}
+.btn-xs{padding:3px 8px;font-size:11px;}
+.btn-prim{background:var(--text);color:#fff;}
+.btn-sec{background:var(--bg);color:var(--text);border:1px solid var(--border2);}
+.btn-ghost{background:none;color:var(--text2);border:1px solid transparent;}
+.btn-danger{background:var(--red-bg);color:var(--red-t);border:1px solid var(--red-mid);}
+.btn-success{background:var(--green-bg);color:var(--green-t);border:1px solid var(--green-mid);}
+.btn-info{background:var(--blue-bg);color:var(--blue-t);border:1px solid var(--blue-mid);}
+.btn-warn{background:var(--amber-bg);color:var(--amber-t);border:1px solid var(--amber-mid);}
+.btn-free-on{background:var(--green-bg);color:var(--green-t);border:1px solid var(--green-mid);font-weight:600;}
+.btn-free-off{background:var(--bg2);color:var(--text3);border:1px solid var(--border);}
+.btn-icon{background:none;border:1px solid var(--border);border-radius:5px;cursor:pointer;color:var(--text3);padding:3px 7px;font-size:12px;font-family:inherit;transition:all .15s;}
+.btn-icon:hover{border-color:var(--border2);color:var(--text2);}
+.btn-del{background:none;border:1px solid var(--red-mid);color:var(--red-t);border-radius:var(--r);cursor:pointer;font-family:inherit;padding:5px 11px;font-size:12px;font-weight:500;}
+/* TABS */
+.tabs{display:flex;border-bottom:1px solid var(--border);background:var(--bg);overflow-x:auto;}
+.tab{padding:12px 16px;font-size:13px;border:none;cursor:pointer;background:none;font-family:inherit;color:var(--text2);font-weight:400;border-bottom:2px solid transparent;white-space:nowrap;}
+.tab.active{color:var(--text);font-weight:600;border-bottom:2px solid var(--text);}
+/* INPUTS */
+.inp{display:block;padding:6px 9px;font-size:12px;border:1px solid var(--border2);border-radius:5px;background:var(--bg);color:var(--text);font-family:inherit;transition:border-color .15s;}
+.inp:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.1);}
+/* CHIPS */
+.chip{display:inline-block;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:600;white-space:nowrap;}
+.c-cargo{background:var(--blue-bg);color:var(--blue-t);border:1px solid var(--blue-mid);}
+.c-dest{background:var(--green-bg);color:var(--green-t);border:1px solid var(--green-mid);}
+.c-ship{background:var(--amber-bg);color:var(--amber-t);border:1px solid var(--amber-mid);}
+.c-dates{background:var(--slate-bg);color:var(--text2);border:1px solid var(--slate-mid);font-family:'Courier New',monospace;}
+.c-tbc{background:var(--red-bg);color:var(--red-t);border:1px solid var(--red-mid);}
+.c-cond{background:var(--bg2);color:var(--text3);border:1px solid var(--border);max-width:130px;overflow:hidden;text-overflow:ellipsis;}
+/* PILL */
+.pill{display:inline-block;padding:3px 8px;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.03em;white-space:nowrap;}
+/* VESSEL ROW */
+.vrow{display:flex;align-items:center;padding:9px 16px;border-bottom:1px solid var(--border);gap:8px;overflow-x:auto;}
+.vrow:last-child{border-bottom:none;}
+.vrow:hover{background:#FAFAFA;}
+.vc{flex-shrink:0;}
+.vc-st{width:108px;}
+.vc-vn{width:168px;font-weight:600;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.vc-cg{width:145px;}
+.vc-ds{width:92px;}
+.vc-sh{width:122px;}
+.vc-dt{width:148px;}
+.vc-fl{display:flex;gap:4px;align-items:center;}
+.vrow-act{display:flex;gap:3px;align-items:center;margin-left:auto;flex-shrink:0;}
+/* INLINE EDIT */
+.ie-wrap{padding:12px 16px 14px;background:#EBF4FF;border-bottom:1px solid var(--blue-mid);}
+.ie-r{display:flex;gap:6px;align-items:flex-end;flex-wrap:wrap;}
+.ie-f{display:flex;flex-direction:column;gap:2px;}
+.ie-lbl{font-size:10px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:.05em;}
+/* BERTH HEADER */
+.bh{padding:11px 16px;background:var(--bg2);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+/* COLUMN HEADER */
+.chdr{display:flex;gap:8px;padding:7px 16px;background:#FAFBFC;border-bottom:1px solid var(--border);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;overflow-x:auto;}
+/* MODAL */
+.overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:900;overflow-y:auto;padding:20px;display:none;}
+.mbox{background:var(--bg);border-radius:var(--rlg);width:100%;margin:0 auto;border:1px solid var(--border2);box-shadow:0 24px 64px rgba(0,0,0,.18);}
+.mhdr{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;}
+.mftr{padding:16px 22px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;}
+.stabs{display:flex;border-bottom:1px solid var(--border);padding:0 22px;}
+.stab{padding:11px 16px;font-size:13px;border:none;cursor:pointer;background:none;font-family:inherit;color:var(--text2);border-bottom:2px solid transparent;}
+.stab.act{color:var(--text);font-weight:600;border-bottom:2px solid var(--text);}
+/* MISC */
+.cbadge{display:inline-block;padding:3px 11px;border-radius:5px;font-size:12px;font-weight:600;margin:0 5px 5px 0;cursor:pointer;border:2px solid transparent;transition:all .15s;}
+.cbadge.sel{box-shadow:0 0 0 2px rgba(0,0,0,.15);}
+pre.lineup{font-family:'Courier New',Courier,monospace;font-size:11.5px;background:var(--bg2);padding:18px;border-radius:var(--r);border:1px solid var(--border);white-space:pre-wrap;line-height:1.85;color:var(--text);}
+table.grav{width:100%;border-collapse:collapse;}
+table.grav th{padding:8px 10px;text-align:left;border-bottom:1px solid var(--border2);font-size:10px;color:var(--text2);font-weight:700;white-space:nowrap;background:var(--bg2);text-transform:uppercase;letter-spacing:.05em;}
+table.grav td{padding:7px 10px;border-bottom:1px solid var(--border);font-size:12px;}
+.dist-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--rlg);padding:18px 20px;}
+.dist-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);}
+.dist-row:last-child{border-bottom:none;}
+@media(max-width:720px){.app{padding:14px 10px;}.vc-vn{width:120px;}.vc-cg{width:110px;}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;gap:12px;flex-wrap:wrap">
+    <div>
+      <p style="font-size:10px;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px">Sistema de Line Up</p>
+      <h1 style="font-size:22px;font-weight:700;margin-bottom:5px;letter-spacing:-.02em">ISA Nueva Palmira — Terminal Navios</h1>
+      <p id="save-ind" style="font-size:12px;color:var(--green);display:flex;align-items:center;gap:6px">
+        <span id="conn-dot" title="Estado de conexión" style="width:8px;height:8px;border-radius:50%;background:var(--text3);display:inline-block;flex-shrink:0;transition:background .4s"></span>
+        Conectando...
+      </p>
+    </div>
+    <button class="btn btn-prim" style="font-size:14px;padding:10px 20px" onclick="openPreview('en')">👁 Vista previa y envío</button>
+  </div>
+  <div id="warn-bar" style="display:none;background:var(--red-bg);border:1px solid var(--red-mid);border-radius:var(--r);padding:10px 16px;margin-bottom:16px;align-items:center;gap:10px;flex-wrap:wrap">
+    <span id="warn-txt" style="font-size:12px;color:var(--red-t);font-weight:600"></span>
+    <button class="btn btn-sm btn-danger" onclick="openPreview('en')">Ver detalle →</button>
+  </div>
+  <div class="card" style="border-radius:var(--rlg) var(--rlg) 0 0;border-bottom:none">
+    <div class="tabs">
+      <button class="tab active" id="tab-datos"    onclick="setTab('datos')">📋 Datos</button>
+      <button class="tab"        id="tab-en"        onclick="setTab('en')">🇬🇧 Inglés</button>
+      <button class="tab"        id="tab-es"        onclick="setTab('es')">🇦🇷 Español</button>
+      <button class="tab"        id="tab-gravetal"  onclick="setTab('gravetal')">📊 Excel Gravetal</button>
+      <button class="tab"        id="tab-dist"      onclick="setTab('dist')">📬 Distribución</button>
+    </div>
+  </div>
+  <div class="card" style="border-radius:0 0 var(--rlg) var(--rlg);padding:20px" id="content"></div>
+</div>
+
+<div id="prev-ov" class="overlay" onclick="if(event.target===this)closePreview()">
+  <div class="mbox" style="max-width:820px">
+    <div class="mhdr">
+      <div>
+        <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px">Vista previa antes de enviar</p>
+        <p style="font-size:17px;font-weight:700">ISA Nueva Palmira — Terminal Navios</p>
+      </div>
+      <button style="background:none;border:none;cursor:pointer;font-size:22px;color:var(--text3);padding:2px 6px;line-height:1" onclick="closePreview()">✕</button>
+    </div>
+    <div id="pm-warn" style="padding:16px 22px 0"></div>
+    <div class="stabs" id="pm-tabs" style="margin-top:16px"></div>
+    <div id="pm-body"></div>
+    <div class="mftr">
+      <button class="btn btn-ghost" onclick="closePreview()">← Volver a editar</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap" id="pm-btns"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════════
+   🔥 FIREBASE — PEGAR AQUÍ TU CONFIGURACIÓN
+   (Firebase Console → tu proyecto → Configuración → SDK web)
+   ══════════════════════════════════════════════════════ */
+const firebaseConfig = {
+  apiKey:            "AIzaSyBjQFKVKm5hjdM3Z4A6jSXNmzr8i5V8pSo",
+  authDomain:        "line-up---nueva-palmra.firebaseapp.com",
+  databaseURL:       "https://line-up---nueva-palmra-default-rtdb.firebaseio.com",
+  projectId:         "line-up---nueva-palmra",
+  storageBucket:     "line-up---nueva-palmra.firebasestorage.app",
+  messagingSenderId: "781713514721",
+  appId:             "1:781713514721:web:8531b632ff961fe55e17a0"
+};
+firebase.initializeApp(firebaseConfig);
+const LINE_REF = firebase.database().ref("lineup_isa_navios");
+/* ══════════════════════════════════════════════════════ */
+
+const TERMINAL="ISA Nueva Palmira TERMINAL NAVIOS";
+let EN_CLIENTS=["ISAOPER","LHG","SODRU","CHS","HAMMER"];
+let ES_CLIENTS=["GRAVETAL","NUTRIOIL"];
+let CARGOS=["SBS","SBM","IRON ORE","SOYBEAN OIL","SBO","WHEAT"];
+const SK="lineup_isa_v7";
+
+/* ── RATES DE CARGA (MT/HORA) ── */
+const LOAD_RATES={"SBS":800,"SBM":600,"IRON ORE":2500,"SBO":500,"SOYBEAN OIL":500,"WHEAT":800};
+const DEFAULT_RATE=800;
+const MONTHS=["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+
+let vessels=[
+  {id:1, b:"1", vessel:"MERLIN", status:"ALONGSIDE", etaDate:"", etaSuf:"", nor:"", etb:"", etc:"14/MAY", etcSuf:"LPM", qty:"35.000", cargo:"SBS", orig:"UY", dest:"EGYPT", ship:"CHS", tbc:false, cond:""},
+  {id:2, b:"1", vessel:"MARKET PORTER", status:"AT RECALADA", etaDate:"", etaSuf:"", nor:"08/MAY 03:48", etb:"15/MAY", etc:"17/MAY", etcSuf:"", qty:"40.000", cargo:"SBS", orig:"UY", dest:"EGYPT", ship:"LDC", tbc:true, cond:"SUB TO CARGO ARRIVAL"},
+  {id:3, b:"1", vessel:"PELAGIA", status:"AT RECALADA", etaDate:"", etaSuf:"", nor:"01/MAY 00:01", etb:"18/MAY", etc:"20/MAY", etcSuf:"", qty:"45.000", cargo:"SBS", orig:"UY", dest:"CHINA", ship:"CARGILL", tbc:true, cond:"SUB TO CARGO ARRIVAL"},
+  {id:4, b:"1", vessel:"JIA CHEN", status:"ETA RECALADA", etaDate:"18/MAY", etaSuf:"AM", nor:"", etb:"20/MAY", etc:"22/MAY", etcSuf:"", qty:"48.754", cargo:"SBS", orig:"UY", dest:"CHINA", ship:"COFCO", tbc:false, cond:""},
+  {id:5, b:"1", vessel:"TOMINI PAMPERO", status:"ETA RECALADA", etaDate:"28/MAY", etaSuf:"", nor:"", etb:"28/MAY", etc:"30/MAY", etcSuf:"", qty:"30.000", cargo:"SBM", orig:"BOL", dest:"COLOMBIA", ship:"NUTRIOIL", tbc:false, cond:""},
+  {id:6, b:"4", vessel:"NAVIOS VEGA", status:"ALONGSIDE", etaDate:"", etaSuf:"", nor:"", etb:"", etc:"13/MAY", etcSuf:"EPM", qty:"30.000", cargo:"IRON ORE", orig:"BRA", dest:"TBC", ship:"TBC", tbc:false, cond:""},
+  {id:7, b:"4", vessel:"ALGOMA VALUE", status:"ETA RECALADA", etaDate:"14/MAY", etaSuf:"", nor:"", etb:"14/MAY", etc:"15/MAY", etcSuf:"", qty:"35.000", cargo:"IRON ORE", orig:"BRA", dest:"TBC", ship:"TBC", tbc:false, cond:""},
+  {id:8, b:"4", vessel:"MAGNA GRAECIA", status:"AT ZONA COMUN", etaDate:"", etaSuf:"", nor:"", etb:"15/MAY", etc:"16/MAY", etcSuf:"", qty:"49.200", cargo:"IRON ORE", orig:"BRA", dest:"CHINA", ship:"", tbc:false, cond:""},
+  {id:9, b:"4", vessel:"TROODOS OAK", status:"ETA RECALADA", etaDate:"17/MAY", etaSuf:"", nor:"", etb:"17/MAY", etc:"18/MAY", etcSuf:"", qty:"49.000", cargo:"IRON ORE", orig:"BRA", dest:"CHINA", ship:"", tbc:false, cond:""},
+  {id:10, b:"4", vessel:"FAIRCHEM PINNACLE", status:"ETA NUEVA PALMIRA", etaDate:"21/MAY", etaSuf:"", nor:"", etb:"21/MAY", etc:"22/MAY", etcSuf:"", qty:"9.850", cargo:"SBO", orig:"BOL", dest:"COLOMBIA", ship:"GRAVETAL/NUTRIOIL", tbc:false, cond:"SUBJECT TO DEPARTURE FROM SAN LORENZO, ARG"},
+  {id:11, b:"4", vessel:"NAEBA GALAXY", status:"ETA NUEVA PALMIRA", etaDate:"22/MAY", etaSuf:"", nor:"", etb:"22/MAY", etc:"23/MAY", etcSuf:"", qty:"5.000", cargo:"SBO", orig:"BOL", dest:"COLOMBIA", ship:"GRAVETAL", tbc:false, cond:"SUBJECT TO DEPARTURE FROM SAN LORENZO, ARG"}
+];
+let nextId=20,activeTab="datos",prevSec="en",ieId=null,ief={},bfm={},selEN=EN_CLIENTS[0],selES=ES_CLIENTS[0],copied="",cpTmr=null,svTmr=null;
+let operatorName="",pendingRemoteData=null;
+
+/* ── STORAGE FIREBASE ── */
+function applyRemoteData(d){
+  vessels=d.v||vessels;
+  nextId=d.n||nextId;
+  bfm=d.bfm||{};
+  EN_CLIENTS=d.enc||EN_CLIENTS;
+  ES_CLIENTS=d.esc||ES_CLIENTS;
+  CARGOS=d.crg||CARGOS;
+  pendingRemoteData=null;
+  render();
+}
+
+function loadData(){
+  // Nombre del operador (guardado local por dispositivo)
+  const saved=localStorage.getItem("isa_operator_name");
+  if(saved){
+    operatorName=saved;
+  } else {
+    const n=prompt("👋 ¿Tu nombre o iniciales? (se mostrará al equipo cuando guardes)","");
+    operatorName=(n&&n.trim())?n.trim().toUpperCase():"OPERADOR";
+    localStorage.setItem("isa_operator_name",operatorName);
+  }
+
+  // Indicador de conexión (punto verde/rojo)
+  firebase.database().ref(".info/connected").on("value",(snap)=>{
+    const dot=document.getElementById("conn-dot");
+    if(dot)dot.style.background=snap.val()?"var(--green)":"var(--red)";
+    const ind=document.getElementById("save-ind");
+    if(ind&&!snap.val()){ind.innerHTML=`<span id="conn-dot" style="width:8px;height:8px;border-radius:50%;background:var(--red);display:inline-block;flex-shrink:0"></span> Sin conexión — cambios pendientes`; ind.style.color="var(--red)";}
+  });
+
+  // Listener en tiempo real
+  LINE_REF.on("value",(snapshot)=>{
+    const d=snapshot.val();
+    if(!d)return; // base vacía — usar datos de defaults
+    if(ieId!==null){
+      // Hay un inline edit abierto en este cliente → no re-renderizar, guardar para después
+      pendingRemoteData=d;
+      const el=document.getElementById("save-ind");
+      if(el){
+        el.innerHTML=`<span id="conn-dot" style="width:8px;height:8px;border-radius:50%;background:var(--amber);display:inline-block;flex-shrink:0"></span> ⚡ Actualización de <strong>${d.lastBy||"equipo"}</strong> — guardá para aplicar`;
+        el.style.color="var(--amber-t)";
+      }
+      return;
+    }
+    const el=document.getElementById("save-ind");
+    if(el&&d.lastBy){
+      el.innerHTML=`<span id="conn-dot" style="width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;flex-shrink:0"></span> ✓ Actualizado por <strong>${d.lastBy}</strong>${d.lastAt?" a las "+d.lastAt:""}`;
+      el.style.color="var(--green)";
+    }
+    applyRemoteData(d);
+  });
+}
+
+function scheduleSave(){
+  const el=document.getElementById("save-ind");
+  if(el){el.innerHTML=`<span id="conn-dot" style="width:8px;height:8px;border-radius:50%;background:var(--text3);display:inline-block;flex-shrink:0"></span> Guardando...`;el.style.color="var(--text3)";}
+  clearTimeout(svTmr);
+  svTmr=setTimeout(()=>{
+    const now=new Date().toLocaleTimeString("es-UY",{hour:"2-digit",minute:"2-digit"});
+    LINE_REF.set({
+      v:vessels,n:nextId,bfm,
+      enc:EN_CLIENTS,esc:ES_CLIENTS,crg:CARGOS,
+      lastBy:operatorName,
+      lastAt:now
+    }).then(()=>{
+      const e=document.getElementById("save-ind");
+      if(e){e.innerHTML=`<span id="conn-dot" style="width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;flex-shrink:0"></span> ✓ Guardado por <strong>${operatorName}</strong> a las ${now}`;e.style.color="var(--green)";}
+    }).catch(()=>{
+      const e=document.getElementById("save-ind");
+      if(e){e.innerHTML=`<span id="conn-dot" style="width:8px;height:8px;border-radius:50%;background:var(--red);display:inline-block;flex-shrink:0"></span> ⚠ Error al guardar`;e.style.color="var(--red)";}
+    });
+  },1000);
+}
+
+/* ── ADD DYNAMIC FIELDS ── */
+function addClient(lang){
+  const c = prompt(`Nombre del nuevo cliente (${lang.toUpperCase()}):`);
+  if(c && c.trim()!==""){
+    if(lang==='en'){ EN_CLIENTS.push(c.trim().toUpperCase()); selEN=c.trim().toUpperCase(); }
+    else{ ES_CLIENTS.push(c.trim().toUpperCase()); selES=c.trim().toUpperCase(); }
+    scheduleSave(); render();
+  }
+}
+function addCargo(){
+  const c = prompt("Nombre de la nueva mercadería (ej. WHEAT):");
+  if(c && c.trim()!==""){
+    CARGOS.push(c.trim().toUpperCase());
+    scheduleSave();
+    if(ieId) { ieU('cargo', c.trim().toUpperCase()); render(); } // si está editando, refresca para ver la opcion
+    else render();
+  }
+}
+
+/* ── TEXT LOGIC & STATUS ── */
+const DEST_ES={EGYPT:"EGIPTO"};
+function trD(d){return DEST_ES[d]||d;}
+
+function stEN(v){
+  if(v.status==="ALONGSIDE")return"ALONGSIDE LOADING";
+  if(v.status==="AT RECALADA")return v.nor ? `AT RECALADA (NOR ${v.nor})` : "AT RECALADA";
+  if(v.status==="AT NUEVA PALMIRA ROADS")return v.nor ? `AT NUEVA PALMIRA ROADS (NOR ${v.nor})` : "AT NUEVA PALMIRA ROADS";
+  if(v.status==="AT ZONA COMUN")return "AT ZONA COMUN";
+  if(v.status==="UNDER NAVIGATION")return "UNDER NAVIGATION";
+  const s=v.etaSuf?` ${v.etaSuf}`:"";
+  return v.status==="ETA RECALADA"?`ETA RECALADA ${v.etaDate}${s}`:`ETA NUEVA PALMIRA ${v.etaDate}`;
+}
+function stES(v){
+  if(v.status==="ALONGSIDE")return"ATRACADO CARGANDO";
+  if(v.status==="AT RECALADA")return v.nor ? `EN RECALADA (NOR ${v.nor})` : "EN RECALADA";
+  if(v.status==="AT NUEVA PALMIRA ROADS")return v.nor ? `EN RADA NUEVA PALMIRA (NOR ${v.nor})` : "EN RADA NUEVA PALMIRA";
+  if(v.status==="AT ZONA COMUN")return "EN ZONA COMUN";
+  if(v.status==="UNDER NAVIGATION")return "NAVEGANDO";
+  const s=v.etaSuf?` ${v.etaSuf}`:"";
+  return v.status==="ETA RECALADA"?`ETA RECALADA ${v.etaDate}${s}`:`ETA NUEVA PALMIRA ${v.etaDate}`;
+}
+
+function dsP(dest,ship){const d=dest&&dest!=="TBC"?dest:null,s=ship&&ship!=="TBC"?ship:null;if(!d&&!s)return" – TBC";if(d&&!s)return` – ${d}`;if(!d&&s)return` – ${s}`;return` – ${d} – ${s}`;}
+function noteP(tbc,cond,lang){
+  const c=lang==="es"?cond.replace("SUB TO CARGO ARRIVAL","SUJETO A ARRIBO DE CARGA").replace("SUBJECT TO DEPARTURE FROM SAN LORENZO, ARG","SUJETO A ZARPE DE SAN LORENZO, ARG"):cond;
+  const t=lang==="es"?"POR CONFIRMAR":"TO BE CONFIRMED";
+  if(tbc&&c)return` (${t}, ${c})`;if(tbc)return` (${t})`;if(c)return` (${c})`;return"";
+}
+function genLine(v,lang){
+  const s=v.etcSuf?` ${v.etcSuf}`:"",q=v.qty==="TBC"?"TBC MT":`${v.qty} MT`,cg=`${q} ${v.cargo} ${v.orig}`,ds=dsP(lang==="es"?trD(v.dest):v.dest,v.ship),etc=` – ETC ${v.etc}${s}`,note=noteP(v.tbc,v.cond,lang),nm=`"${v.vessel}"`;
+  
+  if(v.status==="ALONGSIDE"){
+    // Excepción hardcodeada temporal para Navios Vega que carga IRON ORE:
+    const isIronOreLoading = v.cargo === "IRON ORE";
+    const op = lang==="es"?"ATRACADO CARGANDO":(isIronOreLoading ? "LOADING" : "ALONGSIDE LOADING");
+    return`${nm} – ${op} ${cg}${ds}${etc}.${note}`;
+  }
+  
+  const op=lang==="es"?"PARA CARGAR":"TO LOAD",st=lang==="es"?stES(v):stEN(v);
+  return`${nm} – ${st} – ETB ${v.etb} – ${op} ${cg}${ds}${etc}.${note}`;
+}
+function showFree(b){const hasSide=vessels.filter(v=>v.b===b).some(v=>v.status==="ALONGSIDE");if(hasSide)return false;return bfm[b]!==false;}
+function buildLineup(lang){
+  const bs=berths(),lines=[];
+  for(const b of bs){
+    const bv=vessels.filter(v=>v.b===b);
+    lines.push(lang==="en"?`BERTH ${b}`:`MUELLE ${b}`);
+    if(showFree(b))lines.push(lang==="en"?"FREE":"LIBRE");
+    bv.forEach(v=>lines.push(genLine(v,lang)));
+    lines.push("");
+  }
+  lines.push(lang==="en"?"ALL POSITIONS SUBJECT TO CARGO AVAILABILITY & TERMINAL CONFIRMATION / ORDERS.":"TODAS LAS POSICIONES SUJETAS A DISPONIBILIDAD DE CARGA Y CONFIRMACIÓN DE LA TERMINAL / ÓRDENES.");
+  return lines.join("\n");
+}
+function buildEmail(lang,client){
+  const to=lang==="en"?`To ${client}`:`Para ${client}`;
+  const from=lang==="en"?"From ISA Nueva Palmira":"De ISA Nueva Palmira";
+  return`${to}\n${from}\n\n${buildLineup(lang)}`;
+}
+function etcStr(v){if(v.status==="ALONGSIDE")return`ETC ${v.etc}${v.etcSuf?" "+v.etcSuf:""}`;return`ETB ${v.etb} – ETC ${v.etc}`;}
+function berths(){return[...new Set(vessels.map(v=>v.b))].sort();}
+
+/* ── FECHA HELPERS & CASCADA ── */
+function parseDate(str){
+  if(!str||!str.includes("/"))return null;
+  const p=str.trim().split("/");if(p.length<2)return null;
+  const d=parseInt(p[0]),m=MONTHS.indexOf((p[1]||"").toUpperCase().trim());
+  if(m<0||isNaN(d))return null;
+  const now=new Date(),yr=now.getFullYear();
+  const dt=new Date(yr,m,d);
+  if(dt<new Date(now.getTime()-4*30*24*3600*1000))dt.setFullYear(yr+1);
+  return dt;
+}
+function fmtDate(dt){
+  if(!dt)return"";
+  return String(dt.getDate()).padStart(2,"0")+"/"+MONTHS[dt.getMonth()];
+}
+function parseQty(s){
+  return parseFloat(String(s||"0").replace(/\./g,"").replace(/,/g,"."))||0;
+}
+function loadDays(v){
+  const qty=parseQty(v.qty);
+  if(qty<=0)return 1;
+  const rate=LOAD_RATES[v.cargo]||DEFAULT_RATE;
+  return Math.max(1,Math.round(qty/rate/24));
+}
+let lastCascadeInfo={};
+function recascadeDates(b){
+  const bv=vessels.filter(v=>v.b===b);
+  if(bv.length<2){lastCascadeInfo[b]=0;return;}
+  let prevETC=parseDate(bv[0].etc);
+  if(!prevETC){lastCascadeInfo[b]=0;return;}
+  let count=0;
+  for(let i=1;i<bv.length;i++){
+    const v=bv[i];
+    if(v.status==="ALONGSIDE")continue;
+    const newETB=fmtDate(prevETC);
+    const newETC=new Date(prevETC);
+    newETC.setDate(newETC.getDate()+loadDays(v));
+    const vi=vessels.findIndex(x=>x.id===v.id);
+    if(vi>=0){vessels[vi].etb=newETB;vessels[vi].etc=fmtDate(newETC);count++;}
+    prevETC=newETC;
+  }
+  lastCascadeInfo[b]=count;
+}
+function validate(){
+  const w=[];
+  for(const v of vessels){
+    if(!v.vessel)w.push(`Berth ${v.b}: falta nombre`);
+    if(!v.etc)w.push(`${v.vessel||"?"}: falta ETC`);
+    if(v.status!=="ALONGSIDE"&&!v.etb)w.push(`${v.vessel}: falta ETB`);
+    if((v.status==="ETA RECALADA"||v.status==="ETA NUEVA PALMIRA")&&!v.etaDate)w.push(`${v.vessel}: falta ETA`);
+    if(!v.qty)w.push(`${v.vessel}: falta cantidad`);
+    if(!v.dest)w.push(`${v.vessel}: falta destino`);
+  }
+  return w;
+}
+
+/* ── EXCEL ── */
+function doXLSX(){
+  const wb=XLSX.utils.book_new(),rows=[["TERMINAL NAVIOS - LINE UP","","","","","","",""],["","","","","","","",""],["MUELLE","BUQUE","SITUACIÓN","CARGA","CANTIDAD","CLIENTE","DESTINO","ETB / ETC"]];
+  for(const b of berths()){
+    const bv=vessels.filter(v=>v.b===b);
+    if(showFree(b))rows.push([`MUELLE ${b}`,"LIBRE","","","","","",""]);
+    for(const v of bv){const q=v.qty==="TBC"?"TBC MT":`${v.qty} MT`;rows.push([`MUELLE ${b}`,v.vessel,stES(v),`${v.cargo} ${v.orig}`,q,v.ship||"",trD(v.dest)||"",etcStr(v)]);}
+  }
+  rows.push(["","","","","","","",""]);rows.push(["Todas las posiciones sujetas a disponibilidad de carga y confirmación de la terminal / órdenes.","","","","","","",""]);
+  const ws=XLSX.utils.aoa_to_sheet(rows);ws["!cols"]=[{wch:14},{wch:22},{wch:28},{wch:18},{wch:12},{wch:20},{wch:12},{wch:24}];
+  XLSX.utils.book_append_sheet(wb,ws,"Line Up");XLSX.writeFile(wb,"LineUp_GRAVETAL.xlsx");
+}
+
+/* ── HTML HELPERS ── */
+const SB={
+  "ALONGSIDE":{bg:"var(--green-bg)",tc:"var(--green-t)",bd:"var(--green-mid)",t:"ATRACADO"},
+  "AT RECALADA":{bg:"var(--blue-bg)",tc:"var(--blue-t)",bd:"var(--blue-mid)",t:"EN RECALADA"},
+  "AT NUEVA PALMIRA ROADS":{bg:"var(--blue-bg)",tc:"var(--blue-t)",bd:"var(--blue-mid)",t:"EN RADA N.P."},
+  "AT ZONA COMUN":{bg:"var(--slate-bg)",tc:"var(--text2)",bd:"var(--slate-mid)",t:"ZONA COMUN"},
+  "UNDER NAVIGATION":{bg:"var(--purple-bg)",tc:"var(--purple)",bd:"var(--purple-mid)",t:"NAVEGANDO"},
+  "ETA RECALADA":{bg:"var(--amber-bg)",tc:"var(--amber-t)",bd:"var(--amber-mid)",t:"ETA RECALADA"},
+  "ETA NUEVA PALMIRA":{bg:"var(--purple-bg)",tc:"var(--purple)",bd:"var(--purple-mid)",t:"ETA NVA.PALMIRA"},
+};
+function pillH(s){const c=SB[s]||SB["ETA RECALADA"];return`<span class="pill" style="background:${c.bg};color:${c.tc};border:1px solid ${c.bd}">${c.t}</span>`;}
+function esc(t){return String(t||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function selH(id,val,opts,oc,w){const os=opts.map(o=>`<option value="${esc(o)}"${o===val?" selected":""}>${esc(o)||"—"}</option>`).join("");return`<select id="${id}" class="inp"${w?` style="width:${w}"`:""}  onchange="${oc}">${os}</select>`;}
+function inpH(id,val,ph,oc,upper,w){return`<input id="${id}" class="inp" value="${esc(val)}" placeholder="${ph}"${w?` style="width:${w}"`:""}  oninput="${oc}${upper?";this.value=this.value.toUpperCase()":""}">` ;}
+function cbH(lbl,v,sel){const cs={en:{bg:"var(--blue-bg)",tc:"var(--blue-t)",bd:"var(--blue-mid)",bds:"var(--blue-t)"},es:{bg:"var(--green-bg)",tc:"var(--green-t)",bd:"var(--green-mid)",bds:"var(--green-t)"},xl:{bg:"var(--amber-bg)",tc:"var(--amber-t)",bd:"var(--amber-mid)",bds:"var(--amber-t)"}};const c=cs[v]||cs.en;return`<span class="cbadge${sel?" sel":""}" style="background:${c.bg};color:${c.tc};border-color:${sel?c.bds:c.bd}">${lbl}</span>`;}
+function gravTbl(){
+  const thS="padding:8px 10px;border-bottom:1px solid var(--border2);font-size:10px;color:var(--text2);font-weight:700;white-space:nowrap;background:var(--bg2);text-transform:uppercase;letter-spacing:.05em";
+  const tdS="padding:7px 10px;border-bottom:1px solid var(--border);font-size:12px";
+  let rows="";
+  for(const b of berths()){const bv=vessels.filter(v=>v.b===b);if(showFree(b))rows+=`<tr style="background:var(--bg2)"><td style="${tdS};font-weight:700">MUELLE ${b}</td><td colspan="7" style="${tdS};color:var(--text3)">LIBRE</td></tr>`;for(const v of bv){const q=v.qty==="TBC"?"TBC MT":`${v.qty} MT`;rows+=`<tr><td style="${tdS};white-space:nowrap">MUELLE ${b}</td><td style="${tdS};font-weight:600">${esc(v.vessel)}</td><td style="${tdS};white-space:nowrap">${stES(v)}</td><td style="${tdS};white-space:nowrap">${v.cargo} ${v.orig}</td><td style="${tdS};white-space:nowrap">${q}</td><td style="${tdS}">${esc(v.ship)||"–"}</td><td style="${tdS}">${trD(v.dest)||"–"}</td><td style="${tdS};white-space:nowrap">${etcStr(v)}</td></tr>`;}}
+  return`<div style="overflow-x:auto"><table class="grav"><thead><tr>${["MUELLE","BUQUE","SITUACIÓN","CARGA","CANTIDAD","CLIENTE","DESTINO","ETB / ETC"].map(h=>`<th style="${thS}">${h}</th>`).join("")}</tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+
+/* ── FREE TOGGLE ── */
+function toggleFree(b){bfm[b]=!showFree(b);scheduleSave();render();}
+
+/* ── INLINE EDIT ── */
+function startIE(id){const v=vessels.find(x=>x.id===id);ief={...v};ieId=id;render();setTimeout(()=>{const e=document.getElementById("ie-vn");if(e)e.focus();},60);}
+function cancelIE(){
+  ieId=null;
+  if(pendingRemoteData){applyRemoteData(pendingRemoteData);}
+  else render();
+}
+function saveIE(){
+  const editedVessel={...ief};
+  ieId=null;
+  // Si otro operador guardó mientras editábamos, aplicamos sus cambios primero
+  // y encima ponemos nuestro cambio específico (merge inteligente)
+  if(pendingRemoteData){
+    vessels=pendingRemoteData.v||vessels;
+    nextId=pendingRemoteData.n||nextId;
+    bfm=pendingRemoteData.bfm||{};
+    EN_CLIENTS=pendingRemoteData.enc||EN_CLIENTS;
+    ES_CLIENTS=pendingRemoteData.esc||ES_CLIENTS;
+    CARGOS=pendingRemoteData.crg||CARGOS;
+    pendingRemoteData=null;
+  }
+  vessels=vessels.map(v=>v.id===editedVessel.id?{...editedVessel}:v);
+  scheduleSave();render();
+}
+function ieU(k,v){
+  ief[k]=v;
+  scheduleSave(); // Guarda en background sin renderizar toda la app para no perder el foco
+}
+
+function ieRowHTML(v){
+  const needsNOR=v.status==="AT RECALADA"||v.status==="AT NUEVA PALMIRA ROADS";
+  const showETA=v.status==="ETA RECALADA"||v.status==="ETA NUEVA PALMIRA",showETB=v.status!=="ALONGSIDE";
+  return`<div class="ie-wrap">
+    <div class="ie-r" style="margin-bottom:8px">
+      <div class="ie-f"><span class="ie-lbl">Status</span>${selH("ie-st",v.status,["ALONGSIDE","AT RECALADA","AT NUEVA PALMIRA ROADS","AT ZONA COMUN","UNDER NAVIGATION","ETA RECALADA","ETA NUEVA PALMIRA"],"ieU('status',this.value);render()","150px")}</div>
+      ${needsNOR?`<div class="ie-f"><span class="ie-lbl">NOR</span>${inpH("ie-nor",v.nor||"","08/MAY 03:48","ieU('nor',this.value)",true,"95px")}</div>`:""}
+      <div class="ie-f"><span class="ie-lbl">Nombre del buque</span>${inpH("ie-vn",v.vessel,"NOMBRE BUQUE","ieU('vessel',this.value)",true,"195px")}</div>
+      ${showETA?`<div class="ie-f"><span class="ie-lbl">Fecha ETA</span>${inpH("ie-eta",v.etaDate,"08/MAY","ieU('etaDate',this.value)",true,"74px")}</div><div class="ie-f"><span class="ie-lbl">Suf</span>${selH("ie-etas",v.etaSuf,["","AM","PM","EAM","LPM"],"ieU('etaSuf',this.value)","60px")}</div>`:""}
+      ${showETB?`<div class="ie-f"><span class="ie-lbl">Fecha ETB</span>${inpH("ie-etb",v.etb,"10/MAY","ieU('etb',this.value)",true,"74px")}</div>`:""}
+      <div class="ie-f"><span class="ie-lbl">Fecha ETC</span>${inpH("ie-etc",v.etc,"12/MAY","ieU('etc',this.value)",true,"74px")}</div>
+      <div class="ie-f"><span class="ie-lbl">Suf</span>${selH("ie-etcs",v.etcSuf,["","EAM","LPM","EPM"],"ieU('etcSuf',this.value)","60px")}</div>
+      <div class="ie-f" style="justify-content:flex-end;padding-bottom:1px;gap:4px;flex-direction:row">
+        <button class="btn btn-prim btn-sm" onclick="saveIE()" style="height:33px">💾 Guardar</button>
+        <button class="btn btn-ghost btn-sm" onclick="cancelIE()" style="height:33px">✕</button>
+      </div>
+    </div>
+    <div class="ie-r" style="padding-top:8px;border-top:1px solid var(--blue-mid)">
+      <div class="ie-f"><span class="ie-lbl">Cantidad MT</span>${inpH("ie-qty",v.qty,"23.000/TBC","ieU('qty',this.value)",false,"88px")}</div>
+      <div class="ie-f"><span class="ie-lbl">Carga</span>${selH("ie-cg",v.cargo,CARGOS,"ieU('cargo',this.value)","106px")}</div>
+      <div class="ie-f"><span class="ie-lbl">Origen</span>${selH("ie-or",v.orig,["UY","BOL","BRA","ARG"],"ieU('orig',this.value)","60px")}</div>
+      <div class="ie-f"><span class="ie-lbl">Destino</span>${inpH("ie-ds",v.dest,"CHINA/TBC","ieU('dest',this.value)",true,"96px")}</div>
+      <div class="ie-f"><span class="ie-lbl">Shipper</span>${inpH("ie-sh",v.ship,"LDC/TBC","ieU('ship',this.value)",true,"118px")}</div>
+      <div class="ie-f"><span class="ie-lbl">Condición especial</span>${inpH("ie-cd",v.cond,"SUB TO CARGO ARRIVAL...","ieU('cond',this.value)",false,"216px")}</div>
+      <div class="ie-f" style="justify-content:flex-end;padding-bottom:1px">
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:6px 12px;border-radius:5px;border:1px solid ${v.tbc?"var(--red-mid)":"var(--border)"};background:${v.tbc?"var(--red-bg)":"var(--bg)"};font-size:12px;font-weight:600;height:33px">
+          <input type="checkbox" ${v.tbc?"checked":""} onchange="ieU('tbc',this.checked)" style="cursor:pointer;accent-color:var(--red)">TBC
+        </label>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ── VESSEL OPS ── */
+function delV(id){if(confirm("¿Eliminar este buque?")){vessels=vessels.filter(v=>v.id!==id);if(ieId===id)ieId=null;scheduleSave();render();}}
+function moveV(id,dir){
+  const v=vessels.find(x=>x.id===id),b=v.b,bv=vessels.filter(x=>x.b===b),idx=bv.findIndex(x=>x.id===id),ni=idx+dir;
+  if(ni<0||ni>=bv.length)return;
+  const nb=[...bv];[nb[idx],nb[ni]]=[nb[ni],nb[idx]];
+  vessels=berths().flatMap(bb=>bb===b?nb:vessels.filter(x=>x.b===bb));
+  recascadeDates(b);
+  if((lastCascadeInfo[b]||0)>0)showCascadeToast(b,lastCascadeInfo[b]);
+  scheduleSave();render();
+}
+function dupV(id){
+  const v=vessels.find(x=>x.id===id),idx=vessels.findIndex(x=>x.id===id),nv={...v,id:nextId,vessel:v.vessel+" (COPIA)"};
+  vessels=[...vessels.slice(0,idx+1),nv,...vessels.slice(idx+1)];nextId++;scheduleSave();render();
+}
+function addV(b){
+  const nv={id:nextId,b:b||"1",vessel:"",status:"ETA RECALADA",etaDate:"",etaSuf:"",nor:"",etb:"",etc:"",etcSuf:"",qty:"",cargo:"SBS",orig:"UY",dest:"",ship:"",tbc:false,cond:""};
+  vessels=[...vessels,nv];const nid=nextId;nextId++;scheduleSave();render();
+  setTimeout(()=>startIE(nid),60);
+}
+
+/* ── TOAST CASCADA ── */
+let toastTmr=null;
+function showCascadeToast(b,count){
+  let t=document.getElementById("cascade-toast");
+  if(!t){t=document.createElement("div");t.id="cascade-toast";
+    t.style.cssText="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1E293B;color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.25);display:flex;align-items:center;gap:8px;transition:opacity .3s;pointer-events:none";
+    document.body.appendChild(t);
+  }
+  t.innerHTML=`⟳ <span style="color:#86EFAC">Berth ${b}</span> — ${count} buque${count!==1?"s":""} recalculado${count!==1?"s":""}`;
+  t.style.opacity="1";
+  clearTimeout(toastTmr);
+  toastTmr=setTimeout(()=>{t.style.opacity="0";},2500);
+}
+
+/* ── COPY ROBUSTO ── */
+function doCopy(txt,key){
+  const ta=document.createElement("textarea");ta.value=txt;
+  ta.style.position="fixed";ta.style.left="-9999px";ta.style.top="0";
+  document.body.appendChild(ta);ta.focus();ta.select();
+  try{document.execCommand("copy");copied=key;}catch(e){}
+  document.body.removeChild(ta);
+  if(document.getElementById("prev-ov").style.display!=="none")renderPreview();else render();
+  clearTimeout(cpTmr);cpTmr=setTimeout(()=>{copied="";if(document.getElementById("prev-ov").style.display!=="none")renderPreview();else render();},2500);
+}
+
+/* ── PREVIEW ── */
+function openPreview(sec){prevSec=sec||"en";renderPreview();document.getElementById("prev-ov").style.display="block";}
+function closePreview(){document.getElementById("prev-ov").style.display="none";}
+function setPrevSec(s){prevSec=s;renderPreview();}
+function setPrevEN(c){selEN=c;renderPreview();}
+function setPrevES(c){selES=c;renderPreview();}
+function renderPreview(){
+  const warns=validate(),secs=[{k:"en",l:"🇬🇧 Inglés"},{k:"es",l:"🇦🇷 Español"},{k:"gravetal",l:"📊 Excel Gravetal"}];
+  document.getElementById("pm-warn").innerHTML=warns.length
+    ?`<div style="background:var(--red-bg);border:1px solid var(--red-mid);border-radius:var(--r);padding:12px 16px"><p style="font-size:12px;font-weight:700;color:var(--red-t);margin-bottom:6px">⚠ ${warns.length} advertencia${warns.length>1?"s":""}</p>${warns.map(w=>`<p style="font-size:11px;color:var(--red-t);margin:2px 0">• ${esc(w)}</p>`).join("")}</div>`
+    :`<div style="background:var(--green-bg);border:1px solid var(--green-mid);border-radius:var(--r);padding:12px 16px"><p style="font-size:12px;font-weight:700;color:var(--green-t);margin:0">✓ Sin errores — listo para enviar</p></div>`;
+  document.getElementById("pm-tabs").innerHTML=secs.map(s=>`<button class="stab${prevSec===s.k?" act":""}" onclick="setPrevSec('${s.k}')">${s.l}</button>`).join("");
+  let body="";
+  if(prevSec==="en"||prevSec==="es"){
+    const clients=prevSec==="en"?EN_CLIENTS:ES_CLIENTS,cv=prevSec==="en"?"en":"es",curCli=prevSec==="en"?selEN:selES;
+    const txt=buildEmail(prevSec,curCli),key="pm_"+prevSec,isCopied=copied===key;
+    const clickBtns=clients.map(c=>{const isSel=c===curCli;const cv2=prevSec==="en"?"en":"es";const fn=prevSec==="en"?"setPrevEN":"setPrevES";return`<span class="cbadge${isSel?" sel":""}" style="background:var(--${cv2==="en"?"blue":"green"}-bg);color:var(--${cv2==="en"?"blue":"green"}-t);border-color:var(--${cv2==="en"?"blue":"green"}-${isSel?"t":"mid"});cursor:pointer" onclick="${fn}('${c}')">${c}</span>`;}).join("");
+    body=`<div style="padding:14px 22px;border-bottom:1px solid var(--border)">
+        <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Seleccionar destinatario</p>
+        <div>${clickBtns}</div>
+      </div>
+      <div style="padding:12px 22px;border-bottom:1px solid var(--border);display:flex;justify-content:flex-end">
+        <button class="btn ${isCopied?"btn-success":"btn-sec"}" onclick="doCopy(${JSON.stringify(txt).replace(/"/g, '&quot;')},'${key}')">${isCopied?"✓ Copiado":"📋 Copiar email para "+curCli}</button>
+      </div>
+      <div style="padding:16px 22px"><pre class="lineup" style="max-height:360px;overflow-y:auto">${esc(txt)}</pre></div>`;
+    if(prevSec==="es")body+=`<div style="padding:0 22px 16px"><div style="background:var(--amber-bg);border:1px solid var(--amber-mid);border-radius:var(--r);padding:12px 14px;display:flex;gap:10px;align-items:center"><span style="font-size:18px">📊</span><p style="font-size:12px;color:var(--amber-t);margin:0"><strong>GRAVETAL</strong> también recibe el Excel adjunto →</p></div></div>`;
+  }else{
+    body=`<div style="padding:14px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between"><p style="font-size:13px;color:var(--text2)">Adjunto para <strong>GRAVETAL</strong></p><button class="btn btn-sec" onclick="doXLSX()">⬇ Descargar .xlsx</button></div><div style="padding:18px 22px">${gravTbl()}</div>`;
+  }
+  document.getElementById("pm-body").innerHTML=body;
+  const fcEN=copied==="f_en",fcES=copied==="f_es";
+  document.getElementById("pm-btns").innerHTML=`
+    <button class="btn ${fcEN?"btn-success":"btn-info"}" onclick="doCopy(${JSON.stringify(buildEmail("en",selEN)).replace(/"/g, '&quot;')},'f_en')">${fcEN?"✓ EN copiado":"🇬🇧 Copiar EN — "+selEN}</button>
+    <button class="btn ${fcES?"btn-success":"btn-sec"}" style="${!fcES?"background:var(--green-bg);color:var(--green-t);border:1px solid var(--green-mid)":""}" onclick="doCopy(${JSON.stringify(buildEmail("es",selES)).replace(/"/g, '&quot;')},'f_es')">${fcES?"✓ ES copiado":"🇦🇷 Copiar ES — "+selES}</button>
+    <button class="btn btn-warn" onclick="doXLSX()">📊 Excel Gravetal</button>`;
+}
+
+/* ── RENDER COMPLETO ORIGINAL ── */
+function setTab(t){activeTab=t;ieId=null;render();}
+function render(){
+  const bs=berths(),warns=validate();
+  ["datos","en","es","gravetal","dist"].forEach(k=>{const el=document.getElementById("tab-"+k);if(el)el.className="tab"+(activeTab===k?" active":"");});
+  const wb=document.getElementById("warn-bar"),wt=document.getElementById("warn-txt");
+  if(wb&&wt){if(warns.length){wb.style.display="flex";wt.textContent=`⚠ ${warns.length} campo${warns.length>1?"s":""} incompleto${warns.length>1?"s":""}`;}else wb.style.display="none";}
+
+  let html="";
+
+  if(activeTab==="datos"){
+    const leg=`<div style="display:flex;gap:10px;align-items:center;padding:9px 14px;background:var(--bg2);border-radius:var(--r);margin-bottom:8px;border:1px solid var(--border);flex-wrap:wrap">
+      <span style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em">Columnas:</span>
+      ${[["Status","var(--green-bg)","var(--green-mid)","var(--green-t)"],["Carga / Origen / MT","var(--blue-bg)","var(--blue-mid)","var(--blue-t)"],["Destino","var(--green-bg)","var(--green-mid)","var(--green-t)"],["Shipper","var(--amber-bg)","var(--amber-mid)","var(--amber-t)"],["Fechas ETB/ETC","var(--slate-bg)","var(--slate-mid)","var(--text2)"]].map(([l,bg,bd,tc])=>`<span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600"><span style="width:9px;height:9px;border-radius:2px;background:${bg};border:1px solid ${bd};display:inline-block"></span><span style="color:${tc}">${l}</span></span>`).join("")}
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;padding:7px 14px;background:#FFFBEB;border-radius:var(--r);margin-bottom:14px;border:1px solid var(--amber-mid);flex-wrap:wrap">
+      <span style="font-size:10px;font-weight:700;color:var(--amber-t);text-transform:uppercase;letter-spacing:.05em">⚡ Rates de carga:</span>
+      ${[["SBS","800 MT/h"],["SBM","600 MT/h"],["IRON ORE","2500 MT/h"],["SBO","500 MT/h"],["WHEAT","800 MT/h"]].map(([c,r])=>`<span style="font-size:11px;font-weight:600;color:var(--amber-t);background:var(--amber-bg);padding:2px 7px;border-radius:4px;border:1px solid var(--amber-mid)">${c} ${r}</span>`).join("")}
+      <span style="font-size:10px;color:var(--text3);margin-left:4px">— Los ↑↓ recalculan fechas automáticamente · "⟳ Fechas" fuerza recálculo manual</span>
+    </div>`;
+    let cards="";
+    for(const b of bs){
+      const bv=vessels.filter(v=>v.b===b),isFree=showFree(b);
+      const colHdr=`<div class="chdr">
+        <span style="width:108px;flex-shrink:0;color:var(--text3)">Status</span>
+        <span style="width:168px;flex-shrink:0;color:var(--text3)">Buque</span>
+        <span style="width:145px;flex-shrink:0;color:var(--blue-t)">Carga / Orig. / MT</span>
+        <span style="width:92px;flex-shrink:0;color:var(--green-t)">Destino</span>
+        <span style="width:122px;flex-shrink:0;color:var(--amber-t)">Shipper</span>
+        <span style="width:148px;flex-shrink:0;color:var(--text3)">ETB / ETC</span>
+        <span style="color:var(--text3)">Condición / TBC</span>
+      </div>`;
+      let rows="";
+      if(!bv.length)rows=`<div style="padding:16px;text-align:center;color:var(--text3);font-size:12px">Sin buques — haz clic en "+ Agregar"</div>`;
+      bv.forEach((v,i)=>{
+        if(ieId===v.id){rows+=`<div id="iec-${v.id}">${ieRowHTML(ief)}</div>`;return;}
+        const last=i===bv.length-1;
+        rows+=`<div class="vrow" style="${last?"border-bottom:none":""}">
+          <div class="vc vc-st">${pillH(v.status)}</div>
+          <div class="vc vc-vn">${esc(v.vessel)||`<em style="color:var(--text3);font-weight:400">Sin nombre</em>`}</div>
+          <div class="vc" style="width:145px"><span class="chip c-cargo">${v.cargo} ${v.orig}</span>${v.qty?` <span style="font-size:11px;color:var(--text2)">${v.qty}</span>`:""}</div>
+          <div class="vc" style="width:92px">${v.dest?`<span class="chip c-dest">${esc(v.dest)}</span>`:`<span style="color:var(--text3);font-size:12px">—</span>`}</div>
+          <div class="vc" style="width:122px">${v.ship?`<span class="chip c-ship">${esc(v.ship)}</span>`:`<span style="color:var(--text3);font-size:12px">—</span>`}</div>
+          <div class="vc" style="width:148px"><span class="chip c-dates">${etcStr(v)}</span></div>
+          <div class="vc-fl">
+            ${v.tbc?`<span class="chip c-tbc">TBC</span>`:""}
+            ${v.cond?`<span class="chip c-cond" title="${esc(v.cond)}">${esc(v.cond.length>16?v.cond.slice(0,16)+"…":v.cond)}</span>`:""}
+          </div>
+          <div class="vrow-act">
+            <button class="btn-icon" onclick="moveV(${v.id},-1)" title="Subir">↑</button>
+            <button class="btn-icon" onclick="moveV(${v.id},1)" title="Bajar">↓</button>
+            <button class="btn-icon" onclick="dupV(${v.id})" title="Duplicar" style="font-size:13px">⧉</button>
+            <button class="btn btn-sm btn-sec" onclick="startIE(${v.id})">✏ Editar</button>
+            <button class="btn-del btn-sm" onclick="delV(${v.id})">✕</button>
+          </div>
+        </div>`;
+      });
+      cards+=`<div class="card" style="margin-bottom:14px">
+        <div class="bh">
+          <div style="display:flex;align-items:center;gap:10px">
+            <span style="font-weight:700;font-size:15px;letter-spacing:-.01em">BERTH ${b}</span>
+            <span style="font-size:12px;color:var(--text3)">${bv.length} buque${bv.length!==1?"s":""}</span>
+          </div>
+          <div style="display:flex;gap:6px;align-items:center">
+            <button class="btn btn-sm ${isFree?"btn-free-on":"btn-free-off"}" onclick="toggleFree('${b}')" title="Marca si el muelle está actualmente libre">
+              ${isFree?"🟢 LIBRE":"○ LIBRE"}
+            </button>
+            <button class="btn btn-sm btn-ghost" onclick="recascadeDates('${b}');if((lastCascadeInfo['${b}']||0)>0)showCascadeToast('${b}',lastCascadeInfo['${b}']);scheduleSave();render()" title="Recalcular ETB/ETC del resto del line-up según rates de carga&#10;SBS: 800 MT/h · SBM: 600 MT/h · IRON ORE: 2500 MT/h">⟳ Fechas</button>
+            <button class="btn btn-sm btn-sec" onclick="addV('${b}')">+ Agregar</button>
+          </div>
+        </div>
+        ${colHdr}
+        ${rows}
+      </div>`;
+    }
+    html=`${leg}${cards}<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <button class="btn btn-sec" onclick="addV()">+ Agregar buque</button>
+      <div style="width:1px;height:24px;background:var(--border);margin:0 4px"></div>
+      <button class="btn btn-ghost btn-sm" onclick="addClient('en')">+ Cliente EN</button>
+      <button class="btn btn-ghost btn-sm" onclick="addClient('es')">+ Cliente ES</button>
+      <button class="btn btn-ghost btn-sm" onclick="addCargo()">+ Mercadería</button>
+      <div style="margin-left:auto">
+        <button class="btn btn-prim" onclick="openPreview('en')">👁 Vista previa y envío →</button>
+      </div>
+    </div>`;
+  }
+
+  if(activeTab==="en"||activeTab==="es"){
+    const lang=activeTab,clients=lang==="en"?EN_CLIENTS:ES_CLIENTS,cv=lang==="en"?"en":"es";
+    const curCli=lang==="en"?selEN:selES;
+    const txt=buildEmail(lang,curCli),key=lang,isCopied=copied===key;
+    const cBtns=clients.map(c=>{const isSel=c===curCli;return`<span class="cbadge${isSel?" sel":""}" style="background:var(--${cv==="en"?"blue":"green"}-bg);color:var(--${cv==="en"?"blue":"green"}-t);border-color:var(--${cv==="en"?"blue":"green"}-${isSel?"t":"mid"});cursor:pointer" onclick="${cv==="en"?"selEN":"selES"}='${c}';render()">${c}</span>`;}).join("");
+    html=`<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;flex-wrap:wrap;gap:12px">
+      <div>
+        <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Seleccionar destinatario</p>
+        <div>${cBtns}</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn ${isCopied?"btn-success":"btn-sec"}" onclick="doCopy(${JSON.stringify(txt).replace(/"/g, '&quot;')},'${key}')">${isCopied?"✓ Copiado":"📋 Copiar email — "+curCli}</button>
+        <button class="btn btn-sec" onclick="openPreview('${lang}')">👁 Vista previa</button>
+      </div>
+    </div>
+    <pre class="lineup">${esc(txt)}</pre>`;
+  }
+
+  if(activeTab==="gravetal"){
+    html=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+      <div><p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Adjunto para</p><span class="cbadge" style="background:var(--amber-bg);color:var(--amber-t);border-color:var(--amber-mid)">GRAVETAL</span></div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-sec" onclick="openPreview('gravetal')">👁 Vista previa</button>
+        <button class="btn btn-sec" onclick="doXLSX()">⬇ Descargar .xlsx</button>
+      </div>
+    </div>${gravTbl()}`;
+  }
+
+  if(activeTab==="dist"){
+    const dot=c=>`<span style="width:8px;height:8px;border-radius:50%;background:${c};display:inline-block;flex-shrink:0"></span>`;
+    html=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div class="dist-card">
+        <p style="font-weight:700;font-size:15px;margin-bottom:4px">Versión Inglés</p>
+        <p style="font-size:12px;color:var(--text2);margin-bottom:14px">Email con cabecera <code>To / From ISA Nueva Palmira</code></p>
+        ${EN_CLIENTS.map(c=>`<div class="dist-row">${dot("var(--blue-t)")}<span style="font-size:13px;font-weight:500">${c}</span><span style="font-size:11px;color:var(--text3);margin-left:auto">📧 email</span></div>`).join("")}
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="dist-card">
+          <p style="font-weight:700;font-size:15px;margin-bottom:4px">Versión Español</p>
+          <p style="font-size:12px;color:var(--text2);margin-bottom:14px">Email con cabecera <code>Para / De ISA Nueva Palmira</code></p>
+          ${ES_CLIENTS.map(c=>`<div class="dist-row">${dot("var(--green-t)")}<span style="font-size:13px;font-weight:500">${c}</span><span style="font-size:11px;color:var(--text3);margin-left:auto">📧 email</span></div>`).join("")}
+        </div>
+        <div class="dist-card" style="border:2px solid var(--blue)">
+          <p style="font-weight:700;font-size:15px;margin-bottom:4px">Solo GRAVETAL — extra</p>
+          <p style="font-size:12px;color:var(--text2);margin-bottom:14px">Email español + Excel adjunto</p>
+          <div class="dist-row">${dot("var(--amber-t)")}<span style="font-size:13px;font-weight:500">GRAVETAL</span><span style="font-size:11px;color:var(--text3);margin-left:auto">📧 + 📊 .xlsx</span></div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  document.getElementById("content").innerHTML=html;
+}
+
+loadData();render();
+</script>
+</body>
+</html>
