@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Line Up â€” ISA Nueva Palmira Terminal Navios</title>
+<title>Line Up - ISA Nueva Palmira Terminal Navios</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -106,7 +106,7 @@ table.grav td{padding:7px 10px;border-bottom:1px solid var(--border);font-size:1
   <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;gap:12px;flex-wrap:wrap">
     <div>
       <p style="font-size:10px;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px">Sistema de Line Up</p>
-      <h1 style="font-size:22px;font-weight:700;margin-bottom:5px;letter-spacing:-.02em">ISA Nueva Palmira â€” Terminal Navios</h1>
+      <h1 style="font-size:22px;font-weight:700;margin-bottom:5px;letter-spacing:-.02em">ISA Nueva Palmira - Terminal Navios</h1>
       <p id="save-ind" style="font-size:12px;color:var(--green);display:flex;align-items:center;gap:6px">
         <span id="conn-dot" title="Estado de conexiÃ³n" style="width:8px;height:8px;border-radius:50%;background:var(--text3);display:inline-block;flex-shrink:0;transition:background .4s"></span>
         Conectando...
@@ -135,7 +135,7 @@ table.grav td{padding:7px 10px;border-bottom:1px solid var(--border);font-size:1
     <div class="mhdr">
       <div>
         <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px">Vista previa antes de enviar</p>
-        <p style="font-size:17px;font-weight:700">ISA Nueva Palmira â€” Terminal Navios</p>
+        <p style="font-size:17px;font-weight:700">ISA Nueva Palmira - Terminal Navios</p>
       </div>
       <button style="background:none;border:none;cursor:pointer;font-size:22px;color:var(--text3);padding:2px 6px;line-height:1" onclick="closePreview()">âœ•</button>
     </div>
@@ -150,10 +150,10 @@ table.grav td{padding:7px 10px;border-bottom:1px solid var(--border);font-size:1
 </div>
 
 <script>
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    ðŸ”¥ FIREBASE â€” PEGAR AQUÃ TU CONFIGURACIÃ“N
    (Firebase Console â†’ tu proyecto â†’ ConfiguraciÃ³n â†’ SDK web)
-   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 const firebaseConfig = {
   apiKey:            "AIzaSyBjQFKVKm5hjdM3Z4A6jSXNmzr8i5V8pSo",
   authDomain:        "line-up---nueva-palmra.firebaseapp.com",
@@ -165,7 +165,7 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const LINE_REF = firebase.database().ref("lineup_isa_navios");
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 const TERMINAL="ISA Nueva Palmira TERMINAL NAVIOS";
 let EN_CLIENTS=["ISAOPER","LHG","SODRU","CHS","HAMMER"];
@@ -283,7 +283,7 @@ function addCargo(){
   if(c && c.trim()!==""){
     CARGOS.push(c.trim().toUpperCase());
     scheduleSave();
-    if(ieId) { ieU('cargo', c.trim().toUpperCase()); render(); } // si estÃ¡ editando, refresca para ver la opcion
+    if(ieId) { ieU('cargo', c.trim().toUpperCase()); render(); }
     else render();
   }
 }
@@ -303,7 +303,7 @@ function stEN(v){
 }
 function stES(v){
   if(v.status==="ALONGSIDE")return"ATRACADO CARGANDO";
-  if(v.status==="AT RECALADA")return v.nor ? `EN RECALADA (NOR ${v.nor})` : "EN RECALADA";
+  if(v.status==="AT RECALADA")return v.nor ? `AT RECALADA (NOR ${v.nor})` : "EN RECALADA";
   if(v.status==="AT NUEVA PALMIRA ROADS")return v.nor ? `EN RADA NUEVA PALMIRA (NOR ${v.nor})` : "EN RADA NUEVA PALMIRA";
   if(v.status==="AT ZONA COMUN")return "EN ZONA COMUN";
   if(v.status==="UNDER NAVIGATION")return "NAVEGANDO";
@@ -311,24 +311,23 @@ function stES(v){
   return v.status==="ETA RECALADA"?`ETA RECALADA ${v.etaDate}${s}`:`ETA NUEVA PALMIRA ${v.etaDate}`;
 }
 
-function dsP(dest,ship){const d=dest&&dest!=="TBC"?dest:null,s=ship&&ship!=="TBC"?ship:null;if(!d&&!s)return" â€“ TBC";if(d&&!s)return` â€“ ${d}`;if(!d&&s)return` â€“ ${s}`;return` â€“ ${d} â€“ ${s}`;}
+function dsP(dest,ship){const d=dest&&dest!=="TBC"?dest:null,s=ship&&ship!=="TBC"?ship:null;if(!d&&!s)return" â€” TBC";if(d&&!s)return` â€” ${d}`;if(!d&&s)return` â€” ${s}`;return` â€” ${d} â€” ${s}`;}
 function noteP(tbc,cond,lang){
   const c=lang==="es"?cond.replace("SUB TO CARGO ARRIVAL","SUJETO A ARRIBO DE CARGA").replace("SUBJECT TO DEPARTURE FROM SAN LORENZO, ARG","SUJETO A ZARPE DE SAN LORENZO, ARG"):cond;
   const t=lang==="es"?"POR CONFIRMAR":"TO BE CONFIRMED";
   if(tbc&&c)return` (${t}, ${c})`;if(tbc)return` (${t})`;if(c)return` (${c})`;return"";
 }
 function genLine(v,lang){
-  const s=v.etcSuf?` ${v.etcSuf}`:"",q=v.qty==="TBC"?"TBC MT":`${v.qty} MT`,cg=`${q} ${v.cargo} ${v.orig}`,ds=dsP(lang==="es"?trD(v.dest):v.dest,v.ship),etc=` â€“ ETC ${v.etc}${s}`,note=noteP(v.tbc,v.cond,lang),nm=`"${v.vessel}"`;
+  const s=v.etcSuf?` ${v.etcSuf}`:"",q=v.qty==="TBC"?"TBC MT":`${v.qty} MT`,cg=`${q} ${v.cargo} ${v.orig}`,ds=dsP(lang==="es"?trD(v.dest):v.dest,v.ship),etc=` â€” ETC ${v.etc}${s}`,note=noteP(v.tbc,v.cond,lang),nm=`"${v.vessel}"`;
   
   if(v.status==="ALONGSIDE"){
-    // ExcepciÃ³n hardcodeada temporal para Navios Vega que carga IRON ORE:
     const isIronOreLoading = v.cargo === "IRON ORE";
     const op = lang==="es"?"ATRACADO CARGANDO":(isIronOreLoading ? "LOADING" : "ALONGSIDE LOADING");
-    return`${nm} â€“ ${op} ${cg}${ds}${etc}.${note}`;
+    return`${nm} â€” ${op} ${cg}${ds}${etc}.${note}`;
   }
   
   const op=lang==="es"?"PARA CARGAR":"TO LOAD",st=lang==="es"?stES(v):stEN(v);
-  return`${nm} â€“ ${st} â€“ ETB ${v.etb} â€“ ${op} ${cg}${ds}${etc}.${note}`;
+  return`${nm} â€” ${st} â€” ETB ${v.etb} â€” ${op} ${cg}${ds}${etc}.${note}`;
 }
 function showFree(b){const hasSide=vessels.filter(v=>v.b===b).some(v=>v.status==="ALONGSIDE");if(hasSide)return false;return bfm[b]!==false;}
 function buildLineup(lang){
@@ -348,7 +347,7 @@ function buildEmail(lang,client){
   const from=lang==="en"?"From ISA Nueva Palmira":"De ISA Nueva Palmira";
   return`${to}\n${from}\n\n${buildLineup(lang)}`;
 }
-function etcStr(v){if(v.status==="ALONGSIDE")return`ETC ${v.etc}${v.etcSuf?" "+v.etcSuf:""}`;return`ETB ${v.etb} â€“ ETC ${v.etc}`;}
+function etcStr(v){if(v.status==="ALONGSIDE")return`ETC ${v.etc}${v.etcSuf?" "+v.etcSuf:""}`;return`ETB ${v.etb} â€” ETC ${v.etc}`;}
 function berths(){return[...new Set(vessels.map(v=>v.b))].sort();}
 
 /* â”€â”€ FECHA HELPERS & CASCADA â”€â”€ */
@@ -439,7 +438,7 @@ function gravTbl(){
   const thS="padding:8px 10px;border-bottom:1px solid var(--border2);font-size:10px;color:var(--text2);font-weight:700;white-space:nowrap;background:var(--bg2);text-transform:uppercase;letter-spacing:.05em";
   const tdS="padding:7px 10px;border-bottom:1px solid var(--border);font-size:12px";
   let rows="";
-  for(const b of berths()){const bv=vessels.filter(v=>v.b===b);if(showFree(b))rows+=`<tr style="background:var(--bg2)"><td style="${tdS};font-weight:700">MUELLE ${b}</td><td colspan="7" style="${tdS};color:var(--text3)">LIBRE</td></tr>`;for(const v of bv){const q=v.qty==="TBC"?"TBC MT":`${v.qty} MT`;rows+=`<tr><td style="${tdS};white-space:nowrap">MUELLE ${b}</td><td style="${tdS};font-weight:600">${esc(v.vessel)}</td><td style="${tdS};white-space:nowrap">${stES(v)}</td><td style="${tdS};white-space:nowrap">${v.cargo} ${v.orig}</td><td style="${tdS};white-space:nowrap">${q}</td><td style="${tdS}">${esc(v.ship)||"â€“"}</td><td style="${tdS}">${trD(v.dest)||"â€“"}</td><td style="${tdS};white-space:nowrap">${etcStr(v)}</td></tr>`;}}
+  for(const b of berths()){const bv=vessels.filter(v=>v.b===b);if(showFree(b))rows+=`<tr style="background:var(--bg2)"><td style="${tdS};font-weight:700">MUELLE ${b}</td><td colspan="7" style="${tdS};color:var(--text3)">LIBRE</td></tr>`;for(const v of bv){const q=v.qty==="TBC"?"TBC MT":`${v.qty} MT`;rows+=`<tr><td style="${tdS};white-space:nowrap">MUELLE ${b}</td><td style="${tdS};font-weight:600">${esc(v.vessel)}</td><td style="${tdS};white-space:nowrap">${stES(v)}</td><td style="${tdS};white-space:nowrap">${v.cargo} ${v.orig}</td><td style="${tdS};white-space:nowrap">${q}</td><td style="${tdS}">${esc(v.ship)||"â€”"}</td><td style="${tdS}">${trD(v.dest)||"â€”"}</td><td style="${tdS};white-space:nowrap">${etcStr(v)}</td></tr>`;}}
   return`<div style="overflow-x:auto"><table class="grav"><thead><tr>${["MUELLE","BUQUE","SITUACIÃ“N","CARGA","CANTIDAD","CLIENTE","DESTINO","ETB / ETC"].map(h=>`<th style="${thS}">${h}</th>`).join("")}</tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 
@@ -456,8 +455,6 @@ function cancelIE(){
 function saveIE(){
   const editedVessel={...ief};
   ieId=null;
-  // Si otro operador guardÃ³ mientras editÃ¡bamos, aplicamos sus cambios primero
-  // y encima ponemos nuestro cambio especÃ­fico (merge inteligente)
   if(pendingRemoteData){
     vessels=pendingRemoteData.v||vessels;
     nextId=pendingRemoteData.n||nextId;
@@ -472,7 +469,7 @@ function saveIE(){
 }
 function ieU(k,v){
   ief[k]=v;
-  scheduleSave(); // Guarda en background sin renderizar toda la app para no perder el foco
+  scheduleSave();
 }
 
 function ieRowHTML(v){
@@ -643,7 +640,7 @@ function render(){
             <button class="btn-icon" onclick="moveV(${v.id},-1)" title="Subir">â†‘</button>
             <button class="btn-icon" onclick="moveV(${v.id},1)" title="Bajar">â†“</button>
             <button class="btn-icon" onclick="dupV(${v.id})" title="Duplicar" style="font-size:13px">â§‰</button>
-            <button class="btn btn-sm btn-sec" onclick="startIE(${v.id})">âœ Editar</button>
+            <button class="btn btn-sm btn-sec" onclick="startIE(${v.id})">âœŽ Editar</button>
             <button class="btn-del btn-sm" onclick="delV(${v.id})">âœ•</button>
           </div>
         </div>`;
