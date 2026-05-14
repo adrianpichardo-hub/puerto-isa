@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>
 (function(_0x1a2b,_0x3c4d){const _0x5e6f=function(_0x7a8b){while(--_0x7a8b){_0x1a2b['push'](_0x1a2b['shift']());}};_0x5e6f(++_0x3c4d);}(['innerHTML','Acceso\x20Restringido','Ingrese\x20Clave:','Palmira8025','Acceso\x20denegado.','prompt','MSA','Ingrese\x20Usuario:'],0x1a4));const _0x9876=function(_0x5432,_0x1098){_0x5432=_0x5432-0x0;let _0x2143=['innerHTML','Acceso\x20Restringido','Ingrese\x20Clave:','Palmira8025','Acceso\x20denegado.','prompt','MSA','Ingrese\x20Usuario:'][_0x5432];return _0x2143;};(function(){const _0x1111=_0x9876('0x6'),_0x2222=_0x9876('0x3');let _0x3333=prompt(_0x9876('0x7')),_0x4444=prompt(_0x9876('0x2'));if(_0x3333!==_0x1111||_0x4444!==_0x2222){alert(_0x9876('0x4'));document['documentElement'][_0x9876('0x0')]='<body\x20style=\x22background:#1a1a1a;color:white;text-align:center;padding-top:20%;font-family:sans-serif\x22><h1>Acceso\x20Restringido</h1><p>Contacte\x20al\x20administrador.</p></body>';window['stop']();}})();
 </script>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MSA — Portal de Operaciones</title>
+<title>MSA &#x2014; Portal de Operaciones</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;1,800&family=Barlow:wght@300;400;500;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
@@ -20,8 +20,6 @@
 }
 html,body{height:100%;overflow:hidden;background:var(--navy);}
 body{font-family:var(--body);color:var(--white);display:flex;flex-direction:column;}
-
-/* BG */
 .bg{position:fixed;inset:0;z-index:0;pointer-events:none;}
 .bg-base{position:absolute;inset:0;background:
   radial-gradient(ellipse 90% 70% at 50% 40%,rgba(13,30,80,.7) 0%,transparent 70%),
@@ -38,8 +36,6 @@ body{font-family:var(--body);color:var(--white);display:flex;flex-direction:colu
 @keyframes scanh{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
 .side-bar{position:fixed;left:0;top:0;bottom:0;width:2px;z-index:20;background:linear-gradient(180deg,transparent,var(--accent) 35%,var(--accent2) 70%,transparent);opacity:.5;}
 .portal{position:relative;z-index:10;display:flex;flex-direction:column;height:100vh;}
-
-/* ── TOPBAR ── */
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:.7rem 2rem;border-bottom:1px solid rgba(0,200,232,.1);animation:fadedown .7s ease both;gap:12px;}
 @keyframes fadedown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
 .logo-wrap{display:flex;align-items:center;gap:14px;flex-shrink:0;}
@@ -49,11 +45,7 @@ body{font-family:var(--body);color:var(--white);display:flex;flex-direction:colu
 .logo-info{display:flex;flex-direction:column;gap:2px;}
 .logo-name{font-family:var(--cond);font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.75);}
 .logo-tag{font-family:var(--mono);font-size:8px;letter-spacing:.12em;color:var(--muted);}
-
-/* Weather widgets row */
 .wx-row-top{display:flex;align-items:center;gap:8px;flex:1;justify-content:flex-end;}
-
-/* Shared weather widget style */
 .wx-widget{display:flex;align-items:center;gap:8px;padding:5px 11px;background:rgba(0,200,232,.055);border:1px solid rgba(0,200,232,.13);border-radius:8px;backdrop-filter:blur(10px);}
 .wx-loc{font-family:var(--mono);font-size:7px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:1px;}
 .wx-temp{font-family:var(--cond);font-size:20px;font-weight:700;color:var(--white);line-height:1;}
@@ -64,41 +56,23 @@ body{font-family:var(--body);color:var(--white);display:flex;flex-direction:colu
 .wx-det{display:flex;flex-direction:column;gap:2px;}
 .wx-drow{display:flex;align-items:center;gap:4px;font-family:var(--mono);font-size:7.5px;color:var(--muted);}
 .wx-drow b{color:rgba(255,255,255,.8);font-weight:400;}
-
-/* ── MANGA DE VIENTO ── */
 .sock-wrap{position:relative;flex-shrink:0;}
 .sock-svg{overflow:visible;display:block;}
-/* El grupo de la manga rota con el viento — transform-origin se setea inline */
 #sockDir,#sockDir2{transition:transform 1.5s ease;}
-/* El interior ondea */
-.sock-flutter{
-  transform-origin:20px 14px;
-  animation:sockFlutter 2s ease-in-out infinite;
-}
-@keyframes sockFlutter{
-  0%,100%{transform:skewY(0deg) scaleY(1);}
-  30%{transform:skewY(-7deg) scaleY(.8);}
-  70%{transform:skewY(5deg) scaleY(1.15);}
-}
-
-/* Wind speed display (Recalada) */
+.sock-flutter{transform-origin:20px 14px;animation:sockFlutter 2s ease-in-out infinite;}
+@keyframes sockFlutter{0%,100%{transform:skewY(0deg) scaleY(1);}30%{transform:skewY(-7deg) scaleY(.8);}70%{transform:skewY(5deg) scaleY(1.15);}}
 .wind-display{flex-shrink:0;text-align:center;}
 .wind-kt{font-family:var(--cond);font-size:30px;font-weight:800;color:#fff;line-height:1;text-shadow:0 0 20px rgba(0,200,232,.5);}
 .wind-unit{font-size:10px;color:var(--muted);}
 .wind-dir{font-family:var(--mono);font-size:9px;color:var(--accent);font-weight:700;letter-spacing:.06em;margin-top:1px;}
 .wind-label{font-family:var(--mono);font-size:6.5px;letter-spacing:.12em;text-transform:uppercase;color:rgba(0,200,232,.6);margin-bottom:1px;}
-
-/* loading blink */
 .wx-loading{font-family:var(--mono);font-size:8px;color:var(--muted);letter-spacing:.1em;animation:blink 1.4s infinite;}
 @keyframes blink{0%,100%{opacity:.35}50%{opacity:1}}
-
 .sys-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0;}
 .sys-status{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:8px;color:var(--muted);letter-spacing:.1em;}
 .sys-dot{width:6px;height:6px;border-radius:50%;background:#2ecc71;box-shadow:0 0 7px #2ecc71;animation:blink2 2.5s ease-in-out infinite;}
 @keyframes blink2{0%,100%{opacity:1}50%{opacity:.3}}
 .sys-date{font-family:var(--mono);font-size:8px;color:var(--muted);letter-spacing:.05em;}
-
-/* ── HERO ── */
 .hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 1.5rem .8rem;text-align:center;animation:fadein .8s ease .1s both;}
 @keyframes fadein{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
 .eyebrow{font-family:var(--mono);font-size:8.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);margin-bottom:.6rem;opacity:.8;display:flex;align-items:center;gap:10px;}
@@ -108,11 +82,7 @@ body{font-family:var(--body);color:var(--white);display:flex;flex-direction:colu
 .t1{color:var(--white);}
 .t2{background:linear-gradient(110deg,var(--accent) 0%,#80d8f8 50%,var(--accent2) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .hero-sub{font-family:var(--mono);font-size:8.5px;letter-spacing:.16em;color:var(--muted);margin-bottom:1.6rem;}
-
-/* ── GRID 3×2 ── */
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;width:100%;max-width:980px;animation:fadein .8s ease .25s both;}
-
-/* ── CARDS ── */
 .card{position:relative;background:var(--glass);border:1px solid var(--glass-b);border-radius:13px;padding:1.1rem 1.2rem;text-decoration:none;color:var(--white);overflow:hidden;backdrop-filter:blur(14px);transition:all .26s ease;display:flex;flex-direction:column;gap:.65rem;}
 .card::before{content:'';position:absolute;top:0;left:0;right:0;height:1.5px;background:var(--ca,linear-gradient(90deg,var(--accent2),var(--accent)));opacity:0;transition:opacity .26s;}
 .card::after{content:'';position:absolute;inset:0;border-radius:13px;background:radial-gradient(ellipse 60% 45% at 50% 0%,rgba(0,200,232,.05),transparent 70%);opacity:0;transition:opacity .26s;pointer-events:none;}
@@ -149,8 +119,6 @@ body{font-family:var(--body);color:var(--white);display:flex;flex-direction:colu
 .c-gold .tag{background:rgba(184,137,42,.1);border-color:rgba(184,137,42,.2);color:rgba(232,192,96,.8);}
 .c-purple .tag{background:rgba(96,48,192,.1);border-color:rgba(96,48,192,.2);color:rgba(144,96,240,.8);}
 .c-coral .tag{background:rgba(192,72,32,.1);border-color:rgba(192,72,32,.2);color:rgba(232,112,64,.85);}
-
-/* ── FOOTER ── */
 .footer{display:flex;align-items:center;justify-content:space-between;padding:.6rem 2.4rem;border-top:1px solid rgba(255,255,255,.05);animation:fadeup .7s ease .5s both;}
 @keyframes fadeup{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .copy{font-family:var(--mono);font-size:7.5px;color:rgba(255,255,255,.18);letter-spacing:.1em;}
@@ -171,97 +139,80 @@ body{font-family:var(--body);color:var(--white);display:flex;flex-direction:colu
 <div class="side-bar"></div>
 <div class="portal">
 
-  <!-- ══ TOPBAR ══ -->
   <div class="topbar">
     <div class="logo-wrap">
       <div class="logo-MSA">MSA</div>
       <div class="logo-sep"></div>
       <div class="logo-info">
-        <span class="logo-name">Agentes Marítimos</span>
-        <span class="logo-tag">Nueva Palmira · UY</span>
+        <span class="logo-name">Agentes Mar&#xED;timos</span>
+        <span class="logo-tag">Nueva Palmira &middot; UY</span>
       </div>
     </div>
 
     <div class="wx-row-top">
 
-      <!-- ── Widget NUEVA PALMIRA ── -->
       <div class="wx-widget" id="npWidget">
         <span class="wx-loading" id="npLoad">CARGANDO...</span>
         <div id="npData" style="display:none;align-items:center;gap:8px;display:none">
           <div>
             <div class="wx-loc">Nueva Palmira</div>
             <div style="display:flex;align-items:baseline;gap:1px">
-              <span class="wx-temp" id="npT">--</span><span class="wx-unit">°C</span>
+              <span class="wx-temp" id="npT">--</span><span class="wx-unit">&#xB0;C</span>
             </div>
             <div class="wx-cond-sm" id="npC">--</div>
           </div>
-          <span id="npI" style="font-size:20px;filter:drop-shadow(0 0 5px rgba(0,200,232,.4))">☁</span>
+          <span id="npI" style="font-size:20px;filter:drop-shadow(0 0 5px rgba(0,200,232,.4))">&#x2601;</span>
           <div class="wx-vsep"></div>
           <div class="wx-det">
             <div class="wx-drow">
               <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" id="npArrow" style="transition:transform .5s"><path d="M12 2v20M12 2L6 9M12 2L18 9"/></svg>
               <span id="npW">-- kt</span><b id="npWD">--</b>
             </div>
-            <div class="wx-drow">🌧 <span>LLUVIA</span><b id="npR">--%</b></div>
-            <div class="wx-drow">💧 <span>HUM.</span><b id="npH">--%</b></div>
+            <div class="wx-drow">&#x1F327; <span>LLUVIA</span><b id="npR">--%</b></div>
+            <div class="wx-drow">&#x1F4A7; <span>HUM.</span><b id="npH">--%</b></div>
           </div>
         </div>
       </div>
 
       <div class="wx-vsep" style="height:40px"></div>
 
-      <!-- ── Widget RECALADA con MANGA DE VIENTO ── -->
       <div class="wx-widget" style="border-color:rgba(100,180,255,.18);background:rgba(20,80,180,.07);" id="rcWidget">
         <span class="wx-loading" id="rcLoad">CARGANDO...</span>
         <div id="rcData" style="display:none;align-items:center;gap:8px">
-
-          <!-- Temp + condición -->
           <div>
-            <div class="wx-loc" style="color:rgba(120,190,255,.9)">Recalada · UY</div>
+            <div class="wx-loc" style="color:rgba(120,190,255,.9)">Recalada &middot; UY</div>
             <div style="display:flex;align-items:baseline;gap:1px">
-              <span class="wx-temp" id="rcT">--</span><span class="wx-unit">°C</span>
+              <span class="wx-temp" id="rcT">--</span><span class="wx-unit">&#xB0;C</span>
             </div>
             <div class="wx-cond-sm" id="rcC" style="color:rgba(120,190,255,.55)">--</div>
           </div>
-
           <div class="wx-vsep"></div>
-
-          <!-- MANGA DE VIENTO ANIMADA -->
-          <div class="sock-wrap" title="Manga de viento — Recalada">
+          <div class="sock-wrap" title="Manga de viento &#x2014; Recalada">
             <svg class="sock-svg" viewBox="0 0 88 58" width="88" height="58">
               <defs>
                 <clipPath id="sClip">
                   <path d="M20,9 C42,5 66,9 76,14 C66,21 42,25 20,21 Z"/>
                 </clipPath>
               </defs>
-              <!-- Mástil -->
               <line x1="20" y1="3" x2="20" y2="55" stroke="rgba(180,210,255,.45)" stroke-width="2.5" stroke-linecap="round"/>
               <line x1="11" y1="55" x2="29" y2="55" stroke="rgba(180,210,255,.3)" stroke-width="2" stroke-linecap="round"/>
-              <!-- Pivote -->
               <circle cx="20" cy="14" r="4" fill="none" stroke="rgba(0,200,232,.85)" stroke-width="1.8"/>
               <circle cx="20" cy="14" r="1.5" fill="rgba(0,200,232,1)"/>
-              <!-- Grupo que rota con el viento -->
               <g id="sockDir" style="transform-origin:20px 14px;transform:rotate(90deg)">
-                <!-- Grupo que ondea -->
                 <g class="sock-flutter" style="transform-origin:20px 14px">
-                  <!-- Cuerpo de la manga -->
                   <path d="M20,9 C42,5 66,9 76,14 C66,21 42,25 20,21 Z"
                         fill="rgba(0,200,232,.15)" stroke="rgba(0,200,232,.75)" stroke-width="1.4" stroke-linejoin="round"/>
-                  <!-- Franjas de color -->
                   <g clip-path="url(#sClip)">
                     <rect x="28" y="4" width="11" height="24" fill="rgba(255,55,55,.5)"/>
                     <rect x="47" y="6" width="10" height="22" fill="rgba(255,55,55,.5)"/>
                     <rect x="64" y="9" width="9" height="16" fill="rgba(255,55,55,.5)"/>
                   </g>
-                  <!-- Contorno encima -->
                   <path d="M20,9 C42,5 66,9 76,14 C66,21 42,25 20,21 Z"
                         fill="none" stroke="rgba(0,200,232,.4)" stroke-width=".8"/>
                 </g>
               </g>
             </svg>
           </div>
-
-          <!-- Velocidad prominente + dirección -->
           <div class="wind-display">
             <div class="wind-label">Viento</div>
             <div style="display:flex;align-items:baseline;gap:2px">
@@ -270,72 +221,65 @@ body{font-family:var(--body);color:var(--white);display:flex;flex-direction:colu
             </div>
             <div class="wind-dir" id="rcWD">--</div>
           </div>
-
           <div class="wx-vsep"></div>
-
-          <!-- Detalles lluvia / humedad -->
           <div class="wx-det">
-            <div class="wx-drow">🌧 <span>LLUVIA</span><b id="rcR">--%</b></div>
-            <div class="wx-drow">💧 <span>HUM.</span><b id="rcH">--%</b></div>
+            <div class="wx-drow">&#x1F327; <span>LLUVIA</span><b id="rcR">--%</b></div>
+            <div class="wx-drow">&#x1F4A7; <span>HUM.</span><b id="rcH">--%</b></div>
             <div class="wx-drow" style="margin-top:2px;font-size:6.5px;color:rgba(120,190,255,.45)" id="rcUpd">--</div>
           </div>
-
         </div>
       </div>
 
       <div class="wx-vsep" style="height:40px"></div>
 
-      <!-- Sistema status -->
       <div class="sys-wrap">
         <div class="sys-status"><div class="sys-dot"></div>SISTEMA OPERATIVO</div>
         <div class="sys-date" id="dateDisp">--</div>
       </div>
 
     </div>
-  </div><!-- /topbar -->
+  </div>
 
-  <!-- ══ HERO + GRID ══ -->
   <div class="hero">
     <div class="eyebrow">Portal de Operaciones</div>
     <h1 class="hero-title"><div class="t1">Operaciones</div><div class="t2">Fluviales MSA</div></h1>
-    <p class="hero-sub">Seleccioná la aplicación que necesitás</p>
+    <p class="hero-sub">Selecion&#xE1; la aplicaci&#xF3;n que necesit&#xE1;s</p>
 
-    <!-- Grid 3×2 — 6 cards, centradas -->
     <div class="grid">
 
       <a href="PUERTO_ISA.html" class="card c-green" style="animation:fadein .7s ease .32s both;">
-        <div class="card-top"><div class="card-icon">👤</div><div class="card-arrow">↗</div></div>
-        <div><div class="card-title">Tripulación — Rol</div><div class="card-desc">Gestión de tripulantes, roles a bordo y libretas y cedulas.</div></div>
+        <div class="card-top"><div class="card-icon">&#x1F464;</div><div class="card-arrow">&#x2197;</div></div>
+        <div><div class="card-title">Tripulaci&#xF3;n &#x2014; Rol</div><div class="card-desc">Gesti&#xF3;n de tripulantes, roles a bordo y libretas y cedulas.</div></div>
         <div class="card-tags"><span class="tag">Tripulantes</span><span class="tag">Roles</span><span class="tag">Libretas</span></div>
       </a>
 
       <a href="operaciones.html" class="card c-cyan" style="animation:fadein .7s ease .39s both;">
-        <div class="card-top"><div class="card-icon">📊</div><div class="card-arrow">↗</div></div>
-        <div><div class="card-title">Próximas Operaciones</div><div class="card-desc">Buques y Fluvial — Nueva Palmira. ETAs, cargas, clientes y muelles en tiempo real.</div></div>
+        <div class="card-top"><div class="card-icon">&#x1F4CA;</div><div class="card-arrow">&#x2197;</div></div>
+        <div><div class="card-title">Pr&#xF3;ximas Operaciones</div><div class="card-desc">Buques y Fluvial &#x2014; Nueva Palmira. ETAs, cargas, clientes y muelles en tiempo real.</div></div>
         <div class="card-tags"><span class="tag">Buques</span><span class="tag">Fluvial</span><span class="tag">ETA</span><span class="tag">Muelles</span></div>
       </a>
 
       <a href="gastos-fluviales.html" class="card c-gold" style="animation:fadein .7s ease .46s both;">
-        <div class="card-top"><div class="card-icon">📧</div><div class="card-arrow">↗</div></div>
+        <div class="card-top"><div class="card-icon">&#x1F4E7;</div><div class="card-arrow">&#x2197;</div></div>
         <div><div class="card-title">Mensaje de Gastos</div><div class="card-desc">Generador de mensajes de gastos. Remolcadores, barcazas, lanchas y servicios.</div></div>
         <div class="card-tags"><span class="tag">Remolcadores</span><span class="tag">Barcazas</span><span class="tag">Lanchas</span></div>
       </a>
 
       <a href="barcazas.html" class="card c-purple" style="animation:fadein .7s ease .53s both;">
-        <div class="card-top"><div class="card-icon">🛳️</div><div class="card-arrow">↗</div></div>
+        <div class="card-top"><div class="card-icon">&#x1F6F3;&#xFE0F;</div><div class="card-arrow">&#x2197;</div></div>
         <div><div class="card-title">Seguimiento Barcazas</div><div class="card-desc">Barcazas en lastre y cargadas. Posiciones, ingresos y salidas en tiempo real.</div></div>
         <div class="card-tags"><span class="tag">Punta del Arenal</span><span class="tag">Nueva Palmira</span><span class="tag">Lastre</span><span class="tag">Cargadas</span></div>
       </a>
 
       <a href="sof-generator.html" class="card c-coral" style="animation:fadein .7s ease .60s both;">
-        <div class="card-top"><div class="card-icon">📋</div><div class="card-arrow">↗</div></div>
-        <div><div class="card-title">Generador SOF</div><div class="card-desc">Statement of Facts + Programa de Cantidades. Genera Excel desde logs de grúas automáticamente.</div></div>
+        <div class="card-top"><div class="card-icon">&#x1F4CB;</div><div class="card-arrow">&#x2197;</div></div>
+        <div><div class="card-title">Generador SOF</div><div class="card-desc">Statement of Facts + Programa de Cantidades. Genera Excel desde logs de gr&#xFA;as autom&#xE1;ticamente.</div></div>
         <div class="card-tags"><span class="tag">SOF</span><span class="tag">Logs</span><span class="tag">Cantidades</span><span class="tag">Ingresos</span></div>
       </a>
 
       <a href="LineUp_ISA_Firebase.html" class="card c-steel" style="animation:fadein .7s ease .67s both;">
-        <div class="card-top"><div class="card-icon">⚓</div><div class="card-arrow">↗</div></div>
-        <div><div class="card-title">Line Up — ISA Navios</div><div class="card-desc">Line up compartido en tiempo real. Terminal Navios - Muelles 1 y 4.</div></div>
+        <div class="card-top"><div class="card-icon">&#x2693;</div><div class="card-arrow">&#x2197;</div></div>
+        <div><div class="card-title">Line Up &#x2014; ISA Navios</div><div class="card-desc">Line up compartido en tiempo real. Terminal Navios - Muelles 1 y 4.</div></div>
         <div class="card-tags"><span class="tag">Line Up</span><span class="tag">ETB / ETC</span><span class="tag">ALONGSIDE</span><span class="tag">UNDER NAVIGATION</span></div>
       </a>
 
@@ -343,13 +287,13 @@ body{font-family:var(--body);color:var(--white);display:flex;flex-direction:colu
   </div>
 
   <div class="footer">
-    <div class="copy">© 2026 MSA AGENTES MARÍTIMOS — TODOS LOS DERECHOS RESERVADOS - ADRIAN PICHARDO</div>
+    <div class="copy">&#xA9; 2026 MSA AGENTES MAR&#xCD;TIMOS &#x2014; TODOS LOS DERECHOS RESERVADOS - ADRIAN PICHARDO</div>
     <div class="offices">
       <span class="office active">Nueva Palmira</span>
       <span class="office">Montevideo</span>
       <span class="office">Buenos Aires</span>
-      <span class="office">Asunción</span>
-      <span class="office">Corumbá</span>
+      <span class="office">Asunci&#xF3;n</span>
+      <span class="office">Corumb&#xE1;</span>
       <span class="office">San Lorenzo</span>
     </div>
   </div>
@@ -364,79 +308,63 @@ body{font-family:var(--body);color:var(--white);display:flex;flex-direction:colu
 </svg>
 
 <script>
-/* ── FECHA ── */
 function updDate(){
   const d=new Date();
   document.getElementById('dateDisp').textContent=
     d.toLocaleDateString('es-UY',{weekday:'short',day:'2-digit',month:'short',year:'numeric'}).toUpperCase()
-    +' — '+d.toLocaleTimeString('es-UY',{hour:'2-digit',minute:'2-digit'});
+    +' \u2014 '+d.toLocaleTimeString('es-UY',{hour:'2-digit',minute:'2-digit'});
 }
 updDate();setInterval(updDate,30000);
 
-/* ── WMO MAPS ── */
-const IC={0:'☀',1:'🌤',2:'⛅',3:'☁',45:'🌫',48:'🌫',51:'🌦',53:'🌦',55:'🌧',61:'🌧',63:'🌧',65:'🌧',71:'❄',73:'❄',75:'❄',80:'🌦',81:'🌧',82:'⛈',95:'⛈',96:'⛈',99:'⛈'};
+const IC={0:'\u2600',1:'\uD83C\uDF24',2:'\u26C5',3:'\u2601',45:'\uD83C\uDF2B',48:'\uD83C\uDF2B',51:'\uD83C\uDF26',53:'\uD83C\uDF26',55:'\uD83C\uDF27',61:'\uD83C\uDF27',63:'\uD83C\uDF27',65:'\uD83C\uDF27',71:'\u2744',73:'\u2744',75:'\u2744',80:'\uD83C\uDF26',81:'\uD83C\uDF27',82:'\u26C8',95:'\u26C8',96:'\u26C8',99:'\u26C8'};
 const DC={0:'Despejado',1:'Mayorm. despejado',2:'Parcialm. nublado',3:'Nublado',45:'Niebla',48:'Niebla',51:'Llovizna leve',53:'Llovizna',55:'Llovizna intensa',61:'Lluvia leve',63:'Lluvia moderada',65:'Lluvia intensa',80:'Chubascos',81:'Chubascos mod.',82:'Chubascos fuertes',95:'Tormenta',96:'Tormenta+granizo',99:'Tormenta intensa'};
 const WD=['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSO','SO','OSO','O','ONO','NO','NNO'];
 const d2dir=deg=>WD[Math.round(deg/22.5)%16];
 const ms2kt=ms=>Math.round(ms*1.94384);
 function getHourlyIdx(data){const h=new Date().toISOString().substring(0,13)+':00';return data.hourly.time.indexOf(h);}
 
-/* ── MANGA DE VIENTO ── */
-function updateWindSock(windDeg, windKt){
-  // El SVG tiene la manga apuntando a la DERECHA (este)
-  // Viento viene FROM windDeg → manga apunta a windDeg + 180°
-  // Corrección SVG: rotación = windDeg + 90 (porque este = 0° en SVG = 90° en brújula)
-  const sockEl = document.getElementById('sockDir');
-  if(sockEl) sockEl.style.transform = `rotate(${windDeg + 90}deg)`;
-
-  // Velocidad de ondeo según kt
-  const flutterEl = document.querySelector('.sock-flutter');
+function updateWindSock(windDeg,windKt){
+  const sockEl=document.getElementById('sockDir');
+  if(sockEl)sockEl.style.transform=`rotate(${windDeg+90}deg)`;
+  const flutterEl=document.querySelector('.sock-flutter');
   if(flutterEl){
-    const dur = windKt < 3 ? 6 : windKt < 8 ? 3.5 : windKt < 15 ? 1.8 : windKt < 25 ? 0.9 : 0.4;
-    flutterEl.style.animationDuration = dur + 's';
+    const dur=windKt<3?6:windKt<8?3.5:windKt<15?1.8:windKt<25?0.9:0.4;
+    flutterEl.style.animationDuration=dur+'s';
   }
 }
 
-/* ── CARGA DE CLIMA ── */
 async function loadWx(){
   const base='https://api.open-meteo.com/v1/forecast?hourly=precipitation_probability,relativehumidity_2m&current_weather=true&windspeed_unit=ms&timezone=America%2FMontevideo';
   try{
     const[r1,r2]=await Promise.all([
-      fetch(base+'&latitude=-33.879&longitude=-58.409'), // Nueva Palmira
-      fetch(base+'&latitude=-35.217&longitude=-57.100')  // Recalada
+      fetch(base+'&latitude=-33.879&longitude=-58.409'),
+      fetch(base+'&latitude=-35.217&longitude=-57.100')
     ]);
     const[d1,d2]=await Promise.all([r1.json(),r2.json()]);
-
-    /* ── NUEVA PALMIRA ── */
-    const cw=d1.current_weather, hi=getHourlyIdx(d1);
-    document.getElementById('npT').textContent  = Math.round(cw.temperature);
-    document.getElementById('npI').textContent  = IC[cw.weathercode]||'☁';
-    document.getElementById('npC').textContent  = DC[cw.weathercode]||'--';
-    document.getElementById('npW').textContent  = ms2kt(cw.windspeed)+' kt';
-    document.getElementById('npWD').textContent = d2dir(cw.winddirection);
-    document.getElementById('npR').textContent  = (hi>=0?d1.hourly.precipitation_probability[hi]:'--')+'%';
-    document.getElementById('npH').textContent  = (hi>=0?d1.hourly.relativehumidity_2m[hi]:'--')+'%';
-    document.getElementById('npArrow').style.transform = `rotate(${cw.winddirection}deg)`;
+    const cw=d1.current_weather,hi=getHourlyIdx(d1);
+    document.getElementById('npT').textContent=Math.round(cw.temperature);
+    document.getElementById('npI').textContent=IC[cw.weathercode]||'\u2601';
+    document.getElementById('npC').textContent=DC[cw.weathercode]||'--';
+    document.getElementById('npW').textContent=ms2kt(cw.windspeed)+' kt';
+    document.getElementById('npWD').textContent=d2dir(cw.winddirection);
+    document.getElementById('npR').textContent=(hi>=0?d1.hourly.precipitation_probability[hi]:'--')+'%';
+    document.getElementById('npH').textContent=(hi>=0?d1.hourly.relativehumidity_2m[hi]:'--')+'%';
+    document.getElementById('npArrow').style.transform=`rotate(${cw.winddirection}deg)`;
     document.getElementById('npLoad').style.display='none';
     const npD=document.getElementById('npData');
     npD.style.display='flex';
-
-    /* ── RECALADA ── */
-    const cw2=d2.current_weather, hi2=getHourlyIdx(d2);
-    const windKt = ms2kt(cw2.windspeed);
-    document.getElementById('rcT').textContent   = Math.round(cw2.temperature);
-    document.getElementById('rcC').textContent   = DC[cw2.weathercode]||'--';
-    document.getElementById('rcW').textContent   = windKt;
-    document.getElementById('rcWD').textContent  = d2dir(cw2.winddirection);
-    document.getElementById('rcR').textContent   = (hi2>=0?d2.hourly.precipitation_probability[hi2]:'--')+'%';
-    document.getElementById('rcH').textContent   = (hi2>=0?d2.hourly.relativehumidity_2m[hi2]:'--')+'%';
-    document.getElementById('rcUpd').textContent = 'ACT. '+new Date(cw2.time).toLocaleTimeString('es-UY',{hour:'2-digit',minute:'2-digit'});
+    const cw2=d2.current_weather,hi2=getHourlyIdx(d2);
+    const windKt=ms2kt(cw2.windspeed);
+    document.getElementById('rcT').textContent=Math.round(cw2.temperature);
+    document.getElementById('rcC').textContent=DC[cw2.weathercode]||'--';
+    document.getElementById('rcW').textContent=windKt;
+    document.getElementById('rcWD').textContent=d2dir(cw2.winddirection);
+    document.getElementById('rcR').textContent=(hi2>=0?d2.hourly.precipitation_probability[hi2]:'--')+'%';
+    document.getElementById('rcH').textContent=(hi2>=0?d2.hourly.relativehumidity_2m[hi2]:'--')+'%';
+    document.getElementById('rcUpd').textContent='ACT. '+new Date(cw2.time).toLocaleTimeString('es-UY',{hour:'2-digit',minute:'2-digit'});
     document.getElementById('rcLoad').style.display='none';
     document.getElementById('rcData').style.display='flex';
-
-    // Manga de viento
-    updateWindSock(cw2.winddirection, windKt);
-
+    updateWindSock(cw2.winddirection,windKt);
   }catch(e){
     document.getElementById('npLoad').textContent='SIN DATOS';
     document.getElementById('rcLoad').textContent='SIN DATOS';
