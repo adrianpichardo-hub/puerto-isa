@@ -108,23 +108,23 @@ table.grav td{padding:7px 10px;border-bottom:1px solid var(--border);font-size:1
       <p style="font-size:10px;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px">Sistema de Line Up</p>
       <h1 style="font-size:22px;font-weight:700;margin-bottom:5px;letter-spacing:-.02em">ISA Nueva Palmira - Terminal Navios</h1>
       <p id="save-ind" style="font-size:12px;color:var(--green);display:flex;align-items:center;gap:6px">
-        <span id="conn-dot" title="Estado de conexiÃ³n" style="width:8px;height:8px;border-radius:50%;background:var(--text3);display:inline-block;flex-shrink:0;transition:background .4s"></span>
+        <span id="conn-dot" title="Estado de conexi&#xF3;n" style="width:8px;height:8px;border-radius:50%;background:var(--text3);display:inline-block;flex-shrink:0;transition:background .4s"></span>
         Conectando...
       </p>
     </div>
-    <button class="btn btn-prim" style="font-size:14px;padding:10px 20px" onclick="openPreview('en')">ðŸ‘ Vista previa y envÃ­o</button>
+    <button class="btn btn-prim" style="font-size:14px;padding:10px 20px" onclick="openPreview('en')">&#x1F441; Vista previa y env&#xED;o</button>
   </div>
   <div id="warn-bar" style="display:none;background:var(--red-bg);border:1px solid var(--red-mid);border-radius:var(--r);padding:10px 16px;margin-bottom:16px;align-items:center;gap:10px;flex-wrap:wrap">
     <span id="warn-txt" style="font-size:12px;color:var(--red-t);font-weight:600"></span>
-    <button class="btn btn-sm btn-danger" onclick="openPreview('en')">Ver detalle â†’</button>
+    <button class="btn btn-sm btn-danger" onclick="openPreview('en')">Ver detalle &#x2192;</button>
   </div>
   <div class="card" style="border-radius:var(--rlg) var(--rlg) 0 0;border-bottom:none">
     <div class="tabs">
-      <button class="tab active" id="tab-datos"    onclick="setTab('datos')">ðŸ“‹ Datos</button>
-      <button class="tab"        id="tab-en"        onclick="setTab('en')">ðŸ‡¬ðŸ‡§ InglÃ©s</button>
-      <button class="tab"        id="tab-es"        onclick="setTab('es')">ðŸ‡¦ðŸ‡· EspaÃ±ol</button>
-      <button class="tab"        id="tab-gravetal"  onclick="setTab('gravetal')">ðŸ“Š Excel Gravetal</button>
-      <button class="tab"        id="tab-dist"      onclick="setTab('dist')">ðŸ“¬ DistribuciÃ³n</button>
+      <button class="tab active" id="tab-datos"    onclick="setTab('datos')">&#x1F4CB; Datos</button>
+      <button class="tab"        id="tab-en"        onclick="setTab('en')">&#x1F1EC;&#x1F1E7; Ingl&#xE9;s</button>
+      <button class="tab"        id="tab-es"        onclick="setTab('es')">&#x1F1E6;&#x1F1F7; Espa&#xF1;ol</button>
+      <button class="tab"        id="tab-gravetal"  onclick="setTab('gravetal')">&#x1F4CA; Excel Gravetal</button>
+      <button class="tab"        id="tab-dist"      onclick="setTab('dist')">&#x1F4EC; Distribuci&#xF3;n</button>
     </div>
   </div>
   <div class="card" style="border-radius:0 0 var(--rlg) var(--rlg);padding:20px" id="content"></div>
@@ -137,23 +137,23 @@ table.grav td{padding:7px 10px;border-bottom:1px solid var(--border);font-size:1
         <p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px">Vista previa antes de enviar</p>
         <p style="font-size:17px;font-weight:700">ISA Nueva Palmira - Terminal Navios</p>
       </div>
-      <button style="background:none;border:none;cursor:pointer;font-size:22px;color:var(--text3);padding:2px 6px;line-height:1" onclick="closePreview()">âœ•</button>
+      <button style="background:none;border:none;cursor:pointer;font-size:22px;color:var(--text3);padding:2px 6px;line-height:1" onclick="closePreview()">&#x2715;</button>
     </div>
     <div id="pm-warn" style="padding:16px 22px 0"></div>
     <div class="stabs" id="pm-tabs" style="margin-top:16px"></div>
     <div id="pm-body"></div>
     <div class="mftr">
-      <button class="btn btn-ghost" onclick="closePreview()">â† Volver a editar</button>
+      <button class="btn btn-ghost" onclick="closePreview()">&#x2190; Volver a editar</button>
       <div style="display:flex;gap:8px;flex-wrap:wrap" id="pm-btns"></div>
     </div>
   </div>
 </div>
 
 <script>
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   ðŸ”¥ FIREBASE â€” PEGAR AQUÃ TU CONFIGURACIÃ“N
-   (Firebase Console â†’ tu proyecto â†’ ConfiguraciÃ³n â†’ SDK web)
-   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+   \u{1F525} FIREBASE \u2014 PEGAR AQU\u00CD TU CONFIGURACI\u00D3N
+   (Firebase Console \u2192 tu proyecto \u2192 Configuraci\u00F3n \u2192 SDK web)
+   \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
 const firebaseConfig = {
   apiKey:            "AIzaSyBjQFKVKm5hjdM3Z4A6jSXNmzr8i5V8pSo",
   authDomain:        "line-up---nueva-palmra.firebaseapp.com",
@@ -165,7 +165,7 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const LINE_REF = firebase.database().ref("lineup_isa_navios");
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
 
 const TERMINAL="ISA Nueva Palmira TERMINAL NAVIOS";
 let EN_CLIENTS=["ISAOPER","LHG","SODRU","CHS","HAMMER"];
@@ -173,7 +173,7 @@ let ES_CLIENTS=["GRAVETAL","NUTRIOIL"];
 let CARGOS=["SBS","SBM","IRON ORE","SOYBEAN OIL","SBO","WHEAT"];
 const SK="lineup_isa_v7";
 
-/* â”€â”€ RATES DE CARGA (MT/HORA) â”€â”€ */
+/* \u2500\u2500 RATES DE CARGA (MT/HORA) \u2500\u2500 */
 const LOAD_RATES={"SBS":1000,"SBM":600,"IRON ORE":2000,"SBO":500,"SOYBEAN OIL":500,"WHEAT":800};
 const DEFAULT_RATE=800;
 const MONTHS=["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
@@ -194,7 +194,7 @@ let vessels=[
 let nextId=20,activeTab="datos",prevSec="en",ieId=null,ief={},bfm={},selEN=EN_CLIENTS[0],selES=ES_CLIENTS[0],copied="",cpTmr=null,svTmr=null;
 let operatorName="",pendingRemoteData=null;
 
-/* â”€â”€ STORAGE FIREBASE â”€â”€ */
+/* \u2500\u2500 STORAGE FIREBASE \u2500\u2500 */
 function applyRemoteData(d){
   vessels=d.v||vessels;
   nextId=d.n||nextId;
@@ -212,36 +212,36 @@ function loadData(){
   if(saved){
     operatorName=saved;
   } else {
-    const n=prompt("ðŸ‘‹ Â¿Tu nombre o iniciales? (se mostrarÃ¡ al equipo cuando guardes)","");
+    const n=prompt("\u{1F44B} \u00BFTu nombre o iniciales? (se mostrar\u00E1 al equipo cuando guardes)","");
     operatorName=(n&&n.trim())?n.trim().toUpperCase():"OPERADOR";
     localStorage.setItem("isa_operator_name",operatorName);
   }
 
-  // Indicador de conexiÃ³n (punto verde/rojo)
+  // Indicador de conexi\u00F3n (punto verde/rojo)
   firebase.database().ref(".info/connected").on("value",(snap)=>{
     const dot=document.getElementById("conn-dot");
     if(dot)dot.style.background=snap.val()?"var(--green)":"var(--red)";
     const ind=document.getElementById("save-ind");
-    if(ind&&!snap.val()){ind.innerHTML=`<span id="conn-dot" style="width:8px;height:8px;border-radius:50%;background:var(--red);display:inline-block;flex-shrink:0"></span> Sin conexiÃ³n â€” cambios pendientes`; ind.style.color="var(--red)";}
+    if(ind&&!snap.val()){ind.innerHTML=`<span id="conn-dot" style="width:8px;height:8px;border-radius:50%;background:var(--red);display:inline-block;flex-shrink:0"></span> Sin conexi\u00F3n \u2014 cambios pendientes`; ind.style.color="var(--red)";}
   });
 
   // Listener en tiempo real
   LINE_REF.on("value",(snapshot)=>{
     const d=snapshot.val();
-    if(!d)return; // base vacÃ­a â€” usar datos de defaults
+    if(!d)return; // base vac\u00EDa \u2014 usar datos de defaults
     if(ieId!==null){
-      // Hay un inline edit abierto en este cliente â†’ no re-renderizar, guardar para despuÃ©s
+      // Hay un inline edit abierto en este cliente \u2192 no re-renderizar, guardar para despu\u00E9s
       pendingRemoteData=d;
       const el=document.getElementById("save-ind");
       if(el){
-        el.innerHTML=`<span id="conn-dot" style="width:8px;height:8px;border-radius:50%;background:var(--amber);display:inline-block;flex-shrink:0"></span> âš¡ ActualizaciÃ³n de <strong>${d.lastBy||"equipo"}</strong> â€” guardÃ¡ para aplicar`;
+        el.innerHTML=`<span id="conn-dot" style="width:8px;height:8px;border-radius:50%;background:var(--amber);display:inline-block;flex-shrink:0"></span> \u26A1 Actualizaci\u00F3n de <strong>${d.lastBy||"equipo"}</strong> \u2014 guard\u00E1 para aplicar`;
         el.style.color="var(--amber-t)";
       }
       return;
     }
     const el=document.getElementById("save-ind");
     if(el&&d.lastBy){
-      el.innerHTML=`<span id="conn-dot" style="width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;flex-shrink:0"></span> âœ“ Actualizado por <strong>${d.lastBy}</strong>${d.lastAt?" a las "+d.lastAt:""}`;
+      el.innerHTML=`<span id="conn-dot" style="width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;flex-shrink:0"></span> \u2713 Actualizado por <strong>${d.lastBy}</strong>${d.lastAt?" a las "+d.lastAt:""}`;
       el.style.color="var(--green)";
     }
     applyRemoteData(d);
@@ -261,15 +261,15 @@ function scheduleSave(){
       lastAt:now
     }).then(()=>{
       const e=document.getElementById("save-ind");
-      if(e){e.innerHTML=`<span id="conn-dot" style="width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;flex-shrink:0"></span> âœ“ Guardado por <strong>${operatorName}</strong> a las ${now}`;e.style.color="var(--green)";}
+      if(e){e.innerHTML=`<span id="conn-dot" style="width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;flex-shrink:0"></span> \u2713 Guardado por <strong>${operatorName}</strong> a las ${now}`;e.style.color="var(--green)";}
     }).catch(()=>{
       const e=document.getElementById("save-ind");
-      if(e){e.innerHTML=`<span id="conn-dot" style="width:8px;height:8px;border-radius:50%;background:var(--red);display:inline-block;flex-shrink:0"></span> âš  Error al guardar`;e.style.color="var(--red)";}
+      if(e){e.innerHTML=`<span id="conn-dot" style="width:8px;height:8px;border-radius:50%;background:var(--red);display:inline-block;flex-shrink:0"></span> \u26A0 Error al guardar`;e.style.color="var(--red)";}
     });
   },1000);
 }
 
-/* â”€â”€ ADD DYNAMIC FIELDS â”€â”€ */
+/* \u2500\u2500 ADD DYNAMIC FIELDS \u2500\u2500 */
 function addClient(lang){
   const c = prompt(`Nombre del nuevo cliente (${lang.toUpperCase()}):`);
   if(c && c.trim()!==""){
@@ -279,7 +279,7 @@ function addClient(lang){
   }
 }
 function addCargo(){
-  const c = prompt("Nombre de la nueva mercaderÃ­a (ej. WHEAT):");
+  const c = prompt("Nombre de la nueva mercader\u00EDa (ej. WHEAT):");
   if(c && c.trim()!==""){
     CARGOS.push(c.trim().toUpperCase());
     scheduleSave();
@@ -288,7 +288,7 @@ function addCargo(){
   }
 }
 
-/* â”€â”€ TEXT LOGIC & STATUS â”€â”€ */
+/* \u2500\u2500 TEXT LOGIC & STATUS \u2500\u2500 */
 const DEST_ES={EGYPT:"EGIPTO"};
 function trD(d){return DEST_ES[d]||d;}
 
@@ -311,23 +311,23 @@ function stES(v){
   return v.status==="ETA RECALADA"?`ETA RECALADA ${v.etaDate}${s}`:`ETA NUEVA PALMIRA ${v.etaDate}`;
 }
 
-function dsP(dest,ship){const d=dest&&dest!=="TBC"?dest:null,s=ship&&ship!=="TBC"?ship:null;if(!d&&!s)return" â€” TBC";if(d&&!s)return` â€” ${d}`;if(!d&&s)return` â€” ${s}`;return` â€” ${d} â€” ${s}`;}
+function dsP(dest,ship){const d=dest&&dest!=="TBC"?dest:null,s=ship&&ship!=="TBC"?ship:null;if(!d&&!s)return" \u2014 TBC";if(d&&!s)return` \u2014 ${d}`;if(!d&&s)return` \u2014 ${s}`;return` \u2014 ${d} \u2014 ${s}`;}
 function noteP(tbc,cond,lang){
   const c=lang==="es"?cond.replace("SUB TO CARGO ARRIVAL","SUJETO A ARRIBO DE CARGA").replace("SUBJECT TO DEPARTURE FROM SAN LORENZO, ARG","SUJETO A ZARPE DE SAN LORENZO, ARG"):cond;
   const t=lang==="es"?"POR CONFIRMAR":"TO BE CONFIRMED";
   if(tbc&&c)return` (${t}, ${c})`;if(tbc)return` (${t})`;if(c)return` (${c})`;return"";
 }
 function genLine(v,lang){
-  const s=v.etcSuf?` ${v.etcSuf}`:"",q=v.qty==="TBC"?"TBC MT":`${v.qty} MT`,cg=`${q} ${v.cargo} ${v.orig}`,ds=dsP(lang==="es"?trD(v.dest):v.dest,v.ship),etc=` â€” ETC ${v.etc}${s}`,note=noteP(v.tbc,v.cond,lang),nm=`"${v.vessel}"`;
+  const s=v.etcSuf?` ${v.etcSuf}`:"",q=v.qty==="TBC"?"TBC MT":`${v.qty} MT`,cg=`${q} ${v.cargo} ${v.orig}`,ds=dsP(lang==="es"?trD(v.dest):v.dest,v.ship),etc=` \u2014 ETC ${v.etc}${s}`,note=noteP(v.tbc,v.cond,lang),nm=`"${v.vessel}"`;
   
   if(v.status==="ALONGSIDE"){
     const isIronOreLoading = v.cargo === "IRON ORE";
     const op = lang==="es"?"ATRACADO CARGANDO":(isIronOreLoading ? "LOADING" : "ALONGSIDE LOADING");
-    return`${nm} â€” ${op} ${cg}${ds}${etc}.${note}`;
+    return`${nm} \u2014 ${op} ${cg}${ds}${etc}.${note}`;
   }
   
   const op=lang==="es"?"PARA CARGAR":"TO LOAD",st=lang==="es"?stES(v):stEN(v);
-  return`${nm} â€” ${st} â€” ETB ${v.etb} â€” ${op} ${cg}${ds}${etc}.${note}`;
+  return`${nm} \u2014 ${st} \u2014 ETB ${v.etb} \u2014 ${op} ${cg}${ds}${etc}.${note}`;
 }
 function showFree(b){const hasSide=vessels.filter(v=>v.b===b).some(v=>v.status==="ALONGSIDE");if(hasSide)return false;return bfm[b]!==false;}
 function buildLineup(lang){
@@ -339,7 +339,7 @@ function buildLineup(lang){
     bv.forEach(v=>lines.push(genLine(v,lang)));
     lines.push("");
   }
-  lines.push(lang==="en"?"ALL POSITIONS SUBJECT TO CARGO AVAILABILITY & TERMINAL CONFIRMATION / ORDERS.":"TODAS LAS POSICIONES SUJETAS A DISPONIBILIDAD DE CARGA Y CONFIRMACIÃ“N DE LA TERMINAL / Ã“RDENES.");
+  lines.push(lang==="en"?"ALL POSITIONS SUBJECT TO CARGO AVAILABILITY & TERMINAL CONFIRMATION / ORDERS.":"TODAS LAS POSICIONES SUJETAS A DISPONIBILIDAD DE CARGA Y CONFIRMACI\u00D3N DE LA TERMINAL / \u00D3RDENES.");
   return lines.join("\n");
 }
 function buildEmail(lang,client){
@@ -347,10 +347,10 @@ function buildEmail(lang,client){
   const from=lang==="en"?"From ISA Nueva Palmira":"De ISA Nueva Palmira";
   return`${to}\n${from}\n\n${buildLineup(lang)}`;
 }
-function etcStr(v){if(v.status==="ALONGSIDE")return`ETC ${v.etc}${v.etcSuf?" "+v.etcSuf:""}`;return`ETB ${v.etb} â€” ETC ${v.etc}`;}
+function etcStr(v){if(v.status==="ALONGSIDE")return`ETC ${v.etc}${v.etcSuf?" "+v.etcSuf:""}`;return`ETB ${v.etb} \u2014 ETC ${v.etc}`;}
 function berths(){return[...new Set(vessels.map(v=>v.b))].sort();}
 
-/* â”€â”€ FECHA HELPERS & CASCADA â”€â”€ */
+/* \u2500\u2500 FECHA HELPERS & CASCADA \u2500\u2500 */
 function parseDate(str){
   if(!str||!str.includes("/"))return null;
   const p=str.trim().split("/");if(p.length<2)return null;
@@ -406,20 +406,20 @@ function validate(){
   return w;
 }
 
-/* â”€â”€ EXCEL â”€â”€ */
+/* \u2500\u2500 EXCEL \u2500\u2500 */
 function doXLSX(){
-  const wb=XLSX.utils.book_new(),rows=[["TERMINAL NAVIOS - LINE UP","","","","","","",""],["","","","","","","",""],["MUELLE","BUQUE","SITUACIÃ“N","CARGA","CANTIDAD","CLIENTE","DESTINO","ETB / ETC"]];
+  const wb=XLSX.utils.book_new(),rows=[["TERMINAL NAVIOS - LINE UP","","","","","","",""],["","","","","","","",""],["MUELLE","BUQUE","SITUACI\u00D3N","CARGA","CANTIDAD","CLIENTE","DESTINO","ETB / ETC"]];
   for(const b of berths()){
     const bv=vessels.filter(v=>v.b===b);
     if(showFree(b))rows.push([`MUELLE ${b}`,"LIBRE","","","","","",""]);
     for(const v of bv){const q=v.qty==="TBC"?"TBC MT":`${v.qty} MT`;rows.push([`MUELLE ${b}`,v.vessel,stES(v),`${v.cargo} ${v.orig}`,q,v.ship||"",trD(v.dest)||"",etcStr(v)]);}
   }
-  rows.push(["","","","","","","",""]);rows.push(["Todas las posiciones sujetas a disponibilidad de carga y confirmaciÃ³n de la terminal / Ã³rdenes.","","","","","","",""]);
+  rows.push(["","","","","","","",""]);rows.push(["Todas las posiciones sujetas a disponibilidad de carga y confirmaci\u00F3n de la terminal / \u00F3rdenes.","","","","","","",""]);
   const ws=XLSX.utils.aoa_to_sheet(rows);ws["!cols"]=[{wch:14},{wch:22},{wch:28},{wch:18},{wch:12},{wch:20},{wch:12},{wch:24}];
   XLSX.utils.book_append_sheet(wb,ws,"Line Up");XLSX.writeFile(wb,"LineUp_GRAVETAL.xlsx");
 }
 
-/* â”€â”€ HTML HELPERS â”€â”€ */
+/* \u2500\u2500 HTML HELPERS \u2500\u2500 */
 const SB={
   "ALONGSIDE":{bg:"var(--green-bg)",tc:"var(--green-t)",bd:"var(--green-mid)",t:"ATRACADO"},
   "AT RECALADA":{bg:"var(--blue-bg)",tc:"var(--blue-t)",bd:"var(--blue-mid)",t:"EN RECALADA"},
@@ -431,21 +431,21 @@ const SB={
 };
 function pillH(s){const c=SB[s]||SB["ETA RECALADA"];return`<span class="pill" style="background:${c.bg};color:${c.tc};border:1px solid ${c.bd}">${c.t}</span>`;}
 function esc(t){return String(t||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
-function selH(id,val,opts,oc,w){const os=opts.map(o=>`<option value="${esc(o)}"${o===val?" selected":""}>${esc(o)||"â€”"}</option>`).join("");return`<select id="${id}" class="inp"${w?` style="width:${w}"`:""}  onchange="${oc}">${os}</select>`;}
+function selH(id,val,opts,oc,w){const os=opts.map(o=>`<option value="${esc(o)}"${o===val?" selected":""}>${esc(o)||"\u2014"}</option>`).join("");return`<select id="${id}" class="inp"${w?` style="width:${w}"`:""}  onchange="${oc}">${os}</select>`;}
 function inpH(id,val,ph,oc,upper,w){return`<input id="${id}" class="inp" value="${esc(val)}" placeholder="${ph}"${w?` style="width:${w}"`:""}  oninput="${oc}${upper?";this.value=this.value.toUpperCase()":""}">` ;}
 function cbH(lbl,v,sel){const cs={en:{bg:"var(--blue-bg)",tc:"var(--blue-t)",bd:"var(--blue-mid)",bds:"var(--blue-t)"},es:{bg:"var(--green-bg)",tc:"var(--green-t)",bd:"var(--green-mid)",bds:"var(--green-t)"},xl:{bg:"var(--amber-bg)",tc:"var(--amber-t)",bd:"var(--amber-mid)",bds:"var(--amber-t)"}};const c=cs[v]||cs.en;return`<span class="cbadge${sel?" sel":""}" style="background:${c.bg};color:${c.tc};border-color:${sel?c.bds:c.bd}">${lbl}</span>`;}
 function gravTbl(){
   const thS="padding:8px 10px;border-bottom:1px solid var(--border2);font-size:10px;color:var(--text2);font-weight:700;white-space:nowrap;background:var(--bg2);text-transform:uppercase;letter-spacing:.05em";
   const tdS="padding:7px 10px;border-bottom:1px solid var(--border);font-size:12px";
   let rows="";
-  for(const b of berths()){const bv=vessels.filter(v=>v.b===b);if(showFree(b))rows+=`<tr style="background:var(--bg2)"><td style="${tdS};font-weight:700">MUELLE ${b}</td><td colspan="7" style="${tdS};color:var(--text3)">LIBRE</td></tr>`;for(const v of bv){const q=v.qty==="TBC"?"TBC MT":`${v.qty} MT`;rows+=`<tr><td style="${tdS};white-space:nowrap">MUELLE ${b}</td><td style="${tdS};font-weight:600">${esc(v.vessel)}</td><td style="${tdS};white-space:nowrap">${stES(v)}</td><td style="${tdS};white-space:nowrap">${v.cargo} ${v.orig}</td><td style="${tdS};white-space:nowrap">${q}</td><td style="${tdS}">${esc(v.ship)||"â€”"}</td><td style="${tdS}">${trD(v.dest)||"â€”"}</td><td style="${tdS};white-space:nowrap">${etcStr(v)}</td></tr>`;}}
-  return`<div style="overflow-x:auto"><table class="grav"><thead><tr>${["MUELLE","BUQUE","SITUACIÃ“N","CARGA","CANTIDAD","CLIENTE","DESTINO","ETB / ETC"].map(h=>`<th style="${thS}">${h}</th>`).join("")}</tr></thead><tbody>${rows}</tbody></table></div>`;
+  for(const b of berths()){const bv=vessels.filter(v=>v.b===b);if(showFree(b))rows+=`<tr style="background:var(--bg2)"><td style="${tdS};font-weight:700">MUELLE ${b}</td><td colspan="7" style="${tdS};color:var(--text3)">LIBRE</td></tr>`;for(const v of bv){const q=v.qty==="TBC"?"TBC MT":`${v.qty} MT`;rows+=`<tr><td style="${tdS};white-space:nowrap">MUELLE ${b}</td><td style="${tdS};font-weight:600">${esc(v.vessel)}</td><td style="${tdS};white-space:nowrap">${stES(v)}</td><td style="${tdS};white-space:nowrap">${v.cargo} ${v.orig}</td><td style="${tdS};white-space:nowrap">${q}</td><td style="${tdS}">${esc(v.ship)||"\u2014"}</td><td style="${tdS}">${trD(v.dest)||"\u2014"}</td><td style="${tdS};white-space:nowrap">${etcStr(v)}</td></tr>`;}}
+  return`<div style="overflow-x:auto"><table class="grav"><thead><tr>${["MUELLE","BUQUE","SITUACI\u00D3N","CARGA","CANTIDAD","CLIENTE","DESTINO","ETB / ETC"].map(h=>`<th style="${thS}">${h}</th>`).join("")}</tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 
-/* â”€â”€ FREE TOGGLE â”€â”€ */
+/* \u2500\u2500 FREE TOGGLE \u2500\u2500 */
 function toggleFree(b){bfm[b]=!showFree(b);scheduleSave();render();}
 
-/* â”€â”€ INLINE EDIT â”€â”€ */
+/* \u2500\u2500 INLINE EDIT \u2500\u2500 */
 function startIE(id){const v=vessels.find(x=>x.id===id);ief={...v};ieId=id;render();setTimeout(()=>{const e=document.getElementById("ie-vn");if(e)e.focus();},60);}
 function cancelIE(){
   ieId=null;
@@ -485,8 +485,8 @@ function ieRowHTML(v){
       <div class="ie-f"><span class="ie-lbl">Fecha ETC</span>${inpH("ie-etc",v.etc,"12/MAY","ieU('etc',this.value)",true,"74px")}</div>
       <div class="ie-f"><span class="ie-lbl">Suf</span>${selH("ie-etcs",v.etcSuf,["","EAM","LPM","EPM"],"ieU('etcSuf',this.value)","60px")}</div>
       <div class="ie-f" style="justify-content:flex-end;padding-bottom:1px;gap:4px;flex-direction:row">
-        <button class="btn btn-prim btn-sm" onclick="saveIE()" style="height:33px">ðŸ’¾ Guardar</button>
-        <button class="btn btn-ghost btn-sm" onclick="cancelIE()" style="height:33px">âœ•</button>
+        <button class="btn btn-prim btn-sm" onclick="saveIE()" style="height:33px">\u{1F4BE} Guardar</button>
+        <button class="btn btn-ghost btn-sm" onclick="cancelIE()" style="height:33px">\u2715</button>
       </div>
     </div>
     <div class="ie-r" style="padding-top:8px;border-top:1px solid var(--blue-mid)">
@@ -495,7 +495,7 @@ function ieRowHTML(v){
       <div class="ie-f"><span class="ie-lbl">Origen</span>${selH("ie-or",v.orig,["UY","BOL","BRA","ARG"],"ieU('orig',this.value)","60px")}</div>
       <div class="ie-f"><span class="ie-lbl">Destino</span>${inpH("ie-ds",v.dest,"CHINA/TBC","ieU('dest',this.value)",true,"96px")}</div>
       <div class="ie-f"><span class="ie-lbl">Shipper</span>${inpH("ie-sh",v.ship,"LDC/TBC","ieU('ship',this.value)",true,"118px")}</div>
-      <div class="ie-f"><span class="ie-lbl">CondiciÃ³n especial</span>${inpH("ie-cd",v.cond,"SUB TO CARGO ARRIVAL...","ieU('cond',this.value)",false,"216px")}</div>
+      <div class="ie-f"><span class="ie-lbl">Condici\u00F3n especial</span>${inpH("ie-cd",v.cond,"SUB TO CARGO ARRIVAL...","ieU('cond',this.value)",false,"216px")}</div>
       <div class="ie-f" style="justify-content:flex-end;padding-bottom:1px">
         <label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:6px 12px;border-radius:5px;border:1px solid ${v.tbc?"var(--red-mid)":"var(--border)"};background:${v.tbc?"var(--red-bg)":"var(--bg)"};font-size:12px;font-weight:600;height:33px">
           <input type="checkbox" ${v.tbc?"checked":""} onchange="ieU('tbc',this.checked)" style="cursor:pointer;accent-color:var(--red)">TBC
@@ -505,8 +505,8 @@ function ieRowHTML(v){
   </div>`;
 }
 
-/* â”€â”€ VESSEL OPS â”€â”€ */
-function delV(id){if(confirm("Â¿Eliminar este buque?")){vessels=vessels.filter(v=>v.id!==id);if(ieId===id)ieId=null;scheduleSave();render();}}
+/* \u2500\u2500 VESSEL OPS \u2500\u2500 */
+function delV(id){if(confirm("\u00BFEliminar este buque?")){vessels=vessels.filter(v=>v.id!==id);if(ieId===id)ieId=null;scheduleSave();render();}}
 function moveV(id,dir){
   const v=vessels.find(x=>x.id===id),b=v.b,bv=vessels.filter(x=>x.b===b),idx=bv.findIndex(x=>x.id===id),ni=idx+dir;
   if(ni<0||ni>=bv.length)return;
@@ -526,7 +526,7 @@ function addV(b){
   setTimeout(()=>startIE(nid),60);
 }
 
-/* â”€â”€ TOAST CASCADA â”€â”€ */
+/* \u2500\u2500 TOAST CASCADA \u2500\u2500 */
 let toastTmr=null;
 function showCascadeToast(b,count){
   let t=document.getElementById("cascade-toast");
@@ -534,13 +534,13 @@ function showCascadeToast(b,count){
     t.style.cssText="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1E293B;color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.25);display:flex;align-items:center;gap:8px;transition:opacity .3s;pointer-events:none";
     document.body.appendChild(t);
   }
-  t.innerHTML=`âŸ³ <span style="color:#86EFAC">Berth ${b}</span> â€” ${count} buque${count!==1?"s":""} recalculado${count!==1?"s":""}`;
+  t.innerHTML=`\u27F3 <span style="color:#86EFAC">Berth ${b}</span> \u2014 ${count} buque${count!==1?"s":""} recalculado${count!==1?"s":""}`;
   t.style.opacity="1";
   clearTimeout(toastTmr);
   toastTmr=setTimeout(()=>{t.style.opacity="0";},2500);
 }
 
-/* â”€â”€ COPY ROBUSTO â”€â”€ */
+/* \u2500\u2500 COPY ROBUSTO \u2500\u2500 */
 function doCopy(txt,key){
   const ta=document.createElement("textarea");ta.value=txt;
   ta.style.position="fixed";ta.style.left="-9999px";ta.style.top="0";
@@ -551,17 +551,17 @@ function doCopy(txt,key){
   clearTimeout(cpTmr);cpTmr=setTimeout(()=>{copied="";if(document.getElementById("prev-ov").style.display!=="none")renderPreview();else render();},2500);
 }
 
-/* â”€â”€ PREVIEW â”€â”€ */
+/* \u2500\u2500 PREVIEW \u2500\u2500 */
 function openPreview(sec){prevSec=sec||"en";renderPreview();document.getElementById("prev-ov").style.display="block";}
 function closePreview(){document.getElementById("prev-ov").style.display="none";}
 function setPrevSec(s){prevSec=s;renderPreview();}
 function setPrevEN(c){selEN=c;renderPreview();}
 function setPrevES(c){selES=c;renderPreview();}
 function renderPreview(){
-  const warns=validate(),secs=[{k:"en",l:"ðŸ‡¬ðŸ‡§ InglÃ©s"},{k:"es",l:"ðŸ‡¦ðŸ‡· EspaÃ±ol"},{k:"gravetal",l:"ðŸ“Š Excel Gravetal"}];
+  const warns=validate(),secs=[{k:"en",l:"\u{1F1EC}\u{1F1E7} Ingl\u00E9s"},{k:"es",l:"\u{1F1E6}\u{1F1F7} Espa\u00F1ol"},{k:"gravetal",l:"\u{1F4CA} Excel Gravetal"}];
   document.getElementById("pm-warn").innerHTML=warns.length
-    ?`<div style="background:var(--red-bg);border:1px solid var(--red-mid);border-radius:var(--r);padding:12px 16px"><p style="font-size:12px;font-weight:700;color:var(--red-t);margin-bottom:6px">âš  ${warns.length} advertencia${warns.length>1?"s":""}</p>${warns.map(w=>`<p style="font-size:11px;color:var(--red-t);margin:2px 0">â€¢ ${esc(w)}</p>`).join("")}</div>`
-    :`<div style="background:var(--green-bg);border:1px solid var(--green-mid);border-radius:var(--r);padding:12px 16px"><p style="font-size:12px;font-weight:700;color:var(--green-t);margin:0">âœ“ Sin errores â€” listo para enviar</p></div>`;
+    ?`<div style="background:var(--red-bg);border:1px solid var(--red-mid);border-radius:var(--r);padding:12px 16px"><p style="font-size:12px;font-weight:700;color:var(--red-t);margin-bottom:6px">\u26A0 ${warns.length} advertencia${warns.length>1?"s":""}</p>${warns.map(w=>`<p style="font-size:11px;color:var(--red-t);margin:2px 0">\u2022 ${esc(w)}</p>`).join("")}</div>`
+    :`<div style="background:var(--green-bg);border:1px solid var(--green-mid);border-radius:var(--r);padding:12px 16px"><p style="font-size:12px;font-weight:700;color:var(--green-t);margin:0">\u2713 Sin errores \u2014 listo para enviar</p></div>`;
   document.getElementById("pm-tabs").innerHTML=secs.map(s=>`<button class="stab${prevSec===s.k?" act":""}" onclick="setPrevSec('${s.k}')">${s.l}</button>`).join("");
   let body="";
   if(prevSec==="en"||prevSec==="es"){
@@ -573,28 +573,28 @@ function renderPreview(){
         <div>${clickBtns}</div>
       </div>
       <div style="padding:12px 22px;border-bottom:1px solid var(--border);display:flex;justify-content:flex-end">
-        <button class="btn ${isCopied?"btn-success":"btn-sec"}" onclick="doCopy(${JSON.stringify(txt).replace(/"/g, '&quot;')},'${key}')">${isCopied?"âœ“ Copiado":"ðŸ“‹ Copiar email para "+curCli}</button>
+        <button class="btn ${isCopied?"btn-success":"btn-sec"}" onclick="doCopy(${JSON.stringify(txt).replace(/"/g, '&quot;')},'${key}')">${isCopied?"\u2713 Copiado":"\u{1F4CB} Copiar email para "+curCli}</button>
       </div>
       <div style="padding:16px 22px"><pre class="lineup" style="max-height:360px;overflow-y:auto">${esc(txt)}</pre></div>`;
-    if(prevSec==="es")body+=`<div style="padding:0 22px 16px"><div style="background:var(--amber-bg);border:1px solid var(--amber-mid);border-radius:var(--r);padding:12px 14px;display:flex;gap:10px;align-items:center"><span style="font-size:18px">ðŸ“Š</span><p style="font-size:12px;color:var(--amber-t);margin:0"><strong>GRAVETAL</strong> tambiÃ©n recibe el Excel adjunto â†’</p></div></div>`;
+    if(prevSec==="es")body+=`<div style="padding:0 22px 16px"><div style="background:var(--amber-bg);border:1px solid var(--amber-mid);border-radius:var(--r);padding:12px 14px;display:flex;gap:10px;align-items:center"><span style="font-size:18px">\u{1F4CA}</span><p style="font-size:12px;color:var(--amber-t);margin:0"><strong>GRAVETAL</strong> tambi\u00E9n recibe el Excel adjunto \u2192</p></div></div>`;
   }else{
-    body=`<div style="padding:14px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between"><p style="font-size:13px;color:var(--text2)">Adjunto para <strong>GRAVETAL</strong></p><button class="btn btn-sec" onclick="doXLSX()">â¬‡ Descargar .xlsx</button></div><div style="padding:18px 22px">${gravTbl()}</div>`;
+    body=`<div style="padding:14px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between"><p style="font-size:13px;color:var(--text2)">Adjunto para <strong>GRAVETAL</strong></p><button class="btn btn-sec" onclick="doXLSX()">\u2B07 Descargar .xlsx</button></div><div style="padding:18px 22px">${gravTbl()}</div>`;
   }
   document.getElementById("pm-body").innerHTML=body;
   const fcEN=copied==="f_en",fcES=copied==="f_es";
   document.getElementById("pm-btns").innerHTML=`
-    <button class="btn ${fcEN?"btn-success":"btn-info"}" onclick="doCopy(${JSON.stringify(buildEmail("en",selEN)).replace(/"/g, '&quot;')},'f_en')">${fcEN?"âœ“ EN copiado":"ðŸ‡¬ðŸ‡§ Copiar EN â€” "+selEN}</button>
-    <button class="btn ${fcES?"btn-success":"btn-sec"}" style="${!fcES?"background:var(--green-bg);color:var(--green-t);border:1px solid var(--green-mid)":""}" onclick="doCopy(${JSON.stringify(buildEmail("es",selES)).replace(/"/g, '&quot;')},'f_es')">${fcES?"âœ“ ES copiado":"ðŸ‡¦ðŸ‡· Copiar ES â€” "+selES}</button>
-    <button class="btn btn-warn" onclick="doXLSX()">ðŸ“Š Excel Gravetal</button>`;
+    <button class="btn ${fcEN?"btn-success":"btn-info"}" onclick="doCopy(${JSON.stringify(buildEmail("en",selEN)).replace(/"/g, '&quot;')},'f_en')">${fcEN?"\u2713 EN copiado":"\u{1F1EC}\u{1F1E7} Copiar EN \u2014 "+selEN}</button>
+    <button class="btn ${fcES?"btn-success":"btn-sec"}" style="${!fcES?"background:var(--green-bg);color:var(--green-t);border:1px solid var(--green-mid)":""}" onclick="doCopy(${JSON.stringify(buildEmail("es",selES)).replace(/"/g, '&quot;')},'f_es')">${fcES?"\u2713 ES copiado":"\u{1F1E6}\u{1F1F7} Copiar ES \u2014 "+selES}</button>
+    <button class="btn btn-warn" onclick="doXLSX()">\u{1F4CA} Excel Gravetal</button>`;
 }
 
-/* â”€â”€ RENDER COMPLETO ORIGINAL â”€â”€ */
+/* \u2500\u2500 RENDER COMPLETO ORIGINAL \u2500\u2500 */
 function setTab(t){activeTab=t;ieId=null;render();}
 function render(){
   const bs=berths(),warns=validate();
   ["datos","en","es","gravetal","dist"].forEach(k=>{const el=document.getElementById("tab-"+k);if(el)el.className="tab"+(activeTab===k?" active":"");});
   const wb=document.getElementById("warn-bar"),wt=document.getElementById("warn-txt");
-  if(wb&&wt){if(warns.length){wb.style.display="flex";wt.textContent=`âš  ${warns.length} campo${warns.length>1?"s":""} incompleto${warns.length>1?"s":""}`;}else wb.style.display="none";}
+  if(wb&&wt){if(warns.length){wb.style.display="flex";wt.textContent=`\u26A0 ${warns.length} campo${warns.length>1?"s":""} incompleto${warns.length>1?"s":""}`;}else wb.style.display="none";}
 
   let html="";
 
@@ -604,9 +604,9 @@ function render(){
       ${[["Status","var(--green-bg)","var(--green-mid)","var(--green-t)"],["Carga / Origen / MT","var(--blue-bg)","var(--blue-mid)","var(--blue-t)"],["Destino","var(--green-bg)","var(--green-mid)","var(--green-t)"],["Shipper","var(--amber-bg)","var(--amber-mid)","var(--amber-t)"],["Fechas ETB/ETC","var(--slate-bg)","var(--slate-mid)","var(--text2)"]].map(([l,bg,bd,tc])=>`<span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600"><span style="width:9px;height:9px;border-radius:2px;background:${bg};border:1px solid ${bd};display:inline-block"></span><span style="color:${tc}">${l}</span></span>`).join("")}
     </div>
     <div style="display:flex;gap:8px;align-items:center;padding:7px 14px;background:#FFFBEB;border-radius:var(--r);margin-bottom:14px;border:1px solid var(--amber-mid);flex-wrap:wrap">
-      <span style="font-size:10px;font-weight:700;color:var(--amber-t);text-transform:uppercase;letter-spacing:.05em">âš¡ Rates de carga:</span>
+      <span style="font-size:10px;font-weight:700;color:var(--amber-t);text-transform:uppercase;letter-spacing:.05em">\u26A1 Rates de carga:</span>
       ${[["SBS","1000 MT/h"],["SBM","600 MT/h"],["IRON ORE","2000 MT/h"],["SBO","500 MT/h"],["WHEAT","800 MT/h"]].map(([c,r])=>`<span style="font-size:11px;font-weight:600;color:var(--amber-t);background:var(--amber-bg);padding:2px 7px;border-radius:4px;border:1px solid var(--amber-mid)">${c} ${r}</span>`).join("")}
-      <span style="font-size:10px;color:var(--text3);margin-left:4px">â€” Los â†‘â†“ recalculan fechas automÃ¡ticamente Â· "âŸ³ Fechas" fuerza recÃ¡lculo manual</span>
+      <span style="font-size:10px;color:var(--text3);margin-left:4px">\u2014 Los \u2191\u2193 recalculan fechas autom\u00E1ticamente \u00B7 "\u27F3 Fechas" fuerza rec\u00E1lculo manual</span>
     </div>`;
     let cards="";
     for(const b of bs){
@@ -618,10 +618,10 @@ function render(){
         <span style="width:92px;flex-shrink:0;color:var(--green-t)">Destino</span>
         <span style="width:122px;flex-shrink:0;color:var(--amber-t)">Shipper</span>
         <span style="width:148px;flex-shrink:0;color:var(--text3)">ETB / ETC</span>
-        <span style="color:var(--text3)">CondiciÃ³n / TBC</span>
+        <span style="color:var(--text3)">Condici\u00F3n / TBC</span>
       </div>`;
       let rows="";
-      if(!bv.length)rows=`<div style="padding:16px;text-align:center;color:var(--text3);font-size:12px">Sin buques â€” haz clic en "+ Agregar"</div>`;
+      if(!bv.length)rows=`<div style="padding:16px;text-align:center;color:var(--text3);font-size:12px">Sin buques \u2014 haz clic en "+ Agregar"</div>`;
       bv.forEach((v,i)=>{
         if(ieId===v.id){rows+=`<div id="iec-${v.id}">${ieRowHTML(ief)}</div>`;return;}
         const last=i===bv.length-1;
@@ -629,19 +629,19 @@ function render(){
           <div class="vc vc-st">${pillH(v.status)}</div>
           <div class="vc vc-vn">${esc(v.vessel)||`<em style="color:var(--text3);font-weight:400">Sin nombre</em>`}</div>
           <div class="vc" style="width:145px"><span class="chip c-cargo">${v.cargo} ${v.orig}</span>${v.qty?` <span style="font-size:11px;color:var(--text2)">${v.qty}</span>`:""}</div>
-          <div class="vc" style="width:92px">${v.dest?`<span class="chip c-dest">${esc(v.dest)}</span>`:`<span style="color:var(--text3);font-size:12px">â€”</span>`}</div>
-          <div class="vc" style="width:122px">${v.ship?`<span class="chip c-ship">${esc(v.ship)}</span>`:`<span style="color:var(--text3);font-size:12px">â€”</span>`}</div>
+          <div class="vc" style="width:92px">${v.dest?`<span class="chip c-dest">${esc(v.dest)}</span>`:`<span style="color:var(--text3);font-size:12px">\u2014</span>`}</div>
+          <div class="vc" style="width:122px">${v.ship?`<span class="chip c-ship">${esc(v.ship)}</span>`:`<span style="color:var(--text3);font-size:12px">\u2014</span>`}</div>
           <div class="vc" style="width:148px"><span class="chip c-dates">${etcStr(v)}</span></div>
           <div class="vc-fl">
             ${v.tbc?`<span class="chip c-tbc">TBC</span>`:""}
-            ${v.cond?`<span class="chip c-cond" title="${esc(v.cond)}">${esc(v.cond.length>16?v.cond.slice(0,16)+"â€¦":v.cond)}</span>`:""}
+            ${v.cond?`<span class="chip c-cond" title="${esc(v.cond)}">${esc(v.cond.length>16?v.cond.slice(0,16)+"\u2026":v.cond)}</span>`:""}
           </div>
           <div class="vrow-act">
-            <button class="btn-icon" onclick="moveV(${v.id},-1)" title="Subir">â†‘</button>
-            <button class="btn-icon" onclick="moveV(${v.id},1)" title="Bajar">â†“</button>
-            <button class="btn-icon" onclick="dupV(${v.id})" title="Duplicar" style="font-size:13px">â§‰</button>
-            <button class="btn btn-sm btn-sec" onclick="startIE(${v.id})">âœŽ Editar</button>
-            <button class="btn-del btn-sm" onclick="delV(${v.id})">âœ•</button>
+            <button class="btn-icon" onclick="moveV(${v.id},-1)" title="Subir">\u2191</button>
+            <button class="btn-icon" onclick="moveV(${v.id},1)" title="Bajar">\u2193</button>
+            <button class="btn-icon" onclick="dupV(${v.id})" title="Duplicar" style="font-size:13px">\u29C9</button>
+            <button class="btn btn-sm btn-sec" onclick="startIE(${v.id})">\u270E Editar</button>
+            <button class="btn-del btn-sm" onclick="delV(${v.id})">\u2715</button>
           </div>
         </div>`;
       });
@@ -652,10 +652,10 @@ function render(){
             <span style="font-size:12px;color:var(--text3)">${bv.length} buque${bv.length!==1?"s":""}</span>
           </div>
           <div style="display:flex;gap:6px;align-items:center">
-            <button class="btn btn-sm ${isFree?"btn-free-on":"btn-free-off"}" onclick="toggleFree('${b}')" title="Marca si el muelle estÃ¡ actualmente libre">
-              ${isFree?"ðŸŸ¢ LIBRE":"â—‹ LIBRE"}
+            <button class="btn btn-sm ${isFree?"btn-free-on":"btn-free-off"}" onclick="toggleFree('${b}')" title="Marca si el muelle est\u00E1 actualmente libre">
+              ${isFree?"\u{1F7E2} LIBRE":"\u25CB LIBRE"}
             </button>
-            <button class="btn btn-sm btn-ghost" onclick="recascadeDates('${b}');if((lastCascadeInfo['${b}']||0)>0)showCascadeToast('${b}',lastCascadeInfo['${b}']);scheduleSave();render()" title="Recalcular ETB/ETC del resto del line-up segÃºn rates de carga&#10;SBS: 1000 MT/h Â· SBM: 600 MT/h Â· IRON ORE: 2000 MT/h">âŸ³ Fechas</button>
+            <button class="btn btn-sm btn-ghost" onclick="recascadeDates('${b}');if((lastCascadeInfo['${b}']||0)>0)showCascadeToast('${b}',lastCascadeInfo['${b}']);scheduleSave();render()" title="Recalcular ETB/ETC del resto del line-up seg\u00FAn rates de carga&#10;SBS: 1000 MT/h \u00B7 SBM: 600 MT/h \u00B7 IRON ORE: 2000 MT/h">\u27F3 Fechas</button>
             <button class="btn btn-sm btn-sec" onclick="addV('${b}')">+ Agregar</button>
           </div>
         </div>
@@ -668,9 +668,9 @@ function render(){
       <div style="width:1px;height:24px;background:var(--border);margin:0 4px"></div>
       <button class="btn btn-ghost btn-sm" onclick="addClient('en')">+ Cliente EN</button>
       <button class="btn btn-ghost btn-sm" onclick="addClient('es')">+ Cliente ES</button>
-      <button class="btn btn-ghost btn-sm" onclick="addCargo()">+ MercaderÃ­a</button>
+      <button class="btn btn-ghost btn-sm" onclick="addCargo()">+ Mercader\u00EDa</button>
       <div style="margin-left:auto">
-        <button class="btn btn-prim" onclick="openPreview('en')">ðŸ‘ Vista previa y envÃ­o â†’</button>
+        <button class="btn btn-prim" onclick="openPreview('en')">\u{1F441} Vista previa y env\u00EDo \u2192</button>
       </div>
     </div>`;
   }
@@ -686,8 +686,8 @@ function render(){
         <div>${cBtns}</div>
       </div>
       <div style="display:flex;gap:8px">
-        <button class="btn ${isCopied?"btn-success":"btn-sec"}" onclick="doCopy(${JSON.stringify(txt).replace(/"/g, '&quot;')},'${key}')">${isCopied?"âœ“ Copiado":"ðŸ“‹ Copiar email â€” "+curCli}</button>
-        <button class="btn btn-sec" onclick="openPreview('${lang}')">ðŸ‘ Vista previa</button>
+        <button class="btn ${isCopied?"btn-success":"btn-sec"}" onclick="doCopy(${JSON.stringify(txt).replace(/"/g, '&quot;')},'${key}')">${isCopied?"\u2713 Copiado":"\u{1F4CB} Copiar email \u2014 "+curCli}</button>
+        <button class="btn btn-sec" onclick="openPreview('${lang}')">\u{1F441} Vista previa</button>
       </div>
     </div>
     <pre class="lineup">${esc(txt)}</pre>`;
@@ -697,8 +697,8 @@ function render(){
     html=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
       <div><p style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Adjunto para</p><span class="cbadge" style="background:var(--amber-bg);color:var(--amber-t);border-color:var(--amber-mid)">GRAVETAL</span></div>
       <div style="display:flex;gap:8px">
-        <button class="btn btn-sec" onclick="openPreview('gravetal')">ðŸ‘ Vista previa</button>
-        <button class="btn btn-sec" onclick="doXLSX()">â¬‡ Descargar .xlsx</button>
+        <button class="btn btn-sec" onclick="openPreview('gravetal')">\u{1F441} Vista previa</button>
+        <button class="btn btn-sec" onclick="doXLSX()">\u2B07 Descargar .xlsx</button>
       </div>
     </div>${gravTbl()}`;
   }
@@ -707,20 +707,20 @@ function render(){
     const dot=c=>`<span style="width:8px;height:8px;border-radius:50%;background:${c};display:inline-block;flex-shrink:0"></span>`;
     html=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
       <div class="dist-card">
-        <p style="font-weight:700;font-size:15px;margin-bottom:4px">VersiÃ³n InglÃ©s</p>
+        <p style="font-weight:700;font-size:15px;margin-bottom:4px">Versi\u00F3n Ingl\u00E9s</p>
         <p style="font-size:12px;color:var(--text2);margin-bottom:14px">Email con cabecera <code>To / From ISA Nueva Palmira</code></p>
-        ${EN_CLIENTS.map(c=>`<div class="dist-row">${dot("var(--blue-t)")}<span style="font-size:13px;font-weight:500">${c}</span><span style="font-size:11px;color:var(--text3);margin-left:auto">ðŸ“§ email</span></div>`).join("")}
+        ${EN_CLIENTS.map(c=>`<div class="dist-row">${dot("var(--blue-t)")}<span style="font-size:13px;font-weight:500">${c}</span><span style="font-size:11px;color:var(--text3);margin-left:auto">\u{1F4E7} email</span></div>`).join("")}
       </div>
       <div style="display:flex;flex-direction:column;gap:14px">
         <div class="dist-card">
-          <p style="font-weight:700;font-size:15px;margin-bottom:4px">VersiÃ³n EspaÃ±ol</p>
+          <p style="font-weight:700;font-size:15px;margin-bottom:4px">Versi\u00F3n Espa\u00F1ol</p>
           <p style="font-size:12px;color:var(--text2);margin-bottom:14px">Email con cabecera <code>Para / De ISA Nueva Palmira</code></p>
-          ${ES_CLIENTS.map(c=>`<div class="dist-row">${dot("var(--green-t)")}<span style="font-size:13px;font-weight:500">${c}</span><span style="font-size:11px;color:var(--text3);margin-left:auto">ðŸ“§ email</span></div>`).join("")}
+          ${ES_CLIENTS.map(c=>`<div class="dist-row">${dot("var(--green-t)")}<span style="font-size:13px;font-weight:500">${c}</span><span style="font-size:11px;color:var(--text3);margin-left:auto">\u{1F4E7} email</span></div>`).join("")}
         </div>
         <div class="dist-card" style="border:2px solid var(--blue)">
-          <p style="font-weight:700;font-size:15px;margin-bottom:4px">Solo GRAVETAL â€” extra</p>
-          <p style="font-size:12px;color:var(--text2);margin-bottom:14px">Email espaÃ±ol + Excel adjunto</p>
-          <div class="dist-row">${dot("var(--amber-t)")}<span style="font-size:13px;font-weight:500">GRAVETAL</span><span style="font-size:11px;color:var(--text3);margin-left:auto">ðŸ“§ + ðŸ“Š .xlsx</span></div>
+          <p style="font-weight:700;font-size:15px;margin-bottom:4px">Solo GRAVETAL \u2014 extra</p>
+          <p style="font-size:12px;color:var(--text2);margin-bottom:14px">Email espa\u00F1ol + Excel adjunto</p>
+          <div class="dist-row">${dot("var(--amber-t)")}<span style="font-size:13px;font-weight:500">GRAVETAL</span><span style="font-size:11px;color:var(--text3);margin-left:auto">\u{1F4E7} + \u{1F4CA} .xlsx</span></div>
         </div>
       </div>
     </div>`;
