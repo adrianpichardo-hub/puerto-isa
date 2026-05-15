@@ -224,27 +224,27 @@ td{padding:7px 12px;vertical-align:middle;}
         <div class="db-sub">La IA lee cada PDF, identifica al tripulante y lo mueve al lugar correcto en Drive</div>
       </div>
       <div class="btn-row">
-        <button class="btn btn-gh btn-sm" onclick="toggleOrg()">âœ• Cerrar</button>
+        <button class="btn btn-gh btn-sm" onclick="toggleOrg()">Cerrar</button>
       </div>
     </div>
     <div class="info-box-yellow">
       <strong>CÃ³mo funciona:</strong><br>
-      1. Hace clic en "Abrir _PENDIENTES" y pegá¡ los PDFs ahÃ­<br>
+      1. Hacé clic en "Abrir _PENDIENTES" y pegá los PDFs­<br>
       2. Hacé clic en Procesar la IA los identifica y organiza automáticamente
     </div>
     <div style="margin-bottom:14px">
       <button class="btn btn-gh btn-sm" onclick="openPendientes()" style="display:inline-flex;align-items:center;gap:6px;border-color:rgba(234,179,8,.3);color:var(--yellow)">
-        ðŸ“‚ Abrir carpeta _PENDIENTES en Drive
+        Abrir carpeta _PENDIENTES en Drive
       </button>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
       <div>
         <div class="field-label">Tipo de documento</div>
-        <select id="org-tipo"><option value="auto">Detectar automáticamente</option><option value="libreta">Libretas</option><option value="cedula">CÃ©dulas</option></select>
+        <select id="org-tipo"><option value="auto">Detectar automáticamente</option><option value="libreta">Libretas</option><option value="cedula">Cédulas</option></select>
       </div>
       <div>
         <div class="field-label">Armador</div>
-        <select id="org-armador"><option value="auto">Detectar automÃ¡ticamente</option><option>LHG</option><option>HIDROVIAS</option><option>INTERBARGE</option><option>P&O</option><option>CARGO LINE</option><option>BAQUEANOS ARG</option></select>
+        <select id="org-armador"><option value="auto">Detectar automáticamente</option><option>LHG</option><option>HIDROVIAS</option><option>INTERBARGE</option><option>P&O</option><option>CARGO LINE</option><option>BAQUEANOS ARG</option></select>
       </div>
     </div>
     <button class="btn btn-pri" onclick="procesarPendientes()" id="org-btn" style="margin-bottom:14px">Procesar carpeta _PENDIENTES con IA</button>
@@ -297,7 +297,7 @@ td{padding:7px 12px;vertical-align:middle;}
       <div><div class="field-label">Muelle</div><input type="text" id="dock" placeholder="NAVIOS" value="NAVIOS"/></div>
       <div><div class="field-label">Armador</div>
         <select id="armador" onchange="updateFolder()">
-          <option value=""> Seleccionar â€”</option><option>HIDROVIAS</option><option>LHG</option><option>P&O</option>
+          <option value=""> Seleccionar </option><option>HIDROVIAS</option><option>LHG</option><option>P&O</option>
           <option>INTERBARGE</option><option>CARGO LINE</option><option>BAQUEANOS ARG</option>
         </select></div>
     </div>
@@ -343,8 +343,8 @@ td{padding:7px 12px;vertical-align:middle;}
     <div class="drive-struct">
       <div class="drive-struct-title">Estructura Drive a buscar</div>
       <div style="font-size:11px;line-height:2;color:var(--fg);display:grid;grid-template-columns:1fr 1fr;gap:0 20px">
-        <div>ðŸ“ <span style="color:var(--white)">LIBRETAS/</span><br>&nbsp;&nbsp; LIBRETAS LHG/<br>&nbsp;&nbsp; LIBRETAS P&amp;O/<br>&nbsp;&nbsp; LIBRETAS HIDROVIAS/<br>&nbsp;&nbsp; LIBRETAS IB/</div>
-        <div>ðŸ“ <span style="color:var(--white)">CEDULAS/</span><br>&nbsp;&nbsp; CEDULAS LHG/<br>&nbsp;&nbsp; CEDULAS P&amp;O/<br>&nbsp;&nbsp; CEDULAS HIDROVIAS/<br>&nbsp;&nbsp; CEDULAS IB/</div>
+        <div><span style="color:var(--white)">LIBRETAS/</span><br>&nbsp;&nbsp; LIBRETAS LHG/<br>&nbsp;&nbsp; LIBRETAS P&amp;O/<br>&nbsp;&nbsp; LIBRETAS HIDROVIAS/<br>&nbsp;&nbsp; LIBRETAS IB/</div>
+        <div><span style="color:var(--white)">CEDULAS/</span><br>&nbsp;&nbsp; CEDULAS LHG/<br>&nbsp;&nbsp; CEDULAS P&amp;O/<br>&nbsp;&nbsp; CEDULAS HIDROVIAS/<br>&nbsp;&nbsp; CEDULAS IB/</div>
       </div>
     </div>
     <button class="btn btn-bl" id="search-btn" onclick="searchDrive()" style="margin-bottom:12px"> Buscar documentos en Drive</button>
@@ -526,13 +526,13 @@ function getShipFullName(){const p=document.getElementById('ship-prefix').value;
 function updateFolder(){
   const s=getShipFullName(),c=document.getElementById('voyageCode').value.trim().toUpperCase(),a=document.getElementById('armador').value;
   const f=s&&c?`${a?a+' ':''}${s} - ${c}`:'';
-  document.getElementById('folder-preview').textContent=f||'CompletÃ¡ nombre y cÃ³digo...';
+  document.getElementById('folder-preview').textContent=f||'Completá nombre y código...';
   document.getElementById('folder-preview').style.color=f?'var(--accent)':'var(--muted)';
   document.getElementById('folder-path').textContent=f?'/VIAJES/'+f+'/':'';
   document.getElementById('folder-remind').textContent=f;
 }
 function step1Next(){
-  if(!document.getElementById('ship').value.trim()||!document.getElementById('voyageCode').value.trim()||!document.getElementById('eta').value.trim()){alert('CompletÃ¡ los campos obligatorios (*)');return;}
+  if(!document.getElementById('ship').value.trim()||!document.getElementById('voyageCode').value.trim()||!document.getElementById('eta').value.trim()){alert('Completá los campos obligatorios (*)');return;}
   markDone(1);goStep(2);
 }
 function onRolFileChange(input){
@@ -548,7 +548,7 @@ function onRolFileChange(input){
 
 async function parseRol(){
   const file=document.getElementById('rol-file').files[0];if(!file)return;
-  const btn=document.getElementById('parse-btn');btn.disabled=true;btn.textContent='â³ Procesando...';
+  const btn=document.getElementById('parse-btn');btn.disabled=true;btn.textContent= Procesando...';
   if(DB_DATA.length===0&&TOKEN){
     const logBox=document.getElementById('parse-log');const lines=document.getElementById('parse-lines');
     logBox.style.display='block';
@@ -722,7 +722,7 @@ async function agregarAlSheet(num){
     const idx=CREW.findIndex(x=>x.num===num);
     if(idx>=0)CREW[idx]={...CREW[idx],cargo,nacionalidad:nac,ci,vencCI,libreta,armador,inDB:true};
     ALERTS=ALERTS.filter(a=>!(a.level==='NUEVO'&&a.name===m.nombre));
-    if(statusEl){statusEl.style.color='var(--green)';statusEl.textContent='âœ“ Agregado al Sheet correctamente';}
+    if(statusEl){statusEl.style.color='var(--green)';statusEl.textContent= Agregado al Sheet correctamente';}
     setTimeout(()=>{const card=document.getElementById(`nuevo-card-${num}`);if(card)card.style.opacity='0.4';},2000);
     await loadDB();
   }catch(e){if(statusEl){statusEl.style.color='var(--red)';statusEl.textContent='âŒ Error: '+e.message;}}
@@ -749,8 +749,8 @@ async function searchDrive(){
       // â† USA LA NUEVA FUNCIÃ“N DE MATCH
       const libFolder = findArmadorFolder(arm, libFolders);
       const cedFolder = findArmadorFolder(arm, cedFolders);
-      if(!libFolder) addLine(`   âš  No se encontrÃ³ carpeta de libretas para "${arm}"`, 'warn');
-      if(!cedFolder) addLine(`   âš  No se encontrÃ³ carpeta de cÃ©dulas para "${arm}"`, 'warn');
+      if(!libFolder) addLine(`   No se encontró carpeta de libretas para "${arm}"`, 'warn');
+      if(!cedFolder) addLine(`   No se encontró carpeta de cédulas para "${arm}"`, 'warn');
       const nameParts=m.nombre.replace(',','').split(' ').slice(0,2).map(s=>norm(s));
       let libFile=null,cedFile=null;
       if(libFolder){const files=await listFiles(libFolder.id);libFile=files.find(f=>nameParts.some(p=>norm(f.name).includes(p)));addLine('   ðŸ“„ '+(libFile?libFile.name+' âœ“':'libreta â€” no encontrada'),libFile?'ok':'warn');}
@@ -759,7 +759,7 @@ async function searchDrive(){
       await sleep(100);
     }
     const complete=Object.values(CREW_DOCS).filter(d=>d.libOk&&d.cedOk).length;
-    addLine(`BÃºsqueda completa Â· ${complete}/${CREW.length} con docs completos`,'ok');
+    addLine(`Búsqueda completa Â· ${complete}/${CREW.length} con docs completos`,'ok');
     renderSearchResults();document.getElementById('step3-next').style.display='inline-flex';markDone(3);
   }catch(e){addLine('âŒ Error: '+e.message,'err');}
   btn.disabled=false;btn.textContent='â†º Buscar de nuevo';
